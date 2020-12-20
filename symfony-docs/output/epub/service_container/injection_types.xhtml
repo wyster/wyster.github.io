@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Types of Injection</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="types-of-injection">
+<span id="index-0"></span><h1>Types of Injection</h1>
+<p>Making a class’s dependencies explicit and requiring that they be injected
+into it is a good way of making a class more reusable, testable and decoupled
+from others.</p>
+<p>There are several ways that the dependencies can be injected. Each injection
+point has advantages and disadvantages to consider, as well as different
+ways of working with them when using the service container.</p>
+<div class="section" id="constructor-injection">
+<h2>Constructor Injection</h2>
+<p>The most common way to inject dependencies is via a class’s constructor.
+To do this you need to add an argument to the constructor signature to accept
+the dependency:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Mail/NewsletterManager.php</span>
+<span class="k">namespace</span> <span class="nx">App\Mail</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">NewsletterManager</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$mailer</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">MailerInterface</span> <span class="nv">$mailer</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">mailer</span> <span class="o">=</span> <span class="nv">$mailer</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You can specify what service you would like to inject into this in the
+service container configuration:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">App\Mail\NewsletterManager</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">arguments</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;@mailer&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\Mail\NewsletterManager&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;mailer&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Mail\NewsletterManager</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">NewsletterManager</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">(</span><span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">));</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Type hinting the injected object means that you can be sure that a suitable
+dependency has been injected. By type-hinting, you’ll get a clear error
+immediately if an unsuitable dependency is injected. By type hinting
+using an interface rather than a class you can make the choice of dependency
+more flexible. And assuming you only use methods defined in the interface,
+you can gain that flexibility and still safely use the object.</p>
+</div>
+<p>There are several advantages to using constructor injection:</p>
+<ul class="simple">
+<li><p>If the dependency is a requirement and the class cannot work without it
+then injecting it via the constructor ensures it is present when the class
+is used as the class cannot be constructed without it.</p></li>
+<li><p>The constructor is only ever called once when the object is created, so
+you can be sure that the dependency will not change during the object’s
+lifetime.</p></li>
+</ul>
+<p>These advantages do mean that constructor injection is not suitable for
+working with optional dependencies. It is also more difficult to use in
+combination with class hierarchies: if a class uses constructor injection
+then extending it and overriding the constructor becomes problematic.</p>
+</div>
+<div class="section" id="immutable-setter-injection">
+<h2>Immutable-setter Injection</h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">immutable-setter</span></code> injection was introduced in Symfony 4.3.</p>
+</div>
+<p>Another possible injection is to use a method which returns a separate instance
+by cloning the original service, this approach allows you to make a service immutable:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Mail/NewsletterManager.php</span>
+<span class="k">namespace</span> <span class="nx">App\Mail</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Mailer\MailerInterface</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">NewsletterManager</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$mailer</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @required</span>
+<span class="sd">     * @return static</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">withMailer</span><span class="p">(</span><span class="nx">MailerInterface</span> <span class="nv">$mailer</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="p">{</span>
+        <span class="nv">$new</span> <span class="o">=</span> <span class="k">clone</span> <span class="nv">$this</span><span class="p">;</span>
+        <span class="nv">$new</span><span class="o">-&gt;</span><span class="na">mailer</span> <span class="o">=</span> <span class="nv">$mailer</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$new</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In order to use this type of injection, don’t forget to configure it:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+     <span class="c1"># ...</span>
+
+     <span class="l l-Scalar l-Scalar-Plain">app.newsletter_manager</span><span class="p p-Indicator">:</span>
+         <span class="l l-Scalar l-Scalar-Plain">class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Mail\NewsletterManager</span>
+         <span class="l l-Scalar l-Scalar-Plain">calls</span><span class="p p-Indicator">:</span>
+             <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">withMailer</span><span class="p p-Indicator">:</span> <span class="kt">!returns_clone</span> <span class="p p-Indicator">[</span><span class="s">&#39;@mailer&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;https://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;app.newsletter_manager&quot;</span> <span class="na">class=</span><span class="s">&quot;App\Mail\NewsletterManager&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;call</span> <span class="na">method=</span><span class="s">&quot;withMailer&quot;</span> <span class="na">returns-clone=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;mailer&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/call&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">use</span> <span class="nx">App\Mail\NewsletterManager</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\Reference</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;app.newsletter_manager&#39;</span><span class="p">,</span> <span class="nx">NewsletterManager</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">addMethodCall</span><span class="p">(</span><span class="s1">&#39;withMailer&#39;</span><span class="p">,</span> <span class="p">[</span><span class="k">new</span> <span class="nx">Reference</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">)],</span> <span class="k">true</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you decide to use autowiring, this type of injection requires
+that you add a <code class="docutils literal notranslate"><span class="pre">&#64;return</span> <span class="pre">static</span></code> docblock in order for the container
+to be capable of registering the method.</p>
+</div>
+<p>This approach is useful if you need to configure your service according to your needs,
+so, here’s the advantages of immutable-setters:</p>
+<ul class="simple">
+<li><p>Immutable setters works with optional dependencies, this way, if you don’t need
+a dependency, the setter don’t need to be called.</p></li>
+<li><p>Like the constructor injection, using immutable setters force the dependency to stay
+the same during the lifetime of a service.</p></li>
+<li><p>This type of injection works well with traits as the service can be composed,
+this way, adapting the service to your application requirements is easier.</p></li>
+<li><p>The setter can be called multiple times, this way, adding a dependency to a collection
+becomes easier and allows you to add a variable number of dependencies.</p></li>
+</ul>
+<p>The disadvantages are:</p>
+<ul class="simple">
+<li><p>As the setter call is optional, a dependency can be null when calling
+methods of the service. You must check that the dependency is available
+before using it.</p></li>
+<li><p>Unless the service is declared lazy, it is incompatible with services
+that reference each other in what are called circular loops.</p></li>
+</ul>
+</div>
+<div class="section" id="setter-injection">
+<h2>Setter Injection</h2>
+<p>Another possible injection point into a class is by adding a setter method
+that accepts the dependency:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Mail/NewsletterManager.php</span>
+<span class="k">namespace</span> <span class="nx">App\Mail</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">NewsletterManager</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$mailer</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @required</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setMailer</span><span class="p">(</span><span class="nx">MailerInterface</span> <span class="nv">$mailer</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">mailer</span> <span class="o">=</span> <span class="nv">$mailer</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">app.newsletter_manager</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Mail\NewsletterManager</span>
+        <span class="l l-Scalar l-Scalar-Plain">calls</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">setMailer</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;@mailer&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;app.newsletter_manager&quot;</span> <span class="na">class=</span><span class="s">&quot;App\Mail\NewsletterManager&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;call</span> <span class="na">method=</span><span class="s">&quot;setMailer&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;mailer&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/call&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Mail\NewsletterManager</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">NewsletterManager</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">call</span><span class="p">(</span><span class="s1">&#39;setMailer&#39;</span><span class="p">,</span> <span class="p">[</span><span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">)]);</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>This time the advantages are:</p>
+<ul class="simple">
+<li><p>Setter injection works well with optional dependencies. If you do not
+need the dependency, then do not call the setter.</p></li>
+<li><p>You can call the setter multiple times. This is particularly useful if
+the method adds the dependency to a collection. You can then have a variable
+number of dependencies.</p></li>
+<li><p>Like the immutable-setter one, this type of injection works well with
+traits and allows you to compose your service.</p></li>
+</ul>
+<p>The disadvantages of setter injection are:</p>
+<ul class="simple">
+<li><p>The setter can be called more than once, also long after initialization,
+so you cannot be sure the dependency is not replaced during the lifetime
+of the object (except by explicitly writing the setter method to check if
+it has already been called).</p></li>
+<li><p>You cannot be sure the setter will be called and so you need to add checks
+that any required dependencies are injected.</p></li>
+</ul>
+</div>
+<div class="section" id="property-injection">
+<h2>Property Injection</h2>
+<p>Another possibility is setting public fields of the class directly:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">NewsletterManager</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$mailer</span><span class="p">;</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">app.newsletter_manager</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Mail\NewsletterManager</span>
+        <span class="l l-Scalar l-Scalar-Plain">properties</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">mailer</span><span class="p p-Indicator">:</span> <span class="s">&#39;@mailer&#39;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;app.newsletter_manager&quot;</span> <span class="na">class=</span><span class="s">&quot;App\Mail\NewsletterManager&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;mailer&quot;</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;mailer&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Mail\NewsletterManager</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;app.newsletter_manager&#39;</span><span class="p">,</span> <span class="nx">NewsletterManager</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">property</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">,</span> <span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;mailer&#39;</span><span class="p">));</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>There are mainly only disadvantages to using property injection, it is similar
+to setter injection but with these additional important problems:</p>
+<ul class="simple">
+<li><p>You cannot control when the dependency is set at all, it can be changed
+at any point in the object’s lifetime.</p></li>
+<li><p>You cannot use type hinting so you cannot be sure what dependency is injected
+except by writing into the class code to explicitly test the class instance
+before using it.</p></li>
+</ul>
+<p>But, it is useful to know that this can be done with the service container,
+especially if you are working with code that is out of your control, such
+as in a third party library, which uses public properties for its dependencies.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

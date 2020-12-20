@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../security.html">Security</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../security.html#installation">1) Installation</a></li>
@@ -135,7 +133,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../security.html#frequently-asked-questions">Frequently Asked Questions</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../security.html#learn-more">Learn More</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../security.html#authentication-identifying-logging-in-the-user">Authentication (Identifying/Logging in the User)</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="experimental_authenticators.html">Using the new Authenticator-based Security</a></li>
 <li class="toctree-l4"><a class="reference internal" href="form_login_setup.html">How to Build a Login Form</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reset_password.html">How to Add a Reset Password Feature</a></li>
 <li class="toctree-l4"><a class="reference internal" href="json_login_setup.html">How to Build a JSON Authentication Endpoint</a></li>
@@ -264,6 +261,8 @@ use-case matches one of these exactly, they’re a great option:</p>
 <li><a class="reference internal" href="json_login_setup.html"><span class="doc">json_login</span></a></li>
 <li><a class="reference internal" href="#security-x509"><span class="std std-ref">X.509 Client Certificate Authentication (x509)</span></a></li>
 <li><a class="reference internal" href="#security-remote-user"><span class="std std-ref">REMOTE_USER Based Authentication (remote_user)</span></a></li>
+<li><code class="docutils literal notranslate"><span class="pre">simple_form</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">simple_pre_auth</span></code></li>
 </ul>
 <div class="section" id="http-basic-authentication">
 <span id="security-http-basic"></span><h2>HTTP Basic Authentication<a class="headerlink" href="#http-basic-authentication" title="Permalink to this headline">¶</a></h2>
@@ -308,17 +307,13 @@ it’s recommended to use it with HTTPS.</p>
 13
 14
 15
-16
-17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
-<span class="s">        http://symfony.com/schema/dic/security</span>
-<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -409,17 +404,13 @@ process itself. With Apache, for example, you would use the
 14
 15
 16
-17
-18
-19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
-<span class="s">        http://symfony.com/schema/dic/security</span>
-<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -516,20 +507,10 @@ corresponding firewall in your security configuration:</p>
  8
  9
 10
-11
-12
-13
-14
-15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
-    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-    <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
-<span class="s">        http://symfony.com/schema/dic/security</span>
-<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+    <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>

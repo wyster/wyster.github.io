@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Decorate Services</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-decorate-services">
+<span id="index-0"></span><h1>How to Decorate Services</h1>
+<p>When overriding an existing definition, the original service is lost:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">App\Mailer</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~</span>
+
+    <span class="c1"># this replaces the old App\Mailer definition with the new one, the</span>
+    <span class="c1"># old definition is lost</span>
+    <span class="l l-Scalar l-Scalar-Plain">App\Mailer</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\NewMailer</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsd=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsd:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\Mailer&quot;</span><span class="nt">/&gt;</span>
+
+        <span class="c">&lt;!-- this replaces the old App\Mailer definition with the new</span>
+<span class="c">             one, the old definition is lost --&gt;</span>
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\Mailer&quot;</span> <span class="na">class=</span><span class="s">&quot;App\NewMailer&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Mailer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\NewMailer</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Mailer</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+    <span class="c1">// this replaces the old App\Mailer definition with the new one, the</span>
+    <span class="c1">// old definition is lost</span>
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Mailer</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="nx">NewMailer</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>Most of the time, that’s exactly what you want to do. But sometimes,
+you might want to decorate the old one instead (i.e. apply the <a class="reference external" href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator pattern</a><span class="link-target"> [https://en.wikipedia.org/wiki/Decorator_pattern]</span>).
+In this case, the old service should be kept around to be able to reference
+it in the new one. This configuration replaces <code class="docutils literal notranslate"><span class="pre">App\Mailer</span></code> with a new one,
+but keeps a reference of the old one as <code class="docutils literal notranslate"><span class="pre">App\DecoratingMailer.inner</span></code>:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">App\Mailer</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">App\DecoratingMailer</span><span class="p p-Indicator">:</span>
+        <span class="c1"># overrides the App\Mailer service</span>
+        <span class="c1"># but that service is still available as App\DecoratingMailer.inner</span>
+        <span class="l l-Scalar l-Scalar-Plain">decorates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Mailer</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsd=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsd:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\Mailer&quot;</span><span class="nt">/&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\DecoratingMailer&quot;</span>
+            <span class="na">decorates=</span><span class="s">&quot;App\Mailer&quot;</span>
+        <span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\DecoratingMailer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Mailer</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Mailer</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">DecoratingMailer</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="c1">// overrides the App\Mailer service</span>
+        <span class="c1">// but that service is still available as App\DecoratingMailer.inner</span>
+        <span class="o">-&gt;</span><span class="na">decorate</span><span class="p">(</span><span class="nx">Mailer</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">decorates</span></code> option tells the container that the <code class="docutils literal notranslate"><span class="pre">App\DecoratingMailer</span></code>
+service replaces the <code class="docutils literal notranslate"><span class="pre">App\Mailer</span></code> service. If you’re using the
+<a class="reference internal" href="../service_container.xhtml#service-container-services-load-example"><span class="std std-ref">default services.yaml configuration</span></a>,
+the decorated service is automatically injected when the constructor of the
+decorating service has one argument type-hinted with the decorated service class.</p>
+<p>If you are not using autowiring or the decorating service has more than one
+constructor argument type-hinted with the decorated service class, you must
+inject the decorated service explicitly (the ID of the decorated service is
+automatically changed to <code class="docutils literal notranslate"><span class="pre">decorating_service_id</span> <span class="pre">+</span> <span class="pre">'.inner'</span></code>):</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">App\Mailer</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">App\DecoratingMailer</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">decorates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Mailer</span>
+        <span class="c1"># pass the old service as an argument</span>
+        <span class="l l-Scalar l-Scalar-Plain">arguments</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;@App\DecoratingMailer.inner&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsd=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsd:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\Mailer&quot;</span><span class="nt">/&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\DecoratingMailer&quot;</span>
+            <span class="na">decorates=</span><span class="s">&quot;App\Mailer&quot;</span>
+        <span class="nt">&gt;</span>
+            <span class="c">&lt;!-- pass the old service as an argument --&gt;</span>
+            <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;App\DecoratingMailer.inner&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\DecoratingMailer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Mailer</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Mailer</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">DecoratingMailer</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">decorate</span><span class="p">(</span><span class="nx">Mailer</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="c1">// pass the old service as an argument</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">ref</span><span class="p">(</span><span class="nx">DecoratingMailer</span><span class="o">::</span><span class="na">class</span><span class="o">.</span><span class="s1">&#39;.inner&#39;</span><span class="p">)]);</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The visibility of the decorated <code class="docutils literal notranslate"><span class="pre">App\Mailer</span></code> service (which is an alias
+for the new service) will still be the same as the original <code class="docutils literal notranslate"><span class="pre">App\Mailer</span></code>
+visibility.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The generated inner id is based on the id of the decorator service
+(<code class="docutils literal notranslate"><span class="pre">App\DecoratingMailer</span></code> here), not of the decorated service (<code class="docutils literal notranslate"><span class="pre">App\Mailer</span></code>
+here). You can control the inner service name via the <code class="docutils literal notranslate"><span class="pre">decoration_inner_name</span></code>
+option:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">App\DecoratingMailer</span><span class="p p-Indicator">:</span>
+        <span class="c1"># ...</span>
+        <span class="l l-Scalar l-Scalar-Plain">decoration_inner_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\DecoratingMailer.wooz</span>
+        <span class="l l-Scalar l-Scalar-Plain">arguments</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;@App\DecoratingMailer.wooz&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsd=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsd:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+
+        <span class="nt">&lt;service</span>
+            <span class="na">id=</span><span class="s">&quot;App\DecoratingMailer&quot;</span>
+            <span class="na">decorates=</span><span class="s">&quot;App\Mailer&quot;</span>
+            <span class="na">decoration-inner-name=</span><span class="s">&quot;App\DecoratingMailer.wooz&quot;</span>
+            <span class="na">public=</span><span class="s">&quot;false&quot;</span>
+        <span class="nt">&gt;</span>
+            <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;App\DecoratingMailer.wooz&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\DecoratingMailer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Mailer</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Mailer</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">DecoratingMailer</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">decorate</span><span class="p">(</span><span class="nx">Mailer</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="nx">DecoratingMailer</span><span class="o">::</span><span class="na">class</span><span class="o">.</span><span class="s1">&#39;.wooz&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">ref</span><span class="p">(</span><span class="nx">DecoratingMailer</span><span class="o">::</span><span class="na">class</span><span class="o">.</span><span class="s1">&#39;.wooz&#39;</span><span class="p">)]);</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="decoration-priority">
+<h2>Decoration Priority</h2>
+<p>When applying multiple decorators to a service, you can control their order with
+the <code class="docutils literal notranslate"><span class="pre">decoration_priority</span></code> option. Its value is an integer that defaults to
+<code class="docutils literal notranslate"><span class="pre">0</span></code> and higher priorities mean that decorators will be applied earlier.</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">Foo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~</span>
+
+<span class="l l-Scalar l-Scalar-Plain">Bar</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">decorates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Foo</span>
+    <span class="l l-Scalar l-Scalar-Plain">decoration_priority</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+    <span class="l l-Scalar l-Scalar-Plain">arguments</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;@Bar.inner&#39;</span><span class="p p-Indicator">]</span>
+
+<span class="l l-Scalar l-Scalar-Plain">Baz</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">decorates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Foo</span>
+    <span class="l l-Scalar l-Scalar-Plain">decoration_priority</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="l l-Scalar l-Scalar-Plain">arguments</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;@Baz.inner&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;Foo&quot;</span><span class="nt">/&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;Bar&quot;</span> <span class="na">decorates=</span><span class="s">&quot;Foo&quot;</span> <span class="na">decoration-priority=</span><span class="s">&quot;5&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;Bar.inner&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;Baz&quot;</span> <span class="na">decorates=</span><span class="s">&quot;Foo&quot;</span> <span class="na">decoration-priority=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;Baz.inner&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Foo</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Bar</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">decorate</span><span class="p">(</span><span class="nx">Foo</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">ref</span><span class="p">(</span><span class="nx">Bar</span><span class="o">::</span><span class="na">class</span><span class="o">.</span><span class="s1">&#39;.inner&#39;</span><span class="p">)]);</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Baz</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">decorate</span><span class="p">(</span><span class="nx">Foo</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">ref</span><span class="p">(</span><span class="nx">Baz</span><span class="o">::</span><span class="na">class</span><span class="o">.</span><span class="s1">&#39;.inner&#39;</span><span class="p">)]);</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>The generated code will be the following:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">[</span><span class="nx">Foo</span><span class="o">::</span><span class="na">class</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Baz</span><span class="p">(</span><span class="k">new</span> <span class="nx">Bar</span><span class="p">(</span><span class="k">new</span> <span class="nx">Foo</span><span class="p">()));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="control-the-behavior-when-the-decorated-service-does-not-exist">
+<h2>Control the Behavior When the Decorated Service Does Not Exist</h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">decoration_on_invalid</span></code> option has been introduced in Symfony 4.4.
+In previous versions, a <code class="docutils literal notranslate"><span class="pre">ServiceNotFoundException</span></code> was always thrown.</p>
+</div>
+<p>When you decorate a service that doesn’t exist, the <code class="docutils literal notranslate"><span class="pre">decoration_on_invalid</span></code>
+option allows you to choose the behavior to adopt.</p>
+<p>Three different behaviors are available:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">exception</span></code>: A <code class="docutils literal notranslate"><span class="pre">ServiceNotFoundException</span></code> will be thrown telling that decorator’s dependency is missing. (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ignore</span></code>: The container will remove the decorator.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">null</span></code>: The container will keep the decorator service and will set the decorated one to <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
+</ul>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">Foo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~</span>
+
+<span class="l l-Scalar l-Scalar-Plain">Bar</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">decorates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Foo</span>
+    <span class="l l-Scalar l-Scalar-Plain">decoration_on_invalid</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ignore</span>
+    <span class="l l-Scalar l-Scalar-Plain">arguments</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;@Bar.inner&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;Foo&quot;</span><span class="nt">/&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;Bar&quot;</span> <span class="na">decorates=</span><span class="s">&quot;Foo&quot;</span> <span class="na">decoration-on-invalid=</span><span class="s">&quot;ignore&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;Bar.inner&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\ContainerInterface</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Foo</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Bar</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">decorate</span><span class="p">(</span><span class="nx">Foo</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">ContainerInterface</span><span class="o">::</span><span class="na">IGNORE_ON_INVALID_REFERENCE</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">ref</span><span class="p">(</span><span class="nx">Bar</span><span class="o">::</span><span class="na">class</span><span class="o">.</span><span class="s1">&#39;.inner&#39;</span><span class="p">)])</span>
+    <span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>When using <code class="docutils literal notranslate"><span class="pre">null</span></code>, you may have to update the decorator constructor in
+order to make decorated dependency nullable:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Service/DecoratorService.php</span>
+<span class="k">namespace</span> <span class="nx">App\Service</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Acme\OptionalBundle\Service\OptionalService</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">DecoratorService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$decorated</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="o">?</span><span class="nx">OptionalService</span> <span class="nv">$decorated</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">decorated</span> <span class="o">=</span> <span class="nv">$decorated</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">tellInterestingStuff</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">decorated</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s1">&#39;Just one interesting thing&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">decorated</span><span class="o">-&gt;</span><span class="na">tellInterestingStuff</span><span class="p">()</span><span class="o">.</span><span class="s1">&#39; + one more interesting thing&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Sometimes, you may want to add a compiler pass that creates service
+definitions on the fly. If you want to decorate such a service,
+be sure that your compiler pass is registered with <code class="docutils literal notranslate"><span class="pre">PassConfig::TYPE_BEFORE_OPTIMIZATION</span></code>
+type so that the decoration pass will be able to find the created services.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

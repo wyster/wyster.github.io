@@ -27,7 +27,7 @@ that adds two convenient methods to lock and release commands::
             if (!$this->lock()) {
                 $output->writeln('The command is already running in another process.');
 
-                return Command::SUCCESS;
+                return 0;
             }
 
             // If you prefer to wait until the lock is released, use this:
@@ -39,12 +39,8 @@ that adds two convenient methods to lock and release commands::
             // automatically when the execution of the command ends
             $this->release();
 
-            return Command:SUCCESS;
+            return 0;
         }
     }
-
-.. versionadded:: 5.1
-
-    The ``Command::SUCCESS`` constant was introduced in Symfony 5.1.
 
 .. _`locks`: https://en.wikipedia.org/wiki/Lock_(computer_science)

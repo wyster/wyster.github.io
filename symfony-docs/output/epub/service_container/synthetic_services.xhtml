@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Inject Instances into the Container</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-inject-instances-into-the-container">
+<span id="index-0"></span><h1>How to Inject Instances into the Container</h1>
+<p>In some applications, you may need to inject a class instance as service,
+instead of configuring the container to create a new instance.</p>
+<p>For instance, the <code class="docutils literal notranslate"><span class="pre">kernel</span></code> service in Symfony is injected into the container
+from within the <code class="docutils literal notranslate"><span class="pre">Kernel</span></code> class:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpKernel\KernelInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpKernel\TerminableInterface</span><span class="p">;</span>
+
+<span class="k">abstract</span> <span class="k">class</span> <span class="nc">Kernel</span> <span class="k">implements</span> <span class="nx">KernelInterface</span><span class="p">,</span> <span class="nx">TerminableInterface</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">initializeContainer</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">container</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;kernel&#39;</span><span class="p">,</span> <span class="nv">$this</span><span class="p">);</span>
+
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Services that are set at runtime are called <em>synthetic services</em>. This service
+has to be configured so the container knows the service exists during compilation
+(otherwise, services depending on <code class="docutils literal notranslate"><span class="pre">kernel</span></code> will get a “service does not exist” error).</p>
+<p>In order to do so, mark the service as synthetic in your service definition
+configuration:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="c1"># synthetic services don&#39;t specify a class</span>
+    <span class="l l-Scalar l-Scalar-Plain">app.synthetic_service</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">synthetic</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+
+        <span class="c">&lt;!-- synthetic services don&#39;t specify a class --&gt;</span>
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;app.synthetic_service&quot;</span> <span class="na">synthetic=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="c1">// synthetic services don&#39;t specify a class</span>
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;app.synthetic_service&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">synthetic</span><span class="p">();</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>Now, you can inject the instance in the container using
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DependencyInjection/Container.php" title="Symfony\Component\DependencyInjection\Container::set()"><span class="pre">Container::set()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DependencyInjection/Container.php]</span></span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// instantiate the synthetic service</span>
+<span class="nv">$theService</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;app.synthetic_service&#39;</span><span class="p">,</span> <span class="nv">$theService</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

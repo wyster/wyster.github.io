@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -258,7 +256,7 @@ to customize the normalized data. To do that, leverage the <code class="docutils
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">normalizer</span> <span class="o">=</span> <span class="nv">$normalizer</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">normalize</span><span class="p">(</span><span class="nv">$topic</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">normalize</span><span class="p">(</span><span class="nv">$topic</span><span class="p">,</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
     <span class="p">{</span>
         <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">normalizer</span><span class="o">-&gt;</span><span class="na">normalize</span><span class="p">(</span><span class="nv">$topic</span><span class="p">,</span> <span class="nv">$format</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 
@@ -270,7 +268,7 @@ to customize the normalized data. To do that, leverage the <code class="docutils
         <span class="k">return</span> <span class="nv">$data</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsNormalization</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsNormalization</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="nv">$data</span> <span class="nx">instanceof</span> <span class="nx">Topic</span><span class="p">;</span>
     <span class="p">}</span>

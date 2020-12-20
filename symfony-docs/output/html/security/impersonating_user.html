@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../security.html">Security</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../security.html#installation">1) Installation</a></li>
@@ -135,7 +133,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../security.html#frequently-asked-questions">Frequently Asked Questions</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../security.html#learn-more">Learn More</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../security.html#authentication-identifying-logging-in-the-user">Authentication (Identifying/Logging in the User)</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="experimental_authenticators.html">Using the new Authenticator-based Security</a></li>
 <li class="toctree-l4"><a class="reference internal" href="form_login_setup.html">How to Build a Login Form</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reset_password.html">How to Add a Reset Password Feature</a></li>
 <li class="toctree-l4"><a class="reference internal" href="json_login_setup.html">How to Build a JSON Authentication Endpoint</a></li>
@@ -296,17 +293,13 @@ listener:</p>
 14
 15
 16
-17
-18
-19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
-<span class="s">        http://symfony.com/schema/dic/security</span>
-<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -366,23 +359,22 @@ Using <a class="reference internal" href="../security.html#security-role-hierarc
 role to the users that need it.</p>
 <div class="section" id="knowing-when-impersonation-is-active">
 <h2>Knowing When Impersonation Is Active<a class="headerlink" href="#knowing-when-impersonation-is-active" title="Permalink to this headline">¶</a></h2>
-<p>You can use the special attribute <code class="docutils literal notranslate"><span class="pre">IS_IMPERSONATOR</span></code> to check if the
-impersonation is active in this session. Use this special role, for
-instance, to show a link to exit impersonation in a template:</p>
+<p>When a user is being impersonated, Symfony grants them a special role called
+<code class="docutils literal notranslate"><span class="pre">ROLE_PREVIOUS_ADMIN</span></code> (in addition to the roles the user may have). Use this
+special role, for instance, to show a link to exit impersonation in a template:</p>
 <div class="highlight-html+twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">is_granted</span><span class="o">(</span><span class="s1">&#39;IS_IMPERSONATOR&#39;</span><span class="o">)</span> <span class="cp">%}</span>
-    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">impersonation_exit_path</span><span class="o">(</span><span class="nv">path</span><span class="o">(</span><span class="s1">&#39;homepage&#39;</span><span class="o">)</span> <span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="p">&gt;</span>Exit impersonation<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">is_granted</span><span class="o">(</span><span class="s1">&#39;ROLE_PREVIOUS_ADMIN&#39;</span><span class="o">)</span> <span class="cp">%}</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">path</span><span class="o">(</span><span class="s1">&#39;homepage&#39;</span><span class="o">,</span> <span class="o">{</span><span class="s1">&#39;_switch_user&#39;</span><span class="o">:</span> <span class="s1">&#39;_exit&#39;</span><span class="o">})</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="p">&gt;</span>Exit impersonation<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
 <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
 </pre></div>
 </td></tr></table></div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">IS_IMPERSONATOR</span></code> was introduced in Symfony 5.1. Use
-<code class="docutils literal notranslate"><span class="pre">ROLE_PREVIOUS_ADMIN</span></code> prior to Symfony 5.1.</p>
-</div>
 </div>
 <div class="section" id="finding-the-original-user">
 <h2>Finding the Original User<a class="headerlink" href="#finding-the-original-user" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">SwitchUserToken</span></code> class was introduced in Symfony 4.3.</p>
+</div>
 <p>In some cases, you may need to get the object that represents the impersonator
 user rather than the impersonated user. When a user is impersonated the token
 stored in the token storage will be a <code class="docutils literal notranslate"><span class="pre">SwitchUserToken</span></code> instance. Use the
@@ -461,17 +453,13 @@ also adjust the query parameter name via the <code class="docutils literal notra
 13
 14
 15
-16
-17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
-<span class="s">        http://symfony.com/schema/dic/security</span>
-<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
 
@@ -558,17 +546,13 @@ be called):</p>
 13
 14
 15
-16
-17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
-<span class="s">        http://symfony.com/schema/dic/security</span>
-<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
 

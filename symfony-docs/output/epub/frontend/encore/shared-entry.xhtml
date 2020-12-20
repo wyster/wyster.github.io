@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Creating a Shared Commons Entry</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="creating-a-shared-commons-entry">
+<h1>Creating a Shared Commons Entry</h1>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>While this method still works, see <a class="reference internal" href="split-chunks.xhtml"><span class="doc">Preventing Duplication by “Splitting” Shared Code into Separate Files</span></a> for
+the preferred solution to sharing assets between multiple entry files.</p>
+</div>
+<p>Suppose you have multiple entry files and <em>each</em> requires <code class="docutils literal notranslate"><span class="pre">jquery</span></code>. In this
+case, <em>each</em> output file will contain jQuery, slowing down your user’s experience.
+To solve this, you can <em>extract</em> the common libraries to a “shared” entry file
+that’s included on every page.</p>
+<p>Suppose you already have an entry called <code class="docutils literal notranslate"><span class="pre">app</span></code> that’s included on every page.
+Update your code to use <code class="docutils literal notranslate"><span class="pre">createSharedEntry()</span></code>:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Encore
+    // ...
+<span class="gd">-     .addEntry(&#39;app&#39;, &#39;./assets/js/app.js&#39;)</span>
+<span class="gi">+     .createSharedEntry(&#39;app&#39;, &#39;./assets/js/app.js&#39;)</span>
+    .addEntry(&#39;homepage&#39;, &#39;./assets/js/homepage.js&#39;)
+    .addEntry(&#39;blog&#39;, &#39;./assets/js/blog.js&#39;)
+    .addEntry(&#39;store&#39;, &#39;./assets/js/store.js&#39;)
+</pre></div>
+</td></tr></table></div>
+<p>Before making this change, if both <code class="docutils literal notranslate"><span class="pre">app.js</span></code> and <code class="docutils literal notranslate"><span class="pre">store.js</span></code> require <code class="docutils literal notranslate"><span class="pre">jquery</span></code>,
+then <code class="docutils literal notranslate"><span class="pre">jquery</span></code> would be packaged into <em>both</em> files, which is wasteful. By making
+<code class="docutils literal notranslate"><span class="pre">app.js</span></code> your “shared” entry, <em>any</em> code required by <code class="docutils literal notranslate"><span class="pre">app.js</span></code> (like jQuery) will
+<em>no longer</em> be packaged into any other files. The same is true for any CSS.</p>
+<p>Because <code class="docutils literal notranslate"><span class="pre">app.js</span></code> contains all the common code that other entry files depend on,
+its script (and link) tag must be on every page.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">app.js</span></code> file works best when its contents are changed <em>rarely</em>
+and you’re using <a class="reference internal" href="versioning.xhtml#encore-long-term-caching"><span class="std std-ref">long-term caching</span></a>. Why?
+If <code class="docutils literal notranslate"><span class="pre">app.js</span></code> contains application code that <em>frequently</em> changes, then
+(when using versioning), its filename hash will frequently change. This means
+your users won’t enjoy the benefits of long-term caching for this file (which
+is generally quite large).</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

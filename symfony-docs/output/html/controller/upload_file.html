@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -157,10 +157,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -389,14 +387,13 @@ to <a class="reference internal" href="../form/form_customization.html"><span cl
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\File\UploadedFile</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Request</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Routing\Annotation\Route</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\String\Slugger\SluggerInterface</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">ProductController</span> <span class="k">extends</span> <span class="nx">AbstractController</span>
 <span class="p">{</span>
     <span class="sd">/**</span>
 <span class="sd">     * @Route(&quot;/product/new&quot;, name=&quot;app_product_new&quot;)</span>
 <span class="sd">     */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">new</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">,</span> <span class="nx">SluggerInterface</span> <span class="nv">$slugger</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">new</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$product</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Product</span><span class="p">();</span>
         <span class="nv">$form</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createForm</span><span class="p">(</span><span class="nx">ProductType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="nv">$product</span><span class="p">);</span>
@@ -411,7 +408,7 @@ to <a class="reference internal" href="../form/form_customization.html"><span cl
             <span class="k">if</span> <span class="p">(</span><span class="nv">$brochureFile</span><span class="p">)</span> <span class="p">{</span>
                 <span class="nv">$originalFilename</span> <span class="o">=</span> <span class="nb">pathinfo</span><span class="p">(</span><span class="nv">$brochureFile</span><span class="o">-&gt;</span><span class="na">getClientOriginalName</span><span class="p">(),</span> <span class="nx">PATHINFO_FILENAME</span><span class="p">);</span>
                 <span class="c1">// this is needed to safely include the file name as part of the URL</span>
-                <span class="nv">$safeFilename</span> <span class="o">=</span> <span class="nv">$slugger</span><span class="o">-&gt;</span><span class="na">slug</span><span class="p">(</span><span class="nv">$originalFilename</span><span class="p">);</span>
+                <span class="nv">$safeFilename</span> <span class="o">=</span> <span class="nx">transliterator_transliterate</span><span class="p">(</span><span class="s1">&#39;Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()&#39;</span><span class="p">,</span> <span class="nv">$originalFilename</span><span class="p">);</span>
                 <span class="nv">$newFilename</span> <span class="o">=</span> <span class="nv">$safeFilename</span><span class="o">.</span><span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="nb">uniqid</span><span class="p">()</span><span class="o">.</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="nv">$brochureFile</span><span class="o">-&gt;</span><span class="na">guessExtension</span><span class="p">();</span>
 
                 <span class="c1">// Move the file to the directory where brochures are stored</span>
@@ -463,13 +460,18 @@ provides methods for the most common operations when dealing with uploaded files
 users. This also applies to the files uploaded by your visitors. The <code class="docutils literal notranslate"><span class="pre">UploadedFile</span></code>
 class provides methods to get the original file extension
 (<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/File/UploadedFile.php" title="Symfony\Component\HttpFoundation\File\UploadedFile::getExtension()"><span class="pre">getExtension()</span></a></code>),
-the original file size (<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/File/UploadedFile.php" title="Symfony\Component\HttpFoundation\File\UploadedFile::getSize()"><span class="pre">getSize()</span></a></code>)
+the original file size (<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/File/UploadedFile.php" title="Symfony\Component\HttpFoundation\File\UploadedFile::getClientSize()"><span class="pre">getClientSize()</span></a></code>)
 and the original file name (<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/File/UploadedFile.php" title="Symfony\Component\HttpFoundation\File\UploadedFile::getClientOriginalName()"><span class="pre">getClientOriginalName()</span></a></code>).
 However, they are considered <em>not safe</em> because a malicious user could tamper
 that information. That’s why it’s always better to generate a unique name and
 use the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/File/UploadedFile.php" title="Symfony\Component\HttpFoundation\File\UploadedFile::guessExtension()"><span class="pre">guessExtension()</span></a></code>
 method to let Symfony guess the right extension according to the file MIME type;</li>
 </ol>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.1: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/File/UploadedFile.php" title="Symfony\Component\HttpFoundation\File\UploadedFile::getClientSize()"><span class="pre">getClientSize()</span></a></code>
+method was deprecated in Symfony 4.1 and will be removed in Symfony 5.0.
+Use <code class="docutils literal notranslate"><span class="pre">getSize()</span></code> instead.</p>
+</div>
 <p>You can use the following code to link to the PDF brochure of a product:</p>
 <div class="highlight-html+twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">asset</span><span class="o">(</span><span class="s1">&#39;uploads/brochures/&#39;</span> <span class="o">~</span> <span class="nv">product.brochureFilename</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="p">&gt;</span>View brochure (PDF)<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
 </pre></div>
@@ -499,23 +501,20 @@ logic to a separate service:</p>
 
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\File\Exception\FileException</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\File\UploadedFile</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\String\Slugger\SluggerInterface</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">FileUploader</span>
 <span class="p">{</span>
     <span class="k">private</span> <span class="nv">$targetDirectory</span><span class="p">;</span>
-    <span class="k">private</span> <span class="nv">$slugger</span><span class="p">;</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$targetDirectory</span><span class="p">,</span> <span class="nx">SluggerInterface</span> <span class="nv">$slugger</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$targetDirectory</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">targetDirectory</span> <span class="o">=</span> <span class="nv">$targetDirectory</span><span class="p">;</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">slugger</span> <span class="o">=</span> <span class="nv">$slugger</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="k">public</span> <span class="k">function</span> <span class="nf">upload</span><span class="p">(</span><span class="nx">UploadedFile</span> <span class="nv">$file</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$originalFilename</span> <span class="o">=</span> <span class="nb">pathinfo</span><span class="p">(</span><span class="nv">$file</span><span class="o">-&gt;</span><span class="na">getClientOriginalName</span><span class="p">(),</span> <span class="nx">PATHINFO_FILENAME</span><span class="p">);</span>
-        <span class="nv">$safeFilename</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">slugger</span><span class="o">-&gt;</span><span class="na">slug</span><span class="p">(</span><span class="nv">$originalFilename</span><span class="p">);</span>
+        <span class="nv">$safeFilename</span> <span class="o">=</span> <span class="nx">transliterator_transliterate</span><span class="p">(</span><span class="s1">&#39;Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()&#39;</span><span class="p">,</span> <span class="nv">$originalFilename</span><span class="p">);</span>
         <span class="nv">$fileName</span> <span class="o">=</span> <span class="nv">$safeFilename</span><span class="o">.</span><span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="nb">uniqid</span><span class="p">()</span><span class="o">.</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="nv">$file</span><span class="o">-&gt;</span><span class="na">guessExtension</span><span class="p">();</span>
 
         <span class="k">try</span> <span class="p">{</span>
@@ -591,29 +590,15 @@ and <code class="docutils literal notranslate"><a class="reference external" hre
 </pre></div>
 </td></tr></table></div>
 </li>
-<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
-<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
-
+<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
 <span class="k">use</span> <span class="nx">App\Service\FileUploader</span><span class="p">;</span>
 
-<span class="k">return</span> <span class="k">static</span> <span class="k">function</span> <span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$container</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
-
-    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">FileUploader</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="na">arg</span><span class="p">(</span><span class="s1">&#39;$targetDirectory&#39;</span><span class="p">,</span> <span class="s1">&#39;%brochures_directory%&#39;</span><span class="p">)</span>
-    <span class="p">;</span>
-<span class="p">};</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">autowire</span><span class="p">(</span><span class="nx">FileUploader</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">setArgument</span><span class="p">(</span><span class="s1">&#39;$targetDirectory&#39;</span><span class="p">,</span> <span class="s1">&#39;%brochures_directory%&#39;</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 </li>

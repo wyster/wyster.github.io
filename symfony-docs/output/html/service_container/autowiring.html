@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -146,7 +144,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#working-with-interfaces">Working with Interfaces</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dealing-with-multiple-implementations-of-the-same-type">Dealing with Multiple Implementations of the Same Type</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#fixing-non-autowireable-arguments">Fixing Non-Autowireable Arguments</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#autowiring-other-methods-e-g-setters-and-public-typed-properties">Autowiring other Methods (e.g. Setters and Public Typed Properties)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#autowiring-other-methods-e-g-setters">Autowiring other Methods (e.g. Setters)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#autowiring-controller-action-methods">Autowiring Controller Action Methods</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#performance-consequences">Performance Consequences</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#public-and-reusable-bundles">Public and Reusable Bundles</a></li>
@@ -593,6 +591,10 @@ example, MonologBundle creates a service whose id is <code class="docutils liter
 adds an alias: <code class="docutils literal notranslate"><span class="pre">Psr\Log\LoggerInterface</span></code> that points to the <code class="docutils literal notranslate"><span class="pre">logger</span></code> service.
 This is why arguments type-hinted with <code class="docutils literal notranslate"><span class="pre">Psr\Log\LoggerInterface</span></code> can be autowired.</p>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2: </span>Since Monolog Bundle 3.5 each channel bind into container by type-hinted alias.
+More info in the part about <a class="reference internal" href="../logging/channels_handlers.html#monolog-autowire-channels"><span class="std std-ref">how to autowire monolog channels</span></a>.</p>
+</div>
 </div>
 <div class="section" id="working-with-interfaces">
 <span id="autowiring-interface-alias"></span><h2>Working with Interfaces<a class="headerlink" href="#working-with-interfaces" title="Permalink to this headline">¶</a></h2>
@@ -944,7 +946,7 @@ the injection:</p>
 
         <span class="c1">// If you wanted to choose the non-default service and do not</span>
         <span class="c1">// want to use a named autowiring alias, wire it manually:</span>
-        <span class="c1">//     -&gt;arg(&#39;$transformer&#39;, service(UppercaseTransformer::class))</span>
+        <span class="c1">//     -&gt;arg(&#39;$transformer&#39;, ref(UppercaseTransformer::class))</span>
         <span class="c1">// ...</span>
 <span class="p">};</span>
 </pre></div>
@@ -958,6 +960,9 @@ If the argument is named <code class="docutils literal notranslate"><span class=
 <code class="docutils literal notranslate"><span class="pre">App\Util\UppercaseTransformer</span></code> will be used instead.
 But, you can also manually wire any <em>other</em> service by specifying the argument
 under the arguments key.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2: </span>Named autowiring aliases have been introduced in Symfony 4.2.</p>
+</div>
 </div>
 <div class="section" id="fixing-non-autowireable-arguments">
 <h2>Fixing Non-Autowireable Arguments<a class="headerlink" href="#fixing-non-autowireable-arguments" title="Permalink to this headline">¶</a></h2>
@@ -967,34 +972,12 @@ exception.</p>
 <p>To fix this, you can <a class="reference internal" href="../service_container.html#services-manually-wire-args"><span class="std std-ref">manually wire the problematic argument</span></a>.
 You wire up the difficult arguments, Symfony takes care of the rest.</p>
 </div>
-<div class="section" id="autowiring-other-methods-e-g-setters-and-public-typed-properties">
-<span id="autowiring-calls"></span><h2>Autowiring other Methods (e.g. Setters and Public Typed Properties)<a class="headerlink" href="#autowiring-other-methods-e-g-setters-and-public-typed-properties" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="autowiring-other-methods-e-g-setters">
+<span id="autowiring-calls"></span><h2>Autowiring other Methods (e.g. Setters)<a class="headerlink" href="#autowiring-other-methods-e-g-setters" title="Permalink to this headline">¶</a></h2>
 <p>When autowiring is enabled for a service, you can <em>also</em> configure the container
 to call methods on your class when it’s instantiated. For example, suppose you want
 to inject the <code class="docutils literal notranslate"><span class="pre">logger</span></code> service, and decide to use setter-injection:</p>
-<div class="configuration-block">
-<ul class="simple">
-<li><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Util/Rot13Transformer.php</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Util/Rot13Transformer.php</span>
 <span class="k">namespace</span> <span class="nx">App\Util</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">Rot13Transformer</span>
@@ -1009,139 +992,17 @@ to inject the <code class="docutils literal notranslate"><span class="pre">logge
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span> <span class="o">=</span> <span class="nv">$logger</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">transform</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">transform</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$value</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
     <span class="p">{</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">info</span><span class="p">(</span><span class="s1">&#39;Transforming &#39;</span><span class="o">.</span><span class="nv">$value</span><span class="p">);</span>
         <span class="c1">// ...</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
-</li>
-<li><em>Attributes</em><div class="highlight-php-attributes notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Util/Rot13Transformer.php</span>
-<span class="k">namespace</span> <span class="nx">App\Util</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Symfony\Contracts\Service\Attribute\Required</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">Rot13Transformer</span>
-<span class="p">{</span>
-    <span class="k">private</span> <span class="nv">$logger</span><span class="p">;</span>
-
-    <span class="c1">#[Required]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">setLogger</span><span class="p">(</span><span class="nx">LoggerInterface</span> <span class="nv">$logger</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span> <span class="o">=</span> <span class="nv">$logger</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">transform</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">info</span><span class="p">(</span><span class="s1">&#39;Transforming &#39;</span><span class="o">.</span><span class="nv">$value</span><span class="p">);</span>
-        <span class="c1">// ...</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-</ul>
 </div>
-<p>Autowiring will automatically call <em>any</em> method with the <code class="docutils literal notranslate"><span class="pre">#[Required]</span></code> attribute
+<p>Autowiring will automatically call <em>any</em> method with the <code class="docutils literal notranslate"><span class="pre">&#64;required</span></code> annotation
 above it, autowiring each argument. If you need to manually wire some of the arguments
 to a method, you can always explicitly <a class="reference internal" href="calls.html"><span class="doc">configure the method call</span></a>.</p>
-<p>If your PHP version doesn’t support attributes (they were introduced in PHP 8),
-you can use the <code class="docutils literal notranslate"><span class="pre">&#64;required</span></code> annotation instead.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">#[Required]</span></code> attribute was introduced in Symfony 5.2.</p>
-</div>
-<p>Despite property injection has some <a class="reference internal" href="injection_types.html#property-injection"><span class="std std-ref">drawbacks</span></a>,
-autowiring with <code class="docutils literal notranslate"><span class="pre">#[Required]</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;required</span></code> can also be applied to public
-typed properties:</p>
-<div class="configuration-block">
-<ul class="simple">
-<li><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="nx">App\Util</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">Rot13Transformer</span>
-<span class="p">{</span>
-    <span class="sd">/** @required */</span>
-    <span class="k">public</span> <span class="nx">LoggerInterface</span> <span class="nv">$logger</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">transform</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">info</span><span class="p">(</span><span class="s1">&#39;Transforming &#39;</span><span class="o">.</span><span class="nv">$value</span><span class="p">);</span>
-        <span class="c1">// ...</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>Attributes</em><div class="highlight-php-attributes notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="nx">App\Util</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Symfony\Contracts\Service\Attribute\Required</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">Rot13Transformer</span>
-<span class="p">{</span>
-    <span class="c1">#[Required]</span>
-    <span class="k">public</span> <span class="nx">LoggerInterface</span> <span class="nv">$logger</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">transform</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">info</span><span class="p">(</span><span class="s1">&#39;Transforming &#39;</span><span class="o">.</span><span class="nv">$value</span><span class="p">);</span>
-        <span class="c1">// ...</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-</ul>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>Public typed properties autowiring was introduced in Symfony 5.1.</p>
-</div>
 </div>
 <div class="section" id="autowiring-controller-action-methods">
 <h2>Autowiring Controller Action Methods<a class="headerlink" href="#autowiring-controller-action-methods" title="Permalink to this headline">¶</a></h2>

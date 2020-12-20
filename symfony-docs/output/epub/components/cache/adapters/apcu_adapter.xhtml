@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>APCu Cache Adapter</title>
+    <link rel="stylesheet" href="../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="apcu-cache-adapter">
+<span id="apcu-adapter"></span><span id="index-0"></span><h1>APCu Cache Adapter</h1>
+<p>This adapter is a high-performance, shared memory cache. It can <em>significantly</em>
+increase an application’s performance, as its cache contents are stored in shared
+memory, a component appreciably faster than many others, such as the filesystem.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p><strong>Requirement:</strong> The <a class="reference external" href="https://pecl.php.net/package/APCu">APCu extension</a><span class="link-target"> [https://pecl.php.net/package/APCu]</span> must be installed and active to use
+this adapter.</p>
+</div>
+<p>The ApcuAdapter can optionally be provided a namespace, default cache lifetime,
+and cache items version string as constructor arguments:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\ApcuAdapter</span><span class="p">;</span>
+
+<span class="nv">$cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ApcuAdapter</span><span class="p">(</span>
+
+    <span class="c1">// a string prefixed to the keys of the items stored in this cache</span>
+    <span class="nv">$namespace</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+
+    <span class="c1">// the default lifetime (in seconds) for cache items that do not define their</span>
+    <span class="c1">// own lifetime, with a value 0 causing items to be stored indefinitely (i.e.</span>
+    <span class="c1">// until the APCu memory is cleared)</span>
+    <span class="nv">$defaultLifetime</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+
+    <span class="c1">// when set, all keys prefixed by $namespace can be invalidated by changing</span>
+    <span class="c1">// this $version string</span>
+    <span class="nv">$version</span> <span class="o">=</span> <span class="k">null</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Use of this adapter is discouraged in write/delete heavy workloads, as these
+operations cause memory fragmentation that results in significantly degraded performance.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This adapter’s CRUD operations are specific to the PHP SAPI it is running under. This
+means cache operations (such as additions, deletions, etc) using the CLI will not be
+available under the FPM or CGI SAPIs.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

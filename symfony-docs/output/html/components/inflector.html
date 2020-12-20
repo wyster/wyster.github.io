@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -150,7 +148,12 @@
 <li class="toctree-l2"><a class="reference internal" href="form.html">The Form Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="http_foundation.html">The HttpFoundation Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="http_kernel.html">The HttpKernel Component</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">The Inflector Component</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The Inflector Component</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#when-you-may-need-an-inflector">When you May Need an Inflector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="intl.html">The Intl Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ldap.html">The Ldap Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lock.html">The Lock Component</a></li>
@@ -163,10 +166,7 @@
 <li class="toctree-l2"><a class="reference internal" href="property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="security.html">The Security Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="serializer.html">The Serializer Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="string.html">The String Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_exporter.html">The VarExporter Component</a></li>
@@ -252,10 +252,64 @@
             
   <div class="section" id="the-inflector-component">
 <span id="index-0"></span><h1>The Inflector Component<a class="headerlink" href="#the-inflector-component" title="Permalink to this headline">¶</a></h1>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 5.1: </span>The Inflector component was deprecated in Symfony 5.1 and its code was moved
-into the <a class="reference internal" href="string.html"><span class="doc">String</span></a> component.
-<a class="reference internal" href="string.html#string-inflector"><span class="std std-ref">Read the new Inflector docs</span></a>.</p>
+<blockquote>
+<div>The Inflector component converts English words between their singular and
+plural forms.</div></blockquote>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/inflector
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you install this component outside of a Symfony application, you must
+require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
+autoloading mechanism provided by Composer. Read
+<a class="reference internal" href="using_components.html"><span class="doc">this article</span></a> for more details.</p>
+</div>
+</div>
+<div class="section" id="when-you-may-need-an-inflector">
+<h2>When you May Need an Inflector<a class="headerlink" href="#when-you-may-need-an-inflector" title="Permalink to this headline">¶</a></h2>
+<p>In some scenarios such as code generation and code introspection, it’s usually
+required to convert words from/to singular/plural. For example, if you need to
+know which property is associated with an <em>adder</em> method, you must convert from
+plural to singular (<code class="docutils literal notranslate"><span class="pre">addStories()</span></code> method -&gt; <code class="docutils literal notranslate"><span class="pre">$story</span></code> property).</p>
+<p>Although most human languages define simple pluralization rules, they also
+define lots of exceptions. For example, the general rule in English is to add an
+<code class="docutils literal notranslate"><span class="pre">s</span></code> at the end of the word (<code class="docutils literal notranslate"><span class="pre">book</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">books</span></code>) but there are lots of
+exceptions even for common words (<code class="docutils literal notranslate"><span class="pre">woman</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">women</span></code>, <code class="docutils literal notranslate"><span class="pre">life</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">lives</span></code>,
+<code class="docutils literal notranslate"><span class="pre">news</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">news</span></code>, <code class="docutils literal notranslate"><span class="pre">radius</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">radii</span></code>, etc.)</p>
+<p>This component abstracts all those pluralization rules so you can convert
+from/to singular/plural with confidence. However, due to the complexity of the
+human languages, this component only provides support for the English language.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The Inflector component provides two static methods to convert from/to
+singular/plural:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Inflector\Inflector</span><span class="p">;</span>
+
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;alumni&#39;</span><span class="p">);</span>   <span class="c1">// &#39;alumnus&#39;</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;knives&#39;</span><span class="p">);</span>   <span class="c1">// &#39;knife&#39;</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;mice&#39;</span><span class="p">);</span>     <span class="c1">// &#39;mouse&#39;</span>
+
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;grandchild&#39;</span><span class="p">);</span> <span class="c1">// &#39;grandchildren&#39;</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;news&#39;</span><span class="p">);</span>       <span class="c1">// &#39;news&#39;</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;bacterium&#39;</span><span class="p">);</span>  <span class="c1">// &#39;bacteria&#39;</span>
+</pre></div>
+</div>
+<p>Sometimes it’s not possible to determine a unique singular/plural form for the
+given word. In those cases, the methods return an array with all the possible
+forms:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Inflector\Inflector</span><span class="p">;</span>
+
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;indices&#39;</span><span class="p">);</span> <span class="c1">// [&#39;index&#39;, &#39;indix&#39;, &#39;indice&#39;]</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;leaves&#39;</span><span class="p">);</span>  <span class="c1">// [&#39;leaf&#39;, &#39;leave&#39;, &#39;leaff&#39;]</span>
+
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;matrix&#39;</span><span class="p">);</span>    <span class="c1">// [&#39;matricies&#39;, &#39;matrixes&#39;]</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">);</span>    <span class="c1">// [&#39;persons&#39;, &#39;people&#39;]</span>
+</pre></div>
+</div>
 </div>
 </div>
 

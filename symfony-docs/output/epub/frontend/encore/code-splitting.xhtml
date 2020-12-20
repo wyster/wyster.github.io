@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Async Code Splitting</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="async-code-splitting">
+<h1>Async Code Splitting</h1>
+<p>When you require/import a JavaScript or CSS module, Webpack compiles that code into
+the final JavaScript or CSS file. Usually, that’s exactly what you want. But what
+if you only need to use a piece of code under certain conditions? For example,
+what if you want to use <a class="reference external" href="https://videojs.com/">video.js</a><span class="link-target"> [https://videojs.com/]</span> to play a video, but only once a user has
+clicked a link:</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// assets/js/app.js</span>
+
+<span class="kr">import</span> <span class="nx">$</span> <span class="nx">from</span> <span class="s1">&#39;jquery&#39;</span><span class="p">;</span>
+<span class="c1">// a fictional &quot;large&quot; module (e.g. it imports video.js internally)</span>
+<span class="kr">import</span> <span class="nx">VideoPlayer</span> <span class="nx">from</span> <span class="s1">&#39;./components/VideoPlayer&#39;</span><span class="p">;</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.js-open-video&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// use the larger VideoPlayer module</span>
+    <span class="kr">const</span> <span class="nx">player</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VideoPlayer</span><span class="p">(</span><span class="s1">&#39;some-element&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+<p>In this example, the VideoPlayer module and everything it imports will be packaged
+into the final, built JavaScript file, even though it may not be very common for
+someone to actually need it. A better solution is to use <a class="reference external" href="https://webpack.js.org/guides/code-splitting/#dynamic-imports">dynamic imports</a><span class="link-target"> [https://webpack.js.org/guides/code-splitting/#dynamic-imports]</span>: load
+the code via AJAX when it’s needed:</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// assets/js/app.js</span>
+
+<span class="kr">import</span> <span class="nx">$</span> <span class="nx">from</span> <span class="s1">&#39;jquery&#39;</span><span class="p">;</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.js-open-video&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// you could start a loading animation here</span>
+
+    <span class="c1">// use import() as a function - it returns a Promise</span>
+    <span class="kr">import</span><span class="p">(</span><span class="s1">&#39;./components/VideoPlayer&#39;</span><span class="p">).</span><span class="nx">then</span><span class="p">(({</span> <span class="k">default</span><span class="o">:</span> <span class="nx">VideoPlayer</span> <span class="p">})</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="c1">// you could stop a loading animation here</span>
+
+        <span class="c1">// use the larger VideoPlayer module</span>
+        <span class="kr">const</span> <span class="nx">player</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VideoPlayer</span><span class="p">(</span><span class="s1">&#39;some-element&#39;</span><span class="p">);</span>
+
+    <span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="p">=&gt;</span> <span class="s1">&#39;An error occurred while loading the component&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+<p>By using <code class="docutils literal notranslate"><span class="pre">import()</span></code> like a function, the module will be downloaded async and
+the <code class="docutils literal notranslate"><span class="pre">.then()</span></code> callback will be executed when it’s finished. The <code class="docutils literal notranslate"><span class="pre">VideoPlayer</span></code>
+argument to the callback will be the loaded module. In other words, it works like
+normal AJAX calls! Behind the scenes, Webpack will package the <code class="docutils literal notranslate"><span class="pre">VideoPlayer</span></code> module
+into a separate file (e.g. <code class="docutils literal notranslate"><span class="pre">0.js</span></code>) so it can be downloaded. All the details are
+handled for you.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">default:</span> <span class="pre">VideoPlayer</span> <span class="pre">}</span></code> part may look strange. When using the async
+import, your <code class="docutils literal notranslate"><span class="pre">.then()</span></code> callback is passed an object, where the <em>actual</em> module
+is on a <code class="docutils literal notranslate"><span class="pre">.default</span></code> key. There are reasons why this is done, but it does look
+quirky. The <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">default:</span> <span class="pre">VideoPlayer</span> <span class="pre">}</span></code> code makes sure that the <code class="docutils literal notranslate"><span class="pre">VideoPlayer</span></code>
+module we want is read from this <code class="docutils literal notranslate"><span class="pre">.default</span></code> property.</p>
+<p>For more details and configuration options, see <a class="reference external" href="https://webpack.js.org/guides/code-splitting/#dynamic-imports">dynamic imports</a><span class="link-target"> [https://webpack.js.org/guides/code-splitting/#dynamic-imports]</span> on Webpack’s
+documentation.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

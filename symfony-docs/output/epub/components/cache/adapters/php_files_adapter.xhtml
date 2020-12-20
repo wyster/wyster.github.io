@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>PHP Files Cache Adapter</title>
+    <link rel="stylesheet" href="../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="php-files-cache-adapter">
+<span id="component-cache-files-adapter"></span><span id="index-0"></span><h1>PHP Files Cache Adapter</h1>
+<p>Similarly to <a class="reference internal" href="filesystem_adapter.xhtml#component-cache-filesystem-adapter"><span class="std std-ref">Filesystem Adapter</span></a>, this cache
+implementation writes cache entries out to disk, but unlike the Filesystem cache adapter,
+the PHP Files cache adapter writes and reads back these cache files <em>as native PHP code</em>.
+For example, caching the value <code class="docutils literal notranslate"><span class="pre">['my',</span> <span class="pre">'cached',</span> <span class="pre">'array']</span></code> will write out a cache
+file similar to the following:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">return</span> <span class="p">[</span>
+
+    <span class="c1">// the cache item expiration</span>
+    <span class="mi">0</span> <span class="o">=&gt;</span> <span class="mi">9223372036854775807</span><span class="p">,</span>
+
+    <span class="c1">// the cache item contents</span>
+    <span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="mi">0</span> <span class="o">=&gt;</span> <span class="s1">&#39;my&#39;</span><span class="p">,</span>
+        <span class="mi">1</span> <span class="o">=&gt;</span> <span class="s1">&#39;cached&#39;</span><span class="p">,</span>
+        <span class="mi">2</span> <span class="o">=&gt;</span> <span class="s1">&#39;array&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+
+<span class="p">];</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This adapter requires turning on the <code class="docutils literal notranslate"><span class="pre">opcache.enable</span></code> php.ini setting.
+As cache items are included and parsed as native PHP code and due to the way <a class="reference external" href="https://www.php.net/manual/en/book.opcache.php">OPcache</a><span class="link-target"> [https://www.php.net/manual/en/book.opcache.php]</span>
+handles file includes, this adapter has the potential to be much faster than other
+filesystem-based caches.</p>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>While it supports updates and because it is using OPcache as a backend, this adapter is
+better suited for append-mostly needs. Using it in other scenarios might lead to
+periodical reset of the OPcache memory, potentially leading to degraded performance.</p>
+</div>
+<p>The PhpFilesAdapter can optionally be provided a namespace, default cache lifetime, and cache
+directory path as constructor arguments:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\PhpFilesAdapter</span><span class="p">;</span>
+
+<span class="nv">$cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PhpFilesAdapter</span><span class="p">(</span>
+
+    <span class="c1">// a string used as the subdirectory of the root cache directory, where cache</span>
+    <span class="c1">// items will be stored</span>
+    <span class="nv">$namespace</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+
+    <span class="c1">// the default lifetime (in seconds) for cache items that do not define their</span>
+    <span class="c1">// own lifetime, with a value 0 causing items to be stored indefinitely (i.e.</span>
+    <span class="c1">// until the files are deleted)</span>
+    <span class="nv">$defaultLifetime</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+
+    <span class="c1">// the main cache directory (the application needs read-write permissions on it)</span>
+    <span class="c1">// if none is specified, a directory is created inside the system temporary directory</span>
+    <span class="nv">$directory</span> <span class="o">=</span> <span class="k">null</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This adapter implements <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/PruneableInterface.php" title="Symfony\Component\Cache\PruneableInterface"><span class="pre">PruneableInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/PruneableInterface.php]</span></span></code>,
+allowing for manual <a class="reference internal" href="../cache_pools.xhtml#component-cache-cache-pool-prune"><span class="std std-ref">pruning of expired cache entries</span></a> by
+calling its <code class="docutils literal notranslate"><span class="pre">prune()</span></code> method.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

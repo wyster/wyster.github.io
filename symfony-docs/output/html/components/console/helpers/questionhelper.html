@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../session.html">Sessions</a></li>
@@ -188,10 +186,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../security.html">The Security Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../serializer.html">The Serializer Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../string.html">The String Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../var_exporter.html">The VarExporter Component</a></li>
@@ -314,7 +309,7 @@ the following to your command:</p>
         <span class="nv">$question</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ConfirmationQuestion</span><span class="p">(</span><span class="s1">&#39;Continue with this action?&#39;</span><span class="p">,</span> <span class="k">false</span><span class="p">);</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">ask</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">,</span> <span class="nv">$question</span><span class="p">))</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -376,7 +371,6 @@ from a predefined list:</p>
     <span class="nv">$helper</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getHelper</span><span class="p">(</span><span class="s1">&#39;question&#39;</span><span class="p">);</span>
     <span class="nv">$question</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ChoiceQuestion</span><span class="p">(</span>
         <span class="s1">&#39;Please select your favorite color (defaults to red)&#39;</span><span class="p">,</span>
-        <span class="c1">// choices can also be PHP objects that implement __toString() method</span>
         <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">],</span>
         <span class="mi">0</span>
     <span class="p">);</span>
@@ -388,9 +382,6 @@ from a predefined list:</p>
     <span class="c1">// ... do something with the color</span>
 <span class="p">}</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>Support for using PHP objects as choice values was introduced in Symfony 5.2.</p>
 </div>
 <p>The option which should be selected by default is provided with the third
 argument of the constructor. The default is <code class="docutils literal notranslate"><span class="pre">null</span></code>, which means that no
@@ -486,6 +477,9 @@ provide a callback function to dynamically generate suggestions:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">setAutocompleterCallback()</span></code> method was introduced in Symfony 4.3.</p>
+</div>
 </div>
 <div class="section" id="do-not-trim-the-answer">
 <h3>Do not Trim the Answer<a class="headerlink" href="#do-not-trim-the-answer" title="Permalink to this headline">¶</a></h3>
@@ -506,34 +500,9 @@ provide a callback function to dynamically generate suggestions:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="accept-multiline-answers">
-<h3>Accept Multiline Answers<a class="headerlink" href="#accept-multiline-answers" title="Permalink to this headline">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">setMultiline()</span></code> and <code class="docutils literal notranslate"><span class="pre">isMultiline()</span></code> methods were introduced in
-Symfony 5.2.</p>
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">setTrimmable()</span></code> method was introduced in Symfony 4.4.</p>
 </div>
-<p>By default, the question helper stops reading user input when it receives a newline
-character (i.e., when the user hits <code class="docutils literal notranslate"><span class="pre">ENTER</span></code> once). However, you may specify that
-the response to a question should allow multiline answers by passing <code class="docutils literal notranslate"><span class="pre">true</span></code> to
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Question/Question.php" title="Symfony\Component\Console\Question\Question::setMultiline()"><span class="pre">setMultiline()</span></a></code>:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Console\Question\Question</span><span class="p">;</span>
-
-<span class="c1">// ...</span>
-<span class="k">public</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">// ...</span>
-    <span class="nv">$helper</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getHelper</span><span class="p">(</span><span class="s1">&#39;question&#39;</span><span class="p">);</span>
-
-    <span class="nv">$question</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Question</span><span class="p">(</span><span class="s1">&#39;How do you solve world peace?&#39;</span><span class="p">);</span>
-    <span class="nv">$question</span><span class="o">-&gt;</span><span class="na">setMultiline</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
-
-    <span class="nv">$answer</span> <span class="o">=</span> <span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">ask</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">,</span> <span class="nv">$question</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Multiline questions stop reading user input after receiving an end-of-transmission
-control character (<code class="docutils literal notranslate"><span class="pre">Ctrl-D</span></code> on Unix systems or <code class="docutils literal notranslate"><span class="pre">Ctrl-Z</span></code> on Windows).</p>
 </div>
 <div class="section" id="hiding-the-user-s-response">
 <h3>Hiding the User’s Response<a class="headerlink" href="#hiding-the-user-s-response" title="Permalink to this headline">¶</a></h3>

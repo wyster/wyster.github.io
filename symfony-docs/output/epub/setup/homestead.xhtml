@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Using Symfony with Homestead/Vagrant</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-symfony-with-homestead-vagrant">
+<span id="index-0"></span><h1>Using Symfony with Homestead/Vagrant</h1>
+<p>In order to develop a Symfony application, you might want to use a virtual
+development environment instead of the built-in server or WAMP/LAMP. <a class="reference external" href="https://laravel.com/docs/homestead">Homestead</a><span class="link-target"> [https://laravel.com/docs/homestead]</span>
+is an easy-to-use <a class="reference external" href="https://www.vagrantup.com/">Vagrant</a><span class="link-target"> [https://www.vagrantup.com/]</span> box to get a virtual environment up and running
+quickly.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Due to the amount of filesystem operations in Symfony (e.g. updating cache
+files and writing to log files), Symfony can slow down significantly. To
+improve the speed, consider <a class="reference internal" href="../configuration/override_dir_structure.xhtml#override-cache-dir"><span class="std std-ref">overriding the cache and log directories</span></a>
+to a location outside the NFS share (for instance, by using
+<code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.sys-get-temp-dir.php" title="sys_get_temp_dir"><span class="pre">sys_get_temp_dir</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.sys-get-temp-dir.php]</span></span></code>). You can read <a class="reference external" href="https://beberlei.de/2013/08/19/speedup_symfony2_on_vagrant_boxes.html">this blog post</a><span class="link-target"> [https://beberlei.de/2013/08/19/speedup_symfony2_on_vagrant_boxes.html]</span> for more
+tips to speed up Symfony on Vagrant.</p>
+</div>
+<div class="section" id="install-vagrant-and-homestead">
+<h2>Install Vagrant and Homestead</h2>
+<p>Before you can use Homestead, you need to install and configure Vagrant and
+Homestead as explained in <a class="reference external" href="https://laravel.com/docs/homestead#installation-and-setup">the Homestead documentation</a><span class="link-target"> [https://laravel.com/docs/homestead#installation-and-setup]</span>.</p>
+</div>
+<div class="section" id="setting-up-a-symfony-application">
+<h2>Setting Up a Symfony Application</h2>
+<p>Imagine you’ve installed your Symfony application in
+<code class="docutils literal notranslate"><span class="pre">~/projects/symfony_demo</span></code> on your local system. You first need Homestead to
+sync your files in this project. Run <code class="docutils literal notranslate"><span class="pre">homestead</span> <span class="pre">edit</span></code> to edit the
+Homestead configuration and configure the <code class="docutils literal notranslate"><span class="pre">~/projects</span></code> directory:</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
+<span class="l l-Scalar l-Scalar-Plain">folders</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">map</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~/projects</span>
+      <span class="l l-Scalar l-Scalar-Plain">to</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/home/vagrant/projects</span>
+</pre></div>
+</td></tr></table></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">projects/</span></code> directory on your PC is now accessible at
+<code class="docutils literal notranslate"><span class="pre">/home/vagrant/projects</span></code> in the Homestead environment.</p>
+<p>After you’ve done this, configure the Symfony application in the Homestead
+configuration:</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># ...</span>
+<span class="l l-Scalar l-Scalar-Plain">sites</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">map</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">symfony-demo.test</span>
+      <span class="l l-Scalar l-Scalar-Plain">to</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/home/vagrant/projects/symfony_demo/public</span>
+      <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">symfony4</span>
+</pre></div>
+</td></tr></table></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">type</span></code> option tells Homestead to use the Symfony nginx configuration.
+Homestead now supports a Symfony 2 and 3 web layout with <code class="docutils literal notranslate"><span class="pre">app.php</span></code> and
+<code class="docutils literal notranslate"><span class="pre">app_dev.php</span></code> when using type <code class="docutils literal notranslate"><span class="pre">symfony2</span></code> and an <code class="docutils literal notranslate"><span class="pre">index.php</span></code> layout when
+using type <code class="docutils literal notranslate"><span class="pre">symfony4</span></code>.</p>
+<p>At last, edit the hosts file on your local machine to map <code class="docutils literal notranslate"><span class="pre">symfony-demo.test</span></code>
+to <code class="docutils literal notranslate"><span class="pre">192.168.10.10</span></code> (which is the IP used by Homestead):</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1"># /etc/hosts (unix) or C:\Windows\System32\drivers\etc\hosts (Windows)</span>
+<span class="mf">192.168</span><span class="o">.</span><span class="mf">10.10</span> <span class="nx">symfony</span><span class="o">-</span><span class="nx">demo</span><span class="o">.</span><span class="nx">test</span>
+</pre></div>
+</div>
+<p>Now, navigate to <code class="docutils literal notranslate"><span class="pre">http://symfony-demo.test</span></code> in your web browser and enjoy
+developing your Symfony application!</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>To learn more features of Homestead, including Blackfire Profiler
+integration, automatic creation of MySQL databases and more, read the
+<a class="reference external" href="https://laravel.com/docs/homestead#daily-usage">Daily Usage</a><span class="link-target"> [https://laravel.com/docs/homestead#daily-usage]</span> section of the Homestead documentation.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Community Reviews</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="community-reviews">
+<h1>Community Reviews</h1>
+<p>Symfony is an open-source project driven by a large community. If you don’t feel
+ready to contribute code or patches, reviewing issues and pull requests (PRs)
+can be a great start to get involved and give back. In fact, people who “triage”
+issues are the backbone to Symfony’s success!</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Communicating in a way where your words come across as intended can be
+difficult. Please read through the
+<a class="reference internal" href="review-comments.xhtml"><span class="doc">Respectful Review Comments</span></a>
+guidelines.</p>
+</div>
+<div class="section" id="why-reviewing-is-important">
+<h2>Why Reviewing Is Important</h2>
+<p>Community reviews are essential for the development of the Symfony framework,
+since there are many more pull requests and bug reports than there are members
+in the Symfony core team to review, fix and merge them.</p>
+<p>On the <a class="reference external" href="https://github.com/symfony/symfony/issues">Symfony issue tracker</a><span class="link-target"> [https://github.com/symfony/symfony/issues]</span>, you can find many items in a <a class="reference external" href="https://github.com/symfony/symfony/labels/Status%3A%20Needs%20Review">Needs Review</a><span class="link-target"> [https://github.com/symfony/symfony/labels/Status%3A%20Needs%20Review]</span>
+status:</p>
+<ul class="simple">
+<li><p><strong>Bug Reports</strong>: Bug reports need to be checked for completeness.
+Is any important information missing? Can the bug be reproduced?</p></li>
+<li><p><strong>Pull Requests</strong>: Pull requests contain code that fixes a bug or implements
+new functionality. Reviews of pull requests ensure that they are implemented
+properly, are covered by test cases, don’t introduce new bugs and maintain
+backward compatibility.</p></li>
+</ul>
+<p>Note that <strong>anyone who has some basic familiarity with Symfony and PHP can
+review bug reports and pull requests</strong>. You don’t need to be an expert to help.</p>
+</div>
+<div class="section" id="be-constructive">
+<h2>Be Constructive</h2>
+<p>Before you begin, remember that you are looking at the result of someone else’s
+hard work. A good review comment thanks the contributor for their work,
+identifies what was done well, identifies what should be improved and suggests a
+next step.</p>
+</div>
+<div class="section" id="create-a-github-account">
+<h2>Create a GitHub Account</h2>
+<p>Symfony uses <a class="reference external" href="https://github.com">GitHub</a><span class="link-target"> [https://github.com]</span> to manage bug reports and pull requests. If you want to
+do reviews, you need to <a class="reference external" href="https://help.github.com/github/getting-started-with-github/signing-up-for-a-new-github-account">create a GitHub account</a><span class="link-target"> [https://help.github.com/github/getting-started-with-github/signing-up-for-a-new-github-account]</span> and log in.</p>
+</div>
+<div class="section" id="the-bug-report-review-process">
+<h2>The Bug Report Review Process</h2>
+<p>A good way to get started with reviewing is to pick a bug report from the
+<a class="reference external" href="https://github.com/symfony/symfony/issues?utf8=%E2%9C%93&amp;q=is%3Aopen+is%3Aissue+label%3A%22Bug%22+label%3A%22Status%3A+Needs+Review%22+">bug reports in need of review</a><span class="link-target"> [https://github.com/symfony/symfony/issues?utf8=%E2%9C%93&amp;q=is%3Aopen+is%3Aissue+label%3A%22Bug%22+label%3A%22Status%3A+Needs+Review%22+]</span>.</p>
+<p>The steps for the review are:</p>
+<ol class="arabic">
+<li><p><strong>Is the Report Complete?</strong></p>
+<p>Good bug reports contain a link to a project (the “reproduction project”)
+created with the <a class="reference external" href="https://github.com/symfony/skeleton">Symfony skeleton</a><span class="link-target"> [https://github.com/symfony/skeleton]</span> or the <a class="reference external" href="https://github.com/symfony/website-skeleton">Symfony website skeleton</a><span class="link-target"> [https://github.com/symfony/website-skeleton]</span>
+that reproduces the bug. If it doesn’t, the report should at least contain
+enough information and code samples to reproduce the bug.</p>
+</li>
+<li><p><strong>Reproduce the Bug</strong></p>
+<p>Download the reproduction project and test whether the bug can be reproduced
+on your system. If the reporter did not provide a reproduction project,
+create one based on one <a class="reference external" href="https://github.com/symfony/skeleton">Symfony skeleton</a><span class="link-target"> [https://github.com/symfony/skeleton]</span> (or the <a class="reference external" href="https://github.com/symfony/website-skeleton">Symfony website skeleton</a><span class="link-target"> [https://github.com/symfony/website-skeleton]</span>).</p>
+</li>
+<li><p><strong>Update the Issue Status</strong></p>
+<p>At last, add a comment to the bug report. <strong>Thank the reporter for reporting
+the bug</strong>. Include the line <code class="docutils literal notranslate"><span class="pre">Status:</span> <span class="pre">&lt;status&gt;</span></code> in your comment to trigger
+our <a class="reference external" href="https://github.com/carsonbot/carsonbot">Carson Bot</a><span class="link-target"> [https://github.com/carsonbot/carsonbot]</span> which updates the status label of the issue. You can set
+the status to one of the following:</p>
+<p><strong>Needs Work</strong> If the bug <em>does not</em> contain enough information to be
+reproduced, explain what information is missing and move the report to this
+status.</p>
+<p><strong>Works for me</strong> If the bug <em>does</em> contain enough information to be
+reproduced but works on your system, or if the reported bug is a feature and
+not a bug, provide a short explanation and move the report to this status.</p>
+<p><strong>Reviewed</strong> If you can reproduce the bug, move the report to this status.
+If you created a reproduction project, include the link to the project in
+your comment.</p>
+</li>
+</ol>
+<div class="topic">
+<p class="topic-title first">Example</p>
+<p>Here is a sample comment for a bug report that could be reproduced:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Thank you @weaverryan for creating this bug report! This indeed looks
+like a bug. I reproduced the bug in the &quot;kernel-bug&quot; branch of
+https://github.com/webmozart/some-project.
+
+Status: Reviewed
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="the-pull-request-review-process">
+<h2>The Pull Request Review Process</h2>
+<p>The process for reviewing pull requests (PRs) is similar to the one for bug
+reports. Reviews of pull requests usually take a little longer since you need
+to understand the functionality that has been fixed or added and find out
+whether the implementation is complete.</p>
+<p>It is okay to do partial reviews! If you do a partial review, comment how far
+you got and leave the PR in “Needs Review” state.</p>
+<p>Pick a pull request from the <a class="reference external" href="https://github.com/symfony/symfony/pulls?q=is%3Aopen+is%3Apr+label%3A%22Status%3A+Needs+Review%22">PRs in need of review</a><span class="link-target"> [https://github.com/symfony/symfony/pulls?q=is%3Aopen+is%3Apr+label%3A%22Status%3A+Needs+Review%22]</span> and follow these steps:</p>
+<ol class="arabic">
+<li><p><strong>Is the PR Complete</strong>?</p>
+<p>Every pull request must contain a header that gives some basic information
+about the PR. You can find the template for that header in the
+<a class="reference internal" href="../code/pull_requests.xhtml#contributing-code-pull-request"><span class="std std-ref">Contribution Guidelines</span></a>.</p>
+</li>
+<li><p><strong>Is the Base Branch Correct?</strong></p>
+<p>GitHub displays the branch that a PR is based on below the title of the
+pull request. Is that branch correct?</p>
+<ul class="simple">
+<li><p>Bugs should be fixed in the oldest, maintained version that contains the
+bug. Check <a class="reference internal" href="releases.xhtml"><span class="doc">Symfony’s Release Schedule</span></a> to find the oldest
+currently supported version.</p></li>
+<li><p>New features should always be added to the current development version.
+Check the <a class="reference external" href="https://symfony.com/releases">Symfony Roadmap</a><span class="link-target"> [https://symfony.com/releases]</span> to find the current development version.</p></li>
+</ul>
+</li>
+<li><p><strong>Reproduce the Problem</strong></p>
+<p>Read the issue that the pull request is supposed to fix. Reproduce the
+problem on a new project created with the <a class="reference external" href="https://github.com/symfony/skeleton">Symfony skeleton</a><span class="link-target"> [https://github.com/symfony/skeleton]</span> (or the
+<a class="reference external" href="https://github.com/symfony/website-skeleton">Symfony website skeleton</a><span class="link-target"> [https://github.com/symfony/website-skeleton]</span>) and try to understand why it exists. If the
+linked issue already contains such a project, install it and run it on your system.</p>
+</li>
+<li><p><strong>Review the Code</strong></p>
+<p>Read the code of the pull request and check it against some common criteria:</p>
+<ul class="simple">
+<li><p>Does the code address the issue the PR is intended to fix/implement?</p></li>
+<li><p>Does the PR stay within scope to address <em>only</em> that issue?</p></li>
+<li><p>Does the PR contain automated tests? Do those tests cover all relevant
+edge cases?</p></li>
+<li><p>Does the PR contain sufficient comments to understand its code?</p></li>
+<li><p>Does the code break backward compatibility? If yes, does the PR header say
+so?</p></li>
+<li><p>Does the PR contain deprecations? If yes, does the PR header say so? Does
+the code contain <code class="docutils literal notranslate"><span class="pre">trigger_error()</span></code> statements for all deprecated
+features?</p></li>
+<li><p>Are all deprecations and backward compatibility breaks documented in the
+latest UPGRADE-X.X.md file? Do those explanations contain “Before”/”After”
+examples with clear upgrade instructions?</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Eventually, some of these aspects will be checked automatically.</p>
+</div>
+</li>
+<li><p><strong>Test the Code</strong></p>
+<p>Take your project from step 3 and test whether the PR works properly.
+Replace the Symfony project in the <code class="docutils literal notranslate"><span class="pre">vendor</span></code> directory by the code in the
+PR by running the following Git commands. Insert the PR ID (that’s the number
+after the <code class="docutils literal notranslate"><span class="pre">#</span></code> in the PR title) for the <code class="docutils literal notranslate"><span class="pre">&lt;ID&gt;</span></code> placeholders:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span>$ cd vendor/symfony/symfony
+$ git fetch origin pull/&lt;ID&gt;/head:pr&lt;ID&gt;
+$ git checkout pr&lt;ID&gt;
+</pre></div>
+</td></tr></table></div>
+<p>For example:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span>$ git fetch origin pull/15723/head:pr15723
+$ git checkout pr15723
+</pre></div>
+</td></tr></table></div>
+<p>Now you can <a class="reference internal" href="../code/tests.xhtml"><span class="doc">test the project</span></a> against
+the code in the PR.</p>
+</li>
+<li><p><strong>Update the PR Status</strong></p>
+<p>At last, add a comment to the PR. <strong>Thank the contributor for working on the
+PR</strong>. Include the line <code class="docutils literal notranslate"><span class="pre">Status:</span> <span class="pre">&lt;status&gt;</span></code> in your comment to trigger our
+<a class="reference external" href="https://github.com/carsonbot/carsonbot">Carson Bot</a><span class="link-target"> [https://github.com/carsonbot/carsonbot]</span> which updates the status label of the issue. You can set the
+status to one of the following:</p>
+<p><strong>Needs Work</strong> If the PR is not yet ready to be merged, explain the issues
+that you found and move it to this status.</p>
+<p><strong>Reviewed</strong> If the PR satisfies all the checks above, move it to this
+status. A core contributor will soon look at the PR and decide whether it can
+be merged or needs further work.</p>
+</li>
+</ol>
+<div class="topic">
+<p class="topic-title first">Example</p>
+<p>Here is a sample comment for a PR that is not yet ready for merge:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Thank you @weaverryan for working on this! It seems that your test
+cases don&#39;t cover the cases when the counter is zero or smaller.
+Could you please add some tests for that?
+
+Status: Needs Work
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

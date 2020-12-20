@@ -144,6 +144,10 @@ configuration files, even if they use a different format:
 
         // ...
 
+.. versionadded:: 4.4
+
+    The ``not_found`` option value for ``ignore_errors`` was introduced in Symfony 4.4.
+
 .. _config-parameter-intro:
 .. _config-parameters-yml:
 .. _configuration-parameters:
@@ -612,6 +616,10 @@ Define a default value in case the environment variable is not set:
     DB_USER=
     DB_PASS=${DB_USER:-root}pass # results in DB_PASS=rootpass
 
+.. versionadded:: 4.4
+
+    The support for default values has been introduced in Symfony 4.4.
+
 Embed commands via ``$()`` (not supported on Windows):
 
 .. code-block:: bash
@@ -731,6 +739,10 @@ their values by running:
 
     # run this command to show all the details for a specific env var:
     $ php bin/console debug:container --env-var=FOO
+
+.. versionadded:: 4.3
+
+    The option to debug environment variables was introduced in Symfony 4.3.
 
 .. _configuration-accessing-parameters:
 

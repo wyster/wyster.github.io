@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -131,7 +129,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#basic-translation">Basic Translation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#message-format">Message Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../translation.html#translatable-objects">Translatable Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#translations-in-templates">Translations in Templates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#forcing-the-translator-locale">Forcing the Translator Locale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#extracting-translation-contents-and-updating-catalogs-automatically">Extracting Translation Contents and Updating Catalogs Automatically</a></li>
@@ -244,11 +241,27 @@
 <h2>Twig Templates<a class="headerlink" href="#twig-templates" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="using-twig-tags">
 <span id="translation-tags"></span><h3>Using Twig Tags<a class="headerlink" href="#using-twig-tags" title="Permalink to this headline">¶</a></h3>
-<p>Symfony provides a specialized Twig tag <code class="docutils literal notranslate"><span class="pre">trans</span></code> to help with message
-translation of <em>static blocks of text</em>:</p>
-<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">trans</span> <span class="cp">%}</span><span class="x">Hello %name%</span><span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
+<p>Symfony provides specialized Twig tags (<code class="docutils literal notranslate"><span class="pre">trans</span></code> and <code class="docutils literal notranslate"><span class="pre">transchoice</span></code>) to
+help with message translation of <em>static blocks of text</em>:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">trans</span> <span class="cp">%}</span><span class="x">Hello %name%</span><span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
+
+<span class="cp">{%</span> <span class="k">transchoice</span> <span class="nv">count</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">    {0} There are no apples|{1} There is one apple|]1,Inf[ There are %count% apples</span>
+<span class="cp">{%</span> <span class="k">endtranschoice</span> <span class="cp">%}</span><span class="x"></span>
 </pre></div>
 </td></tr></table></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> tag automatically gets the <code class="docutils literal notranslate"><span class="pre">%count%</span></code> variable from
+the current context and passes it to the translator. This mechanism only
+works when you use a placeholder following the <code class="docutils literal notranslate"><span class="pre">%var%</span></code> pattern.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> tag is deprecated since Symfony 4.2 and will be
+removed in 5.0. Use the <a class="reference internal" href="message_format.html"><span class="doc">ICU MessageFormat</span></a> with
+the <code class="docutils literal notranslate"><span class="pre">trans</span></code> tag instead.</p>
+</div>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
 <p class="last">The <code class="docutils literal notranslate"><span class="pre">%var%</span></code> notation of placeholders is required when translating in
@@ -262,22 +275,44 @@ doubling it: <code class="docutils literal notranslate"><span class="pre">{%</sp
 <p>You can also specify the message domain and pass some additional variables:</p>
 <div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">trans</span> <span class="nv">with</span> <span class="o">{</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">}</span> <span class="nv">from</span> <span class="s1">&#39;app&#39;</span> <span class="cp">%}</span><span class="x">Hello %name%</span><span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">trans</span> <span class="nv">with</span> <span class="o">{</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">}</span> <span class="nv">from</span> <span class="s1">&#39;app&#39;</span> <span class="cp">%}</span><span class="x">Hello %name%</span><span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
 
 <span class="cp">{%</span> <span class="k">trans</span> <span class="nv">with</span> <span class="o">{</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">}</span> <span class="nv">from</span> <span class="s1">&#39;app&#39;</span> <span class="nv">into</span> <span class="s1">&#39;fr&#39;</span> <span class="cp">%}</span><span class="x">Hello %name%</span><span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
+
+<span class="cp">{%</span> <span class="k">transchoice</span> <span class="nv">count</span> <span class="nv">with</span> <span class="o">{</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">}</span> <span class="nv">from</span> <span class="s1">&#39;app&#39;</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">    {0} %name%, there are no apples|{1} %name%, there is one apple|]1,Inf[ %name%, there are %count% apples</span>
+<span class="cp">{%</span> <span class="k">endtranschoice</span> <span class="cp">%}</span><span class="x"></span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="using-twig-filters">
 <span id="translation-filters"></span><h3>Using Twig Filters<a class="headerlink" href="#using-twig-filters" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">trans</span></code> filter can be used to translate <em>variable texts</em> and complex expressions:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">trans</span></code> and <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> filters can be used to translate <em>variable
+texts</em> and complex expressions:</p>
 <div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span> <span class="cp">}}</span><span class="x"></span>
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span> <span class="cp">}}</span><span class="x"></span>
+
+<span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">transchoice</span><span class="o">(</span><span class="m">5</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 
 <span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span><span class="o">({</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">},</span> <span class="s1">&#39;app&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+
+<span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">transchoice</span><span class="o">(</span><span class="m">5</span><span class="o">,</span> <span class="o">{</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">},</span> <span class="s1">&#39;app&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 </pre></div>
 </td></tr></table></div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> filter is deprecated since Symfony 4.2 and will be
+removed in 5.0. Use the <a class="reference internal" href="message_format.html"><span class="doc">ICU MessageFormat</span></a> with
+the <code class="docutils literal notranslate"><span class="pre">trans</span></code> filter instead.</p>
+</div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p>Using the translation tags or filters have the same effect, but with
@@ -323,6 +358,12 @@ template (in order to avoid side effects).</p>
 <p>The translator service is accessible in PHP templates through the
 <code class="docutils literal notranslate"><span class="pre">translator</span></code> helper:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;translator&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">trans</span><span class="p">(</span><span class="s1">&#39;Symfony is great&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+
+<span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;translator&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">transChoice</span><span class="p">(</span>
+    <span class="s1">&#39;{0} There are no apples|{1} There is one apple|]1,Inf[ There are %count% apples&#39;</span><span class="p">,</span>
+    <span class="mi">10</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;%count%&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">]</span>
+<span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
 </pre></div>
 </div>
 </div>

@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Our Backward Compatibility Promise</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="our-backward-compatibility-promise">
+<h1>Our Backward Compatibility Promise</h1>
+<p>Ensuring smooth upgrades of your projects is our first priority. That’s why
+we promise you backward compatibility (BC) for all minor Symfony releases.
+You probably recognize this strategy as <a class="reference external" href="https://semver.org/">Semantic Versioning</a><span class="link-target"> [https://semver.org/]</span>. In short,
+Semantic Versioning means that only major releases (such as 2.0, 3.0 etc.) are
+allowed to break backward compatibility. Minor releases (such as 2.5, 2.6 etc.)
+may introduce new features, but must do so without breaking the existing API of
+that release branch (2.x in the previous example).</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>This promise was introduced with Symfony 2.3 and does not apply to previous
+versions of Symfony.</p>
+</div>
+<p>However, backward compatibility comes in many different flavors. In fact, almost
+every change that we make to the framework can potentially break an application.
+For example, if we add a new method to a class, this will break an application
+which extended this class and added the same method, but with a different
+method signature.</p>
+<p>Also, not every BC break has the same impact on application code. While some BC
+breaks require you to make significant changes to your classes or your
+architecture, others are fixed by changing the name of a method.</p>
+<p>That’s why we created this page for you. The section “Using Symfony Code” will
+tell you how you can ensure that your application won’t break completely when
+upgrading to a newer version of the same major release branch.</p>
+<p>The second section, “Working on Symfony Code”, is targeted at Symfony
+contributors. This section lists detailed rules that every contributor needs to
+follow to ensure smooth upgrades for our users.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p><a class="reference internal" href="experimental.xhtml"><span class="doc">Experimental Features</span></a> and code
+marked with the <code class="docutils literal notranslate"><span class="pre">&#64;internal</span></code> tags are excluded from our Backward
+Compatibility promise.</p>
+<p>Also note that backward compatibility breaks are tolerated if they are
+required to fix a security issue.</p>
+</div>
+<div class="section" id="using-symfony-code">
+<h2>Using Symfony Code</h2>
+<p>If you are using Symfony in your projects, the following guidelines will help
+you to ensure smooth upgrades to all future minor releases of your Symfony
+version.</p>
+<div class="section" id="using-our-interfaces">
+<h3>Using our Interfaces</h3>
+<p>All interfaces shipped with Symfony can be used in type hints. You can also call
+any of the methods that they declare. We guarantee that we won’t break code that
+sticks to these rules.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>The exception to this rule are interfaces tagged with <code class="docutils literal notranslate"><span class="pre">&#64;internal</span></code>. Such
+interfaces should not be used or implemented.</p>
+</div>
+<p>If you implement an interface, we promise that we won’t ever break your code.</p>
+<p>The following table explains in detail which use cases are covered by our
+backward compatibility promise:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 62%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Use Case</p></th>
+<th class="head"><p>Backward Compatibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>If you…</strong></p></td>
+<td><p><strong>Then we guarantee BC…</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Type hint against the interface</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Call a method</p></td>
+<td><p>Yes <a class="footnote-reference brackets" href="#id77" id="id1">10</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>If you implement the interface and…</strong></p></td>
+<td><p><strong>Then we guarantee BC…</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>Implement a method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add an argument to an implemented method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Add a default value to an argument</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add a return type to an implemented method</p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="using-our-classes">
+<h3>Using our Classes</h3>
+<p>All classes provided by Symfony may be instantiated and accessed through their
+public methods and properties.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Classes, properties and methods that bear the tag <code class="docutils literal notranslate"><span class="pre">&#64;internal</span></code> as well as
+the classes located in the various <code class="docutils literal notranslate"><span class="pre">*\Tests\</span></code> namespaces are an
+exception to this rule. They are meant for internal use only and should
+not be accessed by your own code.</p>
+</div>
+<p>To be on the safe side, check the following table to know which use cases are
+covered by our backward compatibility promise:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 62%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Use Case</p></th>
+<th class="head"><p>Backward Compatibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>If you…</strong></p></td>
+<td><p><strong>Then we guarantee BC…</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Type hint against the class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Create a new instance</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Extend the class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Access a public property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Call a public method</p></td>
+<td><p>Yes <a class="footnote-reference brackets" href="#id77" id="id2">10</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>If you extend the class and…</strong></p></td>
+<td><p><strong>Then we guarantee BC…</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Access a protected property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Call a protected method</p></td>
+<td><p>Yes <a class="footnote-reference brackets" href="#id77" id="id3">10</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Override a public property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Override a protected property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Override a public method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Override a protected method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add a new property</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add a new method</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add an argument to an overridden method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Add a default value to an argument</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Call a private method (via Reflection)</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Access a private property (via Reflection)</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="using-our-traits">
+<h3>Using our Traits</h3>
+<p>All traits provided by Symfony may be used in your classes.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>The exception to this rule are traits tagged with <code class="docutils literal notranslate"><span class="pre">&#64;internal</span></code>. Such
+traits should not be used.</p>
+</div>
+<p>To be on the safe side, check the following table to know which use cases are
+covered by our backward compatibility promise:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 62%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Use Case</p></th>
+<th class="head"><p>Backward Compatibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>If you…</strong></p></td>
+<td><p><strong>Then we guarantee BC…</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Use a trait</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>If you use the trait and…</strong></p></td>
+<td><p><strong>Then we guarantee BC…</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Use it to implement an interface</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Use it to implement an abstract method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Use it to extend a parent class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Use it to define an abstract class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Use a public, protected or private property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Use a public, protected or private method</p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="working-on-symfony-code">
+<h2>Working on Symfony Code</h2>
+<p>Do you want to help us improve Symfony? That’s great! However, please stick
+to the rules listed below in order to ensure smooth upgrades for our users.</p>
+<div class="section" id="changing-interfaces">
+<h3>Changing Interfaces</h3>
+<p>This table tells you which changes you are allowed to do when working on
+Symfony’s interfaces:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 77%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type of Change</p></th>
+<th class="head"><p>Change Allowed</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Remove entirely</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change name or namespace</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add parent interface</p></td>
+<td><p>Yes <a class="footnote-reference brackets" href="#id69" id="id4">2</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove parent interface</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Methods</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add method</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove method</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change name</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Move to parent interface</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add argument without a default value</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add argument with a default value</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id70" id="id5">3</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Add default value to an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove default value of an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add type hint to an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove type hint of an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Change argument type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add return type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove return type</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id76" id="id6">9</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Change return type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Static Methods</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Turn non static into static</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Turn static into non static</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Constants</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Add constant</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove constant</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Change value of a constant</p></td>
+<td><p>Yes <a class="footnote-reference brackets" href="#id68" id="id7">1</a> <a class="footnote-reference brackets" href="#id72" id="id8">5</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="changing-classes">
+<h3>Changing Classes</h3>
+<p>This table tells you which changes you are allowed to do when working on
+Symfony’s classes:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 75%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type of Change</p></th>
+<th class="head"><p>Change Allowed</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Remove entirely</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Make final</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id73" id="id9">6</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Make abstract</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change name or namespace</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Change parent class</p></td>
+<td><p>Yes <a class="footnote-reference brackets" href="#id71" id="id10">4</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Add interface</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove interface</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Public Properties</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Add public property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove public property</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Reduce visibility</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Move to parent class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Protected Properties</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add protected property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove protected property</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id11">7</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Reduce visibility</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id12">7</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Make public</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id13">7</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Move to parent class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Private Properties</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add private property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Make public or protected</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove private property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Constructors</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add constructor without mandatory arguments</p></td>
+<td><p>Yes <a class="footnote-reference brackets" href="#id68" id="id14">1</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Remove constructor</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reduce visibility of a public constructor</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Reduce visibility of a protected constructor</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id15">7</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Move to parent class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Destructors</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add destructor</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove destructor</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Move to parent class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Public Methods</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add public method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove public method</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change name</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Reduce visibility</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Make final</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id73" id="id16">6</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Move to parent class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add argument without a default value</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add argument with a default value</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id17">7</a> <a class="footnote-reference brackets" href="#id75" id="id18">8</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id70" id="id19">3</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Add default value to an argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id20">7</a> <a class="footnote-reference brackets" href="#id75" id="id21">8</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove default value of an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add type hint to an argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id22">7</a> <a class="footnote-reference brackets" href="#id75" id="id23">8</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove type hint of an argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id24">7</a> <a class="footnote-reference brackets" href="#id75" id="id25">8</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Change argument type</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id26">7</a> <a class="footnote-reference brackets" href="#id75" id="id27">8</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Add return type</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id28">7</a> <a class="footnote-reference brackets" href="#id75" id="id29">8</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Remove return type</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id30">7</a> <a class="footnote-reference brackets" href="#id75" id="id31">8</a> <a class="footnote-reference brackets" href="#id76" id="id32">9</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Change return type</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id33">7</a> <a class="footnote-reference brackets" href="#id75" id="id34">8</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Protected Methods</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add protected method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove protected method</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id35">7</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Change name</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id36">7</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Reduce visibility</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id37">7</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Make final</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id73" id="id38">6</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Make public</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id39">7</a> <a class="footnote-reference brackets" href="#id75" id="id40">8</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Move to parent class</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Add argument without a default value</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id41">7</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Add argument with a default value</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id42">7</a> <a class="footnote-reference brackets" href="#id75" id="id43">8</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Remove argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id70" id="id44">3</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Add default value to an argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id45">7</a> <a class="footnote-reference brackets" href="#id75" id="id46">8</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Remove default value of an argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id47">7</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Add type hint to an argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id48">7</a> <a class="footnote-reference brackets" href="#id75" id="id49">8</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Remove type hint of an argument</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id50">7</a> <a class="footnote-reference brackets" href="#id75" id="id51">8</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Change argument type</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id52">7</a> <a class="footnote-reference brackets" href="#id75" id="id53">8</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Add return type</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id54">7</a> <a class="footnote-reference brackets" href="#id75" id="id55">8</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove return type</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id56">7</a> <a class="footnote-reference brackets" href="#id75" id="id57">8</a> <a class="footnote-reference brackets" href="#id76" id="id58">9</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Change return type</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id59">7</a> <a class="footnote-reference brackets" href="#id75" id="id60">8</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Private Methods</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Add private method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove private method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Change name</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Make public or protected</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Add argument without a default value</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add argument with a default value</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove argument</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add default value to an argument</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove default value of an argument</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add type hint to an argument</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove type hint of an argument</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change argument type</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Add return type</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove return type</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Change return type</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Static Methods and Properties</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Turn non static into static</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id74" id="id61">7</a> <a class="footnote-reference brackets" href="#id75" id="id62">8</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Turn static into non static</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Constants</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add constant</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove constant</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change value of a constant</p></td>
+<td><p>Yes <a class="footnote-reference brackets" href="#id68" id="id63">1</a> <a class="footnote-reference brackets" href="#id72" id="id64">5</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="changing-traits">
+<h3>Changing Traits</h3>
+<p>This table tells you which changes you are allowed to do when working on
+Symfony’s traits:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 78%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type of Change</p></th>
+<th class="head"><p>Change Allowed</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Remove entirely</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change name or namespace</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Use another trait</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Public Properties</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Add public property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove public property</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Reduce visibility</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Move to a used trait</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Protected Properties</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add protected property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove protected property</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reduce visibility</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Make public</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Move to a used trait</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Private Properties</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add private property</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove private property</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Make public or protected</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Move to a used trait</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Constructors and destructors</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Have constructor or destructor</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Public Methods</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Add public method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove public method</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Change name</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reduce visibility</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Make final</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id73" id="id65">6</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Move to used trait</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Add argument without a default value</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add argument with a default value</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add default value to an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove default value of an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add type hint to an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove type hint of an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change argument type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Change return type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Protected Methods</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Add protected method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove protected method</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Change name</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reduce visibility</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Make final</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id73" id="id66">6</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Make public</p></td>
+<td><p>No <a class="footnote-reference brackets" href="#id75" id="id67">8</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Move to used trait</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add argument without a default value</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add argument with a default value</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add default value to an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove default value of an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add type hint to an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove type hint of an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Change argument type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change return type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Private Methods</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Add private method</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove private method</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change name</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Make public or protected</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Move to used trait</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Add argument without a default value</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add argument with a default value</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add default value to an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove default value of an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add type hint to an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Remove type hint of an argument</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Change argument type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Add return type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove return type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Change return type</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Static Methods and Properties</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Turn non static into static</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Turn static into non static</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="footnote brackets">
+<dt class="label" id="id68"><span class="brackets">1</span><span class="fn-backref">(<a href="#id7">1</a>,<a href="#id14">2</a>,<a href="#id63">3</a>)</span></dt>
+<dd><p>Should be avoided. When done, this change must be documented in the
+UPGRADE file.</p>
+</dd>
+<dt class="label" id="id69"><span class="brackets"><a class="fn-backref" href="#id4">2</a></span></dt>
+<dd><p>The added parent interface must not introduce any new methods that don’t
+exist in the interface already.</p>
+</dd>
+<dt class="label" id="id70"><span class="brackets">3</span><span class="fn-backref">(<a href="#id5">1</a>,<a href="#id19">2</a>,<a href="#id44">3</a>)</span></dt>
+<dd><p>Only the last optional argument(s) of a method may be removed, as PHP
+does not care about additional arguments that you pass to a method.</p>
+</dd>
+<dt class="label" id="id71"><span class="brackets"><a class="fn-backref" href="#id10">4</a></span></dt>
+<dd><p>When changing the parent class, the original parent class must remain an
+ancestor of the class.</p>
+</dd>
+<dt class="label" id="id72"><span class="brackets">5</span><span class="fn-backref">(<a href="#id8">1</a>,<a href="#id64">2</a>)</span></dt>
+<dd><p>The value of a constant may only be changed when the constants aren’t
+used in configuration (e.g. Yaml and XML files), as these do not support
+constants and have to hardcode the value. For instance, event name
+constants can’t change the value without introducing a BC break.
+Additionally, if a constant will likely be used in objects that are
+serialized, the value of a constant should not be changed.</p>
+</dd>
+<dt class="label" id="id73"><span class="brackets">6</span><span class="fn-backref">(<a href="#id9">1</a>,<a href="#id16">2</a>,<a href="#id38">3</a>,<a href="#id65">4</a>,<a href="#id66">5</a>)</span></dt>
+<dd><p>Allowed using the <code class="docutils literal notranslate"><span class="pre">&#64;final</span></code> annotation.</p>
+</dd>
+<dt class="label" id="id74"><span class="brackets">7</span><span class="fn-backref">(<a href="#id11">1</a>,<a href="#id12">2</a>,<a href="#id13">3</a>,<a href="#id15">4</a>,<a href="#id17">5</a>,<a href="#id20">6</a>,<a href="#id22">7</a>,<a href="#id24">8</a>,<a href="#id26">9</a>,<a href="#id28">10</a>,<a href="#id30">11</a>,<a href="#id33">12</a>,<a href="#id35">13</a>,<a href="#id36">14</a>,<a href="#id37">15</a>,<a href="#id39">16</a>,<a href="#id41">17</a>,<a href="#id42">18</a>,<a href="#id45">19</a>,<a href="#id47">20</a>,<a href="#id48">21</a>,<a href="#id50">22</a>,<a href="#id52">23</a>,<a href="#id54">24</a>,<a href="#id56">25</a>,<a href="#id59">26</a>,<a href="#id61">27</a>)</span></dt>
+<dd><p>Allowed if the class is final. Classes that received the <code class="docutils literal notranslate"><span class="pre">&#64;final</span></code>
+annotation after their first release are considered final in their
+next major version.
+Changing an argument type is only possible with a parent type.
+Changing a return type is only possible with a child type.</p>
+</dd>
+<dt class="label" id="id75"><span class="brackets">8</span><span class="fn-backref">(<a href="#id18">1</a>,<a href="#id21">2</a>,<a href="#id23">3</a>,<a href="#id25">4</a>,<a href="#id27">5</a>,<a href="#id29">6</a>,<a href="#id31">7</a>,<a href="#id34">8</a>,<a href="#id40">9</a>,<a href="#id43">10</a>,<a href="#id46">11</a>,<a href="#id49">12</a>,<a href="#id51">13</a>,<a href="#id53">14</a>,<a href="#id55">15</a>,<a href="#id57">16</a>,<a href="#id60">17</a>,<a href="#id62">18</a>,<a href="#id67">19</a>)</span></dt>
+<dd><p>Allowed if the method is final. Methods that received the <code class="docutils literal notranslate"><span class="pre">&#64;final</span></code>
+annotation after their first release are considered final in their
+next major version.
+Changing an argument type is only possible with a parent type.
+Changing a return type is only possible with a child type.</p>
+</dd>
+<dt class="label" id="id76"><span class="brackets">9</span><span class="fn-backref">(<a href="#id6">1</a>,<a href="#id32">2</a>,<a href="#id58">3</a>)</span></dt>
+<dd><p>Allowed for the <code class="docutils literal notranslate"><span class="pre">void</span></code> return type.</p>
+</dd>
+<dt class="label" id="id77"><span class="brackets">10</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id3">3</a>)</span></dt>
+<dd><p>Parameter names are not part of the compatibility promise. Using
+PHP 8’s named arguments feature might break your code when upgrading to
+newer Symfony versions.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

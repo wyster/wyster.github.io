@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Preventing Duplication by “Splitting” Shared Code into Separate Files</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="preventing-duplication-by-splitting-shared-code-into-separate-files">
+<h1>Preventing Duplication by “Splitting” Shared Code into Separate Files</h1>
+<p>Suppose you have multiple entry files and <em>each</em> requires <code class="docutils literal notranslate"><span class="pre">jquery</span></code>. In this
+case, <em>each</em> output file will contain jQuery, making your files much larger than
+necessary. To solve this, you can ask webpack to analyze your files and <em>split</em> them
+into additional files, which will contain “shared” code.</p>
+<p>To enable this, call <code class="docutils literal notranslate"><span class="pre">splitEntryChunks()</span></code>:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Encore
+    // ...
+
+    // multiple entry files, which probably import the same code
+    .addEntry(&#39;app&#39;, &#39;./assets/js/app.js&#39;)
+    .addEntry(&#39;homepage&#39;, &#39;./assets/js/homepage.js&#39;)
+    .addEntry(&#39;blog&#39;, &#39;./assets/js/blog.js&#39;)
+    .addEntry(&#39;store&#39;, &#39;./assets/js/store.js&#39;)
+
+<span class="gi">+     .splitEntryChunks()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Now, each output file (e.g. <code class="docutils literal notranslate"><span class="pre">homepage.js</span></code>) <em>may</em> be split into multiple file
+(e.g. <code class="docutils literal notranslate"><span class="pre">homepage.js</span></code>, <code class="docutils literal notranslate"><span class="pre">vendor~homepage.js</span></code>). This means that you <em>may</em> need to
+include <em>multiple</em> <code class="docutils literal notranslate"><span class="pre">script</span></code> tags (or <code class="docutils literal notranslate"><span class="pre">link</span></code> tags for CSS) in your template.
+Encore creates an <a class="reference internal" href="simple-example.xhtml#encore-entrypointsjson-simple-description"><span class="std std-ref">entrypoints.json</span></a>
+file that lists exactly which CSS and JavaScript files are needed for each entry.</p>
+<p>If you’re using the <code class="docutils literal notranslate"><span class="pre">encore_entry_link_tags()</span></code> and <code class="docutils literal notranslate"><span class="pre">encore_entry_script_tags()</span></code>
+Twig functions from WebpackEncoreBundle, you don’t need to do anything else! These
+functions automatically read this file and render as many <code class="docutils literal notranslate"><span class="pre">script</span></code> or <code class="docutils literal notranslate"><span class="pre">link</span></code>
+tags as needed:</p>
+<div class="highlight-html+twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">{#</span>
+<span class="c">    May now render multiple script tags:</span>
+<span class="c">        &lt;script src=&quot;/build/runtime.js&quot;&gt;&lt;/script&gt;</span>
+<span class="c">        &lt;script src=&quot;/build/vendor~homepage.js&quot;&gt;&lt;/script&gt;</span>
+<span class="c">        &lt;script src=&quot;/build/homepage.js&quot;&gt;&lt;/script&gt;</span>
+<span class="c">#}</span>
+<span class="cp">{{</span> <span class="nv">encore_entry_script_tags</span><span class="o">(</span><span class="s1">&#39;homepage&#39;</span><span class="o">)</span> <span class="cp">}}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="controlling-how-assets-are-split">
+<h2>Controlling how Assets are Split</h2>
+<p>The logic for <em>when</em> and <em>how</em> to split the files is controlled by the
+<a class="reference external" href="https://webpack.js.org/plugins/split-chunks-plugin/">SplitChunksPlugin from Webpack</a><span class="link-target"> [https://webpack.js.org/plugins/split-chunks-plugin/]</span>. You can control the configuration passed to
+this plugin with the <code class="docutils literal notranslate"><span class="pre">configureSplitChunks()</span></code> function:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Encore
+    // ...
+
+    .splitEntryChunks()
+<span class="gi">+     .configureSplitChunks(function(splitChunks) {</span>
+<span class="gi">+         // change the configuration</span>
+<span class="gi">+         splitChunks.minSize = 0;</span>
+<span class="gi">+     })</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

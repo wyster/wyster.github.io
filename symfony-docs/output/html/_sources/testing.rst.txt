@@ -221,6 +221,10 @@ the page and check for its existence, attributes, text, etc.
 The ``assertSelectorTextContains`` method is not a native PHPUnit assertion and is
 available thanks to the ``WebTestCase`` class.
 
+.. versionadded:: 4.3
+
+    The ``WebTestCase`` assertions were introduced in Symfony 4.3
+
 The crawler can also be used to interact with the page. Click on a link by first
 selecting it with the crawler using either an XPath expression or a CSS selector,
 then use the client to click on it::
@@ -263,7 +267,7 @@ Or test against the response content directly if you just want to assert that
 the content contains some text or in case that the response is not an XML/HTML
 document::
 
-    $this->assertStringContainsString(
+    $this->assertContains(
         'Hello World',
         $client->getResponse()->getContent()
     );
@@ -306,7 +310,7 @@ document::
         ));
 
         // asserts that the response content contains a string
-        $this->assertStringContainsString('foo', $client->getResponse()->getContent());
+        $this->assertContains('foo', $client->getResponse()->getContent());
         // ...or matches a regex
         $this->assertRegExp('/foo(bar)?/', $client->getResponse()->getContent());
 
@@ -331,6 +335,12 @@ document::
         $this->assertTrue($client->getResponse()->isRedirect('/demo/contact'));
         // ...or check that the response is a redirect to any URL
         $this->assertResponseRedirects();
+
+.. versionadded:: 4.3
+
+    The ``assertResponseHeaderSame()``, ``assertResponseIsSuccessful()``,
+    ``assertResponseStatusCodeSame()``, ``assertResponseRedirects()`` and other
+    related methods were introduced in Symfony 4.3.
 
 .. _testing-data-providers:
 
@@ -394,13 +404,13 @@ returns a ``Crawler`` instance.
     The full signature of the ``request()`` method is::
 
         request(
-            string $method,
-            string $uri,
+            $method,
+            $uri,
             array $parameters = [],
             array $files = [],
             array $server = [],
-            string $content = null,
-            bool $changeHistory = true
+            $content = null,
+            $changeHistory = true
         )
 
     The ``server`` array is the raw values that you'd expect to normally
@@ -585,64 +595,6 @@ container is a service that can be get via the normal container::
     If the information you need to check is available from the profiler, use
     it instead.
 
-.. _testing_logging_in_users:
-
-Logging in Users (Authentication)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionadded:: 5.1
-
-    The ``loginUser()`` method was introduced in Symfony 5.1.
-
-When you want to add functional tests for protected pages, you have to
-first "login" as a user. Reproducing the actual steps - such as
-submitting a login form - make a test very slow. For this reason, Symfony
-provides a ``loginUser()`` method to simulate logging in in your functional
-tests.
-
-Instead of login in with real users, it's recommended to create a user only for
-tests. You can do that with Doctrine :ref:`data fixtures <user-data-fixture>`,
-to load the testing users only in the test database.
-
-After loading users in your database, use your user repository to fetch
-this user and use
-:method:`$client->loginUser() <Symfony\\Bundle\\FrameworkBundle\\KernelBrowser::loginUser>`
-to simulate a login request::
-
-    // tests/Controller/ProfileControllerTest.php
-    namespace App\Tests\Controller;
-
-    use App\Repository\UserRepository;
-    use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-    class ProfileControllerTest extends WebTestCase
-    {
-        // ...
-
-        public function testVisitingWhileLoggedIn()
-        {
-            $client = static::createClient();
-            $userRepository = static::$container->get(UserRepository::class);
-
-            // retrieve the test user
-            $testUser = $userRepository->findOneByEmail('john.doe@example.com');
-
-            // simulate $testUser being logged in
-            $client->loginUser($testUser);
-
-            // test e.g. the profile page
-            $client->request('GET', '/profile');
-            $this->assertResponseIsSuccessful();
-            $this->assertSelectorTextContains('h1', 'Hello John!');
-        }
-    }
-
-You can pass any
-:class:`Symfony\\Component\\Security\\Core\\User\\UserInterface` instance to
-``loginUser()``. This method creates a special
-:class:`Symfony\\Bundle\\FrameworkBundle\\Test\\TestBrowserToken` object and
-stores in the session of the test client.
-
 Accessing the Profiler Data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -765,8 +717,6 @@ Extracting Information
 
 The Crawler can extract information from the nodes::
 
-    use Symfony\Component\DomCrawler\Crawler;
-    
     // returns the attribute value for the first node
     $crawler->attr('class');
 
@@ -787,9 +737,13 @@ The Crawler can extract information from the nodes::
     $info = $crawler->extract(['_text', 'href']);
 
     // executes a lambda for each node and return an array of results
-    $data = $crawler->each(function (Crawler $node, $i) {
+    $data = $crawler->each(function ($node, $i) {
         return $node->attr('href');
     });
+
+.. versionadded:: 4.4
+
+    The option to trim white spaces in ``text()`` was introduced in Symfony 4.4.
 
 Links
 ~~~~~
@@ -895,6 +849,10 @@ their type::
     ``my_form[...]`` in previous examples), you can use the
     :method:`Symfony\\Component\\DomCrawler\\Form::getName` method to get the
     form name.
+
+    .. versionadded:: 4.4
+
+        The ``getName()`` method was introduced in Symfony 4.4.
 
 .. tip::
 

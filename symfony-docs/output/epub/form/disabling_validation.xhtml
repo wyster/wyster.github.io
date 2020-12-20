@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Disable the Validation of Submitted Data</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-disable-the-validation-of-submitted-data">
+<span id="index-0"></span><h1>How to Disable the Validation of Submitted Data</h1>
+<p>Sometimes it is useful to suppress the validation of a form altogether. For
+these cases you can set the <code class="docutils literal notranslate"><span class="pre">validation_groups</span></code> option to <code class="docutils literal notranslate"><span class="pre">false</span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\OptionsResolver\OptionsResolver</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">configureOptions</span><span class="p">(</span><span class="nx">OptionsResolver</span> <span class="nv">$resolver</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">setDefaults</span><span class="p">([</span>
+        <span class="s1">&#39;validation_groups&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
+    <span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Note that when you do that, the form will still run basic integrity checks,
+for example whether an uploaded file was too large or whether non-existing
+fields were submitted.</p>
+<p>The submission of extra form fields can be controlled with the
+<a class="reference internal" href="../reference/forms/types/form.xhtml#form-option-allow-extra-fields"><span class="std std-ref">allow_extra_fields config option</span></a> and
+the maximum upload file size should be handled via your PHP and web server
+configuration.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

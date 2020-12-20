@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Security: Complex Access Controls with Expressions</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="security-complex-access-controls-with-expressions">
+<span id="index-0"></span><h1>Security: Complex Access Controls with Expressions</h1>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The best solution for handling complex authorization rules is to use
+the <a class="reference internal" href="voters.xhtml"><span class="doc">Voter System</span></a>.</p>
+</div>
+<p>In addition to a role like <code class="docutils literal notranslate"><span class="pre">ROLE_ADMIN</span></code>, the <code class="docutils literal notranslate"><span class="pre">isGranted()</span></code> method also
+accepts an <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/Expression.php" title="Symfony\Component\ExpressionLanguage\Expression"><span class="pre">Expression</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/Expression.php]</span></span></code> object:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\Expression</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">denyAccessUnlessGranted</span><span class="p">(</span><span class="k">new</span> <span class="nx">Expression</span><span class="p">(</span>
+        <span class="s1">&#39;&quot;ROLE_ADMIN&quot; in roles or (not is_anonymous() and user.isSuperAdmin())&#39;</span>
+    <span class="p">));</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In this example, if the current user has <code class="docutils literal notranslate"><span class="pre">ROLE_ADMIN</span></code> or if the current
+user object’s <code class="docutils literal notranslate"><span class="pre">isSuperAdmin()</span></code> method returns <code class="docutils literal notranslate"><span class="pre">true</span></code>, then access will
+be granted (note: your User object may not have an <code class="docutils literal notranslate"><span class="pre">isSuperAdmin()</span></code> method,
+that method is invented for this example).</p>
+<p>This uses an expression and you can learn more about the expression language
+syntax, see <a class="reference internal" href="../components/expression_language/syntax.xhtml"><span class="doc">The Expression Syntax</span></a>.</p>
+<p id="security-expression-variables">Inside the expression, you have access to a number of variables:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">user</span></code></dt>
+<dd><p>The user object (or the string <code class="docutils literal notranslate"><span class="pre">anon</span></code> if you’re not authenticated).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">roles</span></code></dt>
+<dd><p>The array of roles the user has. This array includes any roles granted
+indirectly via the <a class="reference internal" href="../security.xhtml#security-role-hierarchy"><span class="std std-ref">role hierarchy</span></a> but it
+does not include the <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_*</span></code> attributes (see the functions below).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">object</span></code></dt>
+<dd><p>The object (if any) that’s passed as the second argument to <code class="docutils literal notranslate"><span class="pre">isGranted()</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">token</span></code></dt>
+<dd><p>The token object.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">trust_resolver</span></code></dt>
+<dd><p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/AuthenticationTrustResolverInterface.php" title="Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface"><span class="pre">AuthenticationTrustResolverInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/AuthenticationTrustResolverInterface.php]</span></span></code>,
+object: you’ll probably use the <code class="docutils literal notranslate"><span class="pre">is_*()</span></code> functions below instead.</p>
+</dd>
+</dl>
+<p>Additionally, you have access to a number of functions inside the expression:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">is_authenticated()</span></code></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the user is authenticated via “remember-me” or authenticated
+“fully” - i.e. returns true if the user is “logged in”.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">is_anonymous()</span></code></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the user is anonymous. That is, the firewall confirms that it
+does not know this user’s identity. This is different from <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_ANONYMOUSLY</span></code>,
+which is granted to <em>all</em> users, including authenticated ones.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">is_remember_me()</span></code></dt>
+<dd><p>Similar, but not equal to <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_REMEMBERED</span></code>, see below.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">is_fully_authenticated()</span></code></dt>
+<dd><p>Equal to checking if the user has the <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_FULLY</span></code> role.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">is_granted()</span></code></dt>
+<dd><p>Checks if the user has the given permission. Optionally accepts a second argument
+with the object where permission is checked on. It’s equivalent to using
+the <a class="reference internal" href="securing_services.xhtml"><span class="doc">isGranted() method</span></a> from the authorization
+checker service.</p>
+</dd>
+</dl>
+<div class="sidebar">
+<p class="sidebar-title"><code class="docutils literal notranslate"><span class="pre">is_remember_me()</span></code> is different than checking <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_REMEMBERED</span></code></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">is_remember_me()</span></code> and <code class="docutils literal notranslate"><span class="pre">is_fully_authenticated()</span></code> functions are <em>similar</em>
+to using <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_REMEMBERED</span></code> and <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_FULLY</span></code>
+with the <code class="docutils literal notranslate"><span class="pre">isGranted()</span></code> function - but they are <strong>not</strong> the same. The
+following controller snippet shows the difference:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\Expression</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">(</span><span class="nx">AuthorizationCheckerInterface</span> <span class="nv">$authorizationChecker</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$access1</span> <span class="o">=</span> <span class="nv">$authorizationChecker</span><span class="o">-&gt;</span><span class="na">isGranted</span><span class="p">(</span><span class="s1">&#39;IS_AUTHENTICATED_REMEMBERED&#39;</span><span class="p">);</span>
+
+    <span class="nv">$access2</span> <span class="o">=</span> <span class="nv">$authorizationChecker</span><span class="o">-&gt;</span><span class="na">isGranted</span><span class="p">(</span><span class="k">new</span> <span class="nx">Expression</span><span class="p">(</span>
+        <span class="s1">&#39;is_remember_me() or is_fully_authenticated()&#39;</span>
+    <span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">$access1</span></code> and <code class="docutils literal notranslate"><span class="pre">$access2</span></code> will be the same value. Unlike the
+behavior of <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_REMEMBERED</span></code> and <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_FULLY</span></code>,
+the <code class="docutils literal notranslate"><span class="pre">is_remember_me()</span></code> function <em>only</em> returns true if the user is authenticated
+via a remember-me cookie and <code class="docutils literal notranslate"><span class="pre">is_fully_authenticated()</span></code> <em>only</em> returns
+true if the user has actually logged in during this session (i.e. is
+full-fledged).</p>
+</div>
+<div class="section" id="learn-more">
+<h2>Learn more</h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../service_container/expression_language.xhtml"><span class="doc">How to Inject Values Based on Complex Expressions</span></a></p></li>
+<li><p><a class="reference internal" href="../reference/constraints/Expression.xhtml"><span class="doc">Expression</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

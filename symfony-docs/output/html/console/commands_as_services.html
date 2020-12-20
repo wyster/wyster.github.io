@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -144,10 +144,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -280,7 +278,7 @@ and <a class="reference internal" href="../service_container/tags.html"><span cl
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">info</span><span class="p">(</span><span class="s1">&#39;Waking up the sun&#39;</span><span class="p">);</span>
         <span class="c1">// ...</span>
 
-        <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -296,6 +294,13 @@ command and start logging.</p>
 not <a class="reference internal" href="#console-command-service-lazy-loading"><span class="std std-ref">lazy</span></a>, try to avoid doing any
 work (e.g. making database queries), as that code will be run, even if you’re using
 the console to execute a different command.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In previous Symfony versions, you could make the command class extend from
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/Command/ContainerAwareCommand.php" title="Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand"><span class="pre">ContainerAwareCommand</span></a></code> to
+get services via <code class="docutils literal notranslate"><span class="pre">$this-&gt;getContainer()-&gt;get('SERVICE_ID')</span></code>. This is
+deprecated in Symfony 4.2 and it won’t work in future Symfony versions.</p>
 </div>
 <div class="section" id="lazy-loading">
 <span id="console-command-service-lazy-loading"></span><h2>Lazy Loading<a class="headerlink" href="#lazy-loading" title="Permalink to this headline">¶</a></h2>

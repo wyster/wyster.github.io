@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Experimental Features</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="experimental-features">
+<h1>Experimental Features</h1>
+<p>All Symfony features benefit from our <a class="reference internal" href="bc.xhtml"><span class="doc">Backward Compatibility Promise</span></a> to give developers the confidence to upgrade to new
+versions safely and more often.</p>
+<p>But sometimes, a new feature is controversial or you cannot find a convincing API.
+In such cases, we prefer to gather feedback from real-world usage, adapt
+the API, or remove it altogether. Doing so is not possible with a no BC-break
+approach.</p>
+<p>To avoid being bound to our backward compatibility promise, such features can
+be marked as <strong>experimental</strong> and their classes and methods must be marked with
+the <code class="docutils literal notranslate"><span class="pre">&#64;experimental</span></code> tag.</p>
+<p>A feature can be marked as being experimental for only one minor version, and
+can never be introduced in an <a class="reference internal" href="../community/releases.xhtml#releases-lts"><span class="std std-ref">LTS version</span></a>. The core team
+can decide to extend the experimental period for another minor version on a
+case by case basis.</p>
+<p>To ease upgrading projects using experimental features, the changelog must
+explain backward incompatible changes and explain how to upgrade code.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

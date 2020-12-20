@@ -161,14 +161,18 @@ each test suite's results in their own section.
 Trigger Deprecation Notices
 ---------------------------
 
-Deprecation notices can be triggered by using ``trigger_deprecation`` from
-the ``symfony/deprecation-contracts`` package::
+Deprecation notices can be triggered by using::
 
-    // indicates something is deprecated since version 1.3 of vendor-name/packagename
-    trigger_deprecation('vendor-name/package-name', '1.3', 'Your deprecation message');
+    @trigger_error('Your deprecation message', E_USER_DEPRECATED);
 
-    // you can also use printf format (all arguments after the message will be used)
-    trigger_deprecation('...', '1.3', 'Value "%s" is deprecated, use ...  instead.', $value);
+You can also require the ``symfony/deprecation-contracts`` package that provides
+a global ``trigger_deprecation()`` function for this usage.
+
+Without the `@-silencing operator`_, users would need to opt-out from deprecation
+notices. Silencing by default swaps this behavior and allows users to opt-in
+when they are ready to cope with them (by adding a custom error handler like the
+one provided by this bridge). When not silenced, deprecation notices will appear
+in the **Unsilenced** section of the deprecation report.
 
 Mark Tests as Legacy
 --------------------
@@ -296,14 +300,6 @@ By default, the bridge will display a detailed output with the number of
 deprecations and where they arise. If this is too much for you, you can use
 ``SYMFONY_DEPRECATIONS_HELPER=verbose=0`` to turn the verbose output off.
 
-It's also possible to change verbosity per deprecation type. For example, using
-``quiet[]=indirect&quiet[]=other`` will hide details for deprecations of types
-"indirect" and "other".
-
-.. versionadded:: 5.1
-
-    The ``quiet`` option was introduced in Symfony 5.1.
-
 Disabling the Deprecation Helper
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -336,59 +332,31 @@ time. This can be disabled with the ``debug-class-loader`` option.
         </listener>
     </listeners>
 
-Compile-time Deprecations
-~~~~~~~~~~~~~~~~~~~~~~~~~
+.. versionadded:: 4.2
 
-Use the ``debug:container`` command to list the deprecations generated during
-the compiling and warming up of the container:
-
-.. code-block:: terminal
-
-    $ php bin/console debug:container --deprecations
-
-.. versionadded:: 5.1
-
-    The ``--deprecations`` option was introduced in Symfony 5.1.
+    The ``DebugClassLoader`` integration was introduced in Symfony 4.2.
 
 Write Assertions about Deprecations
 -----------------------------------
 
 When adding deprecations to your code, you might like writing tests that verify
 that they are triggered as required. To do so, the bridge provides the
-``expectDeprecation()`` method that you can use on your test methods.
+``@expectedDeprecation`` annotation that you can use on your test methods.
 It requires you to pass the expected message, given in the same format as for
 the `PHPUnit's assertStringMatchesFormat()`_ method. If you expect more than one
-deprecation message for a given test method, you can use the method several
+deprecation message for a given test method, you can use the annotation several
 times (order matters)::
 
-    use PHPUnit\Framework\TestCase;
-    use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
-
-    class MyTest extends TestCase
+    /**
+     * @group legacy
+     * @expectedDeprecation This "%s" method is deprecated.
+     * @expectedDeprecation The second argument of the "%s" method is deprecated.
+     */
+    public function testDeprecatedCode()
     {
-        use ExpectDeprecationTrait;
-
-        /**
-         * @group legacy
-         */
-        public function testDeprecatedCode()
-        {
-            // test some code that triggers the following deprecation:
-            // trigger_deprecation('vendor-name/package-name', '5.1', 'This "Foo" method is deprecated.');
-            $this->expectDeprecation('Since vendor-name/package-name 5.1: This "%s" method is deprecated');
-
-            // ...
-
-            // test some code that triggers the following deprecation:
-            // trigger_deprecation('vendor-name/package-name', '4.4', 'The second argument of the "Bar" method is deprecated.');
-            $this->expectDeprecation('Since vendor-name/package-name 4.4: The second argument of the "%s" method is deprecated.');
-        }
+        @trigger_error('This "Foo" method is deprecated.', E_USER_DEPRECATED);
+        @trigger_error('The second argument of the "Bar" method is deprecated.', E_USER_DEPRECATED);
     }
-
-.. deprecated:: 5.1
-
-    Symfony versions previous to 5.1 also included a ``@expectedDeprecation``
-    annotation to test deprecations, but it was deprecated in favor of the method.
 
 Display the Full Stack Trace
 ----------------------------
@@ -426,6 +394,10 @@ the test suite cannot use the latest versions of PHPUnit because:
 Polyfills for the Unavailable Methods
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. versionadded:: 4.4
+
+    This feature was introduced in Symfony 4.4.
+
 When using the ``simple-phpunit`` script, PHPUnit Bridge injects polyfills for
 most methods of the ``TestCase`` and ``Assert`` classes (e.g. ``expectException()``,
 ``expectExceptionMessage()``, ``assertContainsEquals()``, etc.). This allows writing
@@ -434,6 +406,10 @@ older PHPUnit versions.
 
 Removing the Void Return Type
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 4.4
+
+    This feature was introduced in Symfony 4.4.
 
 When running the ``simple-phpunit`` script with the ``SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT``
 environment variable set to ``1``, the PHPUnit bridge will alter the code of
@@ -469,6 +445,10 @@ call to the ``doSetUp()``, ``doTearDown()``, ``doSetUpBeforeClass()`` and
 
 Using Namespaced PHPUnit Classes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 4.4
+
+    This feature was introduced in Symfony 4.4.
 
 The PHPUnit bridge adds namespaced class aliases for most of the PHPUnit classes
 declared without namespaces (e.g. ``PHPUnit_Framework_Assert``), allowing you to
@@ -639,19 +619,20 @@ functions:
 Use Case
 ~~~~~~~~
 
-Consider the following example that tests a custom class called ``DomainValidator``
-which defines a ``checkDnsRecord`` option to also validate that a domain is
-associated to a valid host::
+Consider the following example that uses the ``checkMX`` option of the ``Email``
+constraint to test the validity of the email domain::
 
-    use App\Validator\DomainValidator;
     use PHPUnit\Framework\TestCase;
+    use Symfony\Component\Validator\Constraints\Email;
 
     class MyTest extends TestCase
     {
         public function testEmail()
         {
-            $validator = new DomainValidator(['checkDnsRecord' => true]);
-            $isValid = $validator->validate('example.com');
+            $validator = ...
+            $constraint = new Email(['checkMX' => true]);
+
+            $result = $validator->validate('foo@example.com', $constraint);
 
             // ...
         }
@@ -661,23 +642,22 @@ In order to avoid making a real network connection, add the ``@dns-sensitive``
 annotation to the class and use the ``DnsMock::withMockedHosts()`` to configure
 the data you expect to get for the given hosts::
 
-    use App\Validator\DomainValidator;
     use PHPUnit\Framework\TestCase;
-    use Symfony\Bridge\PhpUnit\DnsMock;
+    use Symfony\Component\Validator\Constraints\Email;
 
     /**
      * @group dns-sensitive
      */
-    class DomainValidatorTest extends TestCase
+    class MyTest extends TestCase
     {
         public function testEmails()
         {
-            DnsMock::withMockedHosts([
-                'example.com' => [['type' => 'A', 'ip' => '1.2.3.4']],
-            ]);
+            DnsMock::withMockedHosts(['example.com' => [['type' => 'MX']]]);
 
-            $validator = new DomainValidator(['checkDnsRecord' => true]);
-            $isValid = $validator->validate('example.com');
+            $validator = ...
+            $constraint = new Email(['checkMX' => true]);
+
+            $result = $validator->validate('foo@example.com', $constraint);
 
             // ...
         }
@@ -875,15 +855,6 @@ If you have installed the bridge through Composer, you can run it by calling e.g
 
     It's also possible to set ``SYMFONY_PHPUNIT_VERSION`` as a real env var
     (not defined in a :ref:`dotenv file <config-dot-env>`).
-
-    In the same way, ``SYMFONY_MAX_PHPUNIT_VERSION`` will set the maximum version
-    of PHPUnit to be considered. This is useful when testing a framework that does
-    not support the latest version(s) of PHPUnit.
-
-.. versionadded:: 5.2
-
-    The ``SYMFONY_MAX_PHPUNIT_VERSION`` env variable was introduced in
-    Symfony 5.2.
 
 .. tip::
 

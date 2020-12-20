@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Work with Doctrine Associations / Relations</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-work-with-doctrine-associations-relations">
+<span id="index-0"></span><h1>How to Work with Doctrine Associations / Relations</h1>
+<div class="screencast admonition">
+<p class="admonition-title">Screencast</p>
+<p>Do you prefer video tutorials? Check out the <a class="reference external" href="https://symfonycasts.com/screencast/doctrine-relations">Mastering Doctrine Relations</a><span class="link-target"> [https://symfonycasts.com/screencast/doctrine-relations]</span>
+screencast series.</p>
+</div>
+<p>There are <strong>two</strong> main relationship/association types:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ManyToOne</span></code> / <code class="docutils literal notranslate"><span class="pre">OneToMany</span></code></dt>
+<dd><p>The most common relationship, mapped in the database with a foreign
+key column (e.g. a <code class="docutils literal notranslate"><span class="pre">category_id</span></code> column on the <code class="docutils literal notranslate"><span class="pre">product</span></code> table). This is
+actually only <em>one</em> association type, but seen from the two different <em>sides</em>
+of the relation.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ManyToMany</span></code></dt>
+<dd><p>Uses a join table and is needed when both sides of the relationship can have
+many of the other side (e.g. “students” and “classes”: each student is in many
+classes, and each class has many students).</p>
+</dd>
+</dl>
+<p>First, you need to determine which relationship to use. If both sides of the relation
+will contain many of the other side (e.g. “students” and “classes”), you need a
+<code class="docutils literal notranslate"><span class="pre">ManyToMany</span></code> relation. Otherwise, you likely need a <code class="docutils literal notranslate"><span class="pre">ManyToOne</span></code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>There is also a OneToOne relationship (e.g. one User has one Profile and vice
+versa). In practice, using this is similar to <code class="docutils literal notranslate"><span class="pre">ManyToOne</span></code>.</p>
+</div>
+<div class="section" id="the-manytoone-onetomany-association">
+<h2>The ManyToOne / OneToMany Association</h2>
+<p>Suppose that each product in your application belongs to exactly one category.
+In this case, you’ll need a <code class="docutils literal notranslate"><span class="pre">Category</span></code> class, and a way to relate a
+<code class="docutils literal notranslate"><span class="pre">Product</span></code> object to a <code class="docutils literal notranslate"><span class="pre">Category</span></code> object.</p>
+<p>Start by creating a <code class="docutils literal notranslate"><span class="pre">Category</span></code> entity with a <code class="docutils literal notranslate"><span class="pre">name</span></code> field:</p>
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span>$ php bin/console make:entity Category
+
+New property name <span class="o">(</span>press &lt;<span class="k">return</span>&gt; to stop adding fields<span class="o">)</span>:
+&gt; name
+
+Field <span class="nb">type</span> <span class="o">(</span>enter ? to see all types<span class="o">)</span> <span class="o">[</span>string<span class="o">]</span>:
+&gt; string
+
+Field length <span class="o">[</span><span class="m">255</span><span class="o">]</span>:
+&gt; <span class="m">255</span>
+
+Can this field be null in the database <span class="o">(</span>nullable<span class="o">)</span> <span class="o">(</span>yes/no<span class="o">)</span> <span class="o">[</span>no<span class="o">]</span>:
+&gt; no
+
+New property name <span class="o">(</span>press &lt;<span class="k">return</span>&gt; to stop adding fields<span class="o">)</span>:
+&gt;
+<span class="o">(</span>press enter again to finish<span class="o">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>This will generate your new entity class:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Category.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">class</span> <span class="nc">Category</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @ORM\Id</span>
+<span class="sd">     * @ORM\GeneratedValue</span>
+<span class="sd">     * @ORM\Column(type=&quot;integer&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$id</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @ORM\Column(type=&quot;string&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$name</span><span class="p">;</span>
+
+    <span class="c1">// ... getters and setters</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mapping-the-manytoone-relationship">
+<h2>Mapping the ManyToOne Relationship</h2>
+<p>In this example, each category can be associated with <em>many</em> products. But,
+each product can be associated with only <em>one</em> category. This relationship
+can be summarized as: <em>many</em> products to <em>one</em> category (or equivalently,
+<em>one</em> category to <em>many</em> products).</p>
+<p>From the perspective of the <code class="docutils literal notranslate"><span class="pre">Product</span></code> entity, this is a many-to-one relationship.
+From the perspective of the <code class="docutils literal notranslate"><span class="pre">Category</span></code> entity, this is a one-to-many relationship.</p>
+<p>To map this, first create a <code class="docutils literal notranslate"><span class="pre">category</span></code> property on the <code class="docutils literal notranslate"><span class="pre">Product</span></code> class with
+the <code class="docutils literal notranslate"><span class="pre">ManyToOne</span></code> annotation. You can do this by hand, or by using the <code class="docutils literal notranslate"><span class="pre">make:entity</span></code>
+command, which will ask you several questions about your relationship. If you’re
+not sure of the answer, don’t worry! You can always change the settings later:</p>
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34</pre></div></td><td class="code"><div class="highlight"><pre><span></span>$ php bin/console make:entity
+
+Class name of the entity to create or update <span class="o">(</span>e.g. BraveChef<span class="o">)</span>:
+&gt; Product
+
+New property name <span class="o">(</span>press &lt;<span class="k">return</span>&gt; to stop adding fields<span class="o">)</span>:
+&gt; category
+
+Field <span class="nb">type</span> <span class="o">(</span>enter ? to see all types<span class="o">)</span> <span class="o">[</span>string<span class="o">]</span>:
+&gt; relation
+
+What class should this entity be related to?:
+&gt; Category
+
+Relation type? <span class="o">[</span>ManyToOne, OneToMany, ManyToMany, OneToOne<span class="o">]</span>:
+&gt; ManyToOne
+
+Is the Product.category property allowed to be null <span class="o">(</span>nullable<span class="o">)</span>? <span class="o">(</span>yes/no<span class="o">)</span> <span class="o">[</span>yes<span class="o">]</span>:
+&gt; no
+
+Do you want to add a new property to Category so that you can access/update
+Product objects from it - e.g. <span class="nv">$category</span>-&gt;getProducts<span class="o">()</span>? <span class="o">(</span>yes/no<span class="o">)</span> <span class="o">[</span>yes<span class="o">]</span>:
+&gt; yes
+
+New field name inside Category <span class="o">[</span>products<span class="o">]</span>:
+&gt; products
+
+Do you want to automatically delete orphaned App<span class="se">\E</span>ntity<span class="se">\P</span>roduct objects
+<span class="o">(</span>orphanRemoval<span class="o">)</span>? <span class="o">(</span>yes/no<span class="o">)</span> <span class="o">[</span>no<span class="o">]</span>:
+&gt; no
+
+New property name <span class="o">(</span>press &lt;<span class="k">return</span>&gt; to stop adding fields<span class="o">)</span>:
+&gt;
+<span class="o">(</span>press enter again to finish<span class="o">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>This made changes to <em>two</em> entities. First, it added a new <code class="docutils literal notranslate"><span class="pre">category</span></code> property to
+the <code class="docutils literal notranslate"><span class="pre">Product</span></code> entity (and getter &amp; setter methods):</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Product.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">Product</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @ORM\ManyToOne(targetEntity=&quot;App\Entity\Category&quot;, inversedBy=&quot;products&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$category</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getCategory</span><span class="p">()</span><span class="o">:</span> <span class="o">?</span><span class="nx">Category</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">category</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setCategory</span><span class="p">(</span><span class="o">?</span><span class="nx">Category</span> <span class="nv">$category</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">category</span> <span class="o">=</span> <span class="nv">$category</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># src/Resources/config/doctrine/Product.orm.yml</span>
+<span class="l l-Scalar l-Scalar-Plain">App\Entity\Product</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">entity</span>
+    <span class="c1"># ...</span>
+    <span class="l l-Scalar l-Scalar-Plain">manyToOne</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">category</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">targetEntity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Entity\Category</span>
+            <span class="l l-Scalar l-Scalar-Plain">inversedBy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">products</span>
+            <span class="l l-Scalar l-Scalar-Plain">joinColumn</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">nullable</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/config/doctrine/Product.orm.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;doctrine-mapping</span> <span class="na">xmlns=</span><span class="s">&quot;http://doctrine-project.org/schemas/orm/doctrine-mapping&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://doctrine-project.org/schemas/orm/doctrine-mapping</span>
+<span class="s">        https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;entity</span> <span class="na">name=</span><span class="s">&quot;App\Entity\Product&quot;</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+        <span class="nt">&lt;many-to-one</span>
+            <span class="na">field=</span><span class="s">&quot;category&quot;</span>
+            <span class="na">target-entity=</span><span class="s">&quot;App\Entity\Category&quot;</span>
+            <span class="na">inversed-by=</span><span class="s">&quot;products&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;join-column</span> <span class="na">nullable=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/many-to-one&gt;</span>
+    <span class="nt">&lt;/entity&gt;</span>
+<span class="nt">&lt;/doctrine-mapping&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>This <code class="docutils literal notranslate"><span class="pre">ManyToOne</span></code> mapping is required. It tells Doctrine to use the <code class="docutils literal notranslate"><span class="pre">category_id</span></code>
+column on the <code class="docutils literal notranslate"><span class="pre">product</span></code> table to relate each record in that table with
+a record in the <code class="docutils literal notranslate"><span class="pre">category</span></code> table.</p>
+<p>Next, since <em>one</em> <code class="docutils literal notranslate"><span class="pre">Category</span></code> object will relate to <em>many</em> <code class="docutils literal notranslate"><span class="pre">Product</span></code> objects,
+the <code class="docutils literal notranslate"><span class="pre">make:entity</span></code> command <em>also</em> added a <code class="docutils literal notranslate"><span class="pre">products</span></code> property to the <code class="docutils literal notranslate"><span class="pre">Category</span></code>
+class that will hold these objects:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Category.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">use</span> <span class="nx">Doctrine\Common\Collections\ArrayCollection</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Doctrine\Common\Collections\Collection</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Category</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @ORM\OneToMany(targetEntity=&quot;App\Entity\Product&quot;, mappedBy=&quot;category&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$products</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">products</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ArrayCollection</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @return Collection|Product[]</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getProducts</span><span class="p">()</span><span class="o">:</span> <span class="nx">Collection</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">products</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// addProduct() and removeProduct() were also added</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># src/Resources/config/doctrine/Category.orm.yml</span>
+<span class="l l-Scalar l-Scalar-Plain">App\Entity\Category</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">entity</span>
+    <span class="c1"># ...</span>
+    <span class="l l-Scalar l-Scalar-Plain">oneToMany</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">products</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">targetEntity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Entity\Product</span>
+            <span class="l l-Scalar l-Scalar-Plain">mappedBy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">category</span>
+<span class="c1"># Don&#39;t forget to initialize the collection in</span>
+<span class="c1"># the __construct() method of the entity</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/config/doctrine/Category.orm.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;doctrine-mapping</span> <span class="na">xmlns=</span><span class="s">&quot;http://doctrine-project.org/schemas/orm/doctrine-mapping&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://doctrine-project.org/schemas/orm/doctrine-mapping</span>
+<span class="s">        https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;entity</span> <span class="na">name=</span><span class="s">&quot;App\Entity\Category&quot;</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+        <span class="nt">&lt;one-to-many</span>
+            <span class="na">field=</span><span class="s">&quot;products&quot;</span>
+            <span class="na">target-entity=</span><span class="s">&quot;App\Entity\Product&quot;</span>
+            <span class="na">mapped-by=</span><span class="s">&quot;category&quot;</span><span class="nt">/&gt;</span>
+
+        <span class="c">&lt;!--</span>
+<span class="c">            don&#39;t forget to init the collection in</span>
+<span class="c">            the __construct() method of the entity</span>
+<span class="c">        --&gt;</span>
+    <span class="nt">&lt;/entity&gt;</span>
+<span class="nt">&lt;/doctrine-mapping&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ManyToOne</span></code> mapping shown earlier is <em>required</em>, But, this <code class="docutils literal notranslate"><span class="pre">OneToMany</span></code>
+is optional: only add it <em>if</em> you want to be able to access the products that are
+related to a category (this is one of the questions <code class="docutils literal notranslate"><span class="pre">make:entity</span></code> asks you). In
+this example, it <em>will</em> be useful to be able to call <code class="docutils literal notranslate"><span class="pre">$category-&gt;getProducts()</span></code>.
+If you don’t want it, then you also don’t need the <code class="docutils literal notranslate"><span class="pre">inversedBy</span></code> or <code class="docutils literal notranslate"><span class="pre">mappedBy</span></code>
+config.</p>
+<div class="sidebar">
+<p class="sidebar-title">What is the ArrayCollection Stuff?</p>
+<p>The code inside <code class="docutils literal notranslate"><span class="pre">__construct()</span></code> is important: The <code class="docutils literal notranslate"><span class="pre">$products</span></code> property must
+be a collection object that implements Doctrine’s <code class="docutils literal notranslate"><span class="pre">Collection</span></code> interface.
+In this case, an <a class="reference external" href="https://www.doctrine-project.org/projects/doctrine-collections/en/1.6/index.html">ArrayCollection</a><span class="link-target"> [https://www.doctrine-project.org/projects/doctrine-collections/en/1.6/index.html]</span> object is used. This looks and acts almost
+<em>exactly</em> like an array, but has some added flexibility. Just imagine that
+it is an <code class="docutils literal notranslate"><span class="pre">array</span></code> and you’ll be in good shape.</p>
+</div>
+<p>Your database is setup! Now, run the migrations like normal:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console doctrine:migrations:diff
+<span class="gp">$</span> php bin/console doctrine:migrations:migrate
+</pre></div>
+</td></tr></table></div>
+<p>Thanks to the relationship, this creates a <code class="docutils literal notranslate"><span class="pre">category_id</span></code> foreign key column on
+the <code class="docutils literal notranslate"><span class="pre">product</span></code> table. Doctrine is ready to persist our relationship!</p>
+</div>
+<div class="section" id="saving-related-entities">
+<h2>Saving Related Entities</h2>
+<p>Now you can see this new code in action! Imagine you’re inside a controller:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Controller/ProductController.php</span>
+<span class="k">namespace</span> <span class="nx">App\Controller</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">use</span> <span class="nx">App\Entity\Category</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Entity\Product</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ProductController</span> <span class="k">extends</span> <span class="nx">AbstractController</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @Route(&quot;/product&quot;, name=&quot;product&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span><span class="o">:</span> <span class="nx">Response</span>
+    <span class="p">{</span>
+        <span class="nv">$category</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Category</span><span class="p">();</span>
+        <span class="nv">$category</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">&#39;Computer Peripherals&#39;</span><span class="p">);</span>
+
+        <span class="nv">$product</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Product</span><span class="p">();</span>
+        <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">&#39;Keyboard&#39;</span><span class="p">);</span>
+        <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">setPrice</span><span class="p">(</span><span class="mf">19.99</span><span class="p">);</span>
+        <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">setDescription</span><span class="p">(</span><span class="s1">&#39;Ergonomic and stylish!&#39;</span><span class="p">);</span>
+
+        <span class="c1">// relates this product to the category</span>
+        <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">setCategory</span><span class="p">(</span><span class="nv">$category</span><span class="p">);</span>
+
+        <span class="nv">$entityManager</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getDoctrine</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getManager</span><span class="p">();</span>
+        <span class="nv">$entityManager</span><span class="o">-&gt;</span><span class="na">persist</span><span class="p">(</span><span class="nv">$category</span><span class="p">);</span>
+        <span class="nv">$entityManager</span><span class="o">-&gt;</span><span class="na">persist</span><span class="p">(</span><span class="nv">$product</span><span class="p">);</span>
+        <span class="nv">$entityManager</span><span class="o">-&gt;</span><span class="na">flush</span><span class="p">();</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span>
+            <span class="s1">&#39;Saved new product with id: &#39;</span><span class="o">.</span><span class="nv">$product</span><span class="o">-&gt;</span><span class="na">getId</span><span class="p">()</span>
+            <span class="o">.</span><span class="s1">&#39; and new category with id: &#39;</span><span class="o">.</span><span class="nv">$category</span><span class="o">-&gt;</span><span class="na">getId</span><span class="p">()</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When you go to <code class="docutils literal notranslate"><span class="pre">/product</span></code>, a single row is added to both the <code class="docutils literal notranslate"><span class="pre">category</span></code> and
+<code class="docutils literal notranslate"><span class="pre">product</span></code> tables. The <code class="docutils literal notranslate"><span class="pre">product.category_id</span></code> column for the new product is set
+to whatever the <code class="docutils literal notranslate"><span class="pre">id</span></code> is of the new category. Doctrine manages the persistence of this
+relationship for you:</p>
+<img alt="../_images/mapping_relations.png" class="align-center" src="../_images/mapping_relations.png" />
+<p>If you’re new to an ORM, this is the <em>hardest</em> concept: you need to stop thinking
+about your database, and instead <em>only</em> think about your objects. Instead of setting
+the category’s integer id onto <code class="docutils literal notranslate"><span class="pre">Product</span></code>, you set the entire <code class="docutils literal notranslate"><span class="pre">Category</span></code> <em>object</em>.
+Doctrine takes care of the rest when saving.</p>
+<div class="sidebar">
+<p class="sidebar-title">Updating the Relationship from the Inverse Side</p>
+<p>Could you also call <code class="docutils literal notranslate"><span class="pre">$category-&gt;addProduct()</span></code> to change the relationship? Yes,
+but, only because the <code class="docutils literal notranslate"><span class="pre">make:entity</span></code> command helped us. For more details,
+see: <a class="reference internal" href="#associations-inverse-side">associations-inverse-side</a>.</p>
+</div>
+</div>
+<div class="section" id="fetching-related-objects">
+<h2>Fetching Related Objects</h2>
+<p>When you need to fetch associated objects, your workflow looks like it did
+before. First, fetch a <code class="docutils literal notranslate"><span class="pre">$product</span></code> object and then access its related
+<code class="docutils literal notranslate"><span class="pre">Category</span></code> object:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Controller/ProductController.php</span>
+<span class="k">namespace</span> <span class="nx">App\Controller</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Entity\Product</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="k">class</span> <span class="nc">ProductController</span> <span class="k">extends</span> <span class="nx">AbstractController</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">show</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$id</span><span class="p">)</span><span class="o">:</span> <span class="nx">Response</span>
+    <span class="p">{</span>
+        <span class="nv">$product</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getDoctrine</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">getRepository</span><span class="p">(</span><span class="nx">Product</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">find</span><span class="p">(</span><span class="nv">$id</span><span class="p">);</span>
+
+        <span class="c1">// ...</span>
+
+        <span class="nv">$categoryName</span> <span class="o">=</span> <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">getCategory</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">();</span>
+
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In this example, you first query for a <code class="docutils literal notranslate"><span class="pre">Product</span></code> object based on the product’s
+<code class="docutils literal notranslate"><span class="pre">id</span></code>. This issues a query to fetch <em>only</em> the product data and hydrates the
+<code class="docutils literal notranslate"><span class="pre">$product</span></code>. Later, when you call <code class="docutils literal notranslate"><span class="pre">$product-&gt;getCategory()-&gt;getName()</span></code>,
+Doctrine silently makes a second query to find the <code class="docutils literal notranslate"><span class="pre">Category</span></code> that’s related
+to this <code class="docutils literal notranslate"><span class="pre">Product</span></code>. It prepares the <code class="docutils literal notranslate"><span class="pre">$category</span></code> object and returns it to
+you.</p>
+<img alt="../_images/mapping_relations_proxy.png" class="align-center" src="../_images/mapping_relations_proxy.png" />
+<p>What’s important is the fact that you have access to the product’s related
+category, but the category data isn’t actually retrieved until you ask for
+the category (i.e. it’s “lazily loaded”).</p>
+<p>Because we mapped the optional <code class="docutils literal notranslate"><span class="pre">OneToMany</span></code> side, you can also query in the other
+direction:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Controller/ProductController.php</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">ProductController</span> <span class="k">extends</span> <span class="nx">AbstractController</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">showProducts</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$id</span><span class="p">)</span><span class="o">:</span> <span class="nx">Response</span>
+    <span class="p">{</span>
+        <span class="nv">$category</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getDoctrine</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">getRepository</span><span class="p">(</span><span class="nx">Category</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">find</span><span class="p">(</span><span class="nv">$id</span><span class="p">);</span>
+
+        <span class="nv">$products</span> <span class="o">=</span> <span class="nv">$category</span><span class="o">-&gt;</span><span class="na">getProducts</span><span class="p">();</span>
+
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In this case, the same things occur: you first query for a single <code class="docutils literal notranslate"><span class="pre">Category</span></code>
+object. Then, only when (and if) you access the products, Doctrine makes a second
+query to retrieve the related <code class="docutils literal notranslate"><span class="pre">Product</span></code> objects. This extra query can be avoided
+by adding JOINs.</p>
+<div class="sidebar">
+<p class="sidebar-title">Relationships and Proxy Classes</p>
+<p>This “lazy loading” is possible because, when necessary, Doctrine returns
+a “proxy” object in place of the true object. Look again at the above
+example:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$product</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getDoctrine</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">getRepository</span><span class="p">(</span><span class="nx">Product</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">find</span><span class="p">(</span><span class="nv">$id</span><span class="p">);</span>
+
+<span class="nv">$category</span> <span class="o">=</span> <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">getCategory</span><span class="p">();</span>
+
+<span class="c1">// prints &quot;Proxies\AppEntityCategoryProxy&quot;</span>
+<span class="nx">dump</span><span class="p">(</span><span class="nb">get_class</span><span class="p">(</span><span class="nv">$category</span><span class="p">));</span>
+<span class="k">die</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>This proxy object extends the true <code class="docutils literal notranslate"><span class="pre">Category</span></code> object, and looks and
+acts exactly like it. The difference is that, by using a proxy object,
+Doctrine can delay querying for the real <code class="docutils literal notranslate"><span class="pre">Category</span></code> data until you
+actually need that data (e.g. until you call <code class="docutils literal notranslate"><span class="pre">$category-&gt;getName()</span></code>).</p>
+<p>The proxy classes are generated by Doctrine and stored in the cache directory.
+You’ll probably never even notice that your <code class="docutils literal notranslate"><span class="pre">$category</span></code> object is actually
+a proxy object.</p>
+<p>In the next section, when you retrieve the product and category data
+all at once (via a <em>join</em>), Doctrine will return the <em>true</em> <code class="docutils literal notranslate"><span class="pre">Category</span></code>
+object, since nothing needs to be lazily loaded.</p>
+</div>
+</div>
+<div class="section" id="joining-related-records">
+<span id="doctrine-associations-join-query"></span><h2>Joining Related Records</h2>
+<p>In the examples above, two queries were made - one for the original object
+(e.g. a <code class="docutils literal notranslate"><span class="pre">Category</span></code>) and one for the related object(s) (e.g. the <code class="docutils literal notranslate"><span class="pre">Product</span></code>
+objects).</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Remember that you can see all of the queries made during a request via
+the web debug toolbar.</p>
+</div>
+<p>If you know up front that you’ll need to access both objects, you
+can avoid the second query by issuing a join in the original query. Add the
+following method to the <code class="docutils literal notranslate"><span class="pre">ProductRepository</span></code> class:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Repository/ProductRepository.php</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">ProductRepository</span> <span class="k">extends</span> <span class="nx">ServiceEntityRepository</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">findOneByIdJoinedToCategory</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$productId</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">Product</span>
+    <span class="p">{</span>
+        <span class="nv">$entityManager</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getEntityManager</span><span class="p">();</span>
+
+        <span class="nv">$query</span> <span class="o">=</span> <span class="nv">$entityManager</span><span class="o">-&gt;</span><span class="na">createQuery</span><span class="p">(</span>
+            <span class="s1">&#39;SELECT p, c</span>
+<span class="s1">            FROM App\Entity\Product p</span>
+<span class="s1">            INNER JOIN p.category c</span>
+<span class="s1">            WHERE p.id = :id&#39;</span>
+        <span class="p">)</span><span class="o">-&gt;</span><span class="na">setParameter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="nv">$productId</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$query</span><span class="o">-&gt;</span><span class="na">getOneOrNullResult</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This will <em>still</em> return an array of <code class="docutils literal notranslate"><span class="pre">Product</span></code> objects. But now, when you call
+<code class="docutils literal notranslate"><span class="pre">$product-&gt;getCategory()</span></code> and use that data, no second query is made.</p>
+<p>Now, you can use this method in your controller to query for a <code class="docutils literal notranslate"><span class="pre">Product</span></code>
+object and its related <code class="docutils literal notranslate"><span class="pre">Category</span></code> in one query:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Controller/ProductController.php</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">ProductController</span> <span class="k">extends</span> <span class="nx">AbstractController</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">show</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$id</span><span class="p">)</span><span class="o">:</span> <span class="nx">Response</span>
+    <span class="p">{</span>
+        <span class="nv">$product</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getDoctrine</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">getRepository</span><span class="p">(</span><span class="nx">Product</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">findOneByIdJoinedToCategory</span><span class="p">(</span><span class="nv">$id</span><span class="p">);</span>
+
+        <span class="nv">$category</span> <span class="o">=</span> <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">getCategory</span><span class="p">();</span>
+
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setting-information-from-the-inverse-side">
+<span id="associations-inverse-side"></span><h2>Setting Information from the Inverse Side</h2>
+<p>So far, you’ve updated the relationship by calling <code class="docutils literal notranslate"><span class="pre">$product-&gt;setCategory($category)</span></code>.
+This is no accident! Each relationship has two sides: in this example, <code class="docutils literal notranslate"><span class="pre">Product.category</span></code>
+is the <em>owning</em> side and <code class="docutils literal notranslate"><span class="pre">Category.products</span></code> is the <em>inverse</em> side.</p>
+<p>To update a relationship in the database, you <em>must</em> set the relationship on the
+<em>owning</em> side. The owning side is always where the <code class="docutils literal notranslate"><span class="pre">ManyToOne</span></code> mapping is set
+(for a <code class="docutils literal notranslate"><span class="pre">ManyToMany</span></code> relation, you can choose which side is the owning side).</p>
+<p>Does this means it’s not possible to call <code class="docutils literal notranslate"><span class="pre">$category-&gt;addProduct()</span></code> or
+<code class="docutils literal notranslate"><span class="pre">$category-&gt;removeProduct()</span></code> to update the database? Actually, it <em>is</em> possible,
+thanks to some clever code that the <code class="docutils literal notranslate"><span class="pre">make:entity</span></code> command generated:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Category.php</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">Category</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">addProduct</span><span class="p">(</span><span class="nx">Product</span> <span class="nv">$product</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">products</span><span class="o">-&gt;</span><span class="na">contains</span><span class="p">(</span><span class="nv">$product</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">products</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$product</span><span class="p">;</span>
+            <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">setCategory</span><span class="p">(</span><span class="nv">$this</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <em>key</em> is <code class="docutils literal notranslate"><span class="pre">$product-&gt;setCategory($this)</span></code>, which sets the <em>owning</em> side. Thanks,
+to this, when you save, the relationship <em>will</em> update in the database.</p>
+<p>What about <em>removing</em> a <code class="docutils literal notranslate"><span class="pre">Product</span></code> from a <code class="docutils literal notranslate"><span class="pre">Category</span></code>? The <code class="docutils literal notranslate"><span class="pre">make:entity</span></code> command
+also generated a <code class="docutils literal notranslate"><span class="pre">removeProduct()</span></code> method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Category.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">Category</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">removeProduct</span><span class="p">(</span><span class="nx">Product</span> <span class="nv">$product</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">products</span><span class="o">-&gt;</span><span class="na">contains</span><span class="p">(</span><span class="nv">$product</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">products</span><span class="o">-&gt;</span><span class="na">removeElement</span><span class="p">(</span><span class="nv">$product</span><span class="p">);</span>
+            <span class="c1">// set the owning side to null (unless already changed)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$product</span><span class="o">-&gt;</span><span class="na">getCategory</span><span class="p">()</span> <span class="o">===</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">setCategory</span><span class="p">(</span><span class="k">null</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Thanks to this, if you call <code class="docutils literal notranslate"><span class="pre">$category-&gt;removeProduct($product)</span></code>, the <code class="docutils literal notranslate"><span class="pre">category_id</span></code>
+on that <code class="docutils literal notranslate"><span class="pre">Product</span></code> will be set to <code class="docutils literal notranslate"><span class="pre">null</span></code> in the database.</p>
+<p>But, instead of setting the <code class="docutils literal notranslate"><span class="pre">category_id</span></code> to null, what if you want the <code class="docutils literal notranslate"><span class="pre">Product</span></code>
+to be <em>deleted</em> if it becomes “orphaned” (i.e. without a <code class="docutils literal notranslate"><span class="pre">Category</span></code>)? To choose
+that behavior, use the <a class="reference external" href="https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/working-with-associations.html#orphan-removal">orphanRemoval</a><span class="link-target"> [https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/working-with-associations.html#orphan-removal]</span> option inside <code class="docutils literal notranslate"><span class="pre">Category</span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Category.php</span>
+
+<span class="c1">// ...</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @ORM\OneToMany(targetEntity=&quot;App\Entity\Product&quot;, mappedBy=&quot;category&quot;, orphanRemoval=true)</span>
+<span class="sd"> */</span>
+<span class="k">private</span> <span class="nv">$products</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Thanks to this, if the <code class="docutils literal notranslate"><span class="pre">Product</span></code> is removed from the <code class="docutils literal notranslate"><span class="pre">Category</span></code>, it will be
+removed from the database entirely.</p>
+</div>
+<div class="section" id="more-information-on-associations">
+<h2>More Information on Associations</h2>
+<p>This section has been an introduction to one common type of entity relationship,
+the one-to-many relationship. For more advanced details and examples of how
+to use other types of relations (e.g. one-to-one, many-to-many), see
+Doctrine’s <a class="reference external" href="https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/association-mapping.html">Association Mapping Documentation</a><span class="link-target"> [https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/association-mapping.html]</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you’re using annotations, you’ll need to prepend all annotations with
+<code class="docutils literal notranslate"><span class="pre">&#64;ORM\</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">&#64;ORM\OneToMany</span></code>), which is not reflected in Doctrine’s
+documentation.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

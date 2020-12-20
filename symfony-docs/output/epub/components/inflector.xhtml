@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Inflector Component</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-inflector-component">
+<span id="index-0"></span><h1>The Inflector Component</h1>
+<blockquote>
+<div><p>The Inflector component converts English words between their singular and
+plural forms.</p>
+</div></blockquote>
+<div class="section" id="installation">
+<h2>Installation</h2>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/inflector
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you install this component outside of a Symfony application, you must
+require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
+autoloading mechanism provided by Composer. Read
+<a class="reference internal" href="using_components.xhtml"><span class="doc">this article</span></a> for more details.</p>
+</div>
+</div>
+<div class="section" id="when-you-may-need-an-inflector">
+<h2>When you May Need an Inflector</h2>
+<p>In some scenarios such as code generation and code introspection, it’s usually
+required to convert words from/to singular/plural. For example, if you need to
+know which property is associated with an <em>adder</em> method, you must convert from
+plural to singular (<code class="docutils literal notranslate"><span class="pre">addStories()</span></code> method -&gt; <code class="docutils literal notranslate"><span class="pre">$story</span></code> property).</p>
+<p>Although most human languages define simple pluralization rules, they also
+define lots of exceptions. For example, the general rule in English is to add an
+<code class="docutils literal notranslate"><span class="pre">s</span></code> at the end of the word (<code class="docutils literal notranslate"><span class="pre">book</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">books</span></code>) but there are lots of
+exceptions even for common words (<code class="docutils literal notranslate"><span class="pre">woman</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">women</span></code>, <code class="docutils literal notranslate"><span class="pre">life</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">lives</span></code>,
+<code class="docutils literal notranslate"><span class="pre">news</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">news</span></code>, <code class="docutils literal notranslate"><span class="pre">radius</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">radii</span></code>, etc.)</p>
+<p>This component abstracts all those pluralization rules so you can convert
+from/to singular/plural with confidence. However, due to the complexity of the
+human languages, this component only provides support for the English language.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage</h2>
+<p>The Inflector component provides two static methods to convert from/to
+singular/plural:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Inflector\Inflector</span><span class="p">;</span>
+
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;alumni&#39;</span><span class="p">);</span>   <span class="c1">// &#39;alumnus&#39;</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;knives&#39;</span><span class="p">);</span>   <span class="c1">// &#39;knife&#39;</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;mice&#39;</span><span class="p">);</span>     <span class="c1">// &#39;mouse&#39;</span>
+
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;grandchild&#39;</span><span class="p">);</span> <span class="c1">// &#39;grandchildren&#39;</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;news&#39;</span><span class="p">);</span>       <span class="c1">// &#39;news&#39;</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;bacterium&#39;</span><span class="p">);</span>  <span class="c1">// &#39;bacteria&#39;</span>
+</pre></div>
+</div>
+<p>Sometimes it’s not possible to determine a unique singular/plural form for the
+given word. In those cases, the methods return an array with all the possible
+forms:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Inflector\Inflector</span><span class="p">;</span>
+
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;indices&#39;</span><span class="p">);</span> <span class="c1">// [&#39;index&#39;, &#39;indix&#39;, &#39;indice&#39;]</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">singularize</span><span class="p">(</span><span class="s1">&#39;leaves&#39;</span><span class="p">);</span>  <span class="c1">// [&#39;leaf&#39;, &#39;leave&#39;, &#39;leaff&#39;]</span>
+
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;matrix&#39;</span><span class="p">);</span>    <span class="c1">// [&#39;matricies&#39;, &#39;matrixes&#39;]</span>
+<span class="nx">Inflector</span><span class="o">::</span><span class="na">pluralize</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">);</span>    <span class="c1">// [&#39;persons&#39;, &#39;people&#39;]</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

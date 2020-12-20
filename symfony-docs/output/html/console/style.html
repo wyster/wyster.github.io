@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -147,10 +147,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -383,7 +381,7 @@ command:</p>
 </dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Style/SymfonyStyle.php" title="Symfony\Component\Console\Style\SymfonyStyle::horizontalTable()"><span class="pre">horizontalTable()</span></a></code></dt>
 <dd><p class="first">It displays the given array of headers and rows as a compact horizontal table:</p>
-<div class="last highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$io</span><span class="o">-&gt;</span><span class="na">horizontalTable</span><span class="p">(</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$io</span><span class="o">-&gt;</span><span class="na">horizontalTable</span><span class="p">(</span>
     <span class="p">[</span><span class="s1">&#39;Header 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Header 2&#39;</span><span class="p">],</span>
     <span class="p">[</span>
         <span class="p">[</span><span class="s1">&#39;Cell 1-1&#39;</span><span class="p">,</span> <span class="s1">&#39;Cell 1-2&#39;</span><span class="p">],</span>
@@ -393,10 +391,13 @@ command:</p>
 <span class="p">);</span>
 </pre></div>
 </div>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">horizontalTable()</span></code> method was introduced in Symfony 4.4.</p>
+</div>
 </dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Style/SymfonyStyle.php" title="Symfony\Component\Console\Style\SymfonyStyle::definitionList()"><span class="pre">definitionList()</span></a></code></dt>
 <dd><p class="first">It displays the given <code class="docutils literal notranslate"><span class="pre">key</span> <span class="pre">=&gt;</span> <span class="pre">value</span></code> pairs as a compact list of elements:</p>
-<div class="last highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$io</span><span class="o">-&gt;</span><span class="na">definitionList</span><span class="p">(</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$io</span><span class="o">-&gt;</span><span class="na">definitionList</span><span class="p">(</span>
     <span class="s1">&#39;This is a title&#39;</span><span class="p">,</span>
     <span class="p">[</span><span class="s1">&#39;foo1&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;bar1&#39;</span><span class="p">],</span>
     <span class="p">[</span><span class="s1">&#39;foo2&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;bar2&#39;</span><span class="p">],</span>
@@ -406,6 +407,9 @@ command:</p>
     <span class="p">[</span><span class="s1">&#39;foo4&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;bar4&#39;</span><span class="p">]</span>
 <span class="p">);</span>
 </pre></div>
+</div>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">definitionList()</span></code> method was introduced in Symfony 4.4.</p>
 </div>
 </dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Style/SymfonyStyle.php" title="Symfony\Component\Console\Style\SymfonyStyle::newLine()"><span class="pre">newLine()</span></a></code></dt>
@@ -587,29 +591,6 @@ can use it repeatedly during the execution of the command:</p>
 </pre></div>
 </div>
 </dd>
-<dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Style/SymfonyStyle.php" title="Symfony\Component\Console\Style\SymfonyStyle::info()"><span class="pre">info()</span></a></code></dt>
-<dd><p class="first">It’s similar to the <code class="docutils literal notranslate"><span class="pre">success()</span></code> method (the given string or array of strings
-are displayed with a green background) but the <code class="docutils literal notranslate"><span class="pre">[OK]</span></code> label is not prefixed.
-It’s meant to be used once to display the final result of executing the given
-command, without showing the result as a successful or failed one:</p>
-<div class="last highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// use simple strings for short success messages</span>
-<span class="nv">$io</span><span class="o">-&gt;</span><span class="na">info</span><span class="p">(</span><span class="s1">&#39;Lorem ipsum dolor sit amet&#39;</span><span class="p">);</span>
-
-<span class="c1">// ...</span>
-
-<span class="c1">// consider using arrays when displaying long success messages</span>
-<span class="nv">$io</span><span class="o">-&gt;</span><span class="na">info</span><span class="p">([</span>
-    <span class="s1">&#39;Lorem ipsum dolor sit amet&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Consectetur adipiscing elit&#39;</span><span class="p">,</span>
-<span class="p">]);</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">info()</span></code> method was introduced in Symfony 5.2.</p>
-</div>
-<dl class="docutils">
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Style/SymfonyStyle.php" title="Symfony\Component\Console\Style\SymfonyStyle::warning()"><span class="pre">warning()</span></a></code></dt>
 <dd><p class="first">It displays the given string or array of strings highlighted as a warning
 message (with a red background and the <code class="docutils literal notranslate"><span class="pre">[WARNING]</span></code> label). It’s meant to be

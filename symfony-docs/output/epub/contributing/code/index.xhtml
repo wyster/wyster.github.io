@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Contributing Code</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="contributing-code">
+<h1>Contributing Code</h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bugs.xhtml">Reporting a Bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stack_trace.xhtml">Getting a Stack Trace</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stack_trace.xhtml#anatomy-of-a-stack-trace">Anatomy of a Stack Trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack_trace.xhtml#stack-traces-and-exceptions">Stack Traces and Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack_trace.xhtml#nested-exceptions">Nested Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack_trace.xhtml#what-to-look-for-in-a-stack-trace">What to look for in a Stack Trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack_trace.xhtml#getting-stack-traces-with-symfony">Getting Stack Traces with Symfony</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reproducer.xhtml">Creating a Bug Reproducer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reproducer.xhtml#reproducing-simple-bugs">Reproducing Simple Bugs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reproducer.xhtml#reproducing-complex-bugs">Reproducing Complex Bugs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pull_requests.xhtml">Proposing a Change</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pull_requests.xhtml#step-1-check-existing-issues-and-pull-requests">Step 1: Check existing Issues and Pull Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pull_requests.xhtml#step-2-setup-your-environment">Step 2: Setup your Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pull_requests.xhtml#step-3-work-on-your-pull-request">Step 3: Work on your Pull Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pull_requests.xhtml#step-4-submit-your-pull-request">Step 4: Submit your Pull Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pull_requests.xhtml#step-5-receiving-feedback">Step 5: Receiving Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="maintenance.xhtml">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_team.xhtml">Symfony Core Team</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core_team.xhtml#core-organization">Core Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_team.xhtml#code-development-rules">Code Development Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_team.xhtml#symfony-core-rules-and-protocol-amendments">Symfony Core Rules and Protocol Amendments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="security.xhtml">Security Issues</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="security.xhtml#reporting-a-security-issue">Reporting a Security Issue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="security.xhtml#resolving-process">Resolving Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="security.xhtml#collaborating-with-downstream-open-source-projects">Collaborating with Downstream Open-Source Projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="security.xhtml#issue-severity">Issue Severity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="security.xhtml#security-advisories">Security Advisories</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.xhtml">Running Symfony Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tests.xhtml#before-running-the-tests">Before Running the Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.xhtml#running-the-tests">Running the Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bc.xhtml">Our Backward Compatibility Promise</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bc.xhtml#using-symfony-code">Using Symfony Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bc.xhtml#working-on-symfony-code">Working on Symfony Code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="experimental.xhtml">Experimental Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="standards.xhtml">Coding Standards</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="standards.xhtml#making-your-code-follow-the-coding-standards">Making your Code Follow the Coding Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standards.xhtml#symfony-coding-standards-in-detail">Symfony Coding Standards in Detail</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.xhtml">Conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conventions.xhtml#method-names">Method Names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.xhtml#deprecating-code">Deprecating Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conventions.xhtml#removing-deprecated-code">Removing Deprecated Code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="git.xhtml">Git</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="git.xhtml#pull-requests">Pull Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.xhtml">Symfony Code License</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="license.xhtml#other-symfony-licenses">Other Symfony Licenses</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

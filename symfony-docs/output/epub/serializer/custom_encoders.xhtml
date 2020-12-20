@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Create your Custom Encoder</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-create-your-custom-encoder">
+<span id="index-0"></span><h1>How to Create your Custom Encoder</h1>
+<p>The <a class="reference internal" href="../components/serializer.xhtml"><span class="doc">Serializer Component</span></a> uses Normalizers
+to transform any data to an array. Then, by leveraging <em>Encoders</em>, that data can
+be converted into any data-structure (e.g. JSON).</p>
+<p>The Component provides several built-in encoders that are described
+<a class="reference internal" href="../components/serializer.xhtml"><span class="doc">in the serializer component</span></a> but you may want
+to use another structure that’s not supported.</p>
+<div class="section" id="creating-a-new-encoder">
+<h2>Creating a new encoder</h2>
+<p>Imagine you want to serialize and deserialize YAML. For that you’ll have to
+create your own encoder that uses the
+<a class="reference internal" href="../components/yaml.xhtml"><span class="doc">Yaml Component</span></a>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Serializer/YamlEncoder.php</span>
+<span class="k">namespace</span> <span class="nx">App\Serializer</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Encoder\DecoderInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Encoder\EncoderInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Yaml\Yaml</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">YamlEncoder</span> <span class="k">implements</span> <span class="nx">EncoderInterface</span><span class="p">,</span> <span class="nx">DecoderInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">encode</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$format</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">Yaml</span><span class="o">::</span><span class="na">dump</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsEncoding</span><span class="p">(</span><span class="nv">$format</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">&#39;yaml&#39;</span> <span class="o">===</span> <span class="nv">$format</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">decode</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$format</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">Yaml</span><span class="o">::</span><span class="na">parse</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsDecoding</span><span class="p">(</span><span class="nv">$format</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">&#39;yaml&#39;</span> <span class="o">===</span> <span class="nv">$format</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you need access to <code class="docutils literal notranslate"><span class="pre">$context</span></code> in your <code class="docutils literal notranslate"><span class="pre">supportsDecoding</span></code> or
+<code class="docutils literal notranslate"><span class="pre">supportsEncoding</span></code> method, make sure to implement
+<code class="docutils literal notranslate"><span class="pre">Symfony\Component\Serializer\Encoder\ContextAwareDecoderInterface</span></code>
+or <code class="docutils literal notranslate"><span class="pre">Symfony\Component\Serializer\Encoder\ContextAwareEncoderInterface</span></code> accordingly.</p>
+</div>
+</div>
+<div class="section" id="registering-it-in-your-app">
+<h2>Registering it in your app</h2>
+<p>If you use the Symfony Framework. then you probably want to register this encoder
+as a service in your app. If you’re using the <a class="reference internal" href="../service_container.xhtml#service-container-services-load-example"><span class="std std-ref">default services.yaml configuration</span></a>,
+that’s done automatically!</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you’re not using <a class="reference internal" href="../service_container.xhtml#services-autoconfigure"><span class="std std-ref">autoconfigure</span></a>, make sure
+to register your class as a service and tag it with <code class="docutils literal notranslate"><span class="pre">serializer.encoder</span></code>.</p>
+</div>
+<p>Now you’ll be able to serialize and deserialize YAML!</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

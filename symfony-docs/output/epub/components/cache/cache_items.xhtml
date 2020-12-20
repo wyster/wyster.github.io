@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Cache Items</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cache-items">
+<span id="index-0"></span><h1>Cache Items</h1>
+<p>Cache items are the information units stored in the cache as a key/value pair.
+In the Cache component they are represented by the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/CacheItem.php" title="Symfony\Component\Cache\CacheItem"><span class="pre">CacheItem</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/CacheItem.php]</span></span></code> class.
+They are used in both the Cache Contracts and the PSR-6 interfaces.</p>
+<div class="section" id="cache-item-keys-and-values">
+<h2>Cache Item Keys and Values</h2>
+<p>The <strong>key</strong> of a cache item is a plain string which acts as its
+identifier, so it must be unique for each cache pool. You can freely choose the
+keys, but they should only contain letters (A-Z, a-z), numbers (0-9) and the
+<code class="docutils literal notranslate"><span class="pre">_</span></code> and <code class="docutils literal notranslate"><span class="pre">.</span></code> symbols. Other common symbols (such as <code class="docutils literal notranslate"><span class="pre">{</span></code>, <code class="docutils literal notranslate"><span class="pre">}</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>,
+<code class="docutils literal notranslate"><span class="pre">)</span></code>, <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">\</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> and <code class="docutils literal notranslate"><span class="pre">:</span></code>) are reserved by the PSR-6 standard for future
+uses.</p>
+<p>The <strong>value</strong> of a cache item can be any data represented by a type which is
+serializable by PHP, such as basic types (string, integer, float, boolean, null),
+arrays and objects.</p>
+</div>
+<div class="section" id="creating-cache-items">
+<h2>Creating Cache Items</h2>
+<p>The only way to create cache items is via cache pools. When using the Cache
+Contracts, they are passed as arguments to the recomputation callback:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// $cache pool object was created before</span>
+<span class="nv">$productsCount</span> <span class="o">=</span> <span class="nv">$cache</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;stats.products_count&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nx">ItemInterface</span> <span class="nv">$item</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// [...]</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>When using PSR-6, they are created with the <code class="docutils literal notranslate"><span class="pre">getItem($key)</span></code> method of the cache
+pool:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// $cache pool object was created before</span>
+<span class="nv">$productsCount</span> <span class="o">=</span> <span class="nv">$cache</span><span class="o">-&gt;</span><span class="na">getItem</span><span class="p">(</span><span class="s1">&#39;stats.products_count&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Then, use the <code class="docutils literal notranslate"><span class="pre">Psr\Cache\CacheItemInterface::set</span></code> method to set the data stored
+in the cache item (this step is done automatically when using the Cache Contracts):</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// storing a simple integer</span>
+<span class="nv">$productsCount</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="mi">4711</span><span class="p">);</span>
+<span class="nv">$cache</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">(</span><span class="nv">$productsCount</span><span class="p">);</span>
+
+<span class="c1">// storing an array</span>
+<span class="nv">$productsCount</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">([</span>
+    <span class="s1">&#39;category1&#39;</span> <span class="o">=&gt;</span> <span class="mi">4711</span><span class="p">,</span>
+    <span class="s1">&#39;category2&#39;</span> <span class="o">=&gt;</span> <span class="mi">2387</span><span class="p">,</span>
+<span class="p">]);</span>
+<span class="nv">$cache</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">(</span><span class="nv">$productsCount</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The key and the value of any given cache item can be obtained with the
+corresponding <em>getter</em> methods:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$cacheItem</span> <span class="o">=</span> <span class="nv">$cache</span><span class="o">-&gt;</span><span class="na">getItem</span><span class="p">(</span><span class="s1">&#39;exchange_rate&#39;</span><span class="p">);</span>
+<span class="c1">// ...</span>
+<span class="nv">$key</span> <span class="o">=</span> <span class="nv">$cacheItem</span><span class="o">-&gt;</span><span class="na">getKey</span><span class="p">();</span>
+<span class="nv">$value</span> <span class="o">=</span> <span class="nv">$cacheItem</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="section" id="cache-item-expiration">
+<h3>Cache Item Expiration</h3>
+<p>By default, cache items are stored permanently. In practice, this “permanent
+storage” can vary greatly depending on the type of cache being used, as
+explained in the <a class="reference internal" href="cache_pools.xhtml"><span class="doc">Cache Pools and Supported Adapters</span></a> article.</p>
+<p>However, in some applications it’s common to use cache items with a shorter
+lifespan. Consider for example an application which caches the latest news just
+for one minute. In those cases, use the <code class="docutils literal notranslate"><span class="pre">expiresAfter()</span></code> method to set the
+number of seconds to cache the item:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$latestNews</span><span class="o">-&gt;</span><span class="na">expiresAfter</span><span class="p">(</span><span class="mi">60</span><span class="p">);</span>  <span class="c1">// 60 seconds = 1 minute</span>
+
+<span class="c1">// this method also accepts \DateInterval instances</span>
+<span class="nv">$latestNews</span><span class="o">-&gt;</span><span class="na">expiresAfter</span><span class="p">(</span><span class="nx">DateInterval</span><span class="o">::</span><span class="na">createFromDateString</span><span class="p">(</span><span class="s1">&#39;1 hour&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Cache items define another related method called <code class="docutils literal notranslate"><span class="pre">expiresAt()</span></code> to set the
+exact date and time when the item will expire:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$mostPopularNews</span><span class="o">-&gt;</span><span class="na">expiresAt</span><span class="p">(</span><span class="k">new</span> <span class="nx">\DateTime</span><span class="p">(</span><span class="s1">&#39;tomorrow&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="cache-item-hits-and-misses">
+<h2>Cache Item Hits and Misses</h2>
+<p>Using a cache mechanism is important to improve the application performance, but
+it should not be required to make the application work. In fact, the PSR-6 document
+wisely states that caching errors should not result in application failures.</p>
+<p>In practice with PSR-6, this means that the <code class="docutils literal notranslate"><span class="pre">getItem()</span></code> method always returns an
+object which implements the <code class="docutils literal notranslate"><span class="pre">Psr\Cache\CacheItemInterface</span></code> interface, even when
+the cache item doesn’t exist. Therefore, you don’t have to deal with <code class="docutils literal notranslate"><span class="pre">null</span></code> return
+values and you can safely store in the cache values such as <code class="docutils literal notranslate"><span class="pre">false</span></code> and <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p>
+<p>In order to decide if the returned object represents a value coming from the storage
+or not, caches use the concept of hits and misses:</p>
+<ul class="simple">
+<li><p><strong>Cache Hits</strong> occur when the requested item is found in the cache, its value
+is not corrupted or invalid and it hasn’t expired;</p></li>
+<li><p><strong>Cache Misses</strong> are the opposite of hits, so they occur when the item is not
+found in the cache, its value is corrupted or invalid for any reason or the
+item has expired.</p></li>
+</ul>
+<p>Cache item objects define a boolean <code class="docutils literal notranslate"><span class="pre">isHit()</span></code> method which returns <code class="docutils literal notranslate"><span class="pre">true</span></code>
+for cache hits:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$latestNews</span> <span class="o">=</span> <span class="nv">$cache</span><span class="o">-&gt;</span><span class="na">getItem</span><span class="p">(</span><span class="s1">&#39;latest_news&#39;</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$latestNews</span><span class="o">-&gt;</span><span class="na">isHit</span><span class="p">())</span> <span class="p">{</span>
+    <span class="c1">// do some heavy computation</span>
+    <span class="nv">$news</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+    <span class="nv">$cache</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">(</span><span class="nv">$latestNews</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nv">$news</span><span class="p">));</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nv">$news</span> <span class="o">=</span> <span class="nv">$latestNews</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

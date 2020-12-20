@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Debug Configuration Reference (DebugBundle)</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="debug-configuration-reference-debugbundle">
+<span id="index-0"></span><h1>Debug Configuration Reference (DebugBundle)</h1>
+<p>The DebugBundle integrates the <a class="reference internal" href="../../components/var_dumper.xhtml"><span class="doc">VarDumper component</span></a>
+in Symfony applications. All these options are configured under the <code class="docutils literal notranslate"><span class="pre">debug</span></code>
+key in your application configuration.</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># displays the default config values defined by Symfony</span>
+<span class="gp">$</span> php bin/console config:dump-reference debug
+
+<span class="c1"># displays the actual config values used by your application</span>
+<span class="gp">$</span> php bin/console debug:config debug
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using XML, you must use the <code class="docutils literal notranslate"><span class="pre">http://symfony.com/schema/dic/debug</span></code>
+namespace and the related XSD schema is available at:
+<code class="docutils literal notranslate"><span class="pre">https://symfony.com/schema/dic/debug/debug-1.0.xsd</span></code></p>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration</h2>
+<ul class="list-config-options simple">
+<li><p><a class="reference internal" href="#dump-destination">dump_destination</a></p></li>
+<li><p><a class="reference internal" href="#max-items">max_items</a></p></li>
+<li><p><a class="reference internal" href="#min-depth">min_depth</a></p></li>
+<li><p><a class="reference internal" href="#max-string-length">max_string_length</a></p></li>
+</ul>
+<div class="section" id="max-items">
+<h3>max_items</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">2500</span></code></p>
+<p>This is the maximum number of items to dump. Setting this option to <code class="docutils literal notranslate"><span class="pre">-1</span></code>
+disables the limit.</p>
+</div>
+<div class="section" id="min-depth">
+<h3>min_depth</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+<p>Configures the minimum tree depth until which all items are guaranteed to
+be cloned. After this depth is reached, only <code class="docutils literal notranslate"><span class="pre">max_items</span></code> items will be
+cloned. The default value is <code class="docutils literal notranslate"><span class="pre">1</span></code>, which is consistent with older Symfony
+versions.</p>
+</div>
+<div class="section" id="max-string-length">
+<h3>max_string_length</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">-1</span></code></p>
+<p>This option configures the maximum string length before truncating the
+string. The default value (<code class="docutils literal notranslate"><span class="pre">-1</span></code>) means that strings are never truncated.</p>
+</div>
+<div class="section" id="dump-destination">
+<span id="configuration-debug-dump-destination"></span><h3>dump_destination</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+<p>Configures the output destination of the dumps.</p>
+<p>By default, the dumps are shown in the toolbar. Since this is not always
+possible (e.g. when working on a JSON API), you can have an alternate output
+destination for dumps. Typically, you would set this to <code class="docutils literal notranslate"><span class="pre">php://stderr</span></code>:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/debug.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">dump_destination</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">php://stderr</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/debug.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/debug&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:debug=</span><span class="s">&quot;http://symfony.com/schema/dic/debug&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/debug https://symfony.com/schema/dic/debug/debug-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;debug:config</span> <span class="na">dump-destination=</span><span class="s">&quot;php://stderr&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/debug.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;dump_destination&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;php://stderr&#39;</span><span class="p">,</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>Configure it to <code class="docutils literal notranslate"><span class="pre">&quot;tcp://%env(VAR_DUMPER_SERVER)%&quot;</span></code> in order to use the <a class="reference internal" href="../../components/var_dumper.xhtml#var-dumper-dump-server"><span class="std std-ref">ServerDumper feature</span></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

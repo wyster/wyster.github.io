@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Front Controller</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-front-controller">
+<h1>The Front Controller</h1>
+<p>Up until now, our application is simplistic as there is only one page. To
+spice things up a little bit, let’s go crazy and add another page that says
+goodbye:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// framework/bye.php</span>
+<span class="k">require_once</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/vendor/autoload.php&#39;</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Request</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+
+<span class="nv">$request</span> <span class="o">=</span> <span class="nx">Request</span><span class="o">::</span><span class="na">createFromGlobals</span><span class="p">();</span>
+
+<span class="nv">$response</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="s1">&#39;Goodbye!&#39;</span><span class="p">);</span>
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>As you can see for yourself, much of the code is exactly the same as the one
+we have written for the first page. Let’s extract the common code that we can
+share between all our pages. Code sharing sounds like a good plan to create
+our first “real” framework!</p>
+<p>The PHP way of doing the refactoring would probably be the creation of an
+include file:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// framework/init.php</span>
+<span class="k">require_once</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/vendor/autoload.php&#39;</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Request</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+
+<span class="nv">$request</span> <span class="o">=</span> <span class="nx">Request</span><span class="o">::</span><span class="na">createFromGlobals</span><span class="p">();</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Let’s see it in action:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// framework/index.php</span>
+<span class="k">require_once</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/init.php&#39;</span><span class="p">;</span>
+
+<span class="nv">$name</span> <span class="o">=</span> <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;World&#39;</span><span class="p">);</span>
+
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setContent</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;Hello %s&#39;</span><span class="p">,</span> <span class="nb">htmlspecialchars</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nx">ENT_QUOTES</span><span class="p">,</span> <span class="s1">&#39;UTF-8&#39;</span><span class="p">)));</span>
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>And for the “Goodbye” page:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// framework/bye.php</span>
+<span class="k">require_once</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/init.php&#39;</span><span class="p">;</span>
+
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setContent</span><span class="p">(</span><span class="s1">&#39;Goodbye!&#39;</span><span class="p">);</span>
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>We have indeed moved most of the shared code into a central place, but it does
+not feel like a good abstraction, does it? We still have the <code class="docutils literal notranslate"><span class="pre">send()</span></code> method
+for all pages, our pages do not look like templates and we are still not able
+to test this code properly.</p>
+<p>Moreover, adding a new page means that we need to create a new PHP script,
+which name is exposed to the end user via the URL
+(<code class="docutils literal notranslate"><span class="pre">http://127.0.0.1:4321/bye.php</span></code>): there is a direct mapping between the PHP
+script name and the client URL. This is because the dispatching of the request
+is done by the web server directly. It might be a good idea to move this
+dispatching to our code for better flexibility. This can be achieved by routing
+all client requests to a single PHP script.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Exposing a single PHP script to the end user is a design pattern called
+the “<a class="reference internal" href="../introduction/from_flat_php_to_symfony.xhtml#from-flat-php-front-controller"><span class="std std-ref">front controller</span></a>”.</p>
+</div>
+<p>Such a script might look like the following:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// framework/front.php</span>
+<span class="k">require_once</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/vendor/autoload.php&#39;</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Request</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+
+<span class="nv">$request</span> <span class="o">=</span> <span class="nx">Request</span><span class="o">::</span><span class="na">createFromGlobals</span><span class="p">();</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">();</span>
+
+<span class="nv">$map</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;/hello&#39;</span> <span class="o">=&gt;</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/hello.php&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;/bye&#39;</span>   <span class="o">=&gt;</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/bye.php&#39;</span><span class="p">,</span>
+<span class="p">];</span>
+
+<span class="nv">$path</span> <span class="o">=</span> <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">getPathInfo</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$map</span><span class="p">[</span><span class="nv">$path</span><span class="p">]))</span> <span class="p">{</span>
+    <span class="k">require</span> <span class="nv">$map</span><span class="p">[</span><span class="nv">$path</span><span class="p">];</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setStatusCode</span><span class="p">(</span><span class="mi">404</span><span class="p">);</span>
+    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setContent</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>And here is for instance the new <code class="docutils literal notranslate"><span class="pre">hello.php</span></code> script:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// framework/hello.php</span>
+<span class="nv">$name</span> <span class="o">=</span> <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;World&#39;</span><span class="p">);</span>
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setContent</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;Hello %s&#39;</span><span class="p">,</span> <span class="nb">htmlspecialchars</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nx">ENT_QUOTES</span><span class="p">,</span> <span class="s1">&#39;UTF-8&#39;</span><span class="p">)));</span>
+</pre></div>
+</div>
+<p>In the <code class="docutils literal notranslate"><span class="pre">front.php</span></code> script, <code class="docutils literal notranslate"><span class="pre">$map</span></code> associates URL paths with their
+corresponding PHP script paths.</p>
+<p>As a bonus, if the client asks for a path that is not defined in the URL map,
+we return a custom 404 page; you are now in control of your website.</p>
+<p>To access a page, you must now use the <code class="docutils literal notranslate"><span class="pre">front.php</span></code> script:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">http://127.0.0.1:4321/front.php/hello?name=Fabien</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">http://127.0.0.1:4321/front.php/bye</span></code></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">/hello</span></code> and <code class="docutils literal notranslate"><span class="pre">/bye</span></code> are the page <em>paths</em>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Most web servers like Apache or nginx are able to rewrite the incoming URLs
+and remove the front controller script so that your users will be able to
+type <code class="docutils literal notranslate"><span class="pre">http://127.0.0.1:4321/hello?name=Fabien</span></code>, which looks much better.</p>
+</div>
+<p>The trick is the usage of the <code class="docutils literal notranslate"><span class="pre">Request::getPathInfo()</span></code> method which returns
+the path of the Request by removing the front controller script name including
+its sub-directories (only if needed – see above tip).</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You don’t even need to setup a web server to test the code. Instead,
+replace the <code class="docutils literal notranslate"><span class="pre">$request</span> <span class="pre">=</span> <span class="pre">Request::createFromGlobals();</span></code> call to something
+like <code class="docutils literal notranslate"><span class="pre">$request</span> <span class="pre">=</span> <span class="pre">Request::create('/hello?name=Fabien');</span></code> where the
+argument is the URL path you want to simulate.</p>
+</div>
+<p>Now that the web server always accesses the same script (<code class="docutils literal notranslate"><span class="pre">front.php</span></code>) for all
+pages, we can secure the code further by moving all other PHP files outside the
+web root directory:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span>example.com
+├── composer.json
+├── composer.lock
+├── src
+│   └── pages
+│       ├── hello.php
+│       └── bye.php
+├── vendor
+│   └── autoload.php
+└── web
+    └── front.php
+</pre></div>
+</td></tr></table></div>
+<p>Now, configure your web server root directory to point to <code class="docutils literal notranslate"><span class="pre">web/</span></code> and all
+other files won’t be accessible from the client anymore.</p>
+<p>To test your changes in a browser (<code class="docutils literal notranslate"><span class="pre">http://localhost:4321/hello?name=Fabien</span></code>),
+run the <a class="reference internal" href="../setup/symfony_server.xhtml"><span class="doc">Symfony Local Web Server</span></a>:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> symfony server:start --port<span class="o">=</span><span class="m">4321</span> --passthru<span class="o">=</span>front.php
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For this new structure to work, you will have to adjust some paths in
+various PHP files; the changes are left as an exercise for the reader.</p>
+</div>
+<p>The last thing that is repeated in each page is the call to <code class="docutils literal notranslate"><span class="pre">setContent()</span></code>.
+We can convert all pages to “templates” by just echoing the content and calling
+the <code class="docutils literal notranslate"><span class="pre">setContent()</span></code> directly from the front controller script:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// example.com/web/front.php</span>
+
+<span class="c1">// ...</span>
+
+<span class="nv">$path</span> <span class="o">=</span> <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">getPathInfo</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$map</span><span class="p">[</span><span class="nv">$path</span><span class="p">]))</span> <span class="p">{</span>
+    <span class="nb">ob_start</span><span class="p">();</span>
+    <span class="k">include</span> <span class="nv">$map</span><span class="p">[</span><span class="nv">$path</span><span class="p">];</span>
+    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setContent</span><span class="p">(</span><span class="nb">ob_get_clean</span><span class="p">());</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setStatusCode</span><span class="p">(</span><span class="mi">404</span><span class="p">);</span>
+    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setContent</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// ...</span>
+</pre></div>
+</div>
+<p>And the <code class="docutils literal notranslate"><span class="pre">hello.php</span></code> script can now be converted to a template:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;!--</span> <span class="nx">example</span><span class="o">.</span><span class="nx">com</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">pages</span><span class="o">/</span><span class="nx">hello</span><span class="o">.</span><span class="nx">php</span> <span class="o">--&gt;</span>
+<span class="o">&lt;?</span><span class="nx">php</span> <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;World&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+
+<span class="x">Hello </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nb">htmlspecialchars</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nx">ENT_QUOTES</span><span class="p">,</span> <span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+<p>We have the first version of our framework:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// example.com/web/front.php</span>
+<span class="k">require_once</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../vendor/autoload.php&#39;</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Request</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+
+<span class="nv">$request</span> <span class="o">=</span> <span class="nx">Request</span><span class="o">::</span><span class="na">createFromGlobals</span><span class="p">();</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">();</span>
+
+<span class="nv">$map</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;/hello&#39;</span> <span class="o">=&gt;</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../src/pages/hello.php&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;/bye&#39;</span>   <span class="o">=&gt;</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../src/pages/bye.php&#39;</span><span class="p">,</span>
+<span class="p">];</span>
+
+<span class="nv">$path</span> <span class="o">=</span> <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">getPathInfo</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$map</span><span class="p">[</span><span class="nv">$path</span><span class="p">]))</span> <span class="p">{</span>
+    <span class="nb">ob_start</span><span class="p">();</span>
+    <span class="k">include</span> <span class="nv">$map</span><span class="p">[</span><span class="nv">$path</span><span class="p">];</span>
+    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setContent</span><span class="p">(</span><span class="nb">ob_get_clean</span><span class="p">());</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setStatusCode</span><span class="p">(</span><span class="mi">404</span><span class="p">);</span>
+    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setContent</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Adding a new page is a two-step process: add an entry in the map and create a
+PHP template in <code class="docutils literal notranslate"><span class="pre">src/pages/</span></code>. From a template, get the Request data via the
+<code class="docutils literal notranslate"><span class="pre">$request</span></code> variable and tweak the Response headers via the <code class="docutils literal notranslate"><span class="pre">$response</span></code>
+variable.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you decide to stop here, you can probably enhance your framework by
+extracting the URL map to a configuration file.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

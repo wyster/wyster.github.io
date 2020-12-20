@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -106,7 +106,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#creating-a-cache-chain">Creating a Cache Chain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-cache-tags">Using Cache Tags</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#clearing-the-cache">Clearing the Cache</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#encrypting-the-cache">Encrypting the Cache</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="console.html">Console Commands</a></li>
@@ -124,10 +123,8 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -242,6 +239,9 @@ developed for high performance.</p>
 </div>
 <p>Symfony supports Cache Contracts, PSR-6/16 and Doctrine Cache interfaces.
 You can read more about these at the <a class="reference internal" href="components/cache.html"><span class="doc">component documentation</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2: </span>The cache contracts were introduced in Symfony 4.2.</p>
+</div>
 <div class="section" id="configuring-cache-with-frameworkbundle">
 <span id="cache-configuration-with-frameworkbundle"></span><h2>Configuring Cache with FrameworkBundle<a class="headerlink" href="#configuring-cache-with-frameworkbundle" title="Permalink to this headline">¶</a></h2>
 <p>When configuring the cache component there are a few concepts you should know
@@ -337,11 +337,7 @@ adapter (template) they use by using the <code class="docutils literal notransla
 <li><a class="reference internal" href="components/cache/adapters/pdo_doctrine_dbal_adapter.html"><span class="doc">cache.adapter.pdo</span></a></li>
 <li><a class="reference internal" href="components/cache/adapters/proxy_adapter.html"><span class="doc">cache.adapter.psr6</span></a></li>
 <li><a class="reference internal" href="components/cache/adapters/redis_adapter.html"><span class="doc">cache.adapter.redis</span></a></li>
-<li><a class="reference internal" href="components/cache/adapters/redis_adapter.html#redis-tag-aware-adapter"><span class="std std-ref">cache.adapter.redis_tag_aware</span></a> (Redis adapter optimized to work with tags)</li>
 </ul>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span><code class="docutils literal notranslate"><span class="pre">cache.adapter.redis_tag_aware</span></code> has been introduced in Symfony 5.2.</p>
-</div>
 <p>Some of these adapters could be configured via shortcuts. Using these shortcuts
 will create pools with service IDs that follow the pattern <code class="docutils literal notranslate"><span class="pre">cache.[type]</span></code>.</p>
 <div class="configuration-block">
@@ -961,6 +957,9 @@ in order from fastest to slowest.</p>
 <p>If an error happens when storing an item in a pool, Symfony stores it in the
 other pools and no exception is thrown. Later, when the item is retrieved,
 Symfony stores the item automatically in all the missing pools.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>Support for configuring a chain using <code class="docutils literal notranslate"><span class="pre">framework.cache.pools</span></code> was introduced in Symfony 4.4.</p>
+</div>
 <div class="configuration-block">
 <ul class="simple">
 <li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -1290,6 +1289,9 @@ clearer.</p>
 <div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console cache:pool:list
 </pre></div>
 </td></tr></table></div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">cache:pool:list</span></code> command was introduced in Symfony 4.3.</p>
+</div>
 <p>Clear one pool:</p>
 <div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console cache:pool:clear my_cache_pool
 </pre></div>
@@ -1302,130 +1304,6 @@ clearer.</p>
 <div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console cache:pool:clear cache.global_clearer
 </pre></div>
 </td></tr></table></div>
-</div>
-<div class="section" id="encrypting-the-cache">
-<h2>Encrypting the Cache<a class="headerlink" href="#encrypting-the-cache" title="Permalink to this headline">¶</a></h2>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Marshaller/SodiumMarshaller.php" title="Symfony\Component\Cache\Marshaller\SodiumMarshaller"><span class="pre">SodiumMarshaller</span></a></code>
-class was introduced in Symfony 5.1.</p>
-</div>
-<p>To encrypt the cache using <code class="docutils literal notranslate"><span class="pre">libsodium</span></code>, you can use the
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Marshaller/SodiumMarshaller.php" title="Symfony\Component\Cache\Marshaller\SodiumMarshaller"><span class="pre">SodiumMarshaller</span></a></code>.</p>
-<p>First, you need to generate a secure key and add it to your <a class="reference internal" href="configuration/secrets.html"><span class="doc">secret
-store</span></a> as <code class="docutils literal notranslate"><span class="pre">CACHE_DECRYPTION_KEY</span></code>:</p>
-<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php -r <span class="s1">&#39;echo base64_encode(sodium_crypto_box_keypair());&#39;</span>
-</pre></div>
-</td></tr></table></div>
-<p>Then, register the <code class="docutils literal notranslate"><span class="pre">SodiumMarshaller</span></code> service using this key:</p>
-<div class="configuration-block">
-<ul class="simple">
-<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/cache.yaml</span>
-
-<span class="c1"># ...</span>
-<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">Symfony\Component\Cache\Marshaller\SodiumMarshaller</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">decorates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cache.default_marshaller</span>
-        <span class="l l-Scalar l-Scalar-Plain">arguments</span><span class="p p-Indicator">:</span>
-            <span class="p p-Indicator">-</span> <span class="p p-Indicator">[</span><span class="s">&#39;%env(base64:CACHE_DECRYPTION_KEY)%&#39;</span><span class="p p-Indicator">]</span>
-            <span class="c1"># use multiple keys in order to rotate them</span>
-            <span class="c1">#- [&#39;%env(base64:CACHE_DECRYPTION_KEY)%&#39;, &#39;%env(base64:OLD_CACHE_DECRYPTION_KEY)%&#39;]</span>
-            <span class="p p-Indicator">-</span> <span class="s">&#39;@Symfony\Component\Cache\Marshaller\SodiumMarshaller.inner&#39;</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/cache.xml --&gt;</span>
-<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
-<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
-    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-    <span class="na">xmlns:framework=</span><span class="s">&quot;http://symfony.com/schema/dic/symfony&quot;</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
-<span class="s">        http://symfony.com/schema/dic/symfony</span>
-<span class="s">        https://symfony.com/schema/dic/symfony/symfony-1.0.xsd&quot;</span><span class="nt">&gt;</span>
-
-    <span class="c">&lt;!-- ... --&gt;</span>
-
-    <span class="nt">&lt;services&gt;</span>
-        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;Symfony\Component\Cache\Marshaller\SodiumMarshaller&quot;</span> <span class="na">decorates=</span><span class="s">&quot;cache.default_marshaller&quot;</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;collection&quot;</span><span class="nt">&gt;</span>
-                <span class="nt">&lt;argument&gt;</span>env(base64:CACHE_DECRYPTION_KEY)<span class="nt">&lt;/argument&gt;</span>
-                <span class="c">&lt;!-- use multiple keys in order to rotate them --&gt;</span>
-                <span class="c">&lt;!-- &lt;argument&gt;env(base64:OLD_CACHE_DECRYPTION_KEY)&lt;/argument&gt; --&gt;</span>
-            <span class="nt">&lt;/argument&gt;</span>
-            <span class="nt">&lt;argument</span> <span class="na">type=</span><span class="s">&quot;service&quot;</span> <span class="na">id=</span><span class="s">&quot;Symfony\Component\Cache\Marshaller\SodiumMarshaller.inner&quot;</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/service&gt;</span>
-    <span class="nt">&lt;/services&gt;</span>
-<span class="nt">&lt;/container&gt;</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/cache.php</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Cache\Marshaller\SodiumMarshaller</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\ChildDefinition</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\Reference</span><span class="p">;</span>
-
-<span class="c1">// ...</span>
-<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">setDefinition</span><span class="p">(</span><span class="nx">SodiumMarshaller</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="k">new</span> <span class="nx">ChildDefinition</span><span class="p">(</span><span class="s1">&#39;cache.default_marshaller&#39;</span><span class="p">))</span>
-    <span class="o">-&gt;</span><span class="na">addArgument</span><span class="p">([</span><span class="s1">&#39;env(base64:CACHE_DECRYPTION_KEY)&#39;</span><span class="p">])</span>
-    <span class="c1">// use multiple keys in order to rotate them</span>
-    <span class="c1">//-&gt;addArgument([&#39;env(base64:CACHE_DECRYPTION_KEY)&#39;, &#39;env(base64:OLD_CACHE_DECRYPTION_KEY)&#39;])</span>
-    <span class="o">-&gt;</span><span class="na">addArgument</span><span class="p">(</span><span class="k">new</span> <span class="nx">Reference</span><span class="p">(</span><span class="nx">SodiumMarshaller</span><span class="o">::</span><span class="na">class</span><span class="o">.</span><span class="s1">&#39;.inner&#39;</span><span class="p">));</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-</ul>
-</div>
-<div class="admonition caution">
-<p class="first admonition-title">Caution</p>
-<p class="last">This will encrypt the values of the cache items, but not the cache keys. Be
-careful not the leak sensitive data in the keys.</p>
-</div>
-<p>When configuring multiple keys, the first key will be used for reading and
-writing, and the additional key(s) will only be used for reading. Once all
-cache items encrypted with the old key have expired, you can remove
-<code class="docutils literal notranslate"><span class="pre">OLD_CACHE_DECRYPTION_KEY</span></code> completely.</p>
 </div>
 </div>
 

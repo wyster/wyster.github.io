@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Traceable Event Dispatcher</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-traceable-event-dispatcher">
+<span id="index-0"></span><h1>The Traceable Event Dispatcher</h1>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/EventDispatcher/Debug/TraceableEventDispatcher.php" title="Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher"><span class="pre">TraceableEventDispatcher</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/EventDispatcher/Debug/TraceableEventDispatcher.php]</span></span></code>
+is an event dispatcher that wraps any other event dispatcher and can then
+be used to determine which event listeners have been called by the dispatcher.
+Pass the event dispatcher to be wrapped and an instance of the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Stopwatch/Stopwatch.php" title="Symfony\Component\Stopwatch\Stopwatch"><span class="pre">Stopwatch</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Stopwatch/Stopwatch.php]</span></span></code> to its constructor:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Stopwatch\Stopwatch</span><span class="p">;</span>
+
+<span class="c1">// the event dispatcher to debug</span>
+<span class="nv">$dispatcher</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="nv">$traceableEventDispatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TraceableEventDispatcher</span><span class="p">(</span>
+    <span class="nv">$dispatcher</span><span class="p">,</span>
+    <span class="k">new</span> <span class="nx">Stopwatch</span><span class="p">()</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Now, the <code class="docutils literal notranslate"><span class="pre">TraceableEventDispatcher</span></code> can be used like any other event dispatcher
+to register event listeners and dispatch events:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+
+<span class="c1">// registers an event listener</span>
+<span class="nv">$eventListener</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+<span class="nv">$priority</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+<span class="nv">$traceableEventDispatcher</span><span class="o">-&gt;</span><span class="na">addListener</span><span class="p">(</span>
+    <span class="s1">&#39;event.the_name&#39;</span><span class="p">,</span>
+    <span class="nv">$eventListener</span><span class="p">,</span>
+    <span class="nv">$priority</span>
+<span class="p">);</span>
+
+<span class="c1">// dispatches an event</span>
+<span class="nv">$event</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+<span class="nv">$traceableEventDispatcher</span><span class="o">-&gt;</span><span class="na">dispatch</span><span class="p">(</span><span class="nv">$event</span><span class="p">,</span> <span class="s1">&#39;event.the_name&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>After your application has been processed, you can use the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/EventDispatcher/Debug/TraceableEventDispatcherInterface.php" title="Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcherInterface::getCalledListeners()"><span class="pre">getCalledListeners()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/EventDispatcher/Debug/TraceableEventDispatcherInterface.php]</span></span></code>
+method to retrieve an array of event listeners that have been called in
+your application. Similarly, the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/EventDispatcher/Debug/TraceableEventDispatcherInterface.php" title="Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcherInterface::getNotCalledListeners()"><span class="pre">getNotCalledListeners()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/EventDispatcher/Debug/TraceableEventDispatcherInterface.php]</span></span></code>
+method returns an array of event listeners that have not been called:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+
+<span class="nv">$calledListeners</span> <span class="o">=</span> <span class="nv">$traceableEventDispatcher</span><span class="o">-&gt;</span><span class="na">getCalledListeners</span><span class="p">();</span>
+<span class="nv">$notCalledListeners</span> <span class="o">=</span> <span class="nv">$traceableEventDispatcher</span><span class="o">-&gt;</span><span class="na">getNotCalledListeners</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

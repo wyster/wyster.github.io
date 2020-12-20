@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Using Translation in Templates</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-translation-in-templates">
+<h1>Using Translation in Templates</h1>
+<div class="section" id="twig-templates">
+<h2>Twig Templates</h2>
+<div class="section" id="using-twig-tags">
+<span id="translation-tags"></span><h3>Using Twig Tags</h3>
+<p>Symfony provides specialized Twig tags (<code class="docutils literal notranslate"><span class="pre">trans</span></code> and <code class="docutils literal notranslate"><span class="pre">transchoice</span></code>) to
+help with message translation of <em>static blocks of text</em>:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">trans</span> <span class="cp">%}</span><span class="x">Hello %name%</span><span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
+
+<span class="cp">{%</span> <span class="k">transchoice</span> <span class="nv">count</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">    {0} There are no apples|{1} There is one apple|]1,Inf[ There are %count% apples</span>
+<span class="cp">{%</span> <span class="k">endtranschoice</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> tag automatically gets the <code class="docutils literal notranslate"><span class="pre">%count%</span></code> variable from
+the current context and passes it to the translator. This mechanism only
+works when you use a placeholder following the <code class="docutils literal notranslate"><span class="pre">%var%</span></code> pattern.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> tag is deprecated since Symfony 4.2 and will be
+removed in 5.0. Use the <a class="reference internal" href="message_format.xhtml"><span class="doc">ICU MessageFormat</span></a> with
+the <code class="docutils literal notranslate"><span class="pre">trans</span></code> tag instead.</p>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">%var%</span></code> notation of placeholders is required when translating in
+Twig templates using the tag.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you need to use the percent character (<code class="docutils literal notranslate"><span class="pre">%</span></code>) in a string, escape it by
+doubling it: <code class="docutils literal notranslate"><span class="pre">{%</span> <span class="pre">trans</span> <span class="pre">%}Percent:</span> <span class="pre">%percent%%%{%</span> <span class="pre">endtrans</span> <span class="pre">%}</span></code></p>
+</div>
+<p>You can also specify the message domain and pass some additional variables:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">trans</span> <span class="nv">with</span> <span class="o">{</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">}</span> <span class="nv">from</span> <span class="s1">&#39;app&#39;</span> <span class="cp">%}</span><span class="x">Hello %name%</span><span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
+
+<span class="cp">{%</span> <span class="k">trans</span> <span class="nv">with</span> <span class="o">{</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">}</span> <span class="nv">from</span> <span class="s1">&#39;app&#39;</span> <span class="nv">into</span> <span class="s1">&#39;fr&#39;</span> <span class="cp">%}</span><span class="x">Hello %name%</span><span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
+
+<span class="cp">{%</span> <span class="k">transchoice</span> <span class="nv">count</span> <span class="nv">with</span> <span class="o">{</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">}</span> <span class="nv">from</span> <span class="s1">&#39;app&#39;</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">    {0} %name%, there are no apples|{1} %name%, there is one apple|]1,Inf[ %name%, there are %count% apples</span>
+<span class="cp">{%</span> <span class="k">endtranschoice</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="using-twig-filters">
+<span id="translation-filters"></span><h3>Using Twig Filters</h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">trans</span></code> and <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> filters can be used to translate <em>variable
+texts</em> and complex expressions:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span> <span class="cp">}}</span><span class="x"></span>
+
+<span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">transchoice</span><span class="o">(</span><span class="m">5</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+
+<span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span><span class="o">({</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">},</span> <span class="s1">&#39;app&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+
+<span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">transchoice</span><span class="o">(</span><span class="m">5</span><span class="o">,</span> <span class="o">{</span><span class="s1">&#39;%name%&#39;</span><span class="o">:</span> <span class="s1">&#39;Fabien&#39;</span><span class="o">},</span> <span class="s1">&#39;app&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> filter is deprecated since Symfony 4.2 and will be
+removed in 5.0. Use the <a class="reference internal" href="message_format.xhtml"><span class="doc">ICU MessageFormat</span></a> with
+the <code class="docutils literal notranslate"><span class="pre">trans</span></code> filter instead.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Using the translation tags or filters have the same effect, but with
+one subtle difference: automatic output escaping is only applied to
+translations using a filter. In other words, if you need to be sure
+that your translated message is <em>not</em> output escaped, you must apply
+the <code class="docutils literal notranslate"><span class="pre">raw</span></code> filter after the translation filter:</p>
+<div class="highlight-html+twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">{# text translated between tags is never escaped #}</span>
+<span class="cp">{%</span> <span class="k">trans</span> <span class="cp">%}</span>
+    <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;</span>foo<span class="p">&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+<span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span>
+
+<span class="cp">{%</span> <span class="k">set</span> <span class="nv">message</span> <span class="o">=</span> <span class="s1">&#39;&lt;h3&gt;foo&lt;/h3&gt;&#39;</span> <span class="cp">%}</span>
+
+<span class="c">{# strings and variables translated via a filter are escaped by default #}</span>
+<span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span><span class="o">|</span><span class="nf">raw</span> <span class="cp">}}</span>
+<span class="cp">{{</span> <span class="s1">&#39;&lt;h3&gt;bar&lt;/h3&gt;&#39;</span><span class="o">|</span><span class="nf">trans</span><span class="o">|</span><span class="nf">raw</span> <span class="cp">}}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can set the translation domain for an entire Twig template with a single tag:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">trans_default_domain</span> <span class="s1">&#39;app&#39;</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<p>Note that this only influences the current template, not any “included”
+template (in order to avoid side effects).</p>
+</div>
+</div>
+</div>
+<div class="section" id="php-templates">
+<h2>PHP Templates</h2>
+<p>The translator service is accessible in PHP templates through the
+<code class="docutils literal notranslate"><span class="pre">translator</span></code> helper:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;translator&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">trans</span><span class="p">(</span><span class="s1">&#39;Symfony is great&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+
+<span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;translator&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">transChoice</span><span class="p">(</span>
+    <span class="s1">&#39;{0} There are no apples|{1} There is one apple|]1,Inf[ There are %count% apples&#39;</span><span class="p">,</span>
+    <span class="mi">10</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;%count%&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">]</span>
+<span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

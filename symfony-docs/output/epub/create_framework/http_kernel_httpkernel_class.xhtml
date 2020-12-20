@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The HttpKernel Component: The HttpKernel Class</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-httpkernel-component-the-httpkernel-class">
+<h1>The HttpKernel Component: The HttpKernel Class</h1>
+<p>If you were to use our framework right now, you would probably have to add
+support for custom error messages. We do have 404 and 500 error support but
+the responses are hardcoded in the framework itself. Making them customizable
+is straightforward though: dispatch a new event and listen to it. Doing it right
+means that the listener has to call a regular controller. But what if the
+error controller throws an exception? You will end up in an infinite loop.
+There should be an easier way, right?</p>
+<p>Enter the <code class="docutils literal notranslate"><span class="pre">HttpKernel</span></code> class. Instead of solving the same problem over and
+over again and instead of reinventing the wheel each time, the <code class="docutils literal notranslate"><span class="pre">HttpKernel</span></code>
+class is a generic, extensible and flexible implementation of
+<code class="docutils literal notranslate"><span class="pre">HttpKernelInterface</span></code>.</p>
+<p>This class is very similar to the framework class we have written so far: it
+dispatches events at some strategic points during the handling of the request,
+it uses a controller resolver to choose the controller to dispatch the request
+to, and as an added bonus, it takes care of edge cases and provides great
+feedback when a problem arises.</p>
+<p>Here is the new framework code:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// example.com/src/Simplex/Framework.php</span>
+<span class="k">namespace</span> <span class="nx">Simplex</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpKernel\HttpKernel</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Framework</span> <span class="k">extends</span> <span class="nx">HttpKernel</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>And the new front controller:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// example.com/web/front.php</span>
+<span class="k">require_once</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../vendor/autoload.php&#39;</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\EventDispatcher\EventDispatcher</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Request</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\RequestStack</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpKernel</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Routing</span><span class="p">;</span>
+
+<span class="nv">$request</span> <span class="o">=</span> <span class="nx">Request</span><span class="o">::</span><span class="na">createFromGlobals</span><span class="p">();</span>
+<span class="nv">$requestStack</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RequestStack</span><span class="p">();</span>
+<span class="nv">$routes</span> <span class="o">=</span> <span class="k">include</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../src/app.php&#39;</span><span class="p">;</span>
+
+<span class="nv">$context</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Routing\RequestContext</span><span class="p">();</span>
+<span class="nv">$matcher</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Routing\Matcher\UrlMatcher</span><span class="p">(</span><span class="nv">$routes</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+
+<span class="nv">$controllerResolver</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">HttpKernel\Controller\ControllerResolver</span><span class="p">();</span>
+<span class="nv">$argumentResolver</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">HttpKernel\Controller\ArgumentResolver</span><span class="p">();</span>
+
+<span class="nv">$dispatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EventDispatcher</span><span class="p">();</span>
+<span class="nv">$dispatcher</span><span class="o">-&gt;</span><span class="na">addSubscriber</span><span class="p">(</span><span class="k">new</span> <span class="nx">HttpKernel\EventListener\RouterListener</span><span class="p">(</span><span class="nv">$matcher</span><span class="p">,</span> <span class="nv">$requestStack</span><span class="p">));</span>
+
+<span class="nv">$framework</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Simplex\Framework</span><span class="p">(</span><span class="nv">$dispatcher</span><span class="p">,</span> <span class="nv">$controllerResolver</span><span class="p">,</span> <span class="nv">$requestStack</span><span class="p">,</span> <span class="nv">$argumentResolver</span><span class="p">);</span>
+
+<span class="nv">$response</span> <span class="o">=</span> <span class="nv">$framework</span><span class="o">-&gt;</span><span class="na">handle</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">();</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RouterListener</span></code> is an implementation of the same logic we had in our
+framework: it matches the incoming request and populates the request
+attributes with route parameters.</p>
+<p>Our code is now much more concise and surprisingly more robust and more
+powerful than ever. For instance, use the built-in <code class="docutils literal notranslate"><span class="pre">ErrorListener</span></code> to
+make your error management configurable:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$errorHandler</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="nx">Symfony\Component\ErrorHandler\Exception\FlattenException</span> <span class="nv">$exception</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$msg</span> <span class="o">=</span> <span class="s1">&#39;Something went wrong! (&#39;</span><span class="o">.</span><span class="nv">$exception</span><span class="o">-&gt;</span><span class="na">getMessage</span><span class="p">()</span><span class="o">.</span><span class="s1">&#39;)&#39;</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="nv">$msg</span><span class="p">,</span> <span class="nv">$exception</span><span class="o">-&gt;</span><span class="na">getStatusCode</span><span class="p">());</span>
+<span class="p">};</span>
+<span class="nv">$dispatcher</span><span class="o">-&gt;</span><span class="na">addSubscriber</span><span class="p">(</span><span class="k">new</span> <span class="nx">HttpKernel\EventListener\ErrorListener</span><span class="p">(</span><span class="nv">$errorHandler</span><span class="p">));</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ErrorListener</span></code> gives you a <code class="docutils literal notranslate"><span class="pre">FlattenException</span></code> instance instead of the
+thrown <code class="docutils literal notranslate"><span class="pre">Exception</span></code> or <code class="docutils literal notranslate"><span class="pre">Error</span></code> instance to ease exception manipulation and
+display. It can take any valid controller as an exception handler, so you can
+create an ErrorController class instead of using a Closure:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$listener</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">HttpKernel\EventListener\ErrorListener</span><span class="p">(</span>
+    <span class="s1">&#39;Calendar\Controller\ErrorController::exception&#39;</span>
+<span class="p">);</span>
+<span class="nv">$dispatcher</span><span class="o">-&gt;</span><span class="na">addSubscriber</span><span class="p">(</span><span class="nv">$listener</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The error controller reads as follows:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// example.com/src/Calendar/Controller/ErrorController.php</span>
+<span class="k">namespace</span> <span class="nx">Calendar\Controller</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\ErrorHandler\Exception\FlattenException</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ErrorController</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">exception</span><span class="p">(</span><span class="nx">FlattenException</span> <span class="nv">$exception</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$msg</span> <span class="o">=</span> <span class="s1">&#39;Something went wrong! (&#39;</span><span class="o">.</span><span class="nv">$exception</span><span class="o">-&gt;</span><span class="na">getMessage</span><span class="p">()</span><span class="o">.</span><span class="s1">&#39;)&#39;</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="nv">$msg</span><span class="p">,</span> <span class="nv">$exception</span><span class="o">-&gt;</span><span class="na">getStatusCode</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><em>Voilà!</em> Clean and customizable error management without efforts. And if your
+<code class="docutils literal notranslate"><span class="pre">ErrorController</span></code> throws an exception, HttpKernel will handle it nicely.</p>
+<p>In chapter two, we talked about the <code class="docutils literal notranslate"><span class="pre">Response::prepare()</span></code> method, which
+ensures that a Response is compliant with the HTTP specification. It is
+probably a good idea to always call it just before sending the Response to the
+client; that’s what the <code class="docutils literal notranslate"><span class="pre">ResponseListener</span></code> does:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$dispatcher</span><span class="o">-&gt;</span><span class="na">addSubscriber</span><span class="p">(</span><span class="k">new</span> <span class="nx">HttpKernel\EventListener\ResponseListener</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>If you want out of the box support for streamed responses, subscribe
+to <code class="docutils literal notranslate"><span class="pre">StreamedResponseListener</span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$dispatcher</span><span class="o">-&gt;</span><span class="na">addSubscriber</span><span class="p">(</span><span class="k">new</span> <span class="nx">HttpKernel\EventListener\StreamedResponseListener</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>And in your controller, return a <code class="docutils literal notranslate"><span class="pre">StreamedResponse</span></code> instance instead of a
+<code class="docutils literal notranslate"><span class="pre">Response</span></code> instance.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Read the <a class="reference internal" href="../reference/events.xhtml"><span class="doc">Built-in Symfony Events</span></a> reference to learn more about the events
+dispatched by HttpKernel and how they allow you to change the flow of a
+request.</p>
+</div>
+<p>Now, let’s create a listener, one that allows a controller to return a string
+instead of a full Response object:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">LeapYearController</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">,</span> <span class="nv">$year</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$leapYear</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">LeapYear</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$leapYear</span><span class="o">-&gt;</span><span class="na">isLeapYear</span><span class="p">(</span><span class="nv">$year</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s1">&#39;Yep, this is a leap year! &#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="s1">&#39;Nope, this is not a leap year.&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To implement this feature, we are going to listen to the <code class="docutils literal notranslate"><span class="pre">kernel.view</span></code>
+event, which is triggered just after the controller has been called. Its goal
+is to convert the controller return value to a proper Response instance, but
+only if needed:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// example.com/src/Simplex/StringResponseListener.php</span>
+<span class="k">namespace</span> <span class="nx">Simplex</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\EventDispatcher\EventSubscriberInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpKernel\Event\ViewEvent</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">StringResponseListener</span> <span class="k">implements</span> <span class="nx">EventSubscriberInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onView</span><span class="p">(</span><span class="nx">ViewEvent</span> <span class="nv">$event</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getControllerResult</span><span class="p">();</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">is_string</span><span class="p">(</span><span class="nv">$response</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">setResponse</span><span class="p">(</span><span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="nv">$response</span><span class="p">));</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getSubscribedEvents</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;kernel.view&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;onView&#39;</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The code is simple because the <code class="docutils literal notranslate"><span class="pre">kernel.view</span></code> event is only triggered when
+the controller return value is not a Response and because setting the response
+on the event stops the event propagation (our listener cannot interfere with
+other view listeners).</p>
+<p>Don’t forget to register it in the front controller:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$dispatcher</span><span class="o">-&gt;</span><span class="na">addSubscriber</span><span class="p">(</span><span class="k">new</span> <span class="nx">Simplex\StringResponseListener</span><span class="p">());</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you forget to register the subscriber, HttpKernel will throw an
+exception with a nice message: <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">controller</span> <span class="pre">must</span> <span class="pre">return</span> <span class="pre">a</span> <span class="pre">response</span>
+<span class="pre">(Nope,</span> <span class="pre">this</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">a</span> <span class="pre">leap</span> <span class="pre">year.</span> <span class="pre">given).</span></code>.</p>
+</div>
+<p>At this point, our whole framework code is as compact as possible and it is
+mainly composed of an assembly of existing libraries. Extending is a matter
+of registering event listeners/subscribers.</p>
+<p>Hopefully, you now have a better understanding of why the simple looking
+<code class="docutils literal notranslate"><span class="pre">HttpKernelInterface</span></code> is so powerful. Its default implementation,
+<code class="docutils literal notranslate"><span class="pre">HttpKernel</span></code>, gives you access to a lot of cool features, ready to be used
+out of the box, with no efforts. And because HttpKernel is actually the code
+that powers the Symfony framework, you have the best of both
+worlds: a custom framework, tailored to your needs, but based on a rock-solid
+and well maintained low-level architecture that has been proven to work for
+many websites; a code that has been audited for security issues and that has
+proven to scale well.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

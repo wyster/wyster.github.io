@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Changing the Default Command</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="changing-the-default-command">
+<span id="index-0"></span><h1>Changing the Default Command</h1>
+<p>The Console component will always run the <code class="docutils literal notranslate"><span class="pre">ListCommand</span></code> when no command name is
+passed. In order to change the default command you need to pass the command
+name to the <code class="docutils literal notranslate"><span class="pre">setDefaultCommand()</span></code> method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="nx">Acme\Console\Command</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Command\Command</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">HelloWorldCommand</span> <span class="k">extends</span> <span class="nx">Command</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">static</span> <span class="nv">$defaultName</span> <span class="o">=</span> <span class="s1">&#39;hello:world&#39;</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">setDescription</span><span class="p">(</span><span class="s1">&#39;Outputs &quot;Hello World&quot;&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;Hello World&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Executing the application and changing the default command:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// application.php</span>
+<span class="k">use</span> <span class="nx">Acme\Console\Command\HelloWorldCommand</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Application</span><span class="p">;</span>
+
+<span class="nv">$command</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">HelloWorldCommand</span><span class="p">();</span>
+<span class="nv">$application</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Application</span><span class="p">();</span>
+<span class="nv">$application</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="nv">$command</span><span class="p">);</span>
+<span class="nv">$application</span><span class="o">-&gt;</span><span class="na">setDefaultCommand</span><span class="p">(</span><span class="nv">$command</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">());</span>
+<span class="nv">$application</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Test the new default console command by running the following:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php
+</pre></div>
+</td></tr></table></div>
+<p>This will print the following to the command line:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Hello World
+</pre></div>
+</td></tr></table></div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>This feature has a limitation: you cannot pass any argument or option to
+the default command because they are ignored.</p>
+</div>
+<div class="section" id="learn-more">
+<h2>Learn More!</h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="single_command_tool.xhtml"><span class="doc">Building a single Command Application</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

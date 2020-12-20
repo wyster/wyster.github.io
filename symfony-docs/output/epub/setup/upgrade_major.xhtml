@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Upgrading a Major Version (e.g. 4.4.0 to 5.0.0)</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="upgrading-a-major-version-e-g-4-4-0-to-5-0-0">
+<span id="index-0"></span><h1>Upgrading a Major Version (e.g. 4.4.0 to 5.0.0)</h1>
+<p>Every two years, Symfony releases a new major version release (the first number
+changes). These releases are the trickiest to upgrade, as they are allowed to
+break backward compatibility. However, Symfony makes this upgrade process as
+smooth as possible.</p>
+<p>This means that you can update most of your code before the major release is
+actually released. This is called making your code <em>future compatible</em>.</p>
+<p>There are a couple of steps to upgrading a major version:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#upgrade-major-symfony-deprecations"><span class="std std-ref">Make your code deprecation free</span></a>;</p></li>
+<li><p><a class="reference internal" href="#upgrade-major-symfony-composer"><span class="std std-ref">Update to the new major version via Composer</span></a>;</p></li>
+<li><p><a class="reference internal" href="#upgrade-major-symfony-after"><span class="std std-ref">Update your code to work with the new version</span></a>.</p></li>
+</ol>
+<div class="section" id="make-your-code-deprecation-free">
+<span id="upgrade-major-symfony-deprecations"></span><h2>1) Make your Code Deprecation Free</h2>
+<p>During the lifecycle of a major release, new features are added and method
+signatures and public API usages are changed. However,
+<a class="reference internal" href="upgrade_minor.xhtml"><span class="doc">minor versions</span></a> should not contain any
+backwards incompatible changes. To accomplish this, the “old” (e.g. functions,
+classes, etc) code still works, but is marked as <em>deprecated</em>, indicating that
+it will be removed/changed in the future and that you should stop using it.</p>
+<p>When the major version is released (e.g. 5.0.0), all deprecated features and
+functionality are removed. So, as long as you’ve updated your code to stop
+using these deprecated features in the last version before the major (e.g.
+<code class="docutils literal notranslate"><span class="pre">4.4.*</span></code>), you should be able to upgrade without a problem. That means that
+you should first <a class="reference internal" href="upgrade_minor.xhtml"><span class="doc">upgrade to the last minor version</span></a>
+(e.g. 4.4) so that you can see <em>all</em> the deprecations.</p>
+<p>To help you find deprecations, notices are triggered whenever you end up
+using a deprecated feature. When visiting your application in the
+<a class="reference internal" href="../configuration.xhtml#configuration-environments"><span class="std std-ref">dev environment</span></a>
+in your browser, these notices are shown in the web dev toolbar:</p>
+<img alt="../_images/deprecations-in-profiler.png" class="with-browser align-center" src="../_images/deprecations-in-profiler.png" />
+<p>Ultimately, you should aim to stop using the deprecated functionality.
+Sometimes the warning might tell you exactly what to change.</p>
+<p>But other times, the warning might be unclear: a setting somewhere might
+cause a class deeper to trigger the warning. In this case, Symfony does its
+best to give a clear message, but you may need to research that warning further.</p>
+<p>And sometimes, the warning may come from a third-party library or bundle
+that you’re using. If that’s true, there’s a good chance that those deprecations
+have already been updated. In that case, upgrade the library to fix them.</p>
+<p>Once all the deprecation warnings are gone, you can upgrade with a lot
+more confidence.</p>
+<div class="section" id="deprecations-in-phpunit">
+<h3>Deprecations in PHPUnit</h3>
+<p>When you run your tests using PHPUnit, no deprecation notices are shown.
+To help you here, Symfony provides a PHPUnit bridge. This bridge will show
+you a nice summary of all deprecation notices at the end of the test report.</p>
+<p>All you need to do is install the PHPUnit bridge:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require --dev symfony/phpunit-bridge
+</pre></div>
+</td></tr></table></div>
+<p>Now, you can start fixing the notices:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># this command is available after running &quot;composer require --dev symfony/phpunit-bridge&quot;</span>
+<span class="gp">$</span> ./bin/phpunit
+<span class="go">...</span>
+
+<span class="go">OK (10 tests, 20 assertions)</span>
+
+<span class="go">Remaining deprecation notices (6)</span>
+
+<span class="go">The &quot;request&quot; service is deprecated and will be removed in 3.0. Add a type-hint for</span>
+<span class="go">Symfony\Component\HttpFoundation\Request to your controller parameters to retrieve the</span>
+<span class="go">request instead: 6x</span>
+<span class="go">    3x in PageAdminTest::testPageShow from Symfony\Cmf\SimpleCmsBundle\Tests\WebTest\Admin</span>
+<span class="go">    2x in PageAdminTest::testPageList from Symfony\Cmf\SimpleCmsBundle\Tests\WebTest\Admin</span>
+<span class="go">    1x in PageAdminTest::testPageEdit from Symfony\Cmf\SimpleCmsBundle\Tests\WebTest\Admin</span>
+</pre></div>
+</td></tr></table></div>
+<p>Once you fixed them all, the command ends with <code class="docutils literal notranslate"><span class="pre">0</span></code> (success) and you’re
+done!</p>
+<div class="sidebar">
+<p class="sidebar-title">Using the Weak Deprecations Mode</p>
+<p>Sometimes, you can’t fix all deprecations (e.g. something was deprecated
+in 4.4 and you still need to support 4.3). In these cases, you can still
+use the bridge to fix as many deprecations as possible and then allow
+more of them to make your tests pass again. You can do this by using the
+<code class="docutils literal notranslate"><span class="pre">SYMFONY_DEPRECATIONS_HELPER</span></code> env variable:</p>
+<div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- phpunit.xml.dist --&gt;</span>
+<span class="nt">&lt;phpunit&gt;</span>
+    <span class="c">&lt;!-- ... --&gt;</span>
+
+    <span class="nt">&lt;php&gt;</span>
+        <span class="nt">&lt;env</span> <span class="na">name=</span><span class="s">&quot;SYMFONY_DEPRECATIONS_HELPER&quot;</span> <span class="na">value=</span><span class="s">&quot;max[total]=999999&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/php&gt;</span>
+<span class="nt">&lt;/phpunit&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can also execute the command like:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nv">SYMFONY_DEPRECATIONS_HELPER</span><span class="o">=</span>max<span class="o">[</span>total<span class="o">]=</span><span class="m">999999</span> php ./bin/phpunit
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+<div class="section" id="update-to-the-new-major-version-via-composer">
+<span id="upgrade-major-symfony-composer"></span><h2>2) Update to the New Major Version via Composer</h2>
+<p>Once your code is deprecation free, you can update the Symfony library via
+Composer by modifying your <code class="docutils literal notranslate"><span class="pre">composer.json</span></code> file and changing all the libraries
+starting with <code class="docutils literal notranslate"><span class="pre">symfony/</span></code> to the new major version:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{
+    &quot;...&quot;: &quot;...&quot;,
+
+    &quot;require&quot;: {
+<span class="gd">-         &quot;symfony/cache&quot;: &quot;4.4.*&quot;,</span>
+<span class="gi">+         &quot;symfony/cache&quot;: &quot;5.0.*&quot;,</span>
+<span class="gd">-         &quot;symfony/config&quot;: &quot;4.4.*&quot;,</span>
+<span class="gi">+         &quot;symfony/config&quot;: &quot;5.0.*&quot;,</span>
+<span class="gd">-         &quot;symfony/console&quot;: &quot;4.4.*&quot;,</span>
+<span class="gi">+         &quot;symfony/console&quot;: &quot;5.0.*&quot;,</span>
+        &quot;...&quot;: &quot;...&quot;,
+
+        &quot;...&quot;: &quot;A few libraries starting with
+                symfony/ follow their own versioning scheme. You
+                do not need to update these versions: you can
+                upgrade them independently whenever you want&quot;,
+        &quot;symfony/monolog-bundle&quot;: &quot;^3.5&quot;,
+    },
+    &quot;...&quot;: &quot;...&quot;,
+}
+</pre></div>
+</td></tr></table></div>
+<p>At the bottom of your <code class="docutils literal notranslate"><span class="pre">composer.json</span></code> file, in the <code class="docutils literal notranslate"><span class="pre">extra</span></code> block you can
+find a data setting for the Symfony version. Make sure to also upgrade
+this one. For instance, update it to <code class="docutils literal notranslate"><span class="pre">5.0.*</span></code> to upgrade to Symfony 5.0:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span>&quot;extra&quot;: {
+    &quot;symfony&quot;: {
+        &quot;allow-contrib&quot;: false,
+<span class="gd">-       &quot;require&quot;: &quot;4.4.*&quot;</span>
+<span class="gi">+       &quot;require&quot;: &quot;5.0.*&quot;</span>
+    }
+}
+</pre></div>
+</td></tr></table></div>
+<p>Next, use Composer to download new versions of the libraries:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer update <span class="s2">&quot;symfony/*&quot;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="dependency-errors">
+<h3>Dependency Errors</h3>
+<p>If you get a dependency error, it may mean that you also need to upgrade
+other libraries that are dependencies of the Symfony libraries. To allow
+that, pass the <code class="docutils literal notranslate"><span class="pre">--with-all-dependencies</span></code> flag:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer update <span class="s2">&quot;symfony/*&quot;</span> --with-all-dependencies
+</pre></div>
+</td></tr></table></div>
+<p>This updates <code class="docutils literal notranslate"><span class="pre">symfony/*</span></code> and <em>all</em> packages that those packages depend on.
+By using tight version constraints in <code class="docutils literal notranslate"><span class="pre">composer.json</span></code>, you can control what
+versions each library upgrades to.</p>
+<p>If this still doesn’t work, your <code class="docutils literal notranslate"><span class="pre">composer.json</span></code> file may specify a version
+for a library that is not compatible with the newer Symfony version. In that
+case, updating that library to a newer version in <code class="docutils literal notranslate"><span class="pre">composer.json</span></code> may solve
+the issue.</p>
+<p>Or, you may have deeper issues where different libraries depend on conflicting
+versions of other libraries. Check your error message to debug.</p>
+<p>Another issue that may happen is that the project dependencies can be installed
+on your local computer but not on the remote server. This usually happens when
+the PHP versions are different on each machine. The solution is to add the
+<a class="reference external" href="https://getcomposer.org/doc/06-config.md#platform">platform</a><span class="link-target"> [https://getcomposer.org/doc/06-config.md#platform]</span> config option to your <cite>composer.json</cite> file to define the highest
+PHP version allowed for the dependencies (set it to the server’s PHP version).</p>
+</div>
+<div class="section" id="upgrading-other-packages">
+<h3>Upgrading other Packages</h3>
+<p>You may also want to upgrade the rest of your libraries. If you’ve done a
+good job with your <a class="reference external" href="https://getcomposer.org/doc/articles/versions.md">version constraints</a><span class="link-target"> [https://getcomposer.org/doc/articles/versions.md]</span> in <code class="docutils literal notranslate"><span class="pre">composer.json</span></code>, you can do
+this safely by running:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer update
+</pre></div>
+</td></tr></table></div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Beware, if you have some unspecific <a class="reference external" href="https://getcomposer.org/doc/articles/versions.md">version constraints</a><span class="link-target"> [https://getcomposer.org/doc/articles/versions.md]</span> in your
+<code class="docutils literal notranslate"><span class="pre">composer.json</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">dev-master</span></code>), this could upgrade some
+non-Symfony libraries to new versions that contain backwards-compatibility
+breaking changes.</p>
+</div>
+</div>
+</div>
+<div class="section" id="updating-recipes">
+<span id="upgrade-major-symfony-after"></span><h2>3) Updating Recipes</h2>
+<p>Over time - and especially when you upgrade to a new version of a library - an
+updated version of the <a class="reference internal" href="../setup.xhtml#recipes-description"><span class="std std-ref">recipe</span></a> may be available.
+These updates are usually minor - e.g. new comments in a configuration file - but
+it’s a good idea to keep your files in sync with the recipes.</p>
+<p>Symfony Flex provides several commands to help upgrade your recipes. Be sure to
+commit any unrelated changes you’re working on before starting:</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.6: </span>The recipes commands were introduced in Symfony Flex 1.6.</p>
+</div>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># see a list of all installed recipes and which have updates available</span>
+<span class="gp">$</span> composer recipes
+
+<span class="c1"># see detailed information about a specific recipes</span>
+<span class="gp">$</span> composer recipes symfony/framework-bundle
+
+<span class="c1"># update a specific recipes</span>
+<span class="gp">$</span> composer recipes:install symfony/framework-bundle --force -v
+</pre></div>
+</td></tr></table></div>
+<p>The tricky part of this process is that the recipe “update” does not perform
+any intelligent “upgrading” of your code. Instead, <strong>the updates process re-installs
+the latest version of the recipe</strong> which means that <strong>your custom code will be
+overridden completely</strong>. After updating a recipe, you need to carefully choose
+which changes you want, and undo the rest.</p>
+<div class="screencast admonition">
+<p class="admonition-title">Screencast</p>
+<p>For a detailed example, see the <a class="reference external" href="https://symfonycasts.com/screencast/symfony5-upgrade">SymfonyCasts Symfony 5 Upgrade Tutorial</a><span class="link-target"> [https://symfonycasts.com/screencast/symfony5-upgrade]</span>.</p>
+</div>
+</div>
+<div class="section" id="update-your-code-to-work-with-the-new-version">
+<h2>4) Update your Code to Work with the New Version</h2>
+<p>In some rare situations, the next major version <em>may</em> contain backwards-compatibility
+breaks. Make sure you read the <code class="docutils literal notranslate"><span class="pre">UPGRADE-X.0.md</span></code> (where X is the new major version)
+included in the Symfony repository for any BC break that you need to be aware of.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

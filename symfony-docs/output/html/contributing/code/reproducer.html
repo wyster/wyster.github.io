@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -301,9 +299,8 @@ to a route definition. Then, after creating your project:</p>
 of controllers, actions, etc. as in your original application.</li>
 <li>Create a small controller and add your routing definition that shows the bug.</li>
 <li>Don’t create or modify any other file.</li>
-<li>Install the <a class="reference internal" href="../../setup/symfony_server.html"><span class="doc">local web server</span></a> provided by Symfony
-and use the <code class="docutils literal notranslate"><span class="pre">symfony</span> <span class="pre">server:start</span></code> command to browse to the new route and
-see if the bug appears or not.</li>
+<li>Execute <code class="docutils literal notranslate"><span class="pre">composer</span> <span class="pre">require</span> <span class="pre">symfony/web-server-bundle</span></code> and use the <code class="docutils literal notranslate"><span class="pre">server:run</span></code>
+command to browse to the new route and see if the bug appears or not.</li>
 <li>If you can see the bug, you’re done and you can already share the code with us.</li>
 <li>If you can’t see the bug, you must keep making small changes. For example, if
 your original route was defined using XML, forget about the previous route

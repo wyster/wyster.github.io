@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Create your Custom Normalizer</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-create-your-custom-normalizer">
+<span id="index-0"></span><h1>How to Create your Custom Normalizer</h1>
+<p>The <a class="reference internal" href="../components/serializer.xhtml"><span class="doc">Serializer component</span></a> uses
+normalizers to transform any data into an array. The component provides several
+<a class="reference internal" href="normalizers.xhtml"><span class="doc">built-in normalizers</span></a> but you may need to create
+your own normalizer to transform an unsupported data structure.</p>
+<div class="section" id="creating-a-new-normalizer">
+<h2>Creating a New Normalizer</h2>
+<p>Imagine you want add, modify, or remove some properties during the serialization
+process. For that you’ll have to create your own normalizer. But it’s usually
+preferable to let Symfony normalize the object, then hook into the normalization
+to customize the normalized data. To do that, leverage the <code class="docutils literal notranslate"><span class="pre">ObjectNormalizer</span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Serializer/TopicNormalizer.php</span>
+<span class="k">namespace</span> <span class="nx">App\Serializer</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Entity\Topic</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Routing\Generator\UrlGeneratorInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Normalizer\ObjectNormalizer</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">TopicNormalizer</span> <span class="k">implements</span> <span class="nx">ContextAwareNormalizerInterface</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$router</span><span class="p">;</span>
+    <span class="k">private</span> <span class="nv">$normalizer</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">UrlGeneratorInterface</span> <span class="nv">$router</span><span class="p">,</span> <span class="nx">ObjectNormalizer</span> <span class="nv">$normalizer</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">router</span> <span class="o">=</span> <span class="nv">$router</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">normalizer</span> <span class="o">=</span> <span class="nv">$normalizer</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">normalize</span><span class="p">(</span><span class="nv">$topic</span><span class="p">,</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="p">{</span>
+        <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">normalizer</span><span class="o">-&gt;</span><span class="na">normalize</span><span class="p">(</span><span class="nv">$topic</span><span class="p">,</span> <span class="nv">$format</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+
+        <span class="c1">// Here, add, edit, or delete some data:</span>
+        <span class="nv">$data</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">][</span><span class="s1">&#39;self&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">router</span><span class="o">-&gt;</span><span class="na">generate</span><span class="p">(</span><span class="s1">&#39;topic_show&#39;</span><span class="p">,</span> <span class="p">[</span>
+            <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="nv">$topic</span><span class="o">-&gt;</span><span class="na">getId</span><span class="p">(),</span>
+        <span class="p">],</span> <span class="nx">UrlGeneratorInterface</span><span class="o">::</span><span class="na">ABSOLUTE_URL</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$data</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsNormalization</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$data</span> <span class="nx">instanceof</span> <span class="nx">Topic</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="registering-it-in-your-application">
+<h2>Registering it in your Application</h2>
+<p>Before using this normalizer in a Symfony application it must be registered as
+a service and <a class="reference internal" href="../service_container/tags.xhtml"><span class="doc">tagged</span></a> with <code class="docutils literal notranslate"><span class="pre">serializer.normalizer</span></code>.
+If you’re using the <a class="reference internal" href="../service_container.xhtml#service-container-services-load-example"><span class="std std-ref">default services.yaml configuration</span></a>,
+this is done automatically!</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Mime Component</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-mime-component">
+<span id="index-0"></span><h1>The Mime Component</h1>
+<blockquote>
+<div><p>The Mime component allows manipulating the MIME messages used to send emails
+and provides utilities related to MIME types.</p>
+</div></blockquote>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The Mime component was introduced in Symfony 4.3.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation</h2>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/mime
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you install this component outside of a Symfony application, you must
+require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
+autoloading mechanism provided by Composer. Read
+<a class="reference internal" href="using_components.xhtml"><span class="doc">this article</span></a> for more details.</p>
+</div>
+</div>
+<div class="section" id="introduction">
+<h2>Introduction</h2>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/MIME">MIME</a><span class="link-target"> [https://en.wikipedia.org/wiki/MIME]</span> (Multipurpose Internet Mail Extensions) is an Internet standard that
+extends the original basic format of emails to support features like:</p>
+<ul class="simple">
+<li><p>Headers and text contents using non-ASCII characters;</p></li>
+<li><p>Message bodies with multiple parts (e.g. HTML and plain text contents);</p></li>
+<li><p>Non-text attachments: audio, video, images, PDF, etc.</p></li>
+</ul>
+<p>The entire MIME standard is complex and huge, but Symfony abstracts all that
+complexity to provide two ways of creating MIME messages:</p>
+<ul class="simple">
+<li><p>A high-level API based on the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/Email.php" title="Symfony\Component\Mime\Email"><span class="pre">Email</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/Email.php]</span></span></code> class
+to quickly create email messages with all the common features;</p></li>
+<li><p>A low-level API based on the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/Message.php" title="Symfony\Component\Mime\Message"><span class="pre">Message</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/Message.php]</span></span></code> class
+to have an absolute control over every single part of the email message.</p></li>
+</ul>
+</div>
+<div class="section" id="usage">
+<h2>Usage</h2>
+<p>Use the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/Email.php" title="Symfony\Component\Mime\Email"><span class="pre">Email</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/Email.php]</span></span></code> class and their <em>chainable</em>
+methods to compose the entire email message:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Mime\Email</span><span class="p">;</span>
+
+<span class="nv">$email</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">Email</span><span class="p">())</span>
+    <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;fabien@symfony.com&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">&#39;foo@example.com&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">cc</span><span class="p">(</span><span class="s1">&#39;bar@example.com&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">bcc</span><span class="p">(</span><span class="s1">&#39;baz@example.com&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">replyTo</span><span class="p">(</span><span class="s1">&#39;fabien@symfony.com&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">priority</span><span class="p">(</span><span class="nx">Email</span><span class="o">::</span><span class="na">PRIORITY_HIGH</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">subject</span><span class="p">(</span><span class="s1">&#39;Important Notification&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">text</span><span class="p">(</span><span class="s1">&#39;Lorem ipsum...&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">html</span><span class="p">(</span><span class="s1">&#39;&lt;h1&gt;Lorem ipsum&lt;/h1&gt; &lt;p&gt;...&lt;/p&gt;&#39;</span><span class="p">)</span>
+<span class="p">;</span>
+</pre></div>
+</div>
+<p>This only purpose of this component is to create the email messages. Use the
+<a class="reference internal" href="../mailer.xhtml"><span class="doc">Mailer component</span></a> to actually send them.</p>
+</div>
+<div class="section" id="twig-integration">
+<h2>Twig Integration</h2>
+<p>The Mime component comes with excellent integration with Twig, allowing you to
+create messages from Twig templates, embed images, inline CSS and more. Details
+on how to use those features can be found in the Mailer documentation:
+<a class="reference internal" href="../mailer.xhtml#mailer-twig"><span class="std std-ref">Twig: HTML &amp; CSS</span></a>.</p>
+<p>But if you’re using the Mime component without the Symfony framework, you’ll need
+to handle a few setup details.</p>
+<div class="section" id="twig-setup">
+<h3>Twig Setup</h3>
+<p>To integrate with Twig, use the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Mime/BodyRenderer.php" title="Symfony\Bridge\Twig\Mime\BodyRenderer"><span class="pre">BodyRenderer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Mime/BodyRenderer.php]</span></span></code>
+class to render the template and update the email message contents with the results:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="k">use</span> <span class="nx">Symfony\Bridge\Twig\Mime\BodyRenderer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Twig\Environment</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Twig\Loader\FilesystemLoader</span><span class="p">;</span>
+
+<span class="c1">// when using the Mime component inside a full-stack Symfony application, you</span>
+<span class="c1">// don&#39;t need to do this Twig setup. You only have to inject the &#39;twig&#39; service</span>
+<span class="nv">$loader</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FilesystemLoader</span><span class="p">(</span><span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/templates&#39;</span><span class="p">);</span>
+<span class="nv">$twig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Environment</span><span class="p">(</span><span class="nv">$loader</span><span class="p">);</span>
+
+<span class="nv">$renderer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BodyRenderer</span><span class="p">(</span><span class="nv">$twig</span><span class="p">);</span>
+<span class="c1">// this updates the $email object contents with the result of rendering</span>
+<span class="c1">// the template defined earlier with the given context</span>
+<span class="nv">$renderer</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inlining-css-styles-and-other-extensions">
+<h3>Inlining CSS Styles (and other Extensions)</h3>
+<p>To use the <a class="reference internal" href="../mailer.xhtml#mailer-inline-css"><span class="std std-ref">inline_css</span></a> filter, first install the Twig
+extension:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require twig/cssinliner-extra
+</pre></div>
+</td></tr></table></div>
+<p>Now, enable the extension:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="k">use</span> <span class="nx">Twig\Extra\CssInliner\CssInlinerExtension</span><span class="p">;</span>
+
+<span class="nv">$loader</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FilesystemLoader</span><span class="p">(</span><span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/templates&#39;</span><span class="p">);</span>
+<span class="nv">$twig</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Environment</span><span class="p">(</span><span class="nv">$loader</span><span class="p">);</span>
+<span class="nv">$twig</span><span class="o">-&gt;</span><span class="na">addExtension</span><span class="p">(</span><span class="k">new</span> <span class="nx">CssInlinerExtension</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>The same process should be used for enabling other extensions, like the
+<a class="reference internal" href="../mailer.xhtml#mailer-markdown"><span class="std std-ref">MarkdownExtension</span></a> and <a class="reference internal" href="../mailer.xhtml#mailer-inky"><span class="std std-ref">InkyExtension</span></a>.</p>
+</div>
+</div>
+<div class="section" id="creating-raw-email-messages">
+<h2>Creating Raw Email Messages</h2>
+<p>This is useful for advanced applications that need absolute control over every
+email part. It’s not recommended for applications with regular email
+requirements because it adds complexity for no real gain.</p>
+<p>Before continuing, it’s important to have a look at the low level structure of
+an email message. Consider a message which includes some content as both text
+and HTML, a single PNG image embedded in those contents and a PDF file attached
+to it. The MIME standard allows structuring this message in different ways, but
+the following tree is the one that works on most email clients:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span>multipart/mixed
+├── multipart/related
+│   ├── multipart/alternative
+│   │   ├── text/plain
+│   │   └── text/html
+│   └── image/png
+└── application/pdf
+</pre></div>
+</td></tr></table></div>
+<p>This is the purpose of each MIME message part:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">multipart/alternative</span></code>: used when two or more parts are alternatives of the
+same (or very similar) content. The preferred format must be added last.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multipart/mixed</span></code>: used to send different content types in the same message,
+such as when attaching files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multipart/related</span></code>: used to indicate that each message part is a component
+of an aggregate whole. The most common usage is to display images embedded
+in the message contents.</p></li>
+</ul>
+<p>When using the low-level <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/Message.php" title="Symfony\Component\Mime\Message"><span class="pre">Message</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/Message.php]</span></span></code> class to
+create the email message, you must keep all the above in mind to define the
+different parts of the email by hand:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Mime\Header\Headers</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Mime\Message</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Mime\Part\Multipart\AlternativePart</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Mime\Part\TextPart</span><span class="p">;</span>
+
+<span class="nv">$headers</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">Headers</span><span class="p">())</span>
+    <span class="o">-&gt;</span><span class="na">addMailboxListHeader</span><span class="p">(</span><span class="s1">&#39;From&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;fabien@symfony.com&#39;</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">addMailboxListHeader</span><span class="p">(</span><span class="s1">&#39;To&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;foo@example.com&#39;</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">addTextHeader</span><span class="p">(</span><span class="s1">&#39;Subject&#39;</span><span class="p">,</span> <span class="s1">&#39;Important Notification&#39;</span><span class="p">)</span>
+<span class="p">;</span>
+
+<span class="nv">$textContent</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TextPart</span><span class="p">(</span><span class="s1">&#39;Lorem ipsum...&#39;</span><span class="p">);</span>
+<span class="nv">$htmlContent</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TextPart</span><span class="p">(</span><span class="s1">&#39;&lt;h1&gt;Lorem ipsum&lt;/h1&gt; &lt;p&gt;...&lt;/p&gt;&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">);</span>
+<span class="nv">$body</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AlternativePart</span><span class="p">(</span><span class="nv">$textContent</span><span class="p">,</span> <span class="nv">$htmlContent</span><span class="p">);</span>
+
+<span class="nv">$email</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Message</span><span class="p">(</span><span class="nv">$headers</span><span class="p">,</span> <span class="nv">$body</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Embedding images and attaching files is possible by creating the appropriate
+email multiparts:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Mime\Part\DataPart</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Mime\Part\Multipart\MixedPart</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Mime\Part\Multipart\RelatedPart</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="nv">$embeddedImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DataPart</span><span class="p">(</span><span class="nb">fopen</span><span class="p">(</span><span class="s1">&#39;/path/to/images/logo.png&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span> <span class="k">null</span><span class="p">,</span> <span class="s1">&#39;image/png&#39;</span><span class="p">);</span>
+<span class="nv">$imageCid</span> <span class="o">=</span> <span class="nv">$embeddedImage</span><span class="o">-&gt;</span><span class="na">getContentId</span><span class="p">();</span>
+
+<span class="nv">$attachedFile</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DataPart</span><span class="p">(</span><span class="nb">fopen</span><span class="p">(</span><span class="s1">&#39;/path/to/documents/terms-of-use.pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span> <span class="k">null</span><span class="p">,</span> <span class="s1">&#39;application/pdf&#39;</span><span class="p">);</span>
+
+<span class="nv">$textContent</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TextPart</span><span class="p">(</span><span class="s1">&#39;Lorem ipsum...&#39;</span><span class="p">);</span>
+<span class="nv">$htmlContent</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TextPart</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span>
+    <span class="s1">&#39;&lt;img src=&quot;cid:%s&quot;/&gt; &lt;h1&gt;Lorem ipsum&lt;/h1&gt; &lt;p&gt;...&lt;/p&gt;&#39;</span><span class="p">,</span> <span class="nv">$imageCid</span>
+<span class="p">),</span> <span class="k">null</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">);</span>
+<span class="nv">$bodyContent</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AlternativePart</span><span class="p">(</span><span class="nv">$textContent</span><span class="p">,</span> <span class="nv">$htmlContent</span><span class="p">);</span>
+<span class="nv">$body</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RelatedPart</span><span class="p">(</span><span class="nv">$bodyContent</span><span class="p">,</span> <span class="nv">$embeddedImage</span><span class="p">);</span>
+
+<span class="nv">$messageParts</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MixedPart</span><span class="p">(</span><span class="nv">$body</span><span class="p">,</span> <span class="nv">$attachedFile</span><span class="p">);</span>
+
+<span class="nv">$email</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Message</span><span class="p">(</span><span class="nv">$headers</span><span class="p">,</span> <span class="nv">$messageParts</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="serializing-email-messages">
+<h2>Serializing Email Messages</h2>
+<p>Email messages created with either the <code class="docutils literal notranslate"><span class="pre">Email</span></code> or <code class="docutils literal notranslate"><span class="pre">Message</span></code> classes can be
+serialized because they are simple data objects:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$email</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">Email</span><span class="p">())</span>
+    <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s1">&#39;fabien@symfony.com&#39;</span><span class="p">)</span>
+    <span class="c1">// ...</span>
+<span class="p">;</span>
+
+<span class="nv">$serializedEmail</span> <span class="o">=</span> <span class="nb">serialize</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>A common use case is to store serialized email messages, include them in a
+message sent with the <a class="reference internal" href="messenger.xhtml"><span class="doc">Messenger component</span></a> and
+recreate them later when sending them. Use the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/RawMessage.php" title="Symfony\Component\Mime\RawMessage"><span class="pre">RawMessage</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/RawMessage.php]</span></span></code> class to recreate email messages
+from their serialized contents:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Mime\RawMessage</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="nv">$serializedEmail</span> <span class="o">=</span> <span class="nb">serialize</span><span class="p">(</span><span class="nv">$email</span><span class="p">);</span>
+
+<span class="c1">// later, recreate the original message to actually send it</span>
+<span class="nv">$message</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RawMessage</span><span class="p">(</span><span class="nb">unserialize</span><span class="p">(</span><span class="nv">$serializedEmail</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mime-types-utilities">
+<h2>MIME Types Utilities</h2>
+<p>Although MIME was designed mainly for creating emails, the content types (also
+known as <a class="reference external" href="https://en.wikipedia.org/wiki/Media_type">MIME types</a><span class="link-target"> [https://en.wikipedia.org/wiki/Media_type]</span> and “media types”) defined by MIME standards are also of
+importance in communication protocols outside of email, such as HTTP. That’s
+why this component also provides utilities to work with MIME types.</p>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/MimeTypes.php" title="Symfony\Component\Mime\MimeTypes"><span class="pre">MimeTypes</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/MimeTypes.php]</span></span></code> class transforms between
+MIME types and file name extensions:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Mime\MimeTypes</span><span class="p">;</span>
+
+<span class="nv">$mimeTypes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MimeTypes</span><span class="p">();</span>
+<span class="nv">$exts</span> <span class="o">=</span> <span class="nv">$mimeTypes</span><span class="o">-&gt;</span><span class="na">getExtensions</span><span class="p">(</span><span class="s1">&#39;application/javascript&#39;</span><span class="p">);</span>
+<span class="c1">// $exts = [&#39;js&#39;, &#39;jsm&#39;, &#39;mjs&#39;]</span>
+<span class="nv">$exts</span> <span class="o">=</span> <span class="nv">$mimeTypes</span><span class="o">-&gt;</span><span class="na">getExtensions</span><span class="p">(</span><span class="s1">&#39;image/jpeg&#39;</span><span class="p">);</span>
+<span class="c1">// $exts = [&#39;jpeg&#39;, &#39;jpg&#39;, &#39;jpe&#39;]</span>
+
+<span class="nv">$mimeTypes</span> <span class="o">=</span> <span class="nv">$mimeTypes</span><span class="o">-&gt;</span><span class="na">getMimeTypes</span><span class="p">(</span><span class="s1">&#39;js&#39;</span><span class="p">);</span>
+<span class="c1">// $mimeTypes = [&#39;application/javascript&#39;, &#39;application/x-javascript&#39;, &#39;text/javascript&#39;]</span>
+<span class="nv">$mimeTypes</span> <span class="o">=</span> <span class="nv">$mimeTypes</span><span class="o">-&gt;</span><span class="na">getMimeTypes</span><span class="p">(</span><span class="s1">&#39;apk&#39;</span><span class="p">);</span>
+<span class="c1">// $mimeTypes = [&#39;application/vnd.android.package-archive&#39;]</span>
+</pre></div>
+</div>
+<p>These methods return arrays with one or more elements. The element position
+indicates its priority, so the first returned extension is the preferred one.</p>
+<div class="section" id="guessing-the-mime-type">
+<span id="components-mime-type-guess"></span><h3>Guessing the MIME Type</h3>
+<p>Another useful utility allows to guess the MIME type of any given file:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Mime\MimeTypes</span><span class="p">;</span>
+
+<span class="nv">$mimeTypes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MimeTypes</span><span class="p">();</span>
+<span class="nv">$mimeType</span> <span class="o">=</span> <span class="nv">$mimeTypes</span><span class="o">-&gt;</span><span class="na">guessMimeType</span><span class="p">(</span><span class="s1">&#39;/some/path/to/image.gif&#39;</span><span class="p">);</span>
+<span class="c1">// Guessing is not based on the file name, so $mimeType will be &#39;image/gif&#39;</span>
+<span class="c1">// only if the given file is truly a GIF image</span>
+</pre></div>
+</div>
+<p>Guessing the MIME type is a time-consuming process that requires inspecting
+part of the file contents. Symfony applies multiple guessing mechanisms, one
+of them based on the PHP <a class="reference external" href="https://www.php.net/fileinfo">fileinfo extension</a><span class="link-target"> [https://www.php.net/fileinfo]</span>. It’s recommended to install
+that extension to improve the guessing performance.</p>
+<div class="section" id="adding-a-mime-type-guesser">
+<h4>Adding a MIME Type Guesser</h4>
+<p>You can add your own MIME type guesser by creating a class that implements
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/MimeTypeGuesserInterface.php" title="Symfony\Component\Mime\MimeTypeGuesserInterface"><span class="pre">MimeTypeGuesserInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Mime/MimeTypeGuesserInterface.php]</span></span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="nx">App</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Mime\MimeTypeGuesserInterface</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">SomeMimeTypeGuesser</span> <span class="k">implements</span> <span class="nx">MimeTypeGuesserInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">isGuesserSupported</span><span class="p">()</span><span class="o">:</span> <span class="nx">bool</span>
+    <span class="p">{</span>
+        <span class="c1">// return true when the guesser is supported (might depend on the OS for instance)</span>
+        <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessMimeType</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$path</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="c1">// inspect the contents of the file stored in $path to guess its</span>
+        <span class="c1">// type and return a valid MIME type ... or null if unknown</span>
+
+        <span class="k">return</span> <span class="s1">&#39;...&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>MIME type guessers must be <a class="reference internal" href="../service_container.xhtml#service-container-creating-service"><span class="std std-ref">registered as services</span></a>
+and <a class="reference internal" href="../service_container/tags.xhtml"><span class="doc">tagged</span></a> with the <code class="docutils literal notranslate"><span class="pre">mime.mime_type_guesser</span></code> tag.
+If you’re using the
+<a class="reference internal" href="../service_container.xhtml#service-container-services-load-example"><span class="std std-ref">default services.yaml configuration</span></a>,
+this is already done for you, thanks to <a class="reference internal" href="../service_container.xhtml#services-autoconfigure"><span class="std std-ref">autoconfiguration</span></a>.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

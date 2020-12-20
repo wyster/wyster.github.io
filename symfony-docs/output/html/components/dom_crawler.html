@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -304,10 +302,13 @@ by <a class="reference internal" href="#component-dom-crawler-dumping"><span cla
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If you need better support for HTML5 contents or want to get rid of the
+<p>If you need better support for HTML5 contents or want to get rid of the
 inconsistencies of PHP’s DOM extension, install the <a class="reference external" href="https://github.com/Masterminds/html5-php">html5-php library</a>.
 The DomCrawler component will use it automatically when the content has
 an HTML5 doctype.</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The automatic support of the html5-php library was introduced in Symfony 4.3.</p>
+</div>
 </div>
 <div class="section" id="node-filtering">
 <h3>Node Filtering<a class="headerlink" href="#node-filtering" title="Permalink to this headline">¶</a></h3>
@@ -405,6 +406,9 @@ namespace in the document. It’s done to simplify the XPath queries.</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">matches</span><span class="p">(</span><span class="s1">&#39;p.lorem&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">matches()</span></code> method was introduced in Symfony 4.4.</p>
+</div>
 </div>
 <div class="section" id="node-traversing">
 <h3>Node Traversing<a class="headerlink" href="#node-traversing" title="Permalink to this headline">¶</a></h3>
@@ -439,6 +443,9 @@ namespace in the document. It’s done to simplify the XPath queries.</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">closest</span><span class="p">(</span><span class="s1">&#39;p.lorem&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">closest()</span></code> method was introduced in Symfony 4.4.</p>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">All the traversal methods return a new <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/Crawler.php" title="Symfony\Component\DomCrawler\Crawler"><span class="pre">Crawler</span></a></code>
@@ -459,11 +466,16 @@ instance.</p>
 <span class="c1">// avoid the exception passing an argument that text() returns when node does not exist</span>
 <span class="nv">$message</span> <span class="o">=</span> <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">filterXPath</span><span class="p">(</span><span class="s1">&#39;//body/p&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">(</span><span class="s1">&#39;Default text content&#39;</span><span class="p">);</span>
 
-<span class="c1">// by default, text() trims white spaces, including the internal ones</span>
-<span class="c1">// (e.g. &quot;  foo\n  bar    baz \n &quot; is returned as &quot;foo bar baz&quot;)</span>
-<span class="c1">// pass FALSE as the second argument to return the original text unchanged</span>
-<span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">filterXPath</span><span class="p">(</span><span class="s1">&#39;//body/p&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">(</span><span class="s1">&#39;Default text content&#39;</span><span class="p">,</span> <span class="k">false</span><span class="p">);</span>
+<span class="c1">// pass TRUE as the second argument of text() to remove all extra white spaces, including</span>
+<span class="c1">// the internal ones (e.g. &quot;  foo\n  bar    baz \n &quot; is returned as &quot;foo bar baz&quot;)</span>
+<span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">filterXPath</span><span class="p">(</span><span class="s1">&#39;//body/p&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">(</span><span class="s1">&#39;Default text content&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
 </pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The default argument of <code class="docutils literal notranslate"><span class="pre">text()</span></code> was introduced in Symfony 4.3.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The option to trim white spaces in <code class="docutils literal notranslate"><span class="pre">text()</span></code> was introduced in Symfony 4.4.</p>
 </div>
 <p>Access the attribute value of the first node of the current selection:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$class</span> <span class="o">=</span> <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">filterXPath</span><span class="p">(</span><span class="s1">&#39;//body/p&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">attr</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">);</span>
@@ -478,8 +490,11 @@ instance.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Special attribute <code class="docutils literal notranslate"><span class="pre">_text</span></code> represents a node value, while <code class="docutils literal notranslate"><span class="pre">_name</span></code>
+<p>Special attribute <code class="docutils literal notranslate"><span class="pre">_text</span></code> represents a node value, while <code class="docutils literal notranslate"><span class="pre">_name</span></code>
 represents the element name (the HTML tag name).</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The special attribute <code class="docutils literal notranslate"><span class="pre">_name</span></code> was introduced in Symfony 4.3.</p>
+</div>
 </div>
 <p>Call an anonymous function on each node of the list:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\DomCrawler\Crawler</span><span class="p">;</span>
@@ -570,10 +585,16 @@ this:</p>
 <span class="nv">$html</span> <span class="o">=</span> <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">html</span><span class="p">(</span><span class="s1">&#39;Default &lt;strong&gt;HTML&lt;/strong&gt; content&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The default argument of <code class="docutils literal notranslate"><span class="pre">html()</span></code> was introduced in Symfony 4.3.</p>
+</div>
 <p>Or you can get the outer HTML of the first node using
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/Crawler.php" title="Symfony\Component\DomCrawler\Crawler::outerHtml()"><span class="pre">outerHtml()</span></a></code>:</p>
-<div class="last highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$html</span> <span class="o">=</span> <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">outerHtml</span><span class="p">();</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$html</span> <span class="o">=</span> <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">outerHtml</span><span class="p">();</span>
 </pre></div>
+</div>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">outerHtml()</span></code> method was introduced in Symfony 4.4.</p>
 </div>
 </div>
 </div>
@@ -723,6 +744,9 @@ useful methods for working with forms:</p>
 <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$form</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">();</span>
 </pre></div>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">getName()</span></code> method was introduced in Symfony 4.4.</p>
+</div>
 <p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/Form.php" title="Symfony\Component\DomCrawler\Form::getUri()"><span class="pre">getUri()</span></a></code> method does more
 than just return the <code class="docutils literal notranslate"><span class="pre">action</span></code> attribute of the form. If the form method
 is GET, then it mimics the browser’s behavior and returns the <code class="docutils literal notranslate"><span class="pre">action</span></code>
@@ -850,22 +874,6 @@ the whole form or specific field(s):</p>
 <span class="nv">$form</span><span class="p">[</span><span class="s1">&#39;country&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">select</span><span class="p">(</span><span class="s1">&#39;Invalid value&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="resolving-a-uri">
-<h3>Resolving a URI<a class="headerlink" href="#resolving-a-uri" title="Permalink to this headline">¶</a></h3>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/UriResolver.php" title="Symfony\Component\DomCrawler\UriResolver"><span class="pre">UriResolver</span></a></code> helper class was added in Symfony 5.1.</p>
-</div>
-<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/UriResolver.php" title="Symfony\Component\DomCrawler\UriResolver"><span class="pre">UriResolver</span></a></code> class takes an URI
-(relative, absolute, fragment, etc.) and turns it into an absolute URI against
-another given base URI:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\DomCrawler\UriResolver</span><span class="p">;</span>
-
-<span class="nx">UriResolver</span><span class="o">::</span><span class="na">resolve</span><span class="p">(</span><span class="s1">&#39;/foo&#39;</span><span class="p">,</span> <span class="s1">&#39;http://localhost/bar/foo/&#39;</span><span class="p">);</span> <span class="c1">// http://localhost/foo</span>
-<span class="nx">UriResolver</span><span class="o">::</span><span class="na">resolve</span><span class="p">(</span><span class="s1">&#39;?a=b&#39;</span><span class="p">,</span> <span class="s1">&#39;http://localhost/bar#foo&#39;</span><span class="p">);</span> <span class="c1">// http://localhost/bar?a=b</span>
-<span class="nx">UriResolver</span><span class="o">::</span><span class="na">resolve</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">,</span> <span class="s1">&#39;http://localhost/&#39;</span><span class="p">);</span> <span class="c1">// http://localhost/</span>
-</pre></div>
 </div>
 </div>
 </div>

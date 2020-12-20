@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Nov 2018 Changes to .env &amp; How to Update</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="nov-2018-changes-to-env-how-to-update">
+<h1>Nov 2018 Changes to .env &amp; How to Update</h1>
+<p>In November 2018, several changes were made to the core Symfony <em>recipes</em> related
+to the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file. These changes make working with environment variables easier
+and more consistent - especially when writing functional tests.</p>
+<p>If your app was started before November 2018, your app <strong>does not require any changes
+to keep working</strong>. However, if/when you are ready to take advantage of these improvements,
+you will need to make a few small updates.</p>
+<div class="section" id="what-changed-exactly">
+<h2>What Changed Exactly?</h2>
+<p>But first, what changed? On a high-level, not much. Here’s a summary of the most
+important changes:</p>
+<ul class="simple">
+<li><p>A) The <code class="docutils literal notranslate"><span class="pre">.env.dist</span></code> file no longer exists. Its contents should be moved to your
+<code class="docutils literal notranslate"><span class="pre">.env</span></code> file (see the next point).</p></li>
+<li><p>B) The <code class="docutils literal notranslate"><span class="pre">.env</span></code> file <strong>is</strong> now committed to your repository. It was previously ignored
+via the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file (the updated recipe does not ignore this file). Because
+this file is committed, it should contain non-sensitive, default values. The
+<code class="docutils literal notranslate"><span class="pre">.env</span></code> can be seen as the previous <code class="docutils literal notranslate"><span class="pre">.env.dist</span></code> file.</p></li>
+<li><p>C) A <code class="docutils literal notranslate"><span class="pre">.env.local</span></code> file can now be created to <em>override</em> values in <code class="docutils literal notranslate"><span class="pre">.env</span></code> for
+your machine. This file is ignored in the new <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>.</p></li>
+<li><p>D) When testing, your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file is now read, making it consistent with all
+other environments. You can also create a <code class="docutils literal notranslate"><span class="pre">.env.test</span></code> file for test-environment
+overrides.</p></li>
+<li><p>E) <a class="reference external" href="https://github.com/symfony/recipes/pull/501">One further change to the recipe in January 2019</a><span class="link-target"> [https://github.com/symfony/recipes/pull/501]</span> means that your <code class="docutils literal notranslate"><span class="pre">.env</span></code>
+files are <em>always</em> loaded, even if you set an <code class="docutils literal notranslate"><span class="pre">APP_ENV=prod</span></code> environment
+variable. The purpose is for the <code class="docutils literal notranslate"><span class="pre">.env</span></code> files to define default values that
+you can override if you want to with real environment values.</p></li>
+</ul>
+<p>There are a few other improvements, but these are the most important. To take advantage
+of these, you <em>will</em> need to modify a few files in your existing app.</p>
+</div>
+<div class="section" id="updating-my-application">
+<h2>Updating My Application</h2>
+<p>If you created your application after November 15th 2018, you don’t need to make
+any changes! Otherwise, here is the list of changes you’ll need to make - these
+changes can be made to any Symfony 3.4 or higher app:</p>
+<ol class="arabic">
+<li><p>Create a new <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/4.2/config/bootstrap.php">config/bootstrap.php</a><span class="link-target"> [https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/4.2/config/bootstrap.php]</span> file in your project. This file loads Composer’s
+autoloader and loads all the <code class="docutils literal notranslate"><span class="pre">.env</span></code> files as needed (note: in an earlier recipe,
+this file was called <code class="docutils literal notranslate"><span class="pre">src/.bootstrap.php</span></code>; if you are upgrading from Symfony 3.3
+or 4.1, use the <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/3.3/config/bootstrap.php">3.3/config/bootstrap.php</a><span class="link-target"> [https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/3.3/config/bootstrap.php]</span> file instead).</p></li>
+<li><p>Update your <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/4.2/public/index.php">public/index.php</a><span class="link-target"> [https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/4.2/public/index.php]</span> (<a class="reference external" href="https://github.com/symfony/recipes/compare/8a4e5555e30d5dff64275e2788a901f31a214e79...86e2b6795c455f026e5ab0cba2aff2c7a18511f7#diff-7d73eabd1e5eb7d969ddf9a7ce94f954">index.php diff</a><span class="link-target"> [https://github.com/symfony/recipes/compare/8a4e5555e30d5dff64275e2788a901f31a214e79...86e2b6795c455f026e5ab0cba2aff2c7a18511f7#diff-7d73eabd1e5eb7d969ddf9a7ce94f954]</span>) file to load the new <code class="docutils literal notranslate"><span class="pre">config/bootstrap.php</span></code>
+file. If you’ve customized this file, make sure to keep those changes (but use
+the rest of the changes).</p></li>
+<li><p>Update your <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/console/3.3/bin/console">bin/console</a><span class="link-target"> [https://github.com/symfony/recipes/blob/master/symfony/console/3.3/bin/console]</span> file to load the new <code class="docutils literal notranslate"><span class="pre">config/bootstrap.php</span></code> file.</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span># .gitignore
+# ...
+
+###&gt; symfony/framework-bundle ###
+<span class="gd">- /.env</span>
+<span class="gi">+ /.env.local</span>
+<span class="gi">+ /.env.local.php</span>
+<span class="gi">+ /.env.*.local</span>
+
+# ...
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><p>Rename <code class="docutils literal notranslate"><span class="pre">.env</span></code> to <code class="docutils literal notranslate"><span class="pre">.env.local</span></code> and <code class="docutils literal notranslate"><span class="pre">.env.dist</span></code> to <code class="docutils literal notranslate"><span class="pre">.env</span></code>:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Unix</span>
+<span class="gp">$</span> mv .env .env.local
+<span class="gp">$</span> git mv .env.dist .env
+
+<span class="c1"># Windows</span>
+<span class="go">C:\&gt; move .env .env.local</span>
+<span class="go">C:\&gt; git mv .env.dist .env</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can also update the <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/flex/1.0/.env">comment on the top of .env</a><span class="link-target"> [https://github.com/symfony/recipes/blob/master/symfony/flex/1.0/.env]</span> to reflect the new changes.</p>
+</li>
+<li><p>If you’re using PHPUnit, you will also need to <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/phpunit-bridge/3.3/.env.test">create a new .env.test</a><span class="link-target"> [https://github.com/symfony/recipes/blob/master/symfony/phpunit-bridge/3.3/.env.test]</span> file
+and update your <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/phpunit-bridge/3.3/phpunit.xml.dist">phpunit.xml.dist file</a><span class="link-target"> [https://github.com/symfony/recipes/blob/master/symfony/phpunit-bridge/3.3/phpunit.xml.dist]</span> so it loads the <code class="docutils literal notranslate"><span class="pre">config/bootstrap.php</span></code>
+file.</p></li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

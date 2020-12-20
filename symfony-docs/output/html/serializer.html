@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -279,16 +277,22 @@ objects implementing the <code class="docutils literal notranslate"><a class="re
 for <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.dateinterval.php" title="DateInterval"><span class="pre">DateInterval</span></a></code> objects</li>
 <li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DataUriNormalizer.php" title="Symfony\Component\Serializer\Normalizer\DataUriNormalizer"><span class="pre">DataUriNormalizer</span></a></code> to
 transform <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.splfileinfo.php" title="SplFileInfo"><span class="pre">SplFileInfo</span></a></code> objects in <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs">Data URIs</a></li>
-<li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/FormErrorNormalizer.php" title="Symfony\Component\Serializer\Normalizer\FormErrorNormalizer"><span class="pre">FormErrorNormalizer</span></a></code> for
-objects implementing the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormInterface.php" title="Symfony\Component\Form\FormInterface"><span class="pre">FormInterface</span></a></code> to
-normalize form errors.</li>
 <li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/JsonSerializableNormalizer.php" title="Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer"><span class="pre">JsonSerializableNormalizer</span></a></code>
 to deal with objects implementing the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.jsonserializable.php" title="JsonSerializable"><span class="pre">JsonSerializable</span></a></code> interface</li>
 <li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ArrayDenormalizer.php" title="Symfony\Component\Serializer\Normalizer\ArrayDenormalizer"><span class="pre">ArrayDenormalizer</span></a></code> to
-denormalize arrays of objects using a notation like <code class="docutils literal notranslate"><span class="pre">MyObject[]</span></code> (note the <code class="docutils literal notranslate"><span class="pre">[]</span></code> suffix)</li>
+denormalize arrays of objects using a format like <cite>MyObject[]</cite> (note the <cite>[]</cite> suffix)</li>
 <li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ConstraintViolationListNormalizer.php" title="Symfony\Component\Serializer\Normalizer\ConstraintViolationListNormalizer"><span class="pre">ConstraintViolationListNormalizer</span></a></code> for objects implementing the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/ConstraintViolationListInterface.php" title="Symfony\Component\Validator\ConstraintViolationListInterface"><span class="pre">ConstraintViolationListInterface</span></a></code> interface</li>
 <li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ProblemNormalizer.php" title="Symfony\Component\Serializer\Normalizer\ProblemNormalizer"><span class="pre">ProblemNormalizer</span></a></code> for <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ErrorHandler/Exception/FlattenException.php" title="Symfony\Component\ErrorHandler\Exception\FlattenException"><span class="pre">FlattenException</span></a></code> objects</li>
 </ul>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.1: </span>The <code class="docutils literal notranslate"><span class="pre">ConstraintViolationListNormalizer</span></code> was introduced in Symfony 4.1.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">DateTimeZoneNormalizer</span></code> was introduced in Symfony 4.3.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">ProblemNormalizer</span></code> was introduced in Symfony 4.4.</p>
+</div>
 <p>Custom normalizers and/or encoders can also be loaded by tagging them as
 <a class="reference internal" href="reference/dic_tags.html#reference-dic-tags-serializer-normalizer"><span class="std std-ref">serializer.normalizer</span></a> and
 <a class="reference internal" href="reference/dic_tags.html#reference-dic-tags-serializer-encoder"><span class="std std-ref">serializer.encoder</span></a>. It’s also

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The CssSelector Component</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-cssselector-component">
+<span id="index-0"></span><h1>The CssSelector Component</h1>
+<blockquote>
+<div><p>The CssSelector component converts CSS selectors to <a class="reference external" href="https://en.wikipedia.org/wiki/XPath">XPath</a><span class="link-target"> [https://en.wikipedia.org/wiki/XPath]</span> expressions.</p>
+</div></blockquote>
+<div class="section" id="installation">
+<h2>Installation</h2>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/css-selector
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you install this component outside of a Symfony application, you must
+require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
+autoloading mechanism provided by Composer. Read
+<a class="reference internal" href="using_components.xhtml"><span class="doc">this article</span></a> for more details.</p>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage</h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>This article explains how to use the CssSelector features as an independent
+component in any PHP application. Read the <a class="reference internal" href="../testing.xhtml#functional-tests"><span class="std std-ref">Symfony Functional Tests</span></a>
+article to learn about how to use it when creating Symfony tests.</p>
+</div>
+<div class="section" id="why-to-use-css-selectors">
+<h3>Why to Use CSS selectors?</h3>
+<p>When you’re parsing an HTML or an XML document, by far the most powerful
+method is <a class="reference external" href="https://en.wikipedia.org/wiki/XPath">XPath</a><span class="link-target"> [https://en.wikipedia.org/wiki/XPath]</span>.</p>
+<p>XPath expressions are incredibly flexible, so there is almost always an
+XPath expression that will find the element you need. Unfortunately, they
+can also become very complicated, and the learning curve is steep. Even common
+operations (such as finding an element with a particular class) can require
+long and unwieldy expressions.</p>
+<p>Many developers – particularly web developers – are more comfortable
+using CSS selectors to find elements. As well as working in stylesheets,
+CSS selectors are used in JavaScript with the <code class="docutils literal notranslate"><span class="pre">querySelectorAll()</span></code> function
+and in popular JavaScript libraries such as jQuery, Prototype and MooTools.</p>
+<p>CSS selectors are less powerful than XPath, but far easier to write, read
+and understand. Since they are less powerful, almost all CSS selectors can
+be converted to an XPath equivalent. This XPath expression can then be used
+with other functions and classes that use XPath to find elements in a
+document.</p>
+</div>
+<div class="section" id="id1">
+<h3>The CssSelector Component</h3>
+<p>The component’s only goal is to convert CSS selectors to their XPath
+equivalents, using <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/CssSelector/CssSelectorConverter.php" title="Symfony\Component\CssSelector\CssSelectorConverter::toXPath()"><span class="pre">toXPath()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/CssSelector/CssSelectorConverter.php]</span></span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\CssSelector\CssSelectorConverter</span><span class="p">;</span>
+
+<span class="nv">$converter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CssSelectorConverter</span><span class="p">();</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$converter</span><span class="o">-&gt;</span><span class="na">toXPath</span><span class="p">(</span><span class="s1">&#39;div.item &gt; h4 &gt; a&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>This gives the following output:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>descendant-or-self::div[@class and contains(concat(&#39; &#39;,normalize-space(@class), &#39; &#39;), &#39; item &#39;)]/h4/a
+</pre></div>
+</td></tr></table></div>
+<p>You can use this expression with, for instance, <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.domxpath.php" title="DOMXPath"><span class="pre">DOMXPath</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/class.domxpath.php]</span></span></code> or
+<code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.simplexmlelement.php" title="SimpleXMLElement"><span class="pre">SimpleXMLElement</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/class.simplexmlelement.php]</span></span></code> to find elements in a document.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/Crawler.php" title="Symfony\Component\DomCrawler\Crawler::filter()"><span class="pre">Crawler::filter()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/Crawler.php]</span></span></code> method
+uses the CssSelector component to find elements based on a CSS selector
+string. See the <a class="reference internal" href="dom_crawler.xhtml"><span class="doc">The DomCrawler Component</span></a> for more details.</p>
+</div>
+</div>
+<div class="section" id="limitations-of-the-cssselector-component">
+<h3>Limitations of the CssSelector Component</h3>
+<p>Not all CSS selectors can be converted to <a class="reference external" href="https://en.wikipedia.org/wiki/XPath">XPath</a><span class="link-target"> [https://en.wikipedia.org/wiki/XPath]</span> equivalents.</p>
+<p>There are several CSS selectors that only make sense in the context of a
+web-browser.</p>
+<ul class="simple">
+<li><p>link-state selectors: <code class="docutils literal notranslate"><span class="pre">:link</span></code>, <code class="docutils literal notranslate"><span class="pre">:visited</span></code>, <code class="docutils literal notranslate"><span class="pre">:target</span></code></p></li>
+<li><p>selectors based on user action: <code class="docutils literal notranslate"><span class="pre">:hover</span></code>, <code class="docutils literal notranslate"><span class="pre">:focus</span></code>, <code class="docutils literal notranslate"><span class="pre">:active</span></code></p></li>
+<li><p>UI-state selectors: <code class="docutils literal notranslate"><span class="pre">:invalid</span></code>, <code class="docutils literal notranslate"><span class="pre">:indeterminate</span></code> (however, <code class="docutils literal notranslate"><span class="pre">:enabled</span></code>,
+<code class="docutils literal notranslate"><span class="pre">:disabled</span></code>, <code class="docutils literal notranslate"><span class="pre">:checked</span></code> and <code class="docutils literal notranslate"><span class="pre">:unchecked</span></code> are available)</p></li>
+</ul>
+<p>Pseudo-elements (<code class="docutils literal notranslate"><span class="pre">:before</span></code>, <code class="docutils literal notranslate"><span class="pre">:after</span></code>, <code class="docutils literal notranslate"><span class="pre">:first-line</span></code>,
+<code class="docutils literal notranslate"><span class="pre">:first-letter</span></code>) are not supported because they select portions of text
+rather than elements.</p>
+<p>Pseudo-classes are partially supported:</p>
+<ul class="simple">
+<li><p>Not supported: <code class="docutils literal notranslate"><span class="pre">*:first-of-type</span></code>, <code class="docutils literal notranslate"><span class="pre">*:last-of-type</span></code>, <code class="docutils literal notranslate"><span class="pre">*:nth-of-type</span></code> and
+<code class="docutils literal notranslate"><span class="pre">*:nth-last-of-type</span></code> (all these work with an element name (e.g.
+<code class="docutils literal notranslate"><span class="pre">li:first-of-type</span></code>) but not with the <code class="docutils literal notranslate"><span class="pre">*</span></code> selector).</p></li>
+<li><p>Supported: <code class="docutils literal notranslate"><span class="pre">*:only-of-type</span></code>.</p></li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The support for <code class="docutils literal notranslate"><span class="pre">*:only-of-type</span></code> was introduced in Symfony 4.4.</p>
+</div>
+</div>
+</div>
+<div class="section" id="learn-more">
+<h2>Learn more</h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../testing.xhtml"><span class="doc">Testing</span></a></p></li>
+<li><p><a class="reference internal" href="dom_crawler.xhtml"><span class="doc">The DomCrawler Component</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

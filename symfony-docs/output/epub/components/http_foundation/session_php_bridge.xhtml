@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Integrating with Legacy Sessions</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="integrating-with-legacy-sessions">
+<span id="index-0"></span><h1>Integrating with Legacy Sessions</h1>
+<p>Sometimes it may be necessary to integrate Symfony into a legacy application
+where you do not initially have the level of control you require.</p>
+<p>As stated elsewhere, Symfony Sessions are designed to replace the use of
+PHP’s native <code class="docutils literal notranslate"><span class="pre">session_*()</span></code> functions and use of the <code class="docutils literal notranslate"><span class="pre">$_SESSION</span></code>
+superglobal. Additionally, it is mandatory for Symfony to start the session.</p>
+<p>However, when there really are circumstances where this is not possible, you
+can use a special storage bridge
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Session/Storage/PhpBridgeSessionStorage.php" title="Symfony\Component\HttpFoundation\Session\Storage\PhpBridgeSessionStorage"><span class="pre">PhpBridgeSessionStorage</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Session/Storage/PhpBridgeSessionStorage.php]</span></span></code>
+which is designed to allow Symfony to work with a session started outside of
+the Symfony HttpFoundation component. You are warned that things can interrupt
+this use-case unless you are careful: for example the legacy application
+erases <code class="docutils literal notranslate"><span class="pre">$_SESSION</span></code>.</p>
+<p>A typical use of this might look like this:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Session\Session</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Session\Storage\PhpBridgeSessionStorage</span><span class="p">;</span>
+
+<span class="c1">// legacy application configures session</span>
+<span class="nb">ini_set</span><span class="p">(</span><span class="s1">&#39;session.save_handler&#39;</span><span class="p">,</span> <span class="s1">&#39;files&#39;</span><span class="p">);</span>
+<span class="nb">ini_set</span><span class="p">(</span><span class="s1">&#39;session.save_path&#39;</span><span class="p">,</span> <span class="s1">&#39;/tmp&#39;</span><span class="p">);</span>
+<span class="nb">session_start</span><span class="p">();</span>
+
+<span class="c1">// Get Symfony to interface with this existing session</span>
+<span class="nv">$session</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Session</span><span class="p">(</span><span class="k">new</span> <span class="nx">PhpBridgeSessionStorage</span><span class="p">());</span>
+
+<span class="c1">// symfony will now interface with the existing PHP session</span>
+<span class="nv">$session</span><span class="o">-&gt;</span><span class="na">start</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>This will allow you to start using the Symfony Session API and allow migration
+of your application to Symfony sessions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Symfony sessions store data like attributes in special ‘Bags’ which use a
+key in the <code class="docutils literal notranslate"><span class="pre">$_SESSION</span></code> superglobal. This means that a Symfony session
+cannot access arbitrary keys in <code class="docutils literal notranslate"><span class="pre">$_SESSION</span></code> that may be set by the legacy
+application, although all the <code class="docutils literal notranslate"><span class="pre">$_SESSION</span></code> contents will be saved when
+the session is saved.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -496,11 +496,6 @@ provided by Symfony:
                 # whether or not caching should apply for client caches only
                 private: true
 
-                # optionally you can define some arguments passed to the template
-                context:
-                    site_name: 'ACME'
-                    theme: 'dark'
-
     .. code-block:: xml
 
         <!-- config/routes.xml -->
@@ -518,15 +513,8 @@ provided by Symfony:
                 <!-- special options defined by Symfony to set the page cache -->
                 <default key="maxAge">86400</default>
                 <default key="sharedAge">86400</default>
-
-                <!-- whether or not caching should apply for client caches only -->
+                 <!-- whether or not caching should apply for client caches only -->
                 <default key="private">true</default>
-
-                <!-- optionally you can define some arguments passed to the template -->
-                <default key="context">
-                    <default key="site_name">ACME</default>
-                    <default key="theme">dark</default>
-                </default>
             </route>
         </routes>
 
@@ -549,19 +537,9 @@ provided by Symfony:
 
                     // whether or not caching should apply for client caches only
                     'private' => true,
-
-                    // optionally you can define some arguments passed to the template
-                    'context' => [
-                        'site_name' => 'ACME',
-                        'theme' => 'dark',
-                    ]
                 ])
             ;
         };
-
-.. versionadded:: 5.1
-
-    The ``context`` option was introduced in Symfony 5.1.
 
 Checking if a Template Exists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -569,10 +547,12 @@ Checking if a Template Exists
 Templates are loaded in the application using a `Twig template loader`_, which
 also provides a method to check for template existence. First, get the loader::
 
+    // in a controller extending from AbstractController
+    $loader = $this->get('twig')->getLoader();
+
+    // in a service using autowiring
     use Twig\Environment;
 
-    // this code assumes that your service uses autowiring to inject dependencies
-    // otherwise, inject the service called 'twig' manually
     public function __construct(Environment $twig)
     {
         $loader = $twig->getLoader();
@@ -608,6 +588,12 @@ errors. It's useful to run it before deploying your application to production
 
     # you can also show the deprecated features used in your templates
     $ php bin/console lint:twig --show-deprecations templates/email/
+
+.. versionadded:: 4.4
+
+    The feature that checks all the application templates when not passing any
+    arguments to ``lint:twig`` and the ``--show-deprecations`` option were
+    introduced in Symfony 4.4.
 
 Inspecting Twig Information
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1056,6 +1042,12 @@ the ``value`` is the Twig namespace, which is explained later:
 When rendering a template, Symfony looks for it first in the ``twig.paths``
 directories that don't define a namespace and then falls back to the default
 template directory (usually, ``templates/``).
+
+.. deprecated:: 4.2
+
+    Symfony looks for templates in the ``src/Resources/views/`` too before
+    falling back to the default directory. But that behavior is deprecated since
+    Symfony 4.2 and will be removed in Symfony 5.0.
 
 Using the above configuration, if your application renders for example the
 ``layout.html.twig`` template, Symfony will first look for

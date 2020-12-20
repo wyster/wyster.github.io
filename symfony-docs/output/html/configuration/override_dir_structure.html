@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -141,10 +141,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -284,8 +282,8 @@ at your project root directory.</p>
 </div>
 <div class="section" id="override-the-cache-directory">
 <span id="override-cache-dir"></span><h2>Override the Cache Directory<a class="headerlink" href="#override-the-cache-directory" title="Permalink to this headline">¶</a></h2>
-<p>Changing the cache directory can be achieved by overriding the
-<code class="docutils literal notranslate"><span class="pre">getCacheDir()</span></code> method in the <code class="docutils literal notranslate"><span class="pre">Kernel</span></code> class of your application:</p>
+<p>You can change the default cache directory by overriding the <code class="docutils literal notranslate"><span class="pre">getCacheDir()</span></code>
+method in the <code class="docutils literal notranslate"><span class="pre">Kernel</span></code> class of your application:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Kernel.php</span>
 
 <span class="c1">// ...</span>
@@ -303,8 +301,6 @@ at your project root directory.</p>
 <p>In this code, <code class="docutils literal notranslate"><span class="pre">$this-&gt;environment</span></code> is the current environment (i.e. <code class="docutils literal notranslate"><span class="pre">dev</span></code>).
 In this case you have changed the location of the cache directory to
 <code class="docutils literal notranslate"><span class="pre">var/{environment}/cache/</span></code>.</p>
-<p>You can also change the cache directory defining an environment variable named
-<code class="docutils literal notranslate"><span class="pre">APP_CACHE_DIR</span></code> whose value is the full path of the cache folder.</p>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
 <p class="last">You should keep the cache directory different for each environment,
@@ -315,10 +311,9 @@ store those cache files.</p>
 </div>
 <div class="section" id="override-the-log-directory">
 <span id="override-logs-dir"></span><h2>Override the Log Directory<a class="headerlink" href="#override-the-log-directory" title="Permalink to this headline">¶</a></h2>
-<p>Overriding the <code class="docutils literal notranslate"><span class="pre">var/log/</span></code> directory is almost the same as overriding the
-<code class="docutils literal notranslate"><span class="pre">var/cache/</span></code> directory.</p>
-<p>You can do it overriding the <code class="docutils literal notranslate"><span class="pre">getLogDir()</span></code> method in the <code class="docutils literal notranslate"><span class="pre">Kernel</span></code> class of
-your application:</p>
+<p>Overriding the <code class="docutils literal notranslate"><span class="pre">var/log/</span></code> directory is the same as overriding the <code class="docutils literal notranslate"><span class="pre">var/cache/</span></code>
+directory. The only difference is that you need to override the <code class="docutils literal notranslate"><span class="pre">getLogDir()</span></code>
+method:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Kernel.php</span>
 
 <span class="c1">// ...</span>
@@ -334,8 +329,6 @@ your application:</p>
 </pre></div>
 </div>
 <p>Here you have changed the location of the directory to <code class="docutils literal notranslate"><span class="pre">var/{environment}/log/</span></code>.</p>
-<p>You can also change the log directory defining an environment variable named
-<code class="docutils literal notranslate"><span class="pre">APP_LOG_DIR</span></code> whose value is the full path of the log folder.</p>
 </div>
 <div class="section" id="override-the-templates-directory">
 <span id="override-templates-dir"></span><h2>Override the Templates Directory<a class="headerlink" href="#override-the-templates-directory" title="Permalink to this headline">¶</a></h2>

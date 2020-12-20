@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>PHP Array Cache Adapter</title>
+    <link rel="stylesheet" href="../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="php-array-cache-adapter">
+<span id="index-0"></span><h1>PHP Array Cache Adapter</h1>
+<p>This adapter is a high performance cache for static data (e.g. application configuration)
+that is optimized and preloaded into OPcache memory storage. It is suited for any data that
+is mostly read-only after warmup:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\FilesystemAdapter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\PhpArrayAdapter</span><span class="p">;</span>
+
+<span class="c1">// somehow, decide it&#39;s time to warm up the cache!</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$needsWarmup</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// some static values</span>
+    <span class="nv">$values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;stats.products_count&#39;</span> <span class="o">=&gt;</span> <span class="mi">4711</span><span class="p">,</span>
+        <span class="s1">&#39;stats.users_count&#39;</span> <span class="o">=&gt;</span> <span class="mi">1356</span><span class="p">,</span>
+    <span class="p">];</span>
+
+    <span class="nv">$cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PhpArrayAdapter</span><span class="p">(</span>
+        <span class="c1">// single file where values are cached</span>
+        <span class="no">__DIR__</span> <span class="o">.</span> <span class="s1">&#39;/somefile.cache&#39;</span><span class="p">,</span>
+        <span class="c1">// a backup adapter, if you set values after warmup</span>
+        <span class="k">new</span> <span class="nx">FilesystemAdapter</span><span class="p">()</span>
+    <span class="p">);</span>
+    <span class="nv">$cache</span><span class="o">-&gt;</span><span class="na">warmUp</span><span class="p">(</span><span class="nv">$values</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// ... then, use the cache!</span>
+<span class="nv">$cacheItem</span> <span class="o">=</span> <span class="nv">$cache</span><span class="o">-&gt;</span><span class="na">getItem</span><span class="p">(</span><span class="s1">&#39;stats.users_count&#39;</span><span class="p">);</span>
+<span class="k">echo</span> <span class="nv">$cacheItem</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This adapter requires turning on the <code class="docutils literal notranslate"><span class="pre">opcache.enable</span></code> php.ini setting.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

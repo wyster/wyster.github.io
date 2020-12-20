@@ -93,6 +93,11 @@ The validator class only has one required method ``validate()``::
         }
     }
 
+.. versionadded:: 4.4
+
+    The feature to allow passing an object as the ``buildViolation()`` argument
+    was introduced in Symfony 4.4.
+
 Inside ``validate``, you don't need to return a value. Instead, you add violations
 to the validator's ``context`` property and a value will be considered valid
 if it causes no violations. The ``buildViolation()`` method takes the error
@@ -184,16 +189,6 @@ If you're using the :ref:`default services.yaml configuration <service-container
 then your validator is already registered as a service and :doc:`tagged </service_container/tags>`
 with the necessary ``validator.constraint_validator``. This means you can
 :ref:`inject services or configuration <services-constructor-injection>` like any other service.
-
-Create a Reusable Set of Constraints
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-In case you need to apply some common set of constraints in different places
-consistently across your application, you can extend the :doc:`Compound constraint </reference/constraints/Compound>`.
-
-.. versionadded:: 5.1
-
-    The ``Compound`` constraint was introduced in Symfony 5.1.
 
 Class Constraint Validator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

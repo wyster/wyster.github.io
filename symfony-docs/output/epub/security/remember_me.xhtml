@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Add “Remember Me” Login Functionality</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-add-remember-me-login-functionality">
+<span id="index-0"></span><h1>How to Add “Remember Me” Login Functionality</h1>
+<p>Once a user is authenticated, their credentials are typically stored in the
+session. This means that when the session ends they will be logged out and
+have to provide their login details again next time they wish to access the
+application. You can allow users to choose to stay logged in for longer than
+the session lasts using a cookie with the <code class="docutils literal notranslate"><span class="pre">remember_me</span></code> firewall option:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">firewalls</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">main</span><span class="p p-Indicator">:</span>
+            <span class="c1"># ...</span>
+            <span class="l l-Scalar l-Scalar-Plain">remember_me</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">secret</span><span class="p p-Indicator">:</span>   <span class="s">&#39;%kernel.secret%&#39;</span>
+                <span class="l l-Scalar l-Scalar-Plain">lifetime</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">604800</span> <span class="c1"># 1 week in seconds</span>
+                <span class="l l-Scalar l-Scalar-Plain">path</span><span class="p p-Indicator">:</span>     <span class="l l-Scalar l-Scalar-Plain">/</span>
+                <span class="c1"># by default, the feature is enabled by checking a</span>
+                <span class="c1"># checkbox in the login form (see below), uncomment the</span>
+                <span class="c1"># following line to always enable it.</span>
+                <span class="c1">#always_remember_me: true</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
+    <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;config&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+
+        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!-- ... --&gt;</span>
+
+            <span class="c">&lt;!-- 604800 is 1 week in seconds --&gt;</span>
+            <span class="nt">&lt;remember-me</span>
+                <span class="na">secret=</span><span class="s">&quot;%kernel.secret%&quot;</span>
+                <span class="na">lifetime=</span><span class="s">&quot;604800&quot;</span>
+                <span class="na">path=</span><span class="s">&quot;/&quot;</span><span class="nt">/&gt;</span>
+            <span class="c">&lt;!-- by default, the feature is enabled by checking a checkbox</span>
+<span class="c">                 in the login form (see below), add always-remember-me=&quot;true&quot;</span>
+<span class="c">                 to always enable it. --&gt;</span>
+        <span class="nt">&lt;/firewall&gt;</span>
+    <span class="nt">&lt;/config&gt;</span>
+<span class="nt">&lt;/srv:container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="c1">// ...</span>
+
+    <span class="s1">&#39;firewalls&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;main&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="c1">// ...</span>
+            <span class="s1">&#39;remember_me&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="s1">&#39;secret&#39;</span>   <span class="o">=&gt;</span> <span class="s1">&#39;%kernel.secret%&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;lifetime&#39;</span> <span class="o">=&gt;</span> <span class="mi">604800</span><span class="p">,</span> <span class="c1">// 1 week in seconds</span>
+                <span class="s1">&#39;path&#39;</span>     <span class="o">=&gt;</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+                <span class="c1">// by default, the feature is enabled by checking a</span>
+                <span class="c1">// checkbox in the login form (see below), uncomment</span>
+                <span class="c1">// the following line to always enable it.</span>
+                <span class="c1">//&#39;always_remember_me&#39; =&gt; true,</span>
+            <span class="p">],</span>
+        <span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">remember_me</span></code> firewall defines the following configuration options:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">secret</span></code> (<strong>required</strong>)</dt>
+<dd><p>The value used to encrypt the cookie’s content. It’s common to use the
+<code class="docutils literal notranslate"><span class="pre">secret</span></code> value defined in the <code class="docutils literal notranslate"><span class="pre">APP_SECRET</span></code> environment variable.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">REMEMBERME</span></code>)</dt>
+<dd><p>The name of the cookie used to keep the user logged in. If you enable the
+<code class="docutils literal notranslate"><span class="pre">remember_me</span></code> feature in several firewalls of the same application, make sure
+to choose a different name for the cookie of each firewall. Otherwise, you’ll
+face lots of security related problems.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lifetime</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">31536000</span></code>)</dt>
+<dd><p>The number of seconds during which the user will remain logged in. By default
+users are logged in for one year.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">path</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">/</span></code>)</dt>
+<dd><p>The path where the cookie associated with this feature is used. By default
+the cookie will be applied to the entire website but you can restrict to a
+specific section (e.g. <code class="docutils literal notranslate"><span class="pre">/forum</span></code>, <code class="docutils literal notranslate"><span class="pre">/admin</span></code>).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">domain</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">null</span></code>)</dt>
+<dd><p>The domain where the cookie associated with this feature is used. By default
+cookies use the current domain obtained from <code class="docutils literal notranslate"><span class="pre">$_SERVER</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">secure</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">false</span></code>)</dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">true</span></code>, the cookie associated with this feature is sent to the user
+through an HTTPS secure connection.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">httponly</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">true</span></code>)</dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">true</span></code>, the cookie associated with this feature is accessible only
+through the HTTP protocol. This means that the cookie won’t be accessible
+by scripting languages, such as JavaScript.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">samesite</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">null</span></code>)</dt>
+<dd><p>If set to <code class="docutils literal notranslate"><span class="pre">strict</span></code>, the cookie associated with this feature will not
+be sent along with cross-site requests, even when following a regular link.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">remember_me_parameter</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">_remember_me</span></code>)</dt>
+<dd><p>The name of the form field checked to decide if the “Remember Me” feature
+should be enabled or not. Keep reading this article to know how to enable
+this feature conditionally.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">always_remember_me</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">false</span></code>)</dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">true</span></code>, the value of the <code class="docutils literal notranslate"><span class="pre">remember_me_parameter</span></code> is ignored and the
+“Remember Me” feature is always enabled, regardless of the desire of the
+end user.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">token_provider</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">null</span></code>)</dt>
+<dd><p>Defines the service id of a token provider to use. If you want to store tokens
+in the database, see <a class="reference internal" href="#remember-me-token-in-database"><span class="std std-ref">Storing Remember Me Tokens in the Database</span></a>.</p>
+</dd>
+</dl>
+<div class="section" id="forcing-the-user-to-opt-out-of-the-remember-me-feature">
+<h2>Forcing the User to Opt-Out of the Remember Me Feature</h2>
+<p>It’s a good idea to provide the user with the option to use or not use the
+remember me functionality, as it will not always be appropriate. The usual
+way of doing this is to add a checkbox to the login form. By giving the checkbox
+the name <code class="docutils literal notranslate"><span class="pre">_remember_me</span></code> (or the name you configured using <code class="docutils literal notranslate"><span class="pre">remember_me_parameter</span></code>),
+the cookie will automatically be set when the checkbox is checked and the user
+successfully logs in. So, your specific login form might ultimately look like
+this:</p>
+<div class="highlight-html+twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">{# templates/security/login.html.twig #}</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span><span class="p">&gt;</span>
+    <span class="c">{# ... your form fields #}</span>
+
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;remember_me&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;_remember_me&quot;</span> <span class="na">checked</span><span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;remember_me&quot;</span><span class="p">&gt;</span>Keep me logged in<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+
+    <span class="c">{# ... #}</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>The user will then automatically be logged in on subsequent visits while
+the cookie remains valid.</p>
+</div>
+<div class="section" id="forcing-the-user-to-re-authenticate-before-accessing-certain-resources">
+<h2>Forcing the User to Re-Authenticate before Accessing certain Resources</h2>
+<p>When the user returns to your site, they are authenticated automatically based
+on the information stored in the remember me cookie. This allows the user
+to access protected resources as if the user had actually authenticated upon
+visiting the site.</p>
+<p>In some cases, however, you may want to force the user to actually re-authenticate
+before accessing certain resources. For example, you might not allow “remember me”
+users to change their password. You can do this by leveraging a few special “roles”:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Controller/AccountController.php</span>
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">accountInfo</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// allow any authenticated user - we don&#39;t care if they just</span>
+    <span class="c1">// logged in, or are logged in via a remember me cookie</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">denyAccessUnlessGranted</span><span class="p">(</span><span class="s1">&#39;IS_AUTHENTICATED_REMEMBERED&#39;</span><span class="p">);</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">resetPassword</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// require the user to log in during *this* session</span>
+    <span class="c1">// if they were only logged in via a remember me cookie, they</span>
+    <span class="c1">// will be redirected to the login page</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">denyAccessUnlessGranted</span><span class="p">(</span><span class="s1">&#39;IS_AUTHENTICATED_FULLY&#39;</span><span class="p">);</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="storing-remember-me-tokens-in-the-database">
+<span id="remember-me-token-in-database"></span><h2>Storing Remember Me Tokens in the Database</h2>
+<p>The token contents, including the hashed version of the user password, are
+stored by default in cookies. If you prefer to store them in a database, use the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Doctrine/Security/RememberMe/DoctrineTokenProvider.php" title="Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider"><span class="pre">DoctrineTokenProvider</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Doctrine/Security/RememberMe/DoctrineTokenProvider.php]</span></span></code>
+class provided by the Doctrine Bridge.</p>
+<p>First, you need to register <code class="docutils literal notranslate"><span class="pre">DoctrineTokenProvider</span></code> as a service:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">use</span> <span class="nx">Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider</span><span class="p">;</span>
+
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">register</span><span class="p">(</span><span class="nx">DoctrineTokenProvider</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>Then you need to create a table with the following structure in your database
+so <code class="docutils literal notranslate"><span class="pre">DoctrineTokenProvider</span></code> can store the tokens:</p>
+<div class="highlight-sql notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="o">`</span><span class="n">rememberme_token</span><span class="o">`</span> <span class="p">(</span>
+    <span class="o">`</span><span class="n">series</span><span class="o">`</span>   <span class="nb">char</span><span class="p">(</span><span class="mi">88</span><span class="p">)</span>     <span class="k">UNIQUE</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="o">`</span><span class="n">value</span><span class="o">`</span>    <span class="nb">varchar</span><span class="p">(</span><span class="mi">88</span><span class="p">)</span>  <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="o">`</span><span class="n">lastUsed</span><span class="o">`</span> <span class="n">datetime</span>     <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="o">`</span><span class="k">class</span><span class="o">`</span>    <span class="nb">varchar</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="o">`</span><span class="n">username</span><span class="o">`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span>
+<span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you use DoctrineMigrationsBundle to manage your database migrations, you
+will need to tell Doctrine to ignore this new <code class="docutils literal notranslate"><span class="pre">rememberme_token</span></code> table:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/doctrine.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">doctrine</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">dbal</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">schema_filter</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~^(?!rememberme_token)~</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span># config/packages/doctrine.xml
+<span class="nt">&lt;doctrine:dbal</span> <span class="na">schema-filter=</span><span class="s">&quot;~^(?!rememberme_token)~&quot;</span><span class="nt">/&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/doctrine.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;doctrine&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;dbal&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;schema_filter&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;~^(?!rememberme_token)~&#39;</span><span class="p">,</span>
+        <span class="c1">// ...</span>
+    <span class="p">],</span>
+    <span class="c1">// ...</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+<p>Finally, set the <code class="docutils literal notranslate"><span class="pre">token_provider</span></code> option of the <code class="docutils literal notranslate"><span class="pre">remember_me</span></code> config to the
+service you created before:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">firewalls</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">main</span><span class="p p-Indicator">:</span>
+            <span class="c1"># ...</span>
+            <span class="l l-Scalar l-Scalar-Plain">remember_me</span><span class="p p-Indicator">:</span>
+                <span class="c1"># ...</span>
+                <span class="l l-Scalar l-Scalar-Plain">token_provider</span><span class="p p-Indicator">:</span> <span class="s">&#39;Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider&#39;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
+    <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;config&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+
+        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!-- ... --&gt;</span>
+
+            <span class="nt">&lt;remember-me</span>
+                <span class="na">token-provider=</span><span class="s">&quot;Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider&quot;</span>
+                <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/firewall&gt;</span>
+    <span class="nt">&lt;/config&gt;</span>
+<span class="nt">&lt;/srv:container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+<span class="k">use</span> <span class="nx">Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider</span><span class="p">;</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="c1">// ...</span>
+
+    <span class="s1">&#39;firewalls&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;main&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="c1">// ...</span>
+            <span class="s1">&#39;remember_me&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="c1">// ...</span>
+                <span class="s1">&#39;token_provider&#39;</span> <span class="o">=&gt;</span> <span class="nx">DoctrineTokenProvider</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Use Data Transformers</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-use-data-transformers">
+<span id="index-0"></span><h1>How to Use Data Transformers</h1>
+<p>Data transformers are used to translate the data for a field into a format that can
+be displayed in a form (and back on submit). They’re already used internally for
+many field types. For example, the <a class="reference internal" href="../reference/forms/types/date.xhtml"><span class="doc">DateType</span></a> field
+can be rendered as a <code class="docutils literal notranslate"><span class="pre">yyyy-MM-dd</span></code>-formatted input text box. Internally, a data transformer
+converts the starting <code class="docutils literal notranslate"><span class="pre">DateTime</span></code> value of the field into the <code class="docutils literal notranslate"><span class="pre">yyyy-MM-dd</span></code> string
+to render the form, and then back into a <code class="docutils literal notranslate"><span class="pre">DateTime</span></code> object on submit.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>When a form field has the <code class="docutils literal notranslate"><span class="pre">inherit_data</span></code> option set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, data transformers
+are not applied to that field.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>If, instead of transforming the representation of a value, you need to map
+values to a form field and back, you should use a data mapper. Check out
+<a class="reference internal" href="data_mappers.xhtml"><span class="doc">When and How to Use Data Mappers</span></a>.</p>
+</div>
+<div class="section" id="example-1-transforming-strings-form-data-tags-from-user-input-to-an-array">
+<span id="simple-example-sanitizing-html-on-user-input"></span><h2>Example #1: Transforming Strings Form Data Tags from User Input to an Array</h2>
+<p>Suppose you have a Task form with a tags <code class="docutils literal notranslate"><span class="pre">text</span></code> type:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/Type/TaskType.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form\Type</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Entity\Task</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\FormBuilderInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\OptionsResolver\OptionsResolver</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">TaskType</span> <span class="k">extends</span> <span class="nx">AbstractType</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">buildForm</span><span class="p">(</span><span class="nx">FormBuilderInterface</span> <span class="nv">$builder</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;tags&#39;</span><span class="p">,</span> <span class="nx">TextType</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">configureOptions</span><span class="p">(</span><span class="nx">OptionsResolver</span> <span class="nv">$resolver</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">setDefaults</span><span class="p">([</span>
+            <span class="s1">&#39;data_class&#39;</span> <span class="o">=&gt;</span> <span class="nx">Task</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+        <span class="p">]);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Internally the <code class="docutils literal notranslate"><span class="pre">tags</span></code> are stored as an array, but displayed to the user as a
+plain comma separated string to make them easier to edit.</p>
+<p>This is a <em>perfect</em> time to attach a custom data transformer to the <code class="docutils literal notranslate"><span class="pre">tags</span></code>
+field. The easiest way to do this is with the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/CallbackTransformer.php" title="Symfony\Component\Form\CallbackTransformer"><span class="pre">CallbackTransformer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/CallbackTransformer.php]</span></span></code>
+class:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/Type/TaskType.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form\Type</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\CallbackTransformer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\FormBuilderInterface</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="k">class</span> <span class="nc">TaskType</span> <span class="k">extends</span> <span class="nx">AbstractType</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">buildForm</span><span class="p">(</span><span class="nx">FormBuilderInterface</span> <span class="nv">$builder</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;tags&#39;</span><span class="p">,</span> <span class="nx">TextType</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+        <span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;tags&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">addModelTransformer</span><span class="p">(</span><span class="k">new</span> <span class="nx">CallbackTransformer</span><span class="p">(</span>
+                <span class="k">function</span> <span class="p">(</span><span class="nv">$tagsAsArray</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="c1">// transform the array to a string</span>
+                    <span class="k">return</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="nv">$tagsAsArray</span><span class="p">);</span>
+                <span class="p">},</span>
+                <span class="k">function</span> <span class="p">(</span><span class="nv">$tagsAsString</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="c1">// transform the string back to an array</span>
+                    <span class="k">return</span> <span class="nb">explode</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="nv">$tagsAsString</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">))</span>
+        <span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">CallbackTransformer</span></code> takes two callback functions as arguments. The
+first transforms the original value into a format that’ll be used to render the
+field. The second does the reverse: it transforms the submitted value back into
+the format you’ll use in your code.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">addModelTransformer()</span></code> method accepts <em>any</em> object that implements
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/DataTransformerInterface.php" title="Symfony\Component\Form\DataTransformerInterface"><span class="pre">DataTransformerInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/DataTransformerInterface.php]</span></span></code> - so you can create
+your own classes, instead of putting all the logic in the form (see the next section).</p>
+</div>
+<p>You can also add the transformer, right when adding the field by changing the format
+slightly:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextType</span><span class="p">;</span>
+
+<span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span>
+    <span class="nv">$builder</span>
+        <span class="o">-&gt;</span><span class="na">create</span><span class="p">(</span><span class="s1">&#39;tags&#39;</span><span class="p">,</span> <span class="nx">TextType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">addModelTransformer</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-2-transforming-an-issue-number-into-an-issue-entity">
+<h2>Example #2: Transforming an Issue Number into an Issue Entity</h2>
+<p>Say you have a many-to-one relation from the Task entity to an Issue entity (i.e. each
+Task has an optional foreign key to its related Issue). Adding a list box with all
+possible issues could eventually get <em>really</em> long and take a long time to load.
+Instead, you decide you want to add a text box, where the user can enter the
+issue number.</p>
+<p>Start by setting up the text field like normal:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/Type/TaskType.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form\Type</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Entity\Task</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextareaType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextType</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">TaskType</span> <span class="k">extends</span> <span class="nx">AbstractType</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">buildForm</span><span class="p">(</span><span class="nx">FormBuilderInterface</span> <span class="nv">$builder</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$builder</span>
+            <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="nx">TextareaType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;issue&#39;</span><span class="p">,</span> <span class="nx">TextType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">configureOptions</span><span class="p">(</span><span class="nx">OptionsResolver</span> <span class="nv">$resolver</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">setDefaults</span><span class="p">([</span>
+            <span class="s1">&#39;data_class&#39;</span> <span class="o">=&gt;</span> <span class="nx">Task</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+        <span class="p">]);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Good start! But if you stopped here and submitted the form, the Task’s <code class="docutils literal notranslate"><span class="pre">issue</span></code>
+property would be a string (e.g. “55”). How can you transform this into an <code class="docutils literal notranslate"><span class="pre">Issue</span></code>
+entity on submit?</p>
+<div class="section" id="creating-the-transformer">
+<h3>Creating the Transformer</h3>
+<p>You could use the <code class="docutils literal notranslate"><span class="pre">CallbackTransformer</span></code> like earlier. But since this is a bit more
+complex, creating a new transformer class will keep the <code class="docutils literal notranslate"><span class="pre">TaskType</span></code> form class simpler.</p>
+<p>Create an <code class="docutils literal notranslate"><span class="pre">IssueToNumberTransformer</span></code> class: it will be responsible for converting
+to and from the issue number and the <code class="docutils literal notranslate"><span class="pre">Issue</span></code> object:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/DataTransformer/IssueToNumberTransformer.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form\DataTransformer</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Entity\Issue</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Doctrine\ORM\EntityManagerInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\DataTransformerInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Exception\TransformationFailedException</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">IssueToNumberTransformer</span> <span class="k">implements</span> <span class="nx">DataTransformerInterface</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$entityManager</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">EntityManagerInterface</span> <span class="nv">$entityManager</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">entityManager</span> <span class="o">=</span> <span class="nv">$entityManager</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Transforms an object (issue) to a string (number).</span>
+<span class="sd">     *</span>
+<span class="sd">     * @param  Issue|null $issue</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">transform</span><span class="p">(</span><span class="nv">$issue</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">null</span> <span class="o">===</span> <span class="nv">$issue</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nv">$issue</span><span class="o">-&gt;</span><span class="na">getId</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Transforms a string (number) to an object (issue).</span>
+<span class="sd">     *</span>
+<span class="sd">     * @param  string $issueNumber</span>
+<span class="sd">     * @throws TransformationFailedException if object (issue) is not found.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">reverseTransform</span><span class="p">(</span><span class="nv">$issueNumber</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">Issue</span>
+    <span class="p">{</span>
+        <span class="c1">// no issue number? It&#39;s optional, so that&#39;s ok</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$issueNumber</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nv">$issue</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">entityManager</span>
+            <span class="o">-&gt;</span><span class="na">getRepository</span><span class="p">(</span><span class="nx">Issue</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+            <span class="c1">// query for the issue with this id</span>
+            <span class="o">-&gt;</span><span class="na">find</span><span class="p">(</span><span class="nv">$issueNumber</span><span class="p">)</span>
+        <span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="k">null</span> <span class="o">===</span> <span class="nv">$issue</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// causes a validation error</span>
+            <span class="c1">// this message is not shown to the user</span>
+            <span class="c1">// see the invalid_message option</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nx">TransformationFailedException</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span>
+                <span class="s1">&#39;An issue with number &quot;%s&quot; does not exist!&#39;</span><span class="p">,</span>
+                <span class="nv">$issueNumber</span>
+            <span class="p">));</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nv">$issue</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Like the first example, the transformer has two directions. The <code class="docutils literal notranslate"><span class="pre">transform()</span></code>
+method is responsible for converting the data used in your code to a format that
+can be rendered in your form (e.g. an <code class="docutils literal notranslate"><span class="pre">Issue</span></code> object to its <code class="docutils literal notranslate"><span class="pre">id</span></code>, a string).
+The <code class="docutils literal notranslate"><span class="pre">reverseTransform()</span></code> method does the reverse: it converts the submitted value
+back into the format you want (e.g. convert the <code class="docutils literal notranslate"><span class="pre">id</span></code> back to the <code class="docutils literal notranslate"><span class="pre">Issue</span></code> object).</p>
+<p>To cause a validation error, throw a <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Exception/TransformationFailedException.php" title="Symfony\Component\Form\Exception\TransformationFailedException"><span class="pre">TransformationFailedException</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Exception/TransformationFailedException.php]</span></span></code>.
+But the message you pass to this exception won’t be shown to the user. You’ll set
+that message with the <code class="docutils literal notranslate"><span class="pre">invalid_message</span></code> option (see below).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">null</span></code> is passed to the <code class="docutils literal notranslate"><span class="pre">transform()</span></code> method, your transformer
+should return an equivalent value of the type it is transforming to (e.g.
+an empty string, 0 for integers or 0.0 for floats).</p>
+</div>
+</div>
+<div class="section" id="using-the-transformer">
+<h3>Using the Transformer</h3>
+<p>Next, you need to use the <code class="docutils literal notranslate"><span class="pre">IssueToNumberTransformer</span></code> object inside of <code class="docutils literal notranslate"><span class="pre">TaskType</span></code>
+and add it to the <code class="docutils literal notranslate"><span class="pre">issue</span></code> field. No problem! Add a <code class="docutils literal notranslate"><span class="pre">__construct()</span></code> method
+and type-hint the new class:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/Type/TaskType.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form\Type</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Form\DataTransformer\IssueToNumberTransformer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextareaType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextType</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">TaskType</span> <span class="k">extends</span> <span class="nx">AbstractType</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$transformer</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">IssueToNumberTransformer</span> <span class="nv">$transformer</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">transformer</span> <span class="o">=</span> <span class="nv">$transformer</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">buildForm</span><span class="p">(</span><span class="nx">FormBuilderInterface</span> <span class="nv">$builder</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$builder</span>
+            <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="nx">TextareaType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;issue&#39;</span><span class="p">,</span> <span class="nx">TextType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+                <span class="c1">// validation message if the data transformer fails</span>
+                <span class="s1">&#39;invalid_message&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;That is not a valid issue number&#39;</span><span class="p">,</span>
+            <span class="p">]);</span>
+
+        <span class="c1">// ...</span>
+
+        <span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;issue&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">addModelTransformer</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">transformer</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Whenever the transformer throws an exception, the <code class="docutils literal notranslate"><span class="pre">invalid_message</span></code> is shown
+to the user. Instead of showing the same message every time, you can set the
+end-user error message in the data transformer using the
+<code class="docutils literal notranslate"><span class="pre">setInvalidMessage()</span></code> method. It also allows you to include user values:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/DataTransformer/IssueToNumberTransformer.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form\DataTransformer</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\DataTransformerInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Exception\TransformationFailedException</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">IssueToNumberTransformer</span> <span class="k">implements</span> <span class="nx">DataTransformerInterface</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">reverseTransform</span><span class="p">(</span><span class="nv">$issueNumber</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">Issue</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="k">null</span> <span class="o">===</span> <span class="nv">$issue</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$privateErrorMessage</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;An issue with number &quot;%s&quot; does not exist!&#39;</span><span class="p">,</span> <span class="nv">$issueNumber</span><span class="p">);</span>
+            <span class="nv">$publicErrorMessage</span> <span class="o">=</span> <span class="s1">&#39;The given &quot;{{ value }}&quot; value is not a valid issue number.&#39;</span><span class="p">;</span>
+
+            <span class="nv">$failure</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TransformationFailedException</span><span class="p">(</span><span class="nv">$privateErrorMessage</span><span class="p">);</span>
+            <span class="nv">$failure</span><span class="o">-&gt;</span><span class="na">setInvalidMessage</span><span class="p">(</span><span class="nv">$publicErrorMessage</span><span class="p">,</span> <span class="p">[</span>
+                <span class="s1">&#39;{{ value }}&#39;</span> <span class="o">=&gt;</span> <span class="nv">$issueNumber</span><span class="p">,</span>
+            <span class="p">]);</span>
+
+            <span class="k">throw</span> <span class="nv">$failure</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nv">$issue</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">setInvalidMessage()</span></code> method was introduced in Symfony 4.3.</p>
+</div>
+<p>That’s it! If you’re using the
+<a class="reference internal" href="../service_container.xhtml#service-container-services-load-example"><span class="std std-ref">default services.yaml configuration</span></a>,
+Symfony will automatically know to pass your <code class="docutils literal notranslate"><span class="pre">TaskType</span></code> an instance of the
+<code class="docutils literal notranslate"><span class="pre">IssueToNumberTransformer</span></code> thanks to <a class="reference internal" href="../service_container.xhtml#services-autowire"><span class="std std-ref">autowire</span></a> and
+<a class="reference internal" href="../service_container.xhtml#services-autoconfigure"><span class="std std-ref">autoconfigure</span></a>.
+Otherwise, <a class="reference internal" href="../service_container.xhtml#service-container-creating-service"><span class="std std-ref">register the form class as a service</span></a>
+and <a class="reference internal" href="../service_container/tags.xhtml"><span class="doc">tag it</span></a> with the <code class="docutils literal notranslate"><span class="pre">form.type</span></code> tag.</p>
+<p>Now, you can use your <code class="docutils literal notranslate"><span class="pre">TaskType</span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// e.g. somewhere in a controller</span>
+<span class="nv">$form</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createForm</span><span class="p">(</span><span class="nx">TaskType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="nv">$task</span><span class="p">);</span>
+
+<span class="c1">// ...</span>
+</pre></div>
+</div>
+<p>Cool, you’re done! Your user will be able to enter an issue number into the
+text field, which will be transformed back into an Issue object. This means
+that, after a successful submission, the Form component will pass a real
+<code class="docutils literal notranslate"><span class="pre">Issue</span></code> object to <code class="docutils literal notranslate"><span class="pre">Task::setIssue()</span></code> instead of the issue number.</p>
+<p>If the issue isn’t found, a form error will be created for that field and
+its error message can be controlled with the <code class="docutils literal notranslate"><span class="pre">invalid_message</span></code> field option.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Be careful when adding your transformers. For example, the following is <strong>wrong</strong>,
+as the transformer would be applied to the entire form, instead of just this
+field:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// THIS IS WRONG - TRANSFORMER WILL BE APPLIED TO THE ENTIRE FORM</span>
+<span class="c1">// see above example for correct code</span>
+<span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;issue&#39;</span><span class="p">,</span> <span class="nx">TextType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">addModelTransformer</span><span class="p">(</span><span class="nv">$transformer</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="creating-a-reusable-issue-selector-field">
+<span id="using-transformers-in-a-custom-field-type"></span><h2>Creating a Reusable issue_selector Field</h2>
+<p>In the above example, you applied the transformer to a normal <code class="docutils literal notranslate"><span class="pre">text</span></code> field. But
+if you do this transformation a lot, it might be better to
+<a class="reference internal" href="create_custom_field_type.xhtml"><span class="doc">create a custom field type</span></a>.
+that does this automatically.</p>
+<p>First, create the custom field type class:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/IssueSelectorType.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Form\DataTransformer\IssueToNumberTransformer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\AbstractType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\FormBuilderInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\OptionsResolver\OptionsResolver</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">IssueSelectorType</span> <span class="k">extends</span> <span class="nx">AbstractType</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$transformer</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">IssueToNumberTransformer</span> <span class="nv">$transformer</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">transformer</span> <span class="o">=</span> <span class="nv">$transformer</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">buildForm</span><span class="p">(</span><span class="nx">FormBuilderInterface</span> <span class="nv">$builder</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">addModelTransformer</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">transformer</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">configureOptions</span><span class="p">(</span><span class="nx">OptionsResolver</span> <span class="nv">$resolver</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">setDefaults</span><span class="p">([</span>
+            <span class="s1">&#39;invalid_message&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;The selected issue does not exist&#39;</span><span class="p">,</span>
+        <span class="p">]);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getParent</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">TextType</span><span class="o">::</span><span class="na">class</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Great! This will act and render like a text field (<code class="docutils literal notranslate"><span class="pre">getParent()</span></code>), but will automatically
+have the data transformer <em>and</em> a nice default value for the <code class="docutils literal notranslate"><span class="pre">invalid_message</span></code> option.</p>
+<p>As long as you’re using <a class="reference internal" href="../service_container.xhtml#services-autowire"><span class="std std-ref">autowire</span></a> and
+<a class="reference internal" href="../service_container.xhtml#services-autoconfigure"><span class="std std-ref">autoconfigure</span></a>, you can start using the form immediately:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/Type/TaskType.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form\Type</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Form\DataTransformer\IssueToNumberTransformer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextareaType</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="k">class</span> <span class="nc">TaskType</span> <span class="k">extends</span> <span class="nx">AbstractType</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">buildForm</span><span class="p">(</span><span class="nx">FormBuilderInterface</span> <span class="nv">$builder</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$builder</span>
+            <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="nx">TextareaType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;issue&#39;</span><span class="p">,</span> <span class="nx">IssueSelectorType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you’re not using <code class="docutils literal notranslate"><span class="pre">autowire</span></code> and <code class="docutils literal notranslate"><span class="pre">autoconfigure</span></code>, see
+<a class="reference internal" href="create_custom_field_type.xhtml"><span class="doc">How to Create a Custom Form Field Type</span></a> for how to configure your new <code class="docutils literal notranslate"><span class="pre">IssueSelectorType</span></code>.</p>
+</div>
+</div>
+<div class="section" id="about-model-and-view-transformers">
+<span id="model-and-view-transformers"></span><h2>About Model and View Transformers</h2>
+<p>In the above example, the transformer was used as a “model” transformer.
+In fact, there are two different types of transformers and three different
+types of underlying data.</p>
+<img alt="../_images/data-transformer-types.png" class="align-center" src="../_images/data-transformer-types.png" />
+<p>In any form, the three different types of data are:</p>
+<ol class="arabic simple">
+<li><p><strong>Model data</strong> - This is the data in the format used in your application
+(e.g. an <code class="docutils literal notranslate"><span class="pre">Issue</span></code> object). If you call <code class="docutils literal notranslate"><span class="pre">Form::getData()</span></code> or <code class="docutils literal notranslate"><span class="pre">Form::setData()</span></code>,
+you’re dealing with the “model” data.</p></li>
+<li><p><strong>Norm Data</strong> - This is a normalized version of your data and is commonly
+the same as your “model” data (though not in our example). It’s not commonly
+used directly.</p></li>
+<li><p><strong>View Data</strong> - This is the format that’s used to fill in the form fields
+themselves. It’s also the format in which the user will submit the data. When
+you call <code class="docutils literal notranslate"><span class="pre">Form::submit($data)</span></code>, the <code class="docutils literal notranslate"><span class="pre">$data</span></code> is in the “view” data format.</p></li>
+</ol>
+<p>The two different types of transformers help convert to and from each of these
+types of data:</p>
+<dl class="simple">
+<dt><strong>Model transformers</strong>:</dt>
+<dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">transform()</span></code>: “model data” =&gt; “norm data”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reverseTransform()</span></code>: “norm data” =&gt; “model data”</p></li>
+</ul>
+</dd>
+<dt><strong>View transformers</strong>:</dt>
+<dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">transform()</span></code>: “norm data” =&gt; “view data”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reverseTransform()</span></code>: “view data” =&gt; “norm data”</p></li>
+</ul>
+</dd>
+</dl>
+<p>Which transformer you need depends on your situation.</p>
+<p>To use the view transformer, call <code class="docutils literal notranslate"><span class="pre">addViewTransformer()</span></code>.</p>
+</div>
+<div class="section" id="so-why-use-the-model-transformer">
+<h2>So why Use the Model Transformer?</h2>
+<p>In this example, the field is a <code class="docutils literal notranslate"><span class="pre">text</span></code> field, and a text field is always
+expected to be a simple, scalar format in the “norm” and “view” formats. For
+this reason, the most appropriate transformer was the “model” transformer
+(which converts to/from the <em>norm</em> format - string issue number - to the <em>model</em>
+format - Issue object).</p>
+<p>The difference between the transformers is subtle and you should always think
+about what the “norm” data for a field should really be. For example, the
+“norm” data for a <code class="docutils literal notranslate"><span class="pre">text</span></code> field is a string, but is a <code class="docutils literal notranslate"><span class="pre">DateTime</span></code> object
+for a <code class="docutils literal notranslate"><span class="pre">date</span></code> field.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>As a general rule, the normalized data should contain as much information as possible.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

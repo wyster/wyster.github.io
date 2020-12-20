@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redis Cache Adapter</title>
+    <link rel="stylesheet" href="../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="redis-cache-adapter">
+<span id="redis-adapter"></span><span id="index-0"></span><h1>Redis Cache Adapter</h1>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>This article explains how to configure the Redis adapter when using the
+Cache as an independent component in any PHP application. Read the
+<a class="reference internal" href="../../../cache.xhtml#cache-configuration-with-frameworkbundle"><span class="std std-ref">Symfony Cache configuration</span></a>
+article if you are using it in a Symfony application.</p>
+</div>
+<p>This adapter stores the values in-memory using one (or more) <a class="reference external" href="https://redis.io/">Redis server</a><span class="link-target"> [https://redis.io/]</span> instances.</p>
+<p>Unlike the <a class="reference internal" href="apcu_adapter.xhtml#apcu-adapter"><span class="std std-ref">APCu adapter</span></a>, and similarly to the
+<a class="reference internal" href="memcached_adapter.xhtml#memcached-adapter"><span class="std std-ref">Memcached adapter</span></a>, it is not limited to the current server’s
+shared memory; you can store contents independent of your PHP environment. The ability
+to utilize a cluster of servers to provide redundancy and/or fail-over is also available.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p><strong>Requirements:</strong> At least one <a class="reference external" href="https://redis.io/">Redis server</a><span class="link-target"> [https://redis.io/]</span> must be installed and running to use this
+adapter. Additionally, this adapter requires a compatible extension or library that implements
+<code class="docutils literal notranslate"><span class="pre">\Redis</span></code>, <code class="docutils literal notranslate"><span class="pre">\RedisArray</span></code>, <code class="docutils literal notranslate"><span class="pre">RedisCluster</span></code>, or <code class="docutils literal notranslate"><span class="pre">\Predis</span></code>.</p>
+</div>
+<p>This adapter expects a <a class="reference external" href="https://github.com/phpredis/phpredis">Redis</a><span class="link-target"> [https://github.com/phpredis/phpredis]</span>, <a class="reference external" href="https://github.com/phpredis/phpredis/blob/master/arrays.markdown#readme">RedisArray</a><span class="link-target"> [https://github.com/phpredis/phpredis/blob/master/arrays.markdown#readme]</span>, <a class="reference external" href="https://github.com/phpredis/phpredis/blob/master/cluster.markdown#readme">RedisCluster</a><span class="link-target"> [https://github.com/phpredis/phpredis/blob/master/cluster.markdown#readme]</span>, or <a class="reference external" href="https://packagist.org/packages/predis/predis">Predis</a><span class="link-target"> [https://packagist.org/packages/predis/predis]</span> instance to be
+passed as the first parameter. A namespace and default cache lifetime can optionally be passed
+as the second and third parameters:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\RedisAdapter</span><span class="p">;</span>
+
+<span class="nv">$cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RedisAdapter</span><span class="p">(</span>
+
+    <span class="c1">// the object that stores a valid connection to your Redis system</span>
+    <span class="nx">\Redis</span> <span class="nv">$redisConnection</span><span class="p">,</span>
+
+    <span class="c1">// the string prefixed to the keys of the items stored in this cache</span>
+    <span class="nv">$namespace</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+
+    <span class="c1">// the default lifetime (in seconds) for cache items that do not define their</span>
+    <span class="c1">// own lifetime, with a value 0 causing items to be stored indefinitely (i.e.</span>
+    <span class="c1">// until RedisAdapter::clear() is invoked or the server(s) are purged)</span>
+    <span class="nv">$defaultLifetime</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="configure-the-connection">
+<h2>Configure the Connection</h2>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/RedisAdapter.php" title="Symfony\Component\Cache\Adapter\RedisAdapter::createConnection()"><span class="pre">createConnection()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/RedisAdapter.php]</span></span></code>
+helper method allows creating and configuring the Redis client class instance using a
+<a class="reference external" href="https://en.wikipedia.org/wiki/Data_source_name">Data Source Name (DSN)</a><span class="link-target"> [https://en.wikipedia.org/wiki/Data_source_name]</span>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\RedisAdapter</span><span class="p">;</span>
+
+<span class="c1">// pass a single DSN string to register a single server with the client</span>
+<span class="nv">$client</span> <span class="o">=</span> <span class="nx">RedisAdapter</span><span class="o">::</span><span class="na">createConnection</span><span class="p">(</span>
+    <span class="s1">&#39;redis://localhost&#39;</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>The DSN can specify either an IP/host (and an optional port) or a socket path, as well as a
+password and a database index.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A <a class="reference external" href="https://en.wikipedia.org/wiki/Data_source_name">Data Source Name (DSN)</a><span class="link-target"> [https://en.wikipedia.org/wiki/Data_source_name]</span> for this adapter must use the following format.</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>redis://[pass@][ip|host|socket[:port]][/db-index]
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Below are common examples of valid DSNs showing a combination of available values:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\RedisAdapter</span><span class="p">;</span>
+
+<span class="c1">// host &quot;my.server.com&quot; and port &quot;6379&quot;</span>
+<span class="nx">RedisAdapter</span><span class="o">::</span><span class="na">createConnection</span><span class="p">(</span><span class="s1">&#39;redis://my.server.com:6379&#39;</span><span class="p">);</span>
+
+<span class="c1">// host &quot;my.server.com&quot; and port &quot;6379&quot; and database index &quot;20&quot;</span>
+<span class="nx">RedisAdapter</span><span class="o">::</span><span class="na">createConnection</span><span class="p">(</span><span class="s1">&#39;redis://my.server.com:6379/20&#39;</span><span class="p">);</span>
+
+<span class="c1">// host &quot;localhost&quot;, auth &quot;abcdef&quot; and timeout 5 seconds</span>
+<span class="nx">RedisAdapter</span><span class="o">::</span><span class="na">createConnection</span><span class="p">(</span><span class="s1">&#39;redis://abcdef@localhost?timeout=5&#39;</span><span class="p">);</span>
+
+<span class="c1">// socket &quot;/var/run/redis.sock&quot; and auth &quot;bad-pass&quot;</span>
+<span class="nx">RedisAdapter</span><span class="o">::</span><span class="na">createConnection</span><span class="p">(</span><span class="s1">&#39;redis://bad-pass@/var/run/redis.sock&#39;</span><span class="p">);</span>
+
+<span class="c1">// a single DSN can define multiple servers using the following syntax:</span>
+<span class="c1">// host[hostname-or-IP:port] (where port is optional). Sockets must include a trailing &#39;:&#39;</span>
+<span class="nx">RedisAdapter</span><span class="o">::</span><span class="na">createConnection</span><span class="p">(</span>
+    <span class="s1">&#39;redis:?host[localhost]&amp;host[localhost:6379]&amp;host[/var/run/redis.sock:]&amp;auth=my-password&amp;redis_cluster=1&#39;</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://redis.io/topics/sentinel">Redis Sentinel</a><span class="link-target"> [https://redis.io/topics/sentinel]</span>, which provides high availability for Redis, is also supported
+when using the Predis library. Use the <code class="docutils literal notranslate"><span class="pre">redis_sentinel</span></code> parameter to set the
+name of your service group:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nx">RedisAdapter</span><span class="o">::</span><span class="na">createConnection</span><span class="p">(</span>
+    <span class="s1">&#39;redis:?host[redis1:26379]&amp;host[redis2:26379]&amp;host[redis3:26379]&amp;redis_sentinel=mymaster&#39;</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2: </span>The option to define multiple servers in a single DSN was introduced in Symfony 4.2.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>Redis Sentinel support was introduced in Symfony 4.4.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>See the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Traits/RedisTrait.php" title="Symfony\Component\Cache\Traits\RedisTrait"><span class="pre">RedisTrait</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Traits/RedisTrait.php]</span></span></code> for more options
+you can pass as DSN parameters.</p>
+</div>
+</div>
+<div class="section" id="configure-the-options">
+<h2>Configure the Options</h2>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/RedisAdapter.php" title="Symfony\Component\Cache\Adapter\RedisAdapter::createConnection()"><span class="pre">createConnection()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/RedisAdapter.php]</span></span></code> helper method
+also accepts an array of options as its second argument. The expected format is an associative
+array of <code class="docutils literal notranslate"><span class="pre">key</span> <span class="pre">=&gt;</span> <span class="pre">value</span></code> pairs representing option names and their respective values:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\RedisAdapter</span><span class="p">;</span>
+
+<span class="nv">$client</span> <span class="o">=</span> <span class="nx">RedisAdapter</span><span class="o">::</span><span class="na">createConnection</span><span class="p">(</span>
+
+    <span class="c1">// provide a string dsn</span>
+    <span class="s1">&#39;redis://localhost:6379&#39;</span><span class="p">,</span>
+
+    <span class="c1">// associative array of configuration options</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;compression&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+        <span class="s1">&#39;lazy&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
+        <span class="s1">&#39;persistent&#39;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;persistent_id&#39;</span> <span class="o">=&gt;</span> <span class="k">null</span><span class="p">,</span>
+        <span class="s1">&#39;tcp_keepalive&#39;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;timeout&#39;</span> <span class="o">=&gt;</span> <span class="mi">30</span><span class="p">,</span>
+        <span class="s1">&#39;read_timeout&#39;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;retry_interval&#39;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">]</span>
+
+<span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="available-options">
+<h3>Available Options</h3>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">class</span></code> (type: <code class="docutils literal notranslate"><span class="pre">string</span></code>)</dt>
+<dd><p>Specifies the connection library to return, either <code class="docutils literal notranslate"><span class="pre">\Redis</span></code> or <code class="docutils literal notranslate"><span class="pre">\Predis\Client</span></code>.
+If none is specified, it will return <code class="docutils literal notranslate"><span class="pre">\Redis</span></code> if the <code class="docutils literal notranslate"><span class="pre">redis</span></code> extension is
+available, and <code class="docutils literal notranslate"><span class="pre">\Predis\Client</span></code> otherwise.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">compression</span></code> (type: <code class="docutils literal notranslate"><span class="pre">bool</span></code>, default: <code class="docutils literal notranslate"><span class="pre">true</span></code>)</dt>
+<dd><p>Enables or disables compression of items. This requires phpredis v4 or higher with
+LZF support enabled.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lazy</span></code> (type: <code class="docutils literal notranslate"><span class="pre">bool</span></code>, default: <code class="docutils literal notranslate"><span class="pre">false</span></code>)</dt>
+<dd><p>Enables or disables lazy connections to the backend. It’s <code class="docutils literal notranslate"><span class="pre">false</span></code> by
+default when using this as a stand-alone component and <code class="docutils literal notranslate"><span class="pre">true</span></code> by default
+when using it inside a Symfony application.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">persistent</span></code> (type: <code class="docutils literal notranslate"><span class="pre">int</span></code>, default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</dt>
+<dd><p>Enables or disables use of persistent connections. A value of <code class="docutils literal notranslate"><span class="pre">0</span></code> disables persistent
+connections, and a value of <code class="docutils literal notranslate"><span class="pre">1</span></code> enables them.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">persistent_id</span></code> (type: <code class="docutils literal notranslate"><span class="pre">string|null</span></code>, default: <code class="docutils literal notranslate"><span class="pre">null</span></code>)</dt>
+<dd><p>Specifies the persistent id string to use for a persistent connection.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">read_timeout</span></code> (type: <code class="docutils literal notranslate"><span class="pre">int</span></code>, default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</dt>
+<dd><p>Specifies the time (in seconds) used when performing read operations on the underlying
+network resource before the operation times out.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">retry_interval</span></code> (type: <code class="docutils literal notranslate"><span class="pre">int</span></code>, default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</dt>
+<dd><p>Specifies the delay (in milliseconds) between reconnection attempts in case the client
+loses connection with the server.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">tcp_keepalive</span></code> (type: <code class="docutils literal notranslate"><span class="pre">int</span></code>, default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</dt>
+<dd><p>Specifies the <a class="reference external" href="https://redis.io/topics/clients#tcp-keepalive">TCP-keepalive</a><span class="link-target"> [https://redis.io/topics/clients#tcp-keepalive]</span> timeout (in seconds) of the connection. This
+requires phpredis v4 or higher and a TCP-keepalive enabled server.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">timeout</span></code> (type: <code class="docutils literal notranslate"><span class="pre">int</span></code>, default: <code class="docutils literal notranslate"><span class="pre">30</span></code>)</dt>
+<dd><p>Specifies the time (in seconds) used to connect to a Redis server before the
+connection attempt times out.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using the <a class="reference external" href="https://packagist.org/packages/predis/predis">Predis</a><span class="link-target"> [https://packagist.org/packages/predis/predis]</span> library some additional Predis-specific options are available.
+Reference the <a class="reference external" href="https://github.com/nrk/predis/wiki/Connection-Parameters#list-of-connection-parameters">Predis Connection Parameters</a><span class="link-target"> [https://github.com/nrk/predis/wiki/Connection-Parameters#list-of-connection-parameters]</span> documentation for more information.</p>
+</div>
+</div>
+</div>
+<div class="section" id="working-with-tags">
+<span id="redis-tag-aware-adapter"></span><h2>Working with Tags</h2>
+<p>In order to use tag-based invalidation, you can wrap your adapter in <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/TagAwareAdapter.php" title="Symfony\Component\Cache\Adapter\TagAwareAdapter"><span class="pre">TagAwareAdapter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/TagAwareAdapter.php]</span></span></code>, but when Redis is used as backend, it’s often more interesting to use the dedicated <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/RedisTagAwareAdapter.php" title="Symfony\Component\Cache\Adapter\RedisTagAwareAdapter"><span class="pre">RedisTagAwareAdapter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/RedisTagAwareAdapter.php]</span></span></code>. Since tag invalidation logic is implemented in Redis itself, this adapter offers better performance when using tag-based invalidation:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\RedisAdapter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\RedisTagAwareAdapter</span><span class="p">;</span>
+
+<span class="nv">$client</span> <span class="o">=</span> <span class="nx">RedisAdapter</span><span class="o">::</span><span class="na">createConnection</span><span class="p">(</span><span class="s1">&#39;redis://localhost&#39;</span><span class="p">);</span>
+<span class="nv">$cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RedisTagAwareAdapter</span><span class="p">(</span><span class="nv">$client</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="configuring-redis">
+<h3>Configuring Redis</h3>
+<p>When using Redis as cache, you should configure the <code class="docutils literal notranslate"><span class="pre">maxmemory</span></code> and <code class="docutils literal notranslate"><span class="pre">maxmemory-policy</span></code>
+settings. By setting <code class="docutils literal notranslate"><span class="pre">maxmemory</span></code>, you limit how much memory Redis is allowed to consume.
+If the amount is too low, Redis will drop entries that would still be useful and you benefit
+less from your cache. Setting the <code class="docutils literal notranslate"><span class="pre">maxmemory-policy</span></code> to <code class="docutils literal notranslate"><span class="pre">allkeys-lru</span></code> tells Redis that
+it is ok to drop data when it runs out of memory, and to first drop the oldest entries (least
+recently used). If you do not allow Redis to drop entries, it will return an error when you
+try to add data when no memory is available. An example setting could look as follows:</p>
+<div class="highlight-ini notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="na">maxmemory 100mb</span>
+<span class="na">maxmemory-policy allkeys-lru</span>
+</pre></div>
+</td></tr></table></div>
+<p>Read more about this topic in the offical <a class="reference external" href="https://redis.io/topics/lru-cache">Redis LRU Cache Documentation</a><span class="link-target"> [https://redis.io/topics/lru-cache]</span>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

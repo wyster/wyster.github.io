@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Using Console Commands, Shortcuts and Built-in Commands</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-console-commands-shortcuts-and-built-in-commands">
+<span id="index-0"></span><h1>Using Console Commands, Shortcuts and Built-in Commands</h1>
+<p>In addition to the options you specify for your commands, there are some
+built-in options as well as a couple of built-in commands for the Console component.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These examples assume you have added a file <code class="docutils literal notranslate"><span class="pre">application.php</span></code> to run at
+the CLI:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">#!/usr/bin/env php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
+<span class="c1">// application.php</span>
+
+<span class="k">require</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/vendor/autoload.php&#39;</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Application</span><span class="p">;</span>
+
+<span class="nv">$application</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Application</span><span class="p">();</span>
+<span class="c1">// ...</span>
+<span class="nv">$application</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="built-in-commands">
+<h2>Built-in Commands</h2>
+<p>There is a built-in command <code class="docutils literal notranslate"><span class="pre">list</span></code> which outputs all the standard options
+and the registered commands:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php list
+</pre></div>
+</td></tr></table></div>
+<p>You can get the same output by not running any command as well</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php
+</pre></div>
+</td></tr></table></div>
+<p>The help command lists the help information for the specified command. For
+example, to get the help for the <code class="docutils literal notranslate"><span class="pre">list</span></code> command:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php <span class="nb">help</span> list
+</pre></div>
+</td></tr></table></div>
+<p>Running <code class="docutils literal notranslate"><span class="pre">help</span></code> without specifying a command will list the global options:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php help
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="global-options">
+<h2>Global Options</h2>
+<p>You can get help information for any command with the <code class="docutils literal notranslate"><span class="pre">--help</span></code> option. To
+get help for the list command:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php list --help
+<span class="gp">$</span> php application.php list -h
+</pre></div>
+</td></tr></table></div>
+<p>You can suppress output with:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php list --quiet
+<span class="gp">$</span> php application.php list -q
+</pre></div>
+</td></tr></table></div>
+<p>You can get more verbose messages (if this is supported for a command)
+with:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php list --verbose
+<span class="gp">$</span> php application.php list -v
+</pre></div>
+</td></tr></table></div>
+<p>To output even more verbose messages you can use these options:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php list -vv
+<span class="gp">$</span> php application.php list -vvv
+</pre></div>
+</td></tr></table></div>
+<p>If you set the optional arguments to give your application a name and version:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$application</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Application</span><span class="p">(</span><span class="s1">&#39;Acme Console Application&#39;</span><span class="p">,</span> <span class="s1">&#39;1.2&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>then you can use:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php list --version
+<span class="gp">$</span> php application.php list -V
+</pre></div>
+</td></tr></table></div>
+<p>to get this information output:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Acme Console Application version 1.2
+</pre></div>
+</td></tr></table></div>
+<p>If you do not provide a console name then it will just output:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>console tool
+</pre></div>
+</td></tr></table></div>
+<p>You can force turning on ANSI output coloring with:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php list --ansi
+</pre></div>
+</td></tr></table></div>
+<p>or turn it off with:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php list --no-ansi
+</pre></div>
+</td></tr></table></div>
+<p>You can suppress any interactive questions from the command you are running with:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php list --no-interaction
+<span class="gp">$</span> php application.php list -n
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="shortcut-syntax">
+<h2>Shortcut Syntax</h2>
+<p>You do not have to type out the full command names. You can just type the
+shortest unambiguous name to run a command. So if there are non-clashing
+commands, then you can run <code class="docutils literal notranslate"><span class="pre">help</span></code> like this:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php h
+</pre></div>
+</td></tr></table></div>
+<p>If you have commands using <code class="docutils literal notranslate"><span class="pre">:</span></code> to namespace commands then you only need
+to type the shortest unambiguous text for each part. If you have created the
+<code class="docutils literal notranslate"><span class="pre">demo:greet</span></code> as shown in <a class="reference internal" href="../console.xhtml"><span class="doc">The Console Component</span></a> then you
+can run it with:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php application.php d:g Fabien
+
+<span class="c1"># as long as it&#39;s unambiguous, you can also mix upper and lower case</span>
+<span class="c1"># php application.php Demo:g Fabien</span>
+<span class="c1"># php application.php de:Gr Fabien</span>
+<span class="c1"># php application.php DE:Gre Fabien</span>
+</pre></div>
+</td></tr></table></div>
+<p>If you enter a short command that’s ambiguous (i.e. there are more than one
+command that match), then no command will be run and some suggestions of
+the possible commands to choose from will be output.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

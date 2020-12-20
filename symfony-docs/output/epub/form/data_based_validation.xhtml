@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Choose Validation Groups Based on the Submitted Data</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-choose-validation-groups-based-on-the-submitted-data">
+<span id="index-0"></span><h1>How to Choose Validation Groups Based on the Submitted Data</h1>
+<p>If you need some advanced logic to determine the validation groups (e.g.
+based on submitted data), you can set the <code class="docutils literal notranslate"><span class="pre">validation_groups</span></code> option
+to an array callback:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Entity\Client</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\OptionsResolver\OptionsResolver</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">configureOptions</span><span class="p">(</span><span class="nx">OptionsResolver</span> <span class="nv">$resolver</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">setDefaults</span><span class="p">([</span>
+        <span class="s1">&#39;validation_groups&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="nx">Client</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="s1">&#39;determineValidationGroups&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This will call the static method <code class="docutils literal notranslate"><span class="pre">determineValidationGroups()</span></code> on the
+<code class="docutils literal notranslate"><span class="pre">Client</span></code> class after the form is submitted, but before validation is
+invoked. The Form object is passed as an argument to that method (see next
+example).  You can also define whole logic inline by using a <code class="docutils literal notranslate"><span class="pre">Closure</span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Entity\Client</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\FormInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\OptionsResolver\OptionsResolver</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">configureOptions</span><span class="p">(</span><span class="nx">OptionsResolver</span> <span class="nv">$resolver</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">setDefaults</span><span class="p">([</span>
+        <span class="s1">&#39;validation_groups&#39;</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span><span class="nx">FormInterface</span> <span class="nv">$form</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$form</span><span class="o">-&gt;</span><span class="na">getData</span><span class="p">();</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nx">Client</span><span class="o">::</span><span class="na">TYPE_PERSON</span> <span class="o">==</span> <span class="nv">$data</span><span class="o">-&gt;</span><span class="na">getType</span><span class="p">())</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;person&#39;</span><span class="p">];</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;company&#39;</span><span class="p">];</span>
+        <span class="p">},</span>
+    <span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">validation_groups</span></code> option overrides the default validation
+group which is being used. If you want to validate the default constraints
+of the entity as well you have to adjust the option as follows:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Entity\Client</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\FormInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\OptionsResolver\OptionsResolver</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">configureOptions</span><span class="p">(</span><span class="nx">OptionsResolver</span> <span class="nv">$resolver</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">setDefaults</span><span class="p">([</span>
+        <span class="s1">&#39;validation_groups&#39;</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span><span class="nx">FormInterface</span> <span class="nv">$form</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$form</span><span class="o">-&gt;</span><span class="na">getData</span><span class="p">();</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nx">Client</span><span class="o">::</span><span class="na">TYPE_PERSON</span> <span class="o">==</span> <span class="nv">$data</span><span class="o">-&gt;</span><span class="na">getType</span><span class="p">())</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Default&#39;</span><span class="p">,</span> <span class="s1">&#39;person&#39;</span><span class="p">];</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Default&#39;</span><span class="p">,</span> <span class="s1">&#39;company&#39;</span><span class="p">];</span>
+        <span class="p">},</span>
+    <span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You can find more information about how the validation groups and the default constraints
+work in the article about <a class="reference internal" href="../validation/groups.xhtml"><span class="doc">validation groups</span></a>.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

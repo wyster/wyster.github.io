@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>ButtonType Field</title>
+    <link rel="stylesheet" href="../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="buttontype-field">
+<span id="index-0"></span><h1>ButtonType Field</h1>
+<p>A simple, non-responsive button.</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 76%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Rendered as</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">button</span></code> tag</p></td>
+</tr>
+<tr class="row-even"><td><p>Inherited
+options</p></td>
+<td><ul class="simple">
+<li><p><a class="reference internal" href="#attr">attr</a></p></li>
+<li><p><a class="reference internal" href="#attr-translation-parameters">attr_translation_parameters</a></p></li>
+<li><p><a class="reference internal" href="#disabled">disabled</a></p></li>
+<li><p><a class="reference internal" href="#label">label</a></p></li>
+<li><p><a class="reference internal" href="#label-translation-parameters">label_translation_parameters</a></p></li>
+<li><p><a class="reference internal" href="#row-attr">row_attr</a></p></li>
+<li><p><a class="reference internal" href="#translation-domain">translation_domain</a></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Parent type</p></td>
+<td><p>none</p></td>
+</tr>
+<tr class="row-even"><td><p>Class</p></td>
+<td><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Extension/Core/Type/ButtonType.php" title="Symfony\Component\Form\Extension\Core\Type\ButtonType"><span class="pre">ButtonType</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Extension/Core/Type/ButtonType.php]</span></span></code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The full list of options defined and inherited by this form type is
+available running this command in your app:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># replace &#39;FooType&#39; by the class name of your form type</span>
+<span class="gp">$</span> php bin/console debug:form FooType
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="inherited-options">
+<h2>Inherited Options</h2>
+<p>The following options are defined in the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Extension/Core/Type/BaseType.php" title="Symfony\Component\Form\Extension\Core\Type\BaseType"><span class="pre">BaseType</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Extension/Core/Type/BaseType.php]</span></span></code> class.
+The <code class="docutils literal notranslate"><span class="pre">BaseType</span></code> class is the parent class for both the <code class="docutils literal notranslate"><span class="pre">button</span></code> type
+and the <a class="reference internal" href="form.xhtml"><span class="doc">FormType</span></a>, but it is not part
+of the form type tree (i.e. it cannot be used as a form type on its own).</p>
+<div class="section" id="attr">
+<h3><code class="docutils literal notranslate"><span class="pre">attr</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+<p>If you want to add extra attributes to the HTML representation of the button,
+you can use <code class="docutils literal notranslate"><span class="pre">attr</span></code> option. It’s an associative array with HTML attribute
+as a key. This can be useful when you need to set a custom class for the button:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\ButtonType</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;save&#39;</span><span class="p">,</span> <span class="nx">ButtonType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;attr&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;class&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;save&#39;</span><span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="disabled">
+<h3><code class="docutils literal notranslate"><span class="pre">disabled</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code>  <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<p>If you don’t want a user to be able to click a button, you can set the disabled
+option to true. It will not be possible to submit the form with this button,
+not even when bypassing the browser and sending a request manually, for
+example with cURL.</p>
+</div>
+<div class="section" id="label">
+<h3><code class="docutils literal notranslate"><span class="pre">label</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: The label is “guessed” from the field name</p>
+<p>Sets the label that will be displayed on the button. The label can also
+be directly set inside the template:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>Twig</em><div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">form_widget</span><span class="o">(</span><span class="nv">form.save</span><span class="o">,</span> <span class="o">{</span> <span class="s1">&#39;label&#39;</span><span class="o">:</span> <span class="s1">&#39;Click me&#39;</span> <span class="o">})</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">widget</span><span class="p">(</span><span class="nv">$form</span><span class="p">[</span><span class="s1">&#39;save&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;label&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Click me&#39;</span><span class="p">])</span> <span class="cp">?&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="translation-domain">
+<h3><code class="docutils literal notranslate"><span class="pre">translation_domain</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">messages</span></code></p>
+<p>This is the translation domain that will be used for any labels or options
+that are rendered for this button.</p>
+</div>
+<div class="section" id="label-translation-parameters">
+<h3>label_translation_parameters</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">label_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
+</div>
+<p>The content of the <a class="reference internal" href="#label">label</a> option is translated before displaying it, so it
+can contain <a class="reference internal" href="../../../translation/message_format.xhtml#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>.
+This option defines the values used to replace those placeholders.</p>
+<p>Given this translation message:</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># translations/messages.en.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">form.order.submit_to_company</span><span class="p p-Indicator">:</span> <span class="s">&#39;Send</span><span class="nv"> </span><span class="s">an</span><span class="nv"> </span><span class="s">order</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">%company%&#39;</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can specify the placeholder values as follows:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\ButtonType</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;send&#39;</span><span class="p">,</span> <span class="nx">ButtonType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;label&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;form.order.submit_to_company&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;label_translation_parameters&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;%company%&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;ACME Inc.&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">label_translation_parameters</span></code> option of buttons is merged with the same
+option of its parents, so buttons can reuse and/or override any of the parent
+placeholders.</p>
+</div>
+<div class="section" id="attr-translation-parameters">
+<h3>attr_translation_parameters</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">attr_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
+</div>
+<p>The content of the <code class="docutils literal notranslate"><span class="pre">title</span></code> and <code class="docutils literal notranslate"><span class="pre">placeholder</span></code> values defined in the <a class="reference internal" href="#attr">attr</a>
+option is translated before displaying it, so it can contain
+<a class="reference internal" href="../../../translation/message_format.xhtml#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>. This
+option defines the values used to replace those placeholders.</p>
+<p>Given this translation message:</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># translations/messages.en.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">form.order.id.placeholder</span><span class="p p-Indicator">:</span> <span class="s">&#39;Enter</span><span class="nv"> </span><span class="s">unique</span><span class="nv"> </span><span class="s">identifier</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">order</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">%company%&#39;</span>
+<span class="l l-Scalar l-Scalar-Plain">form.order.id.title</span><span class="p p-Indicator">:</span> <span class="s">&#39;This</span><span class="nv"> </span><span class="s">will</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">reference</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">communications</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">%company%&#39;</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can specify the placeholder values as follows:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;attr&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;placeholder&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;form.order.id.placeholder&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;form.order.id.title&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;attr_translation_parameters&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;%company%&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;ACME Inc.&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">attr_translation_parameters</span></code> option of children fields is merged with the
+same option of their parents, so children can reuse and/or override any of the
+parent placeholders.</p>
+</div>
+<div class="section" id="row-attr">
+<h3>row_attr</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+<p>An associative array of the HTML attributes added to the element which is used
+to render the <a class="reference internal" href="../../../form/form_customization.xhtml#form-rendering-basics"><span class="std std-ref">form type row</span></a>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="nx">TextareaType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;row_attr&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;class&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;text-editor&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
+the <a class="reference internal" href="../../../form/form_customization.xhtml#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

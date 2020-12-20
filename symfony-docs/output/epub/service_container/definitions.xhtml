@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to work with Service Definition Objects</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-work-with-service-definition-objects">
+<span id="index-0"></span><h1>How to work with Service Definition Objects</h1>
+<p>Service definitions are the instructions describing how the container should
+build a service. They are not the actual services used by your applications.
+The container will create the actual class instances based on the configuration
+in the definition.</p>
+<p>Normally, you would use YAML, XML or PHP to describe the service definitions.
+But if you’re doing advanced things with the service container, like working
+with a <a class="reference internal" href="compiler_passes.xhtml"><span class="doc">Compiler Pass</span></a> or creating a
+<a class="reference internal" href="../bundles/extension.xhtml"><span class="doc">Dependency Injection Extension</span></a>, you may need to
+work directly with the <code class="docutils literal notranslate"><span class="pre">Definition</span></code> objects that define how a service will be
+instantiated.</p>
+<div class="section" id="getting-and-setting-service-definitions">
+<h2>Getting and Setting Service Definitions</h2>
+<p>There are some helpful methods for working with the service definitions:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\Definition</span><span class="p">;</span>
+
+<span class="c1">// finds out if there is an &quot;app.mailer&quot; definition</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">hasDefinition</span><span class="p">(</span><span class="s1">&#39;app.mailer&#39;</span><span class="p">);</span>
+<span class="c1">// finds out if there is an &quot;app.mailer&quot; definition or alias</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">has</span><span class="p">(</span><span class="s1">&#39;app.mailer&#39;</span><span class="p">);</span>
+
+<span class="c1">// gets the &quot;app.user_config_manager&quot; definition</span>
+<span class="nv">$definition</span> <span class="o">=</span> <span class="nv">$container</span><span class="o">-&gt;</span><span class="na">getDefinition</span><span class="p">(</span><span class="s1">&#39;app.user_config_manager&#39;</span><span class="p">);</span>
+<span class="c1">// gets the definition with the &quot;app.user_config_manager&quot; ID or alias</span>
+<span class="nv">$definition</span> <span class="o">=</span> <span class="nv">$container</span><span class="o">-&gt;</span><span class="na">findDefinition</span><span class="p">(</span><span class="s1">&#39;app.user_config_manager&#39;</span><span class="p">);</span>
+
+<span class="c1">// adds a new &quot;app.number_generator&quot; definition</span>
+<span class="nv">$definition</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Definition</span><span class="p">(</span><span class="nx">\App\NumberGenerator</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">setDefinition</span><span class="p">(</span><span class="s1">&#39;app.number_generator&#39;</span><span class="p">,</span> <span class="nv">$definition</span><span class="p">);</span>
+
+<span class="c1">// shortcut for the previous method</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;app.number_generator&#39;</span><span class="p">,</span> <span class="nx">\App\NumberGenerator</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-a-definition">
+<h2>Working with a Definition</h2>
+<div class="section" id="creating-a-new-definition">
+<h3>Creating a New Definition</h3>
+<p>In addition to manipulating and retrieving existing definitions, you can also
+define new service definitions with the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DependencyInjection/Definition.php" title="Symfony\Component\DependencyInjection\Definition"><span class="pre">Definition</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DependencyInjection/Definition.php]</span></span></code>
+class.</p>
+</div>
+<div class="section" id="class">
+<h3>Class</h3>
+<p>The first optional argument of the <code class="docutils literal notranslate"><span class="pre">Definition</span></code> class is the fully qualified
+class name of the object returned when the service is fetched from the container:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Config\CustomConfigManager</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Config\UserConfigManager</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\Definition</span><span class="p">;</span>
+
+<span class="nv">$definition</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Definition</span><span class="p">(</span><span class="nx">UserConfigManager</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+<span class="c1">// override the class</span>
+<span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">setClass</span><span class="p">(</span><span class="nx">CustomConfigManager</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+<span class="c1">// get the class configured for this definition</span>
+<span class="nv">$class</span> <span class="o">=</span> <span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">getClass</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="constructor-arguments">
+<h3>Constructor Arguments</h3>
+<p>The second optional argument of the <code class="docutils literal notranslate"><span class="pre">Definition</span></code> class is an array with the
+arguments passed to the constructor of the object returned when the service is
+fetched from the container:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Config\DoctrineConfigManager</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\Definition</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\Reference</span><span class="p">;</span>
+
+<span class="nv">$definition</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Definition</span><span class="p">(</span><span class="nx">DoctrineConfigManager</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="k">new</span> <span class="nx">Reference</span><span class="p">(</span><span class="s1">&#39;doctrine&#39;</span><span class="p">),</span> <span class="c1">// a reference to another service</span>
+    <span class="s1">&#39;%app.config_table_name%&#39;</span><span class="p">,</span>  <span class="c1">// will be resolved to the value of a container parameter</span>
+<span class="p">]);</span>
+
+<span class="c1">// gets all arguments configured for this definition</span>
+<span class="nv">$constructorArguments</span> <span class="o">=</span> <span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">getArguments</span><span class="p">();</span>
+
+<span class="c1">// gets a specific argument</span>
+<span class="nv">$firstArgument</span> <span class="o">=</span> <span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">// adds a new argument with the name of the argument</span>
+<span class="c1">// $argumentName = the name of the argument in the constructor</span>
+<span class="nv">$argument</span> <span class="o">=</span> <span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">setArgument</span><span class="p">(</span><span class="s1">&#39;$argumentName&#39;</span><span class="p">,</span> <span class="nv">$argumentValue</span><span class="p">);</span>
+
+<span class="c1">// adds a new argument</span>
+<span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">addArgument</span><span class="p">(</span><span class="nv">$argument</span><span class="p">);</span>
+
+<span class="c1">// replaces argument on a specific index (0 = first argument)</span>
+<span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">replaceArgument</span><span class="p">(</span><span class="nv">$index</span><span class="p">,</span> <span class="nv">$argument</span><span class="p">);</span>
+
+<span class="c1">// replaces all previously configured arguments with the passed array</span>
+<span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">setArguments</span><span class="p">(</span><span class="nv">$arguments</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Don’t use <code class="docutils literal notranslate"><span class="pre">get()</span></code> to get a service that you want to inject as constructor
+argument, the service is not yet available. Instead, use a
+<code class="docutils literal notranslate"><span class="pre">Reference</span></code> instance as shown above.</p>
+</div>
+</div>
+<div class="section" id="method-calls">
+<h3>Method Calls</h3>
+<p>If the service you are working with uses setter injection then you can manipulate
+any method calls in the definitions as well:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// gets all configured method calls</span>
+<span class="nv">$methodCalls</span> <span class="o">=</span> <span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">getMethodCalls</span><span class="p">();</span>
+
+<span class="c1">// configures a new method call</span>
+<span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">addMethodCall</span><span class="p">(</span><span class="s1">&#39;setLogger&#39;</span><span class="p">,</span> <span class="p">[</span><span class="k">new</span> <span class="nx">Reference</span><span class="p">(</span><span class="s1">&#39;logger&#39;</span><span class="p">)]);</span>
+
+<span class="c1">// configures an immutable-setter</span>
+<span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">addMethodCall</span><span class="p">(</span><span class="s1">&#39;withLogger&#39;</span><span class="p">,</span> <span class="p">[</span><span class="k">new</span> <span class="nx">Reference</span><span class="p">(</span><span class="s1">&#39;logger&#39;</span><span class="p">)],</span> <span class="k">true</span><span class="p">);</span>
+
+<span class="c1">// replaces all previously configured method calls with the passed array</span>
+<span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">setMethodCalls</span><span class="p">(</span><span class="nv">$methodCalls</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>There are more examples of specific ways of working with definitions
+in the PHP code blocks of the Service Container articles such as
+<a class="reference internal" href="factories.xhtml"><span class="doc">Using a Factory to Create Services</span></a> and <a class="reference internal" href="parent_services.xhtml"><span class="doc">How to Manage Common Dependencies with Parent Services</span></a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The methods here that change service definitions can only be used before
+the container is compiled. Once the container is compiled you cannot
+manipulate service definitions further. To learn more about compiling
+the container, see <a class="reference internal" href="../components/dependency_injection/compilation.xhtml"><span class="doc">Compiling the Container</span></a>.</p>
+</div>
+</div>
+<div class="section" id="requiring-files">
+<h3>Requiring Files</h3>
+<p>There might be use cases when you need to include another file just before
+the service itself gets loaded. To do so, you can use the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DependencyInjection/Definition.php" title="Symfony\Component\DependencyInjection\Definition::setFile()"><span class="pre">setFile()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DependencyInjection/Definition.php]</span></span></code> method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$definition</span><span class="o">-&gt;</span><span class="na">setFile</span><span class="p">(</span><span class="s1">&#39;/src/path/to/file/foo.php&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Notice that Symfony will internally call the PHP statement <code class="docutils literal notranslate"><span class="pre">require_once</span></code>,
+which means that your file will be included only once per request.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

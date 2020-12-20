@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -136,6 +134,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../page_creation.html">Create your First Page in Symfony</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homestead.html">Using Symfony with Homestead/Vagrant</a></li>
 <li class="toctree-l3"><a class="reference internal" href="web_server_configuration.html">Configuring a Web Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="built_in_web_server.html">How to Use PHP’s built-in Web Server</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bundles.html">Upgrading a Third-Party Bundle for a Major Symfony Version</a></li>
 <li class="toctree-l3"><a class="reference internal" href="file_permissions.html">Setting up or Fixing File Permissions</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Upgrading Existing Applications to Symfony Flex</a><ul>
@@ -146,7 +145,7 @@
 <li class="toctree-l3"><a class="reference internal" href="unstable_versions.html">How to Install or Upgrade to the Latest, Unreleased Symfony Version</a></li>
 <li class="toctree-l3"><a class="reference internal" href="upgrade_major.html">Upgrading a Major Version (e.g. 4.4.0 to 5.0.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="upgrade_minor.html">Upgrading a Minor Version (e.g. 4.0.0 to 4.1.0)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="upgrade_patch.html">Upgrading a Patch Version (e.g. 5.0.0 to 5.0.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="upgrade_patch.html">Upgrading a Patch Version (e.g. 4.1.0 to 4.1.1)</a></li>
 </ul>
 </li>
 </ul>
@@ -354,7 +353,7 @@ in config files, so the old <code class="docutils literal notranslate"><span cla
 </li>
 <li><p class="first">The most important config file is <code class="docutils literal notranslate"><span class="pre">app/config/services.yml</span></code>, which now is
 located at <code class="docutils literal notranslate"><span class="pre">config/services.yaml</span></code>. Copy the contents of the
-<a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/4.2/config/services.yaml">default services.yaml file</a> and then add your own service configuration.
+<a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/3.3/config/services.yaml">default services.yaml file</a> and then add your own service configuration.
 Later you can revisit this file because thanks to Symfony’s
 <a class="reference internal" href="../service_container/autowiring.html"><span class="doc">autowiring feature</span></a> you can remove
 most of the service configuration.</p>
@@ -397,11 +396,11 @@ them to <code class="docutils literal notranslate"><span class="pre">src/Control
 the former ones.</p>
 </li>
 <li><p class="first">Create the new <code class="docutils literal notranslate"><span class="pre">public/index.php</span></code> front controller
-<a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/5.1/public/index.php">copying Symfony’s index.php source</a> and, if you made any customization in
+<a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/3.4/public/index.php">copying Symfony’s index.php source</a> and, if you made any customization in
 your <code class="docutils literal notranslate"><span class="pre">web/app.php</span></code> and <code class="docutils literal notranslate"><span class="pre">web/app_dev.php</span></code> files, copy those changes into
 the new file. You can now remove the old <code class="docutils literal notranslate"><span class="pre">web/</span></code> dir.</p>
 </li>
-<li><p class="first">Update the <code class="docutils literal notranslate"><span class="pre">bin/console</span></code> script <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/console/5.1/bin/console">copying Symfony’s bin/console source</a>
+<li><p class="first">Update the <code class="docutils literal notranslate"><span class="pre">bin/console</span></code> script <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/console/3.4/bin/console">copying Symfony’s bin/console source</a>
 and changing anything according to your original console script.</p>
 </li>
 <li><p class="first">Remove <code class="docutils literal notranslate"><span class="pre">src/AppBundle/</span></code>.</p>

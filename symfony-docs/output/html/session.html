@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Sessions</a><ul>
@@ -471,7 +469,7 @@ the default <code class="docutils literal notranslate"><span class="pre">Attribu
 <span class="l l-Scalar l-Scalar-Plain">session</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">public</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
     <span class="l l-Scalar l-Scalar-Plain">class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Symfony\Component\HttpFoundation\Session\Session</span>
-    <span class="l l-Scalar l-Scalar-Plain">arguments</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;@session.storage&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;@session.namespacedattributebag&#39;</span><span class="p p-Indicator">]</span>
+    <span class="l l-Scalar l-Scalar-Plain">arguments</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;@session.storage&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;@session.namespacedattributebag&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;@session.flash_bag&#39;</span><span class="p p-Indicator">]</span>
 
 <span class="l l-Scalar l-Scalar-Plain">session.namespacedattributebag</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag</span>

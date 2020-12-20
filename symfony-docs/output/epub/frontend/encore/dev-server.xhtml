@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Using webpack-dev-server and HMR</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-webpack-dev-server-and-hmr">
+<h1>Using webpack-dev-server and HMR</h1>
+<p>While developing, instead of using <code class="docutils literal notranslate"><span class="pre">yarn</span> <span class="pre">encore</span> <span class="pre">dev</span> <span class="pre">--watch</span></code>, you can use the
+<a class="reference external" href="https://webpack.js.org/configuration/dev-server/">webpack-dev-server</a><span class="link-target"> [https://webpack.js.org/configuration/dev-server/]</span>:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> yarn encore dev-server
+</pre></div>
+</td></tr></table></div>
+<p>This builds and serves the front-end assets from a new server. This server runs at
+<code class="docutils literal notranslate"><span class="pre">localhost:8080</span></code> by default, meaning your build assets are available at <code class="docutils literal notranslate"><span class="pre">localhost:8080/build</span></code>.
+This server does not actually write the files to disk; instead it servers them from memory,
+allowing for hot module reloading.</p>
+<p>As a consequence, the <code class="docutils literal notranslate"><span class="pre">link</span></code> and <code class="docutils literal notranslate"><span class="pre">script</span></code> tags need to point to the new server. If you’re using the
+<code class="docutils literal notranslate"><span class="pre">encore_entry_script_tags()</span></code> and <code class="docutils literal notranslate"><span class="pre">encore_entry_link_tags()</span></code> Twig shortcuts (or are
+<a class="reference internal" href="versioning.xhtml#load-manifest-files"><span class="std std-ref">processing your assets through entrypoints.json</span></a> in some other way),
+you’re done: the paths in your templates will automatically point to the dev server.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">dev-server</span></code> command supports all the options defined by <a class="reference external" href="https://webpack.js.org/configuration/dev-server/">webpack-dev-server</a><span class="link-target"> [https://webpack.js.org/configuration/dev-server/]</span>.
+You can set these options via command line options:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> yarn encore dev-server --https --port <span class="m">9000</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can also set these options using the <code class="docutils literal notranslate"><span class="pre">Encore.configureDevServerOptions()</span></code>
+method in your <code class="docutils literal notranslate"><span class="pre">webpack.config.js</span></code> file:</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// webpack.config.js</span>
+<span class="c1">// ...</span>
+
+<span class="nx">Encore</span>
+    <span class="c1">// ...</span>
+
+    <span class="p">.</span><span class="nx">configureDevServerOptions</span><span class="p">(</span><span class="nx">options</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">https</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;/path/to/server.key&#39;</span><span class="p">,</span>
+            <span class="nx">cert</span><span class="o">:</span> <span class="s1">&#39;/path/to/server.crt&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">})</span>
+<span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.28.4: </span>The <code class="docutils literal notranslate"><span class="pre">Encore.configureDevServerOptions()</span></code> method was introduced in Encore 0.28.4.</p>
+</div>
+<div class="section" id="hot-module-replacement-hmr">
+<h2>Hot Module Replacement HMR</h2>
+<p>Encore <em>does</em> support <a class="reference external" href="https://webpack.js.org/concepts/hot-module-replacement/">HMR</a><span class="link-target"> [https://webpack.js.org/concepts/hot-module-replacement/]</span> for <a class="reference internal" href="vuejs.xhtml"><span class="doc">Vue.js</span></a>, but
+does <em>not</em> work for styles anywhere at this time. To activate it, pass the <code class="docutils literal notranslate"><span class="pre">--hot</span></code>
+option:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> ./node_modules/.bin/encore dev-server --hot
+</pre></div>
+</td></tr></table></div>
+<p>If you want to use SSL with self-signed certificates, add the <code class="docutils literal notranslate"><span class="pre">--https</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--pfx=</span></code>, and  <code class="docutils literal notranslate"><span class="pre">--allowed-hosts</span></code> options to the <code class="docutils literal notranslate"><span class="pre">dev-server</span></code> command in
+the <code class="docutils literal notranslate"><span class="pre">package.json</span></code> file:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{
+    ...
+    &quot;scripts&quot;: {
+<span class="gd">-        &quot;dev-server&quot;: &quot;encore dev-server&quot;,</span>
+<span class="gi">+        &quot;dev-server&quot;: &quot;encore dev-server --https --pfx=$HOME/.symfony/certs/default.p12 --allowed-hosts=mydomain.wip&quot;,</span>
+        ...
+    }
+}
+</pre></div>
+</td></tr></table></div>
+<p>If you experience issues related to CORS (Cross Origin Resource Sharing), add
+the <code class="docutils literal notranslate"><span class="pre">--disable-host-check</span></code> and <code class="docutils literal notranslate"><span class="pre">--port</span></code> options to the <code class="docutils literal notranslate"><span class="pre">dev-server</span></code>
+command in the <code class="docutils literal notranslate"><span class="pre">package.json</span></code> file:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{
+    ...
+    &quot;scripts&quot;: {
+<span class="gd">-        &quot;dev-server&quot;: &quot;encore dev-server&quot;,</span>
+<span class="gi">+        &quot;dev-server&quot;: &quot;encore dev-server --port 8080 --disable-host-check&quot;,</span>
+        ...
+    }
+}
+</pre></div>
+</td></tr></table></div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Beware that <a class="reference external" href="https://webpack.js.org/configuration/dev-server/#devserverdisablehostcheck">it’s not recommended to disable host checking</a><span class="link-target"> [https://webpack.js.org/configuration/dev-server/#devserverdisablehostcheck]</span> in general, but
+here it’s required to solve the CORS issue.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

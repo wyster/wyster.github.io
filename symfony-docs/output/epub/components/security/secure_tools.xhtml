@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Securely Generating Random Values</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="securely-generating-random-values">
+<h1>Securely Generating Random Values</h1>
+<p>The Symfony Security component comes with a collection of nice utilities
+related to security. These utilities are used by Symfony, but you should
+also use them if you want to solve the problem they address.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The functions described in this article were introduced in PHP 5.6 or 7.
+For older PHP versions, a polyfill is provided by the
+<a class="reference external" href="https://github.com/symfony/polyfill">Symfony Polyfill Component</a><span class="link-target"> [https://github.com/symfony/polyfill]</span>.</p>
+</div>
+<div class="section" id="comparing-strings">
+<h2>Comparing Strings</h2>
+<p>The time it takes to compare two strings depends on their differences. This
+can be used by an attacker when the two strings represent a password for
+instance; it is known as a <a class="reference external" href="https://en.wikipedia.org/wiki/Timing_attack">Timing attack</a><span class="link-target"> [https://en.wikipedia.org/wiki/Timing_attack]</span>.</p>
+<p>When comparing two passwords, you should use the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.hash-equals.php" title="hash_equals"><span class="pre">hash_equals</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.hash-equals.php]</span></span></code>
+function:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="nx">hash_equals</span><span class="p">(</span><span class="nv">$knownString</span><span class="p">,</span> <span class="nv">$userInput</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generating-a-secure-random-string">
+<h2>Generating a Secure Random String</h2>
+<p>Whenever you need to generate a secure random string, you are highly
+encouraged to use the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.random-bytes.php" title="random_bytes"><span class="pre">random_bytes</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.random-bytes.php]</span></span></code> function:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$random</span> <span class="o">=</span> <span class="nx">random_bytes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The function returns a random string, suitable for cryptographic use, of
+the number bytes passed as an argument (10 in the above example).</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">random_bytes()</span></code> function returns a binary string which may contain
+the <code class="docutils literal notranslate"><span class="pre">\0</span></code> character. This can cause trouble in several common scenarios,
+such as storing this value in a database or including it as part of the
+URL. The solution is to hash the value returned by <code class="docutils literal notranslate"><span class="pre">random_bytes()</span></code> with
+a hashing function such as <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.md5.php" title="md5"><span class="pre">md5</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.md5.php]</span></span></code> or <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.sha1.php" title="sha1"><span class="pre">sha1</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.sha1.php]</span></span></code>.</p>
+</div>
+</div>
+<div class="section" id="generating-a-secure-random-number">
+<h2>Generating a Secure Random Number</h2>
+<p>If you need to generate a cryptographically secure random integer, you should
+use the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.random-int.php" title="random_int"><span class="pre">random_int</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.random-int.php]</span></span></code> function:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$random</span> <span class="o">=</span> <span class="nx">random_int</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

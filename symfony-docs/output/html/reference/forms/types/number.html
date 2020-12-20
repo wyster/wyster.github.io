@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../session.html">Sessions</a></li>
@@ -278,8 +276,8 @@ type offers different options for the scale, rounding and grouping
 that you want to use for your number.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="28%" />
-<col width="72%" />
+<col width="16%" />
+<col width="84%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>Rendered as</td>
@@ -295,14 +293,15 @@ that you want to use for your number.</p>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>Overridden options</td>
+<tr class="row-odd"><td>Overridden
+options</td>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="#compound">compound</a></li>
-<li><a class="reference internal" href="#invalid-message">invalid_message</a></li>
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td>Inherited options</td>
+<tr class="row-even"><td>Inherited
+options</td>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="#attr">attr</a></li>
 <li><a class="reference internal" href="#data">data</a></li>
@@ -313,6 +312,7 @@ that you want to use for your number.</p>
 <li><a class="reference internal" href="#help">help</a></li>
 <li><a class="reference internal" href="#help-attr">help_attr</a></li>
 <li><a class="reference internal" href="#help-html">help_html</a></li>
+<li><a class="reference internal" href="#invalid-message">invalid_message</a></li>
 <li><a class="reference internal" href="#invalid-message-parameters">invalid_message_parameters</a></li>
 <li><a class="reference internal" href="#label">label</a></li>
 <li><a class="reference internal" href="#label-attr">label_attr</a></li>
@@ -322,12 +322,6 @@ that you want to use for your number.</p>
 <li><a class="reference internal" href="#row-attr">row_attr</a></li>
 </ul>
 </td>
-</tr>
-<tr class="row-odd"><td>Default invalid message</td>
-<td>Please enter a number.</td>
-</tr>
-<tr class="row-even"><td>Legacy invalid message</td>
-<td>The value {{ value }} is not valid.</td>
 </tr>
 <tr class="row-odd"><td>Parent type</td>
 <td><a class="reference internal" href="form.html"><span class="doc">FormType</span></a></td>
@@ -361,12 +355,18 @@ would display as <code class="docutils literal notranslate"><span class="pre">12
 <div class="section" id="html5">
 <h3>html5<a class="headerlink" href="#html5" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">html5</span></code> option was introduced in Symfony 4.3.</p>
+</div>
 <p>If set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, the HTML input will be rendered as a native HTML5 <code class="docutils literal notranslate"><span class="pre">type=&quot;number&quot;</span></code>
 form.</p>
 </div>
 <div class="section" id="input">
 <h3>input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">number</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">input</span></code> option was introduced in Symfony 4.3.</p>
+</div>
 <p>The format of the input data - i.e. the format that the number is stored on
 your underlying object. Valid values are <code class="docutils literal notranslate"><span class="pre">number</span></code> and <code class="docutils literal notranslate"><span class="pre">string</span></code>. Setting
 this option to <code class="docutils literal notranslate"><span class="pre">string</span></code> can be useful if the underlying data is a string
@@ -383,34 +383,29 @@ to <code class="docutils literal notranslate"><span class="pre">2</span></code>,
 </div>
 <div class="section" id="rounding-mode">
 <h3>rounding_mode<a class="headerlink" href="#rounding-mode" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">\NumberFormatter::ROUND_HALFUP</span></code></p>
-<p>If a submitted number needs to be rounded (based on the <a class="reference internal" href="#scale">scale</a> option), you
-have several configurable options for that rounding. Each option is a constant
-on the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.numberformatter.php" title="NumberFormatter"><span class="pre">NumberFormatter</span></a></code> class:</p>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">NumberToLocalizedStringTransformer::ROUND_HALF_UP</span></code></p>
+<p>If a submitted number needs to be rounded (based on the <a class="reference internal" href="#scale">scale</a>
+option), you have several configurable options for that rounding. Each
+option is a constant on the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Extension/Core/DataTransformer/NumberToLocalizedStringTransformer.php" title="Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer"><span class="pre">NumberToLocalizedStringTransformer</span></a></code>:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">\NumberFormatter::ROUND_DOWN</span></code> Round towards zero. It
+<li><code class="docutils literal notranslate"><span class="pre">NumberToLocalizedStringTransformer::ROUND_DOWN</span></code> Round towards zero. It
 rounds <code class="docutils literal notranslate"><span class="pre">1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">-1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">\NumberFormatter::ROUND_FLOOR</span></code> Round towards negative
+<li><code class="docutils literal notranslate"><span class="pre">NumberToLocalizedStringTransformer::ROUND_FLOOR</span></code> Round towards negative
 infinity. It rounds <code class="docutils literal notranslate"><span class="pre">1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">-1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">-2</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">\NumberFormatter::ROUND_UP</span></code> Round away from zero. It
+<li><code class="docutils literal notranslate"><span class="pre">NumberToLocalizedStringTransformer::ROUND_UP</span></code> Round away from zero. It
 rounds <code class="docutils literal notranslate"><span class="pre">1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">-1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">-2</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">\NumberFormatter::ROUND_CEILING</span></code> Round towards positive
+<li><code class="docutils literal notranslate"><span class="pre">NumberToLocalizedStringTransformer::ROUND_CEILING</span></code> Round towards positive
 infinity. It rounds <code class="docutils literal notranslate"><span class="pre">1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">-1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">\NumberFormatter::ROUND_HALFDOWN</span></code> Round towards the
+<li><code class="docutils literal notranslate"><span class="pre">NumberToLocalizedStringTransformer::ROUND_HALF_DOWN</span></code> Round towards the
 “nearest neighbor”. If both neighbors are equidistant, round down. It rounds
 <code class="docutils literal notranslate"><span class="pre">2.5</span></code> and <code class="docutils literal notranslate"><span class="pre">1.6</span></code> to <code class="docutils literal notranslate"><span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">1.5</span></code> and <code class="docutils literal notranslate"><span class="pre">1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">\NumberFormatter::ROUND_HALFEVEN</span></code> Round towards the
+<li><code class="docutils literal notranslate"><span class="pre">NumberToLocalizedStringTransformer::ROUND_HALF_EVEN</span></code> Round towards the
 “nearest neighbor”. If both neighbors are equidistant, round towards the even
 neighbor. It rounds <code class="docutils literal notranslate"><span class="pre">2.5</span></code>, <code class="docutils literal notranslate"><span class="pre">1.6</span></code> and <code class="docutils literal notranslate"><span class="pre">1.5</span></code> to <code class="docutils literal notranslate"><span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">\NumberFormatter::ROUND_HALFUP</span></code> Round towards the
+<li><code class="docutils literal notranslate"><span class="pre">NumberToLocalizedStringTransformer::ROUND_HALF_UP</span></code> Round towards the
 “nearest neighbor”. If both neighbors are equidistant, round up. It rounds
 <code class="docutils literal notranslate"><span class="pre">2.5</span></code> to <code class="docutils literal notranslate"><span class="pre">3</span></code>, <code class="docutils literal notranslate"><span class="pre">1.6</span></code> and <code class="docutils literal notranslate"><span class="pre">1.5</span></code> to <code class="docutils literal notranslate"><span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">1.4</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</li>
 </ul>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 5.1: </span>In Symfony versions prior to 5.1, these constants were also defined as aliases
-in the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Extension/Core/DataTransformer/NumberToLocalizedStringTransformer.php" title="Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer"><span class="pre">NumberToLocalizedStringTransformer</span></a></code>
-class, but they are now deprecated in favor of the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.numberformatter.php" title="NumberFormatter"><span class="pre">NumberFormatter</span></a></code> constants.</p>
-</div>
 </div>
 </div>
 <div class="section" id="overridden-options">
@@ -421,19 +416,6 @@ class, but they are now deprecated in favor of the <code class="docutils literal
 <p>This option specifies whether the type contains child types or not. This option
 is managed internally for built-in types, so there is no need to configure
 it explicitly.</p>
-</div>
-<div class="section" id="invalid-message">
-<h3><code class="docutils literal notranslate"><span class="pre">invalid_message</span></code><a class="headerlink" href="#invalid-message" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">valid</span></code></p>
-<p>This is the validation error message that’s used if the data entered into
-this field doesn’t make sense (i.e. fails validation).</p>
-<p>This might happen, for example, if the user enters a nonsense string into
-a <a class="reference internal" href="time.html"><span class="doc">TimeType</span></a> field that cannot be converted
-into a real time or if the user enters a string (e.g. <code class="docutils literal notranslate"><span class="pre">apple</span></code>) into a
-number field.</p>
-<p>Normal (business logic) validation (such as when setting a minimum length
-for a field) should be set using validation messages with your validation
-rules (<a class="reference internal" href="../../../validation.html#validation-constraint-configuration"><span class="std std-ref">reference</span></a>).</p>
 </div>
 </div>
 <div class="section" id="inherited-options">
@@ -602,6 +584,19 @@ These attributes can also be set in the template:</p>
 them in the template. Set this option to <code class="docutils literal notranslate"><span class="pre">true</span></code> to not escape them, which is
 useful when the help contains HTML elements.</p>
 </div>
+<div class="section" id="invalid-message">
+<h3><code class="docutils literal notranslate"><span class="pre">invalid_message</span></code><a class="headerlink" href="#invalid-message" title="Permalink to this headline">¶</a></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">valid</span></code></p>
+<p>This is the validation error message that’s used if the data entered into
+this field doesn’t make sense (i.e. fails validation).</p>
+<p>This might happen, for example, if the user enters a nonsense string into
+a <a class="reference internal" href="time.html"><span class="doc">TimeType</span></a> field that cannot be converted
+into a real time or if the user enters a string (e.g. <code class="docutils literal notranslate"><span class="pre">apple</span></code>) into a
+number field.</p>
+<p>Normal (business logic) validation (such as when setting a minimum length
+for a field) should be set using validation messages with your validation
+rules (<a class="reference internal" href="../../../validation.html#validation-constraint-configuration"><span class="std std-ref">reference</span></a>).</p>
+</div>
 <div class="section" id="invalid-message-parameters">
 <h3><code class="docutils literal notranslate"><span class="pre">invalid_message_parameters</span></code><a class="headerlink" href="#invalid-message-parameters" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
@@ -747,6 +742,9 @@ to render the <a class="reference internal" href="../../../form/form_customizati
 <p class="first admonition-title">See also</p>
 <p class="last">Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
 the <a class="reference internal" href="../../../form/form_customization.html#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
 </div>
 </div>
 </div>

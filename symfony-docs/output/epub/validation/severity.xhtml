@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Handle Different Error Levels</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-handle-different-error-levels">
+<span id="index-0"></span><h1>How to Handle Different Error Levels</h1>
+<p>Sometimes, you may want to display constraint validation error messages differently
+based on some rules. For example, you have a registration form for new users
+where they enter some personal information and choose their authentication
+credentials. They would have to choose a username and a secure password,
+but providing bank account information would be optional. Nonetheless, you
+want to make sure that these optional fields, if entered, are still valid,
+but display their errors differently.</p>
+<p>The process to achieve this behavior consists of two steps:</p>
+<ol class="arabic simple">
+<li><p>Apply different error levels to the validation constraints;</p></li>
+<li><p>Customize your error messages depending on the configured error level.</p></li>
+</ol>
+<div class="section" id="assigning-the-error-level">
+<h2>1. Assigning the Error Level</h2>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">payload</span></code> option to configure the error level for each constraint:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/User.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @Assert\NotBlank(payload={&quot;severity&quot;=&quot;error&quot;})</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$username</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @Assert\NotBlank(payload={&quot;severity&quot;=&quot;error&quot;})</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$password</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @Assert\Iban(payload={&quot;severity&quot;=&quot;warning&quot;})</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$bankAccountNumber</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/validator/validation.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">App\Entity\User</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">properties</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">NotBlank</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">payload</span><span class="p p-Indicator">:</span>
+                    <span class="l l-Scalar l-Scalar-Plain">severity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">error</span>
+        <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">NotBlank</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">payload</span><span class="p p-Indicator">:</span>
+                    <span class="l l-Scalar l-Scalar-Plain">severity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">error</span>
+        <span class="l l-Scalar l-Scalar-Plain">bankAccountNumber</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Iban</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">payload</span><span class="p p-Indicator">:</span>
+                    <span class="l l-Scalar l-Scalar-Plain">severity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">warning</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/validator/validation.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;constraint-mapping</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;class</span> <span class="na">name=</span><span class="s">&quot;App\Entity\User&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;username&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;constraint</span> <span class="na">name=</span><span class="s">&quot;NotBlank&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;option</span> <span class="na">name=</span><span class="s">&quot;payload&quot;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;value</span> <span class="na">key=</span><span class="s">&quot;severity&quot;</span><span class="nt">&gt;</span>error<span class="nt">&lt;/value&gt;</span>
+                <span class="nt">&lt;/option&gt;</span>
+            <span class="nt">&lt;/constraint&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;password&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;constraint</span> <span class="na">name=</span><span class="s">&quot;NotBlank&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;option</span> <span class="na">name=</span><span class="s">&quot;payload&quot;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;value</span> <span class="na">key=</span><span class="s">&quot;severity&quot;</span><span class="nt">&gt;</span>error<span class="nt">&lt;/value&gt;</span>
+                <span class="nt">&lt;/option&gt;</span>
+            <span class="nt">&lt;/constraint&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;bankAccountNumber&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;constraint</span> <span class="na">name=</span><span class="s">&quot;Iban&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;option</span> <span class="na">name=</span><span class="s">&quot;payload&quot;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;value</span> <span class="na">key=</span><span class="s">&quot;severity&quot;</span><span class="nt">&gt;</span>warning<span class="nt">&lt;/value&gt;</span>
+                <span class="nt">&lt;/option&gt;</span>
+            <span class="nt">&lt;/constraint&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/class&gt;</span>
+<span class="nt">&lt;/constraint-mapping&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/User.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Mapping\ClassMetadata</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">loadValidatorMetadata</span><span class="p">(</span><span class="nx">ClassMetadata</span> <span class="nv">$metadata</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$metadata</span><span class="o">-&gt;</span><span class="na">addPropertyConstraint</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert\NotBlank</span><span class="p">([</span>
+            <span class="s1">&#39;payload&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;severity&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;error&#39;</span><span class="p">],</span>
+        <span class="p">]));</span>
+        <span class="nv">$metadata</span><span class="o">-&gt;</span><span class="na">addPropertyConstraint</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert\NotBlank</span><span class="p">([</span>
+            <span class="s1">&#39;payload&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;severity&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;error&#39;</span><span class="p">],</span>
+        <span class="p">]));</span>
+        <span class="nv">$metadata</span><span class="o">-&gt;</span><span class="na">addPropertyConstraint</span><span class="p">(</span><span class="s1">&#39;bankAccountNumber&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert\Iban</span><span class="p">([</span>
+            <span class="s1">&#39;payload&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;severity&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;warning&#39;</span><span class="p">],</span>
+        <span class="p">]));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="customize-the-error-message-template">
+<h2>2. Customize the Error Message Template</h2>
+<p>When validation of the <code class="docutils literal notranslate"><span class="pre">User</span></code> object fails, you can retrieve the constraint
+that caused a particular failure using the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/ConstraintViolation.php" title="Symfony\Component\Validator\ConstraintViolation::getConstraint()"><span class="pre">getConstraint()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/ConstraintViolation.php]</span></span></code>
+method. Each constraint exposes the attached payload as a public property:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// a constraint validation failure, instance of</span>
+<span class="c1">// Symfony\Component\Validator\ConstraintViolation</span>
+<span class="nv">$constraintViolation</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+<span class="nv">$constraint</span> <span class="o">=</span> <span class="nv">$constraintViolation</span><span class="o">-&gt;</span><span class="na">getConstraint</span><span class="p">();</span>
+<span class="nv">$severity</span> <span class="o">=</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$constraint</span><span class="o">-&gt;</span><span class="na">payload</span><span class="p">[</span><span class="s1">&#39;severity&#39;</span><span class="p">])</span> <span class="o">?</span> <span class="nv">$constraint</span><span class="o">-&gt;</span><span class="na">payload</span><span class="p">[</span><span class="s1">&#39;severity&#39;</span><span class="p">]</span> <span class="o">:</span> <span class="k">null</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>For example, you can leverage this to customize the <code class="docutils literal notranslate"><span class="pre">form_errors</span></code> block
+so that the severity is added as an additional HTML class:</p>
+<div class="highlight-html+twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span>- <span class="k">block</span> <span class="nv">form_errors</span> -<span class="cp">%}</span>
+    <span class="cp">{%</span>- <span class="k">if</span> <span class="nv">errors</span><span class="o">|</span><span class="nf">length</span> <span class="o">&gt;</span> <span class="m">0</span> -<span class="cp">%}</span>
+    <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+        <span class="cp">{%</span>- <span class="k">for</span> <span class="nv">error</span> <span class="k">in</span> <span class="nv">errors</span> -<span class="cp">%}</span>
+            <span class="p">&lt;</span><span class="nt">li</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">error.cause.constraint.payload.severity</span> <span class="o">??</span> <span class="s1">&#39;&#39;</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="p">&gt;</span><span class="cp">{{</span> <span class="nv">error.message</span> <span class="cp">}}</span><span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="cp">{%</span>- <span class="k">endfor</span> -<span class="cp">%}</span>
+    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+    <span class="cp">{%</span>- <span class="k">endif</span> -<span class="cp">%}</span>
+<span class="cp">{%</span>- <span class="k">endblock</span> <span class="nv">form_errors</span> -<span class="cp">%}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For more information on customizing form rendering, see <a class="reference internal" href="../form/form_customization.xhtml"><span class="doc">How to Customize Form Rendering</span></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

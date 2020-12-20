@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Call Other Commands</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-call-other-commands">
+<h1>How to Call Other Commands</h1>
+<p>If a command depends on another one being run before it you can call in the
+console command itself. This is useful if a command depends on another command
+or if you want to create a “meta” command that runs a bunch of other commands
+(for instance, all commands that need to be run when the project’s code has
+changed on the production servers: clearing the cache, generating Doctrine
+proxies, dumping web assets, …).</p>
+<p>Calling a command from another one is straightforward:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\ArrayInput</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$command</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getApplication</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">find</span><span class="p">(</span><span class="s1">&#39;demo:greet&#39;</span><span class="p">);</span>
+
+    <span class="nv">$arguments</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;name&#39;</span>    <span class="o">=&gt;</span> <span class="s1">&#39;Fabien&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;--yell&#39;</span>  <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+    <span class="p">];</span>
+
+    <span class="nv">$greetInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ArrayInput</span><span class="p">(</span><span class="nv">$arguments</span><span class="p">);</span>
+    <span class="nv">$returnCode</span> <span class="o">=</span> <span class="nv">$command</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="nv">$greetInput</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>First, you <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Application.php" title="Symfony\Component\Console\Application::find()"><span class="pre">find()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Application.php]</span></span></code> the
+command you want to run by passing the command name. Then, you need to create
+a new <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Input/ArrayInput.php" title="Symfony\Component\Console\Input\ArrayInput"><span class="pre">ArrayInput</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Input/ArrayInput.php]</span></span></code> with the arguments
+and options you want to pass to the command.</p>
+<p>Eventually, calling the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method actually runs the command and returns
+the returned code from the command (return value from command’s <code class="docutils literal notranslate"><span class="pre">execute()</span></code>
+method).</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you want to suppress the output of the executed command, pass a
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Output/NullOutput.php" title="Symfony\Component\Console\Output\NullOutput"><span class="pre">NullOutput</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Output/NullOutput.php]</span></span></code> as the second
+argument to <code class="docutils literal notranslate"><span class="pre">$command-&gt;run()</span></code>.</p>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Note that all the commands will run in the same process and some of Symfony’s
+built-in commands may not work well this way. For instance, the <code class="docutils literal notranslate"><span class="pre">cache:clear</span></code>
+and <code class="docutils literal notranslate"><span class="pre">cache:warmup</span></code> commands change some class definitions, so running
+something after them is likely to break.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Most of the times, calling a command from code that is not executed on the
+command line is not a good idea. The main reason is that the command’s
+output is optimized for the console and not to be passed to other commands.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

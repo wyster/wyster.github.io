@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Logging Configuration Reference (MonologBundle)</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="logging-configuration-reference-monologbundle">
+<span id="index-0"></span><h1>Logging Configuration Reference (MonologBundle)</h1>
+<p>The MonologBundle integrates the Monolog <a class="reference internal" href="../../logging.xhtml"><span class="doc">logging</span></a> library in
+Symfony applications. All these options are configured under the <code class="docutils literal notranslate"><span class="pre">monolog</span></code> key
+in your application configuration.</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># displays the default config values defined by Symfony</span>
+<span class="gp">$</span> php bin/console config:dump-reference monolog
+
+<span class="c1"># displays the actual config values used by your application</span>
+<span class="gp">$</span> php bin/console debug:config monolog
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using XML, you must use the <code class="docutils literal notranslate"><span class="pre">http://symfony.com/schema/dic/monolog</span></code>
+namespace and the related XSD schema is available at:
+<code class="docutils literal notranslate"><span class="pre">https://symfony.com/schema/dic/monolog/monolog-1.0.xsd</span></code></p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For a full list of handler types and related configuration options, see
+<a class="reference external" href="https://github.com/symfony/monolog-bundle/blob/master/DependencyInjection/Configuration.php">Monolog Configuration</a><span class="link-target"> [https://github.com/symfony/monolog-bundle/blob/master/DependencyInjection/Configuration.php]</span>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the profiler is enabled, a handler is added to store the logs’
+messages in the profiler. The profiler uses the name “debug” so it
+is reserved and cannot be used in the configuration.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

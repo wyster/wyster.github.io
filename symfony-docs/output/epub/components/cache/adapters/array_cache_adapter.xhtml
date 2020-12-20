@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Array Cache Adapter</title>
+    <link rel="stylesheet" href="../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="array-cache-adapter">
+<span id="index-0"></span><h1>Array Cache Adapter</h1>
+<p>Generally, this adapter is useful for testing purposes, as its contents are stored in memory
+and not persisted outside the running PHP process in any way. It can also be useful while
+warming up caches, due to the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/ArrayAdapter.php" title="Symfony\Component\Cache\Adapter\ArrayAdapter::getValues()"><span class="pre">getValues()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/ArrayAdapter.php]</span></span></code>
+method.</p>
+<p>This adapter can be passed a default cache lifetime as its first parameter, and a boolean that
+toggles serialization as its second parameter:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\ArrayAdapter</span><span class="p">;</span>
+
+<span class="nv">$cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ArrayAdapter</span><span class="p">(</span>
+
+    <span class="c1">// the default lifetime (in seconds) for cache items that do not define their</span>
+    <span class="c1">// own lifetime, with a value 0 causing items to be stored indefinitely (i.e.</span>
+    <span class="c1">// until the current PHP process finishes)</span>
+    <span class="nv">$defaultLifetime</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+
+    <span class="c1">// if ``true``, the values saved in the cache are serialized before storing them</span>
+    <span class="nv">$storeSerialized</span> <span class="o">=</span> <span class="k">true</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

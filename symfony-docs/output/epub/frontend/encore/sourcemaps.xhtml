@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Enabling Source Maps</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="enabling-source-maps">
+<h1>Enabling Source Maps</h1>
+<p><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map">Source maps</a><span class="link-target"> [https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map]</span> allow browsers to access the original code related to some
+asset (e.g. the Sass code that was compiled to CSS or the TypeScript code that
+was compiled to JavaScript). Source maps are useful for debugging purposes but
+unnecessary when executing the application in production.</p>
+<p>Encore’s default <code class="docutils literal notranslate"><span class="pre">webpack.config.js</span></code> file enables source maps in the <code class="docutils literal notranslate"><span class="pre">dev</span></code>
+build:</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// webpack.config.js</span>
+<span class="c1">// ...</span>
+
+<span class="nx">Encore</span>
+    <span class="c1">// ...</span>
+
+    <span class="p">.</span><span class="nx">enableSourceMaps</span><span class="p">(</span><span class="o">!</span><span class="nx">Encore</span><span class="p">.</span><span class="nx">isProduction</span><span class="p">())</span>
+<span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

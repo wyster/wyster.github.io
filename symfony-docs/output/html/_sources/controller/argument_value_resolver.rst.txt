@@ -53,6 +53,17 @@ In addition, some components and official bundles provide other value resolvers:
     the controller can be accessed by anonymous users. It requires installing
     the :doc:`Security component </components/security>`.
 
+:class:`Symfony\\Bundle\\SecurityBundle\\SecurityUserValueResolver`
+    Injects the object that represents the current logged in user if type-hinted
+    with ``UserInterface``. Default value can be set to ``null`` in case
+    the controller can be accessed by anonymous users. It requires installing
+    the `SecurityBundle`_.
+
+.. deprecated:: 4.1
+
+    The ``SecurityUserValueResolver`` was deprecated in Symfony 4.1 in favor of
+    :class:`Symfony\\Component\\Security\\Http\\Controller\\UserValueResolver`.
+
 ``Psr7ServerRequestResolver``
     Injects a `PSR-7`_ compliant version of the current request if type-hinted
     with ``RequestInterface``, ``MessageInterface`` or ``ServerRequestInterface``.
@@ -227,17 +238,11 @@ and adding a priority.
     .. code-block:: php
 
         // config/services.php
-        namespace Symfony\Component\DependencyInjection\Loader\Configurator;
-
         use App\ArgumentResolver\UserValueResolver;
 
-        return static function (ContainerConfigurator $container) {
-            $services = $configurator->services();
-
-            $services->set(UserValueResolver::class)
-                ->tag('controller.argument_value_resolver', ['priority' => 50])
-            ;
-        };
+        $container->autowire(UserValueResolver::class)
+            ->addTag('controller.argument_value_resolver', ['priority' => 50])
+        ;
 
 While adding a priority is optional, it's recommended to add one to make sure
 the expected value is injected. The built-in ``RequestAttributeValueResolver``,
@@ -260,5 +265,6 @@ passing the user along sub-requests).
 
 .. _`@ParamConverter`: https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
 .. _`yield`: https://www.php.net/manual/en/language.generators.syntax.php
+.. _`SecurityBundle`: https://github.com/symfony/security-bundle
 .. _`PSR-7`: https://www.php-fig.org/psr/psr-7/
 .. _`SensioFrameworkExtraBundle`: https://github.com/sensiolabs/SensioFrameworkExtraBundle

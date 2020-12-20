@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Use Doctrine DBAL</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-use-doctrine-dbal">
+<span id="index-0"></span><h1>How to Use Doctrine DBAL</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This article is about the Doctrine DBAL. Typically, you’ll work with
+the higher level Doctrine ORM layer, which uses the DBAL behind
+the scenes to actually communicate with the database. To read more about
+the Doctrine ORM, see “<a class="reference internal" href="../doctrine.xhtml"><span class="doc">Databases and the Doctrine ORM</span></a>”.</p>
+</div>
+<p>The <a class="reference external" href="https://www.doctrine-project.org/">Doctrine</a><span class="link-target"> [https://www.doctrine-project.org/]</span> Database Abstraction Layer (DBAL) is an abstraction layer that
+sits on top of <a class="reference external" href="https://www.php.net/pdo">PDO</a><span class="link-target"> [https://www.php.net/pdo]</span> and offers an intuitive and flexible API for communicating
+with the most popular relational databases. The DBAL library allows you to write
+queries independently of your ORM models, e.g. for building reports or direct
+data manipulations.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Read the official Doctrine <a class="reference external" href="https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/index.html">DBAL Documentation</a><span class="link-target"> [https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/index.html]</span> to learn all the details
+and capabilities of Doctrine’s DBAL library.</p>
+</div>
+<p>First, install the Doctrine <code class="docutils literal notranslate"><span class="pre">orm</span></code> <a class="reference internal" href="../setup.xhtml#symfony-packs"><span class="std std-ref">Symfony pack</span></a>:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/orm-pack
+</pre></div>
+</td></tr></table></div>
+<p>Then configure the <code class="docutils literal notranslate"><span class="pre">DATABASE_URL</span></code> environment variable in <code class="docutils literal notranslate"><span class="pre">.env</span></code>:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span># .env (or override DATABASE_URL in .env.local to avoid committing your changes)
+
+# customize this line!
+DATABASE_URL=&quot;mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=5.7&quot;
+</pre></div>
+</td></tr></table></div>
+<p>Further things can be configured in <code class="docutils literal notranslate"><span class="pre">config/packages/doctrine.yaml</span></code> - see
+<a class="reference internal" href="../reference/configuration/doctrine.xhtml#reference-dbal-configuration"><span class="std std-ref">Doctrine DBAL Configuration</span></a>. Remove the <code class="docutils literal notranslate"><span class="pre">orm</span></code> key in that file
+if you <em>don’t</em> want to use the Doctrine ORM.</p>
+<p>You can then access the Doctrine DBAL connection by autowiring the <code class="docutils literal notranslate"><span class="pre">Connection</span></code>
+object:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Controller/UserController.php</span>
+<span class="k">namespace</span> <span class="nx">App\Controller</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Doctrine\DBAL\Driver\Connection</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\Controller\AbstractController</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">UserController</span> <span class="k">extends</span> <span class="nx">AbstractController</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">(</span><span class="nx">Connection</span> <span class="nv">$connection</span><span class="p">)</span><span class="o">:</span> <span class="nx">Response</span>
+    <span class="p">{</span>
+        <span class="nv">$users</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">fetchAll</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM users&#39;</span><span class="p">);</span>
+
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This will pass you the <code class="docutils literal notranslate"><span class="pre">database_connection</span></code> service.</p>
+<div class="section" id="registering-custom-mapping-types">
+<h2>Registering custom Mapping Types</h2>
+<p>You can register custom mapping types through Symfony’s configuration. They
+will be added to all configured connections. For more information on custom
+mapping types, read Doctrine’s <a class="reference external" href="https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types">Custom Mapping Types</a><span class="link-target"> [https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html#custom-mapping-types]</span> section of their documentation.</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/doctrine.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">doctrine</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">dbal</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">types</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">custom_first</span><span class="p p-Indicator">:</span>  <span class="l l-Scalar l-Scalar-Plain">App\Type\CustomFirst</span>
+            <span class="l l-Scalar l-Scalar-Plain">custom_second</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Type\CustomSecond</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/doctrine.xml --&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:doctrine=</span><span class="s">&quot;http://symfony.com/schema/dic/doctrine&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/doctrine</span>
+<span class="s">        https://symfony.com/schema/dic/doctrine/doctrine-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;doctrine:config&gt;</span>
+        <span class="nt">&lt;doctrine:dbal&gt;</span>
+            <span class="nt">&lt;doctrine:type</span> <span class="na">name=</span><span class="s">&quot;custom_first&quot;</span> <span class="na">class=</span><span class="s">&quot;App\Type\CustomFirst&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;doctrine:type</span> <span class="na">name=</span><span class="s">&quot;custom_second&quot;</span> <span class="na">class=</span><span class="s">&quot;App\Type\CustomSecond&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/doctrine:dbal&gt;</span>
+    <span class="nt">&lt;/doctrine:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/doctrine.php</span>
+<span class="k">use</span> <span class="nx">App\Type\CustomFirst</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Type\CustomSecond</span><span class="p">;</span>
+
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;doctrine&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;dbal&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;types&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">&#39;custom_first&#39;</span>  <span class="o">=&gt;</span> <span class="nx">CustomFirst</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="s1">&#39;custom_second&#39;</span> <span class="o">=&gt;</span> <span class="nx">CustomSecond</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="registering-custom-mapping-types-in-the-schematool">
+<h2>Registering custom Mapping Types in the SchemaTool</h2>
+<p>The SchemaTool is used to inspect the database to compare the schema. To
+achieve this task, it needs to know which mapping type needs to be used
+for each database types. Registering new ones can be done through the configuration.</p>
+<p>Now, map the ENUM type (not supported by DBAL by default) to the <code class="docutils literal notranslate"><span class="pre">string</span></code>
+mapping type:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/doctrine.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">doctrine</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">dbal</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">mapping_types</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">enum</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/doctrine.xml --&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:doctrine=</span><span class="s">&quot;http://symfony.com/schema/dic/doctrine&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/doctrine</span>
+<span class="s">        https://symfony.com/schema/dic/doctrine/doctrine-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;doctrine:config&gt;</span>
+        <span class="nt">&lt;doctrine:dbal&gt;</span>
+            <span class="nt">&lt;doctrine:mapping-type</span> <span class="na">name=</span><span class="s">&quot;enum&quot;</span><span class="nt">&gt;</span>string<span class="nt">&lt;/doctrine:mapping-type&gt;</span>
+        <span class="nt">&lt;/doctrine:dbal&gt;</span>
+    <span class="nt">&lt;/doctrine:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/doctrine.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;doctrine&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;dbal&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;mapping_types&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">&#39;enum&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -143,10 +143,8 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -385,6 +383,10 @@ cache efficiency of your routes.</p>
 <p class="last">You can change the name of the header used for the trace
 information using the <code class="docutils literal notranslate"><span class="pre">trace_header</span></code> config option.</p>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">trace_level</span></code> and <code class="docutils literal notranslate"><span class="pre">trace_header</span></code> configuration options
+were introduced in Symfony 4.3.</p>
+</div>
 <div class="sidebar" id="http-cache-symfony-versus-varnish">
 <p class="first sidebar-title">Changing from one Reverse Proxy to another</p>
 <p>The Symfony reverse proxy is a great tool to use when developing your
@@ -518,27 +520,16 @@ the most useful ones:</p>
 </div>
 <p>Additionally, most cache-related HTTP headers can be set via the single
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Response.php" title="Symfony\Component\HttpFoundation\Response::setCache()"><span class="pre">setCache()</span></a></code> method:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// use this method to set several cache settings in one call</span>
-<span class="c1">// (this example lists all the available cache settings)</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// sets cache settings in one call</span>
 <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setCache</span><span class="p">([</span>
-    <span class="s1">&#39;must_revalidate&#39;</span>  <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;no_cache&#39;</span>         <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;no_store&#39;</span>         <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;no_transform&#39;</span>     <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;public&#39;</span>           <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
-    <span class="s1">&#39;private&#39;</span>          <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;proxy_revalidate&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;max_age&#39;</span>          <span class="o">=&gt;</span> <span class="mi">600</span><span class="p">,</span>
-    <span class="s1">&#39;s_maxage&#39;</span>         <span class="o">=&gt;</span> <span class="mi">600</span><span class="p">,</span>
-    <span class="s1">&#39;immutable&#39;</span>        <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
-    <span class="s1">&#39;last_modified&#39;</span>    <span class="o">=&gt;</span> <span class="k">new</span> <span class="nx">\DateTime</span><span class="p">(),</span>
-    <span class="s1">&#39;etag&#39;</span>             <span class="o">=&gt;</span> <span class="s1">&#39;abcdef&#39;</span>
+    <span class="s1">&#39;etag&#39;</span>          <span class="o">=&gt;</span> <span class="nv">$etag</span><span class="p">,</span>
+    <span class="s1">&#39;last_modified&#39;</span> <span class="o">=&gt;</span> <span class="nv">$date</span><span class="p">,</span>
+    <span class="s1">&#39;max_age&#39;</span>       <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s1">&#39;s_maxage&#39;</span>      <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s1">&#39;public&#39;</span>        <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+    <span class="c1">// &#39;private&#39;    =&gt; true,</span>
 <span class="p">]);</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">must_revalidate</span></code>, <code class="docutils literal notranslate"><span class="pre">no_cache</span></code>, <code class="docutils literal notranslate"><span class="pre">no_store</span></code>, <code class="docutils literal notranslate"><span class="pre">no_transform</span></code> and
-<code class="docutils literal notranslate"><span class="pre">proxy_revalidate</span></code> directives were introduced in Symfony 5.1.</p>
 </div>
 </div>
 </div>

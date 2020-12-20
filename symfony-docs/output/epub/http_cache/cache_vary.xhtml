@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Varying the Response for HTTP Cache</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="varying-the-response-for-http-cache">
+<span id="index-0"></span><h1>Varying the Response for HTTP Cache</h1>
+<p>So far, it’s been assumed that each URI has exactly one representation of the
+target resource. By default, HTTP caching is done by using the URI of the
+resource as the cache key. If two people request the same URI of a cacheable
+resource, the second person will receive the cached version.</p>
+<p>Sometimes this isn’t enough and different versions of the same URI need to
+be cached based on one or more request header values. For instance, if you
+compress pages when the client supports it, any given URI has two representations:
+one when the client supports compression, and one when it does not. This
+determination is done by the value of the <code class="docutils literal notranslate"><span class="pre">Accept-Encoding</span></code> request header.</p>
+<p>In this case, you need the cache to store both a compressed and uncompressed
+version of the response for the particular URI and return them based on the
+request’s <code class="docutils literal notranslate"><span class="pre">Accept-Encoding</span></code> value. This is done by using the <code class="docutils literal notranslate"><span class="pre">Vary</span></code> response
+header, which is a comma-separated list of different headers whose values
+trigger a different representation of the requested resource:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Vary: Accept-Encoding, User-Agent
+</pre></div>
+</td></tr></table></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This particular <code class="docutils literal notranslate"><span class="pre">Vary</span></code> header would cache different versions of each
+resource based on the URI and the value of the <code class="docutils literal notranslate"><span class="pre">Accept-Encoding</span></code> and
+<code class="docutils literal notranslate"><span class="pre">User-Agent</span></code> request header.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Response</span></code> object offers a clean interface for managing the <code class="docutils literal notranslate"><span class="pre">Vary</span></code>
+header:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// sets one vary header</span>
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setVary</span><span class="p">(</span><span class="s1">&#39;Accept-Encoding&#39;</span><span class="p">);</span>
+
+<span class="c1">// sets multiple vary headers</span>
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setVary</span><span class="p">([</span><span class="s1">&#39;Accept-Encoding&#39;</span><span class="p">,</span> <span class="s1">&#39;User-Agent&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">setVary()</span></code> method takes a header name or an array of header names for
+which the response varies.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

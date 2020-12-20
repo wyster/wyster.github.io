@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -183,10 +181,7 @@
 <li class="toctree-l2"><a class="reference internal" href="property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="security.html">The Security Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="serializer.html">The Serializer Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="string.html">The String Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_exporter.html">The VarExporter Component</a></li>
@@ -415,6 +410,9 @@ rules to exclude files and directories from the results with the
 <span class="nv">$finder</span><span class="o">-&gt;</span><span class="na">ignoreVCSIgnored</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
 </pre></div>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">ignoreVCSIgnored()</span></code> method was introduced in Symfony 4.3.</p>
+</div>
 </div>
 <div class="section" id="file-name">
 <h3>File Name<a class="headerlink" href="#file-name" title="Permalink to this headline">¶</a></h3>
@@ -520,6 +518,10 @@ by path:</p>
 <span class="c1">// same as above</span>
 <span class="nv">$finder</span><span class="o">-&gt;</span><span class="na">notPath</span><span class="p">([</span><span class="s1">&#39;first/dir&#39;</span><span class="p">,</span> <span class="s1">&#39;other/dir&#39;</span><span class="p">]);</span>
 </pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2: </span>Support for passing arrays to <code class="docutils literal notranslate"><span class="pre">notPath()</span></code> was introduced in Symfony
+4.2</p>
 </div>
 </div>
 <div class="section" id="file-size">

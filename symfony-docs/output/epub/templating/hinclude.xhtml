@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Embed Asynchronous Content with hinclude.js</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-embed-asynchronous-content-with-hinclude-js">
+<span id="index-0"></span><h1>How to Embed Asynchronous Content with hinclude.js</h1>
+<p><a class="reference internal" href="../templates.xhtml#templates-embed-controllers"><span class="std std-ref">Embedding controllers in templates</span></a> is one
+of the ways to reuse contents across multiple templates. To further improve
+performance you can use the <a class="reference external" href="http://mnot.github.io/hinclude/">hinclude.js</a><span class="link-target"> [http://mnot.github.io/hinclude/]</span> JavaScript library to embed
+controllers asynchronously.</p>
+<p>First, include the <a class="reference external" href="http://mnot.github.io/hinclude/">hinclude.js</a><span class="link-target"> [http://mnot.github.io/hinclude/]</span> library in your page
+<a class="reference internal" href="../templates.xhtml#templates-link-to-assets"><span class="std std-ref">linking to it</span></a> from the template or adding it
+to your application JavaScript <a class="reference internal" href="../frontend.xhtml"><span class="doc">using Webpack Encore</span></a>.</p>
+<p>As the embedded content comes from another page (or controller for that matter),
+Symfony uses a version of the standard <code class="docutils literal notranslate"><span class="pre">render()</span></code> function to configure
+<code class="docutils literal notranslate"><span class="pre">hinclude</span></code> tags in templates:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">render_hinclude</span><span class="o">(</span><span class="nv">controller</span><span class="o">(</span><span class="s1">&#39;...&#39;</span><span class="o">))</span> <span class="cp">}}</span><span class="x"></span>
+<span class="cp">{{</span> <span class="nv">render_hinclude</span><span class="o">(</span><span class="nv">url</span><span class="o">(</span><span class="s1">&#39;...&#39;</span><span class="o">))</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using the <code class="docutils literal notranslate"><span class="pre">controller()</span></code> function, you must also configure the
+<a class="reference internal" href="../templates.xhtml#fragments-path-config"><span class="std std-ref">fragments path option</span></a>.</p>
+</div>
+<p>When JavaScript is disabled or it takes a long time to load you can display a
+default content rendering some template:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/framework.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">framework</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+    <span class="l l-Scalar l-Scalar-Plain">fragments</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">hinclude_default_template</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">hinclude.html.twig</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/framework.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:framework=</span><span class="s">&quot;http://symfony.com/schema/dic/symfony&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/symfony https://symfony.com/schema/dic/symfony/symfony-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="c">&lt;!-- ... --&gt;</span>
+    <span class="nt">&lt;framework:config&gt;</span>
+        <span class="nt">&lt;framework:fragments</span> <span class="na">hinclude-default-template=</span><span class="s">&quot;hinclude.html.twig&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/framework:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/framework.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="c1">// ...</span>
+    <span class="s1">&#39;fragments&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;hinclude_default_template&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;hinclude.html.twig&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">framework.fragments.hinclude_default_template</span></code> option was introduced
+in Symfony 4.3. In previous Symfony versions it was called
+<code class="docutils literal notranslate"><span class="pre">framework.templating.hinclude_default_template</span></code>.</p>
+</div>
+<p>You can define default templates per <code class="docutils literal notranslate"><span class="pre">render()</span></code> function (which will override
+any global default template that is defined):</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">render_hinclude</span><span class="o">(</span><span class="nv">controller</span><span class="o">(</span><span class="s1">&#39;...&#39;</span><span class="o">),</span>  <span class="o">{</span>
+    <span class="nv">default</span><span class="o">:</span> <span class="s1">&#39;default/content.html.twig&#39;</span>
+<span class="o">})</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<p>Or you can also specify a string to display as the default content:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">render_hinclude</span><span class="o">(</span><span class="nv">controller</span><span class="o">(</span><span class="s1">&#39;...&#39;</span><span class="o">),</span> <span class="o">{</span><span class="nv">default</span><span class="o">:</span> <span class="s1">&#39;Loading...&#39;</span><span class="o">})</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">attributes</span></code> option to define the value of hinclude.js options:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">{# by default, cross-site requests don&#39;t use credentials such as cookies, authorization</span>
+<span class="c">   headers or TLS client certificates; set this option to &#39;true&#39; to use them #}</span><span class="x"></span>
+<span class="cp">{{</span> <span class="nv">render_hinclude</span><span class="o">(</span><span class="nv">controller</span><span class="o">(</span><span class="s1">&#39;...&#39;</span><span class="o">),</span> <span class="o">{</span><span class="nv">attributes</span><span class="o">:</span> <span class="o">{</span><span class="nv">data-with-credentials</span><span class="o">:</span> <span class="s1">&#39;true&#39;</span><span class="cp">}}</span><span class="x">) }}</span>
+
+<span class="c">{# by default, the JavaScript code included in the loaded contents is not run;</span>
+<span class="c">   set this option to &#39;true&#39; to run that JavaScript code #}</span><span class="x"></span>
+<span class="cp">{{</span> <span class="nv">render_hinclude</span><span class="o">(</span><span class="nv">controller</span><span class="o">(</span><span class="s1">&#39;...&#39;</span><span class="o">),</span> <span class="o">{</span><span class="nv">attributes</span><span class="o">:</span> <span class="o">{</span><span class="nv">evaljs</span><span class="o">:</span> <span class="s1">&#39;true&#39;</span><span class="cp">}}</span><span class="x">) }}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

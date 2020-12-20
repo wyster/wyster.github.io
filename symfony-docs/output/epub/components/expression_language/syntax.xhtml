@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Expression Syntax</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-expression-syntax">
+<span id="index-0"></span><h1>The Expression Syntax</h1>
+<p>The ExpressionLanguage component uses a specific syntax which is based on the
+expression syntax of Twig. In this document, you can find all supported
+syntaxes.</p>
+<div class="section" id="supported-literals">
+<h2>Supported Literals</h2>
+<p>The component supports:</p>
+<ul>
+<li><p><strong>strings</strong> - single and double quotes (e.g. <code class="docutils literal notranslate"><span class="pre">'hello'</span></code>)</p></li>
+<li><p><strong>numbers</strong> - e.g. <code class="docutils literal notranslate"><span class="pre">103</span></code></p></li>
+<li><p><strong>arrays</strong> - using JSON-like notation (e.g. <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2]</span></code>)</p></li>
+<li><p><strong>hashes</strong> - using JSON-like notation (e.g. <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">foo:</span> <span class="pre">'bar'</span> <span class="pre">}</span></code>)</p></li>
+<li><p><strong>booleans</strong> - <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><strong>null</strong> - <code class="docutils literal notranslate"><span class="pre">null</span></code></p></li>
+<li><p><strong>exponential</strong> - also known as scientific (e.g. <code class="docutils literal notranslate"><span class="pre">1.99E+3</span></code> or <code class="docutils literal notranslate"><span class="pre">1e-2</span></code>)</p>
+<blockquote>
+<div><div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">exponential</span></code> literal was introduced in Symfony 4.4.</p>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>A backslash (<code class="docutils literal notranslate"><span class="pre">\</span></code>) must be escaped by 4 backslashes (<code class="docutils literal notranslate"><span class="pre">\\\\</span></code>) in a string
+and 8 backslashes (<code class="docutils literal notranslate"><span class="pre">\\\\\\\\</span></code>) in a regex:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">echo</span> <span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span><span class="s1">&#39;&quot;\\\\&quot;&#39;</span><span class="p">);</span> <span class="c1">// prints \</span>
+<span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span><span class="s1">&#39;&quot;a\\\\b&quot; matches &quot;/^a\\\\\\\\b$/&quot;&#39;</span><span class="p">);</span> <span class="c1">// returns true</span>
+</pre></div>
+</div>
+<p>Control characters (e.g. <code class="docutils literal notranslate"><span class="pre">\n</span></code>) in expressions are replaced with
+whitespace. To avoid this, escape the sequence with a single backslash
+(e.g.  <code class="docutils literal notranslate"><span class="pre">\\n</span></code>).</p>
+</div>
+</div>
+<div class="section" id="working-with-objects">
+<span id="component-expression-objects"></span><h2>Working with Objects</h2>
+<p>When passing objects into an expression, you can use different syntaxes to
+access properties and call methods on the object.</p>
+<div class="section" id="accessing-public-properties">
+<h3>Accessing Public Properties</h3>
+<p>Public properties on objects can be accessed by using the <code class="docutils literal notranslate"><span class="pre">.</span></code> syntax, similar
+to JavaScript:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Apple</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$variety</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$apple</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Apple</span><span class="p">();</span>
+<span class="nv">$apple</span><span class="o">-&gt;</span><span class="na">variety</span> <span class="o">=</span> <span class="s1">&#39;Honeycrisp&#39;</span><span class="p">;</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;fruit.variety&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;fruit&#39;</span> <span class="o">=&gt;</span> <span class="nv">$apple</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<p>This will print out <code class="docutils literal notranslate"><span class="pre">Honeycrisp</span></code>.</p>
+</div>
+<div class="section" id="calling-methods">
+<h3>Calling Methods</h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">.</span></code> syntax can also be used to call methods on an object, similar to
+JavaScript:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Robot</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">sayHi</span><span class="p">(</span><span class="nv">$times</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$greetings</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;</span> <span class="nv">$times</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$greetings</span><span class="p">[]</span> <span class="o">=</span> <span class="s1">&#39;Hi&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="nv">$greetings</span><span class="p">)</span><span class="o">.</span><span class="s1">&#39;!&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nv">$robot</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Robot</span><span class="p">();</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;robot.sayHi(3)&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;robot&#39;</span> <span class="o">=&gt;</span> <span class="nv">$robot</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<p>This will print out <code class="docutils literal notranslate"><span class="pre">Hi</span> <span class="pre">Hi</span> <span class="pre">Hi!</span></code>.</p>
+</div>
+</div>
+<div class="section" id="working-with-functions">
+<span id="component-expression-functions"></span><h2>Working with Functions</h2>
+<p>You can also use registered functions in the expression by using the same
+syntax as PHP and JavaScript. The ExpressionLanguage component comes with one
+function by default: <code class="docutils literal notranslate"><span class="pre">constant()</span></code>, which will return the value of the PHP
+constant:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nb">define</span><span class="p">(</span><span class="s1">&#39;DB_USER&#39;</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">);</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;constant(&quot;DB_USER&quot;)&#39;</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<p>This will print out <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>To read how to register your own functions to use in an expression, see
+“<a class="reference internal" href="extending.xhtml"><span class="doc">Extending the ExpressionLanguage</span></a>”.</p>
+</div>
+</div>
+<div class="section" id="working-with-arrays">
+<span id="component-expression-arrays"></span><h2>Working with Arrays</h2>
+<p>If you pass an array into an expression, use the <code class="docutils literal notranslate"><span class="pre">[]</span></code> syntax to access
+array keys, similar to JavaScript:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;life&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;universe&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;everything&#39;</span> <span class="o">=&gt;</span> <span class="mi">22</span><span class="p">];</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;data[&quot;life&quot;] + data[&quot;universe&quot;] + data[&quot;everything&quot;]&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;data&#39;</span> <span class="o">=&gt;</span> <span class="nv">$data</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<p>This will print out <code class="docutils literal notranslate"><span class="pre">42</span></code>.</p>
+</div>
+<div class="section" id="supported-operators">
+<h2>Supported Operators</h2>
+<p>The component comes with a lot of operators:</p>
+<div class="section" id="arithmetic-operators">
+<h3>Arithmetic Operators</h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">+</span></code> (addition)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-</span></code> (subtraction)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*</span></code> (multiplication)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/</span></code> (division)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">%</span></code> (modulus)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">**</span></code> (pow)</p></li>
+</ul>
+<p>For example:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;life + universe + everything&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;life&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;universe&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;everything&#39;</span> <span class="o">=&gt;</span> <span class="mi">22</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<p>This will print out <code class="docutils literal notranslate"><span class="pre">42</span></code>.</p>
+</div>
+<div class="section" id="bitwise-operators">
+<h3>Bitwise Operators</h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&amp;</span></code> (and)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">|</span></code> (or)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">^</span></code> (xor)</p></li>
+</ul>
+</div>
+<div class="section" id="comparison-operators">
+<h3>Comparison Operators</h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">==</span></code> (equal)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">===</span></code> (identical)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">!=</span></code> (not equal)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">!==</span></code> (not identical)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;</span></code> (less than)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&gt;</span></code> (greater than)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;=</span></code> (less than or equal to)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&gt;=</span></code> (greater than or equal to)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">matches</span></code> (regex match)</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>To test if a string does <em>not</em> match a regex, use the logical <code class="docutils literal notranslate"><span class="pre">not</span></code>
+operator in combination with the <code class="docutils literal notranslate"><span class="pre">matches</span></code> operator:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span><span class="s1">&#39;not (&quot;foo&quot; matches &quot;/bar/&quot;)&#39;</span><span class="p">);</span> <span class="c1">// returns true</span>
+</pre></div>
+</div>
+<p>You must use parenthesis because the unary operator <code class="docutils literal notranslate"><span class="pre">not</span></code> has precedence
+over the binary operator <code class="docutils literal notranslate"><span class="pre">matches</span></code>.</p>
+</div>
+<p>Examples:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$ret1</span> <span class="o">=</span> <span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;life == everything&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;life&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;universe&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;everything&#39;</span> <span class="o">=&gt;</span> <span class="mi">22</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">);</span>
+
+<span class="nv">$ret2</span> <span class="o">=</span> <span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;life &gt; everything&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;life&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;universe&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;everything&#39;</span> <span class="o">=&gt;</span> <span class="mi">22</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Both variables would be set to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+</div>
+<div class="section" id="logical-operators">
+<h3>Logical Operators</h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">not</span></code> or <code class="docutils literal notranslate"><span class="pre">!</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">and</span></code> or <code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">or</span></code> or <code class="docutils literal notranslate"><span class="pre">||</span></code></p></li>
+</ul>
+<p>For example:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$ret</span> <span class="o">=</span> <span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;life &lt; universe or life &lt; everything&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;life&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;universe&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;everything&#39;</span> <span class="o">=&gt;</span> <span class="mi">22</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>This <code class="docutils literal notranslate"><span class="pre">$ret</span></code> variable will be set to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+</div>
+<div class="section" id="string-operators">
+<h3>String Operators</h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">~</span></code> (concatenation)</p></li>
+</ul>
+<p>For example:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nb">var_dump</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;firstName~&quot; &quot;~lastName&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;firstName&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Arthur&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;lastName&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Dent&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<p>This would print out <code class="docutils literal notranslate"><span class="pre">Arthur</span> <span class="pre">Dent</span></code>.</p>
+</div>
+<div class="section" id="array-operators">
+<h3>Array Operators</h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">in</span></code> (contain)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">in</span></code> (does not contain)</p></li>
+</ul>
+<p>For example:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$group</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">();</span>
+<span class="nv">$user</span><span class="o">-&gt;</span><span class="na">group</span> <span class="o">=</span> <span class="s1">&#39;human_resources&#39;</span><span class="p">;</span>
+
+<span class="nv">$inGroup</span> <span class="o">=</span> <span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;user.group in [&quot;human_resources&quot;, &quot;marketing&quot;]&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">$inGroup</span></code> would evaluate to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+</div>
+<div class="section" id="numeric-operators">
+<h3>Numeric Operators</h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">..</span></code> (range)</p></li>
+</ul>
+<p>For example:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$age</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">();</span>
+<span class="nv">$user</span><span class="o">-&gt;</span><span class="na">age</span> <span class="o">=</span> <span class="mi">34</span><span class="p">;</span>
+
+<span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span>
+    <span class="s1">&#39;user.age in 18..45&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>This will evaluate to <code class="docutils literal notranslate"><span class="pre">true</span></code>, because <code class="docutils literal notranslate"><span class="pre">user.age</span></code> is in the range from
+<code class="docutils literal notranslate"><span class="pre">18</span></code> to <code class="docutils literal notranslate"><span class="pre">45</span></code>.</p>
+</div>
+<div class="section" id="ternary-operators">
+<h3>Ternary Operators</h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">foo</span> <span class="pre">?</span> <span class="pre">'yes'</span> <span class="pre">:</span> <span class="pre">'no'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">foo</span> <span class="pre">?:</span> <span class="pre">'no'</span></code> (equal to <code class="docutils literal notranslate"><span class="pre">foo</span> <span class="pre">?</span> <span class="pre">foo</span> <span class="pre">:</span> <span class="pre">'no'</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">foo</span> <span class="pre">?</span> <span class="pre">'yes'</span></code> (equal to <code class="docutils literal notranslate"><span class="pre">foo</span> <span class="pre">?</span> <span class="pre">'yes'</span> <span class="pre">:</span> <span class="pre">''</span></code>)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="built-in-objects-and-variables">
+<h2>Built-in Objects and Variables</h2>
+<p>When using this component inside a Symfony application, certain objects and
+variables are automatically injected by Symfony so you can use them in your
+expressions (e.g. the request, the current user, etc.):</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../security/expressions.xhtml"><span class="doc">Variables available in security expressions</span></a>;</p></li>
+<li><p><a class="reference internal" href="../../service_container/expression_language.xhtml"><span class="doc">Variables available in service container expressions</span></a>;</p></li>
+<li><p><a class="reference internal" href="../../routing.xhtml#routing-matching-expressions"><span class="std std-ref">Variables available in routing expressions</span></a>.</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

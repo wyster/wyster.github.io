@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>HTTP Cache Expiration</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="http-cache-expiration">
+<span id="index-0"></span><h1>HTTP Cache Expiration</h1>
+<p>The <a class="reference external" href="https://tools.ietf.org/html/rfc2616#section-13.2">expiration model</a><span class="link-target"> [https://tools.ietf.org/html/rfc2616#section-13.2]</span> is the most efficient and straightforward of the two
+caching models and should be used whenever possible. When a response is cached
+with an expiration, the cache returns it directly without hitting the application
+until the cached response expires.</p>
+<p>The expiration model can be accomplished using one of two, nearly identical,
+HTTP headers: <code class="docutils literal notranslate"><span class="pre">Expires</span></code> or <code class="docutils literal notranslate"><span class="pre">Cache-Control</span></code>.</p>
+<div class="sidebar">
+<p class="sidebar-title">Expiration and Validation</p>
+<p>You can use both validation and expiration within the same <code class="docutils literal notranslate"><span class="pre">Response</span></code>.
+As expiration wins over validation, you can benefit from the best of
+both worlds. In other words, by using both expiration and validation, you
+can instruct the cache to serve the cached content, while checking back
+at some interval (the expiration) to verify that the content is still valid.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can also define HTTP caching headers for expiration and validation by using
+annotations. See the <a class="reference external" href="https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/cache.html">FrameworkExtraBundle documentation</a><span class="link-target"> [https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/cache.html]</span>.</p>
+</div>
+</div>
+<div class="section" id="expiration-with-the-cache-control-header">
+<span id="index-1"></span><h2>Expiration with the <code class="docutils literal notranslate"><span class="pre">Cache-Control</span></code> Header</h2>
+<p>Most of the time, you will use the <code class="docutils literal notranslate"><span class="pre">Cache-Control</span></code> header, which
+is used to specify many different cache directives:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// sets the number of seconds after which the response</span>
+<span class="c1">// should no longer be considered fresh by shared caches</span>
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setPublic</span><span class="p">();</span>
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setMaxAge</span><span class="p">(</span><span class="mi">600</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Cache-Control</span></code> header would take on the following format (it may have
+additional directives):</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Cache-Control: public, maxage=600
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">setSharedMaxAge()</span></code> method is not equivalent to using both
+<code class="docutils literal notranslate"><span class="pre">setPublic()</span></code> and <code class="docutils literal notranslate"><span class="pre">setMaxAge()</span></code> methods. According to the
+<a class="reference external" href="https://tools.ietf.org/html/rfc7234#section-4.2.4">Serving Stale Responses</a><span class="link-target"> [https://tools.ietf.org/html/rfc7234#section-4.2.4]</span> section of RFC 7234, the <code class="docutils literal notranslate"><span class="pre">s-maxage</span></code> setting
+(added by <code class="docutils literal notranslate"><span class="pre">setSharedMaxAge()</span></code> method) prohibits a cache to use a stale
+response in <code class="docutils literal notranslate"><span class="pre">stale-if-error</span></code> scenarios. That’s why it’s recommended to use
+both <code class="docutils literal notranslate"><span class="pre">public</span></code> and <code class="docutils literal notranslate"><span class="pre">max-age</span></code> directives.</p>
+</div>
+</div>
+<div class="section" id="expiration-with-the-expires-header">
+<span id="index-2"></span><h2>Expiration with the <code class="docutils literal notranslate"><span class="pre">Expires</span></code> Header</h2>
+<p>An alternative to the <code class="docutils literal notranslate"><span class="pre">Cache-Control</span></code> header is <code class="docutils literal notranslate"><span class="pre">Expires</span></code>. There’s no advantage
+or disadvantage to either.</p>
+<p>According to the HTTP specification, “the <code class="docutils literal notranslate"><span class="pre">Expires</span></code> header field gives
+the date/time after which the response is considered stale.” The <code class="docutils literal notranslate"><span class="pre">Expires</span></code>
+header can be set with the <code class="docutils literal notranslate"><span class="pre">setExpires()</span></code> <code class="docutils literal notranslate"><span class="pre">Response</span></code> method. It takes a
+<code class="docutils literal notranslate"><span class="pre">DateTime</span></code> instance as an argument:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$date</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DateTime</span><span class="p">();</span>
+<span class="nv">$date</span><span class="o">-&gt;</span><span class="na">modify</span><span class="p">(</span><span class="s1">&#39;+600 seconds&#39;</span><span class="p">);</span>
+
+<span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setExpires</span><span class="p">(</span><span class="nv">$date</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The resulting HTTP header will look like this:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Expires: Thu, 01 Mar 2011 16:00:00 GMT
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">setExpires()</span></code> method automatically converts the date to the GMT
+timezone as required by the specification.</p>
+</div>
+<p>Note that in HTTP versions before 1.1 the origin server wasn’t required to
+send the <code class="docutils literal notranslate"><span class="pre">Date</span></code> header. Consequently, the cache (e.g. the browser) might
+need to rely on the local clock to evaluate the <code class="docutils literal notranslate"><span class="pre">Expires</span></code> header making
+the lifetime calculation vulnerable to clock skew. Another limitation
+of the <code class="docutils literal notranslate"><span class="pre">Expires</span></code> header is that the specification states that “HTTP/1.1
+servers should not send <code class="docutils literal notranslate"><span class="pre">Expires</span></code> dates more than one year in the future.”</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>According to the <a class="reference external" href="https://tools.ietf.org/html/rfc7234#section-4.2.1">Calculating Freshness Lifetime</a><span class="link-target"> [https://tools.ietf.org/html/rfc7234#section-4.2.1]</span> section of RFC 7234,
+the <code class="docutils literal notranslate"><span class="pre">Expires</span></code> header value is ignored when the <code class="docutils literal notranslate"><span class="pre">s-maxage</span></code> or <code class="docutils literal notranslate"><span class="pre">max-age</span></code>
+directive of the <code class="docutils literal notranslate"><span class="pre">Cache-Control</span></code> header is defined.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

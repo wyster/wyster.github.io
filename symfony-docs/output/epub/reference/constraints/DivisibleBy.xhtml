@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>DivisibleBy</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="divisibleby">
+<h1>DivisibleBy</h1>
+<p>Validates that a value is divisible by another value, defined in the options.</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 88%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Applies to</p></td>
+<td><p><a class="reference internal" href="../../validation.xhtml#validation-property-target"><span class="std std-ref">property or method</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>Options</p></td>
+<td><ul class="simple">
+<li><p><a class="reference internal" href="#groups">groups</a></p></li>
+<li><p><a class="reference internal" href="#message">message</a></p></li>
+<li><p><a class="reference internal" href="#payload">payload</a></p></li>
+<li><p><a class="reference internal" href="#propertypath">propertyPath</a></p></li>
+<li><p><a class="reference internal" href="#value">value</a></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Class</p></td>
+<td><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/Constraints/DivisibleBy.php" title="Symfony\Component\Validator\Constraints\DivisibleBy"><span class="pre">DivisibleBy</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/Constraints/DivisibleBy.php]</span></span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Validator</p></td>
+<td><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/Constraints/DivisibleByValidator.php" title="Symfony\Component\Validator\Constraints\DivisibleByValidator"><span class="pre">DivisibleByValidator</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/Constraints/DivisibleByValidator.php]</span></span></code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="basic-usage">
+<h2>Basic Usage</h2>
+<p>The following constraints ensure that:</p>
+<ul class="simple">
+<li><p>the <code class="docutils literal notranslate"><span class="pre">weight</span></code> of the <code class="docutils literal notranslate"><span class="pre">Item</span></code> is provided in increments of <code class="docutils literal notranslate"><span class="pre">0.25</span></code></p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">quantity</span></code> of the <code class="docutils literal notranslate"><span class="pre">Item</span></code> must be divisible by <code class="docutils literal notranslate"><span class="pre">5</span></code></p></li>
+</ul>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Item.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Item</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @Assert\DivisibleBy(0.25)</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$weight</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @Assert\DivisibleBy(</span>
+<span class="sd">     *     value = 5</span>
+<span class="sd">     * )</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$quantity</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/validator/validation.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">App\Entity\Item</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">properties</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">weight</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">DivisibleBy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25</span>
+        <span class="l l-Scalar l-Scalar-Plain">quantity</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">DivisibleBy</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/validator/validation.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;constraint-mapping</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;class</span> <span class="na">name=</span><span class="s">&quot;App\Entity\Item&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;weight&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;constraint</span> <span class="na">name=</span><span class="s">&quot;DivisibleBy&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;value&gt;</span>0.25<span class="nt">&lt;/value&gt;</span>
+            <span class="nt">&lt;/constraint&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;quantity&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;constraint</span> <span class="na">name=</span><span class="s">&quot;DivisibleBy&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;option</span> <span class="na">name=</span><span class="s">&quot;value&quot;</span><span class="nt">&gt;</span>5<span class="nt">&lt;/option&gt;</span>
+            <span class="nt">&lt;/constraint&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/class&gt;</span>
+<span class="nt">&lt;/constraint-mapping&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Item.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Mapping\ClassMetadata</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Item</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">loadValidatorMetadata</span><span class="p">(</span><span class="nx">ClassMetadata</span> <span class="nv">$metadata</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$metadata</span><span class="o">-&gt;</span><span class="na">addPropertyConstraint</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert\DivisibleBy</span><span class="p">(</span><span class="mf">0.25</span><span class="p">));</span>
+
+        <span class="nv">$metadata</span><span class="o">-&gt;</span><span class="na">addPropertyConstraint</span><span class="p">(</span><span class="s1">&#39;quantity&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert\DivisibleBy</span><span class="p">([</span>
+            <span class="s1">&#39;value&#39;</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="p">]));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="options">
+<h2>Options</h2>
+<div class="section" id="groups">
+<h3><code class="docutils literal notranslate"><span class="pre">groups</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> | <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>It defines the validation group or groups this constraint belongs to. Read more
+about <a class="reference internal" href="../../validation/groups.xhtml"><span class="doc">validation groups</span></a>.</p>
+</div>
+<div class="section" id="message">
+<h3>message</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">multiple</span> <span class="pre">of</span> <span class="pre">{{</span> <span class="pre">compared_value</span> <span class="pre">}}.</span></code></p>
+<p>This is the message that will be shown if the value is not divisible by the
+comparison value.</p>
+</div>
+<div class="section" id="payload">
+<h3><code class="docutils literal notranslate"><span class="pre">payload</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">mixed</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+<p>This option can be used to attach arbitrary domain-specific data to a constraint.
+The configured payload is not used by the Validator component, but its processing
+is completely up to you.</p>
+<p>For example, you may want to use
+<a class="reference internal" href="../../validation/severity.xhtml"><span class="doc">several error levels</span></a> to present failed
+constraints differently in the front-end depending on the severity of the
+error.</p>
+</div>
+<div class="section" id="propertypath">
+<h3><code class="docutils literal notranslate"><span class="pre">propertyPath</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>It defines the object property whose value is used to make the comparison.</p>
+<p>For example, if you want to compare the <code class="docutils literal notranslate"><span class="pre">$endDate</span></code> property of some object
+with regard to the <code class="docutils literal notranslate"><span class="pre">$startDate</span></code> property of the same object, use
+<code class="docutils literal notranslate"><span class="pre">propertyPath=&quot;startDate&quot;</span></code> in the comparison constraint of <code class="docutils literal notranslate"><span class="pre">$endDate</span></code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When using this option, its value is available in error messages as the
+<code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">compared_value_path</span> <span class="pre">}}</span></code> placeholder. Although it’s not intended to
+include it in the error messages displayed to end users, it’s useful when
+using APIs for doing any mapping logic on client-side.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">compared_value_path</span> <span class="pre">}}</span></code> placeholder was introduced in Symfony 4.4.</p>
+</div>
+</div>
+</div>
+<div class="section" id="value">
+<h3><code class="docutils literal notranslate"><span class="pre">value</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">mixed</span></code> [<a class="reference internal" href="../../validation.xhtml#validation-default-option"><span class="std std-ref">default option</span></a>]</p>
+<p>This option is required. It defines the value to compare to. It can be a
+string, number or object.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

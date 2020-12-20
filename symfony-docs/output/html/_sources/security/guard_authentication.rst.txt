@@ -14,11 +14,6 @@ Guard authentication can be used to:
 and many more. In this example, we'll build an API token authentication
 system, so we can learn more about Guard in detail.
 
-.. tip::
-
-    A :doc:`new experimental authenticator-based system </security/experimental_authenticators>`
-    was introduced in Symfony 5.1, which will eventually replace Guards in Symfony 6.0.
-
 Step 1) Prepare your User Class
 -------------------------------
 
@@ -248,8 +243,7 @@ Finally, configure your ``firewalls`` key in ``security.yaml`` to use this authe
                 # ...
 
                 main:
-                    anonymous: true
-                    lazy: true
+                    anonymous: lazy
                     logout: ~
 
                     guard:
@@ -269,15 +263,14 @@ Finally, configure your ``firewalls`` key in ``security.yaml`` to use this authe
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd
-                http://symfony.com/schema/dic/security
-                https://symfony.com/schema/dic/security/security-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd">
             <config>
                 <!-- ... -->
 
                 <!-- if you want, disable storing the user in the session
                     add 'stateless="true"' to the firewall -->
-                <firewall name="main" pattern="^/" anonymous="true" lazy="true">
+                <firewall name="main" pattern="^/">
+                    <anonymous lazy="true"/>
                     <logout/>
 
                     <guard>
@@ -300,8 +293,7 @@ Finally, configure your ``firewalls`` key in ``security.yaml`` to use this authe
             'firewalls' => [
                 'main'       => [
                     'pattern'        => '^/',
-                    'anonymous'      => true,
-                    'lazy'           => true,
+                    'anonymous'      => 'lazy',
                     'logout'         => true,
                     'guard'          => [
                         'authenticators'  => [
@@ -365,7 +357,7 @@ Each authenticator needs the following methods:
     (or throw an :ref:`AuthenticationException <guard-customize-error>`),
     authentication will fail.
 
-**onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)**
+**onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)**
     This is called after successful authentication and your job is to either
     return a :class:`Symfony\\Component\\HttpFoundation\\Response` object
     that will be sent to the client or ``null`` to continue the request

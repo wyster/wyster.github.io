@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -153,10 +153,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -391,9 +389,9 @@ is the main config file for both Webpack and Webpack Encore:</p>
 <span class="cm">     * Each entry will result in one JavaScript file (e.g. app.js)</span>
 <span class="cm">     * and one CSS file (e.g. app.css) if your JavaScript imports CSS.</span>
 <span class="cm">     */</span>
-    <span class="p">.</span><span class="nx">addEntry</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/app.js&#39;</span><span class="p">)</span>
-    <span class="c1">//.addEntry(&#39;page1&#39;, &#39;./assets/page1.js&#39;)</span>
-    <span class="c1">//.addEntry(&#39;page2&#39;, &#39;./assets/page2.js&#39;)</span>
+    <span class="p">.</span><span class="nx">addEntry</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/js/app.js&#39;</span><span class="p">)</span>
+    <span class="c1">//.addEntry(&#39;page1&#39;, &#39;./assets/js/page1.js&#39;)</span>
+    <span class="c1">//.addEntry(&#39;page2&#39;, &#39;./assets/js/page2.js&#39;)</span>
 
     <span class="c1">// When enabled, Webpack &quot;splits&quot; your files into smaller pieces for greater optimization.</span>
     <span class="p">.</span><span class="nx">splitEntryChunks</span><span class="p">()</span>
@@ -436,13 +434,13 @@ is the main config file for both Webpack and Webpack Encore:</p>
 
     <span class="c1">// uncomment if you use API Platform Admin (composer require api-admin)</span>
     <span class="c1">//.enableReactPreset()</span>
-    <span class="c1">//.addEntry(&#39;admin&#39;, &#39;./assets/admin.js&#39;)</span>
+    <span class="c1">//.addEntry(&#39;admin&#39;, &#39;./assets/js/admin.js&#39;)</span>
 <span class="p">;</span>
 
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">Encore</span><span class="p">.</span><span class="nx">getWebpackConfig</span><span class="p">();</span>
 </pre></div>
 </td></tr></table></div>
-<p>Next, open the new <code class="docutils literal notranslate"><span class="pre">assets/app.js</span></code> file which contains some JavaScript code
+<p>Next, open the new <code class="docutils literal notranslate"><span class="pre">assets/js/app.js</span></code> file which contains some JavaScript code
 <em>and</em> imports some CSS:</p>
 <div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -458,7 +456,7 @@ is the main config file for both Webpack and Webpack Encore:</p>
 12
 13
 14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// assets/app.js</span>
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// assets/js/app.js</span>
 <span class="cm">/*</span>
 <span class="cm"> * Welcome to your app&#39;s main JavaScript file!</span>
 <span class="cm"> *</span>
@@ -467,19 +465,19 @@ is the main config file for both Webpack and Webpack Encore:</p>
 <span class="cm"> */</span>
 
 <span class="c1">// any CSS you import will output into a single css file (app.css in this case)</span>
-<span class="kr">import</span> <span class="s1">&#39;./styles/app.css&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="s1">&#39;../css/app.css&#39;</span><span class="p">;</span>
 
 <span class="c1">// Need jQuery? Install it with &quot;yarn add jquery&quot;, then uncomment to import it.</span>
 <span class="c1">// import $ from &#39;jquery&#39;;</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello Webpack Encore! Edit me in assets/app.js&#39;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello Webpack Encore! Edit me in assets/js/app.js&#39;</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
-<p>And the new <code class="docutils literal notranslate"><span class="pre">assets/styles/app.css</span></code> file:</p>
+<p>And the new <code class="docutils literal notranslate"><span class="pre">assets/css/app.css</span></code> file:</p>
 <div class="highlight-css notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">/* assets/styles/app.css */</span>
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">/* assets/css/app.css */</span>
 <span class="nt">body</span> <span class="p">{</span>
     <span class="k">background-color</span><span class="p">:</span> <span class="kc">lightgray</span><span class="p">;</span>
 <span class="p">}</span>

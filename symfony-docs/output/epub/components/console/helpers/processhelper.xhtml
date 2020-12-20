@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Process Helper</title>
+    <link rel="stylesheet" href="../../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="process-helper">
+<span id="index-0"></span><h1>Process Helper</h1>
+<p>The Process Helper shows processes as they’re running and reports
+useful information about process status.</p>
+<p>To display process details, use the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProcessHelper.php" title="Symfony\Component\Console\Helper\ProcessHelper"><span class="pre">ProcessHelper</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProcessHelper.php]</span></span></code>
+and run your command with verbosity. For example, running the following code with
+a very verbose verbosity (e.g. <code class="docutils literal notranslate"><span class="pre">-vv</span></code>):</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Process\Process</span><span class="p">;</span>
+
+<span class="nv">$helper</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getHelper</span><span class="p">(</span><span class="s1">&#39;process&#39;</span><span class="p">);</span>
+<span class="nv">$process</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Process</span><span class="p">([</span><span class="s1">&#39;figlet&#39;</span><span class="p">,</span> <span class="s1">&#39;Symfony&#39;</span><span class="p">]);</span>
+
+<span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="nv">$output</span><span class="p">,</span> <span class="nv">$process</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>will result in this output:</p>
+<img alt="../../../_images/process-helper-verbose.png" src="../../../_images/process-helper-verbose.png" />
+<p>It will result in more detailed output with debug verbosity (e.g. <code class="docutils literal notranslate"><span class="pre">-vvv</span></code>):</p>
+<img alt="../../../_images/process-helper-debug.png" src="../../../_images/process-helper-debug.png" />
+<p>In case the process fails, debugging is easier:</p>
+<img alt="../../../_images/process-helper-error-debug.png" src="../../../_images/process-helper-error-debug.png" />
+<div class="section" id="arguments">
+<h2>Arguments</h2>
+<p>There are three ways to use the process helper:</p>
+<ul>
+<li><p>Using a command line string:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="nv">$output</span><span class="p">,</span> <span class="s1">&#39;figlet Symfony&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p>An array of arguments:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="nv">$output</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;figlet&#39;</span><span class="p">,</span> <span class="s1">&#39;Symfony&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When running the helper against an array of arguments, be aware that
+these will be automatically escaped.</p>
+</div>
+</li>
+<li><p>Passing a <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Process/Process.php" title="Symfony\Component\Process\Process"><span class="pre">Process</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Process/Process.php]</span></span></code> instance:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Process\Process</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="nv">$process</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Process</span><span class="p">([</span><span class="s1">&#39;figlet&#39;</span><span class="p">,</span> <span class="s1">&#39;Symfony&#39;</span><span class="p">]);</span>
+
+<span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="nv">$output</span><span class="p">,</span> <span class="nv">$process</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="customized-display">
+<h2>Customized Display</h2>
+<p>You can display a customized error message using the third argument of the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProcessHelper.php" title="Symfony\Component\Console\Helper\ProcessHelper::run()"><span class="pre">run()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProcessHelper.php]</span></span></code> method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="nv">$output</span><span class="p">,</span> <span class="nv">$process</span><span class="p">,</span> <span class="s1">&#39;The process failed :(&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>A custom process callback can be passed as the fourth argument. Refer to the
+<a class="reference internal" href="../../process.xhtml"><span class="doc">Process Component</span></a> for callback documentation:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Process\Process</span><span class="p">;</span>
+
+<span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="nv">$output</span><span class="p">,</span> <span class="nv">$process</span><span class="p">,</span> <span class="s1">&#39;The process failed :(&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$type</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">Process</span><span class="o">::</span><span class="na">ERR</span> <span class="o">===</span> <span class="nv">$type</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// ... do something with the stderr output</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// ... do something with the stdout</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

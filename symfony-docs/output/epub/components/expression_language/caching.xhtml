@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Caching Expressions Using Parser Caches</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="caching-expressions-using-parser-caches">
+<span id="index-0"></span><h1>Caching Expressions Using Parser Caches</h1>
+<p>The ExpressionLanguage component already provides a
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php" title="Symfony\Component\ExpressionLanguage\ExpressionLanguage::compile()"><span class="pre">compile()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php]</span></span></code>
+method to be able to cache the expressions in plain PHP. But internally, the
+component also caches the parsed expressions, so duplicated expressions can be
+compiled/evaluated quicker.</p>
+<div class="section" id="the-workflow">
+<h2>The Workflow</h2>
+<p>Both <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php" title="Symfony\Component\ExpressionLanguage\ExpressionLanguage::evaluate()"><span class="pre">evaluate()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php]</span></span></code>
+and <code class="docutils literal notranslate"><span class="pre">compile()</span></code> need to do some things before each can provide the return
+values. For <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code>, this overhead is even bigger.</p>
+<p>Both methods need to tokenize and parse the expression. This is done by the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php" title="Symfony\Component\ExpressionLanguage\ExpressionLanguage::parse()"><span class="pre">parse()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php]</span></span></code>
+method. It  returns a <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ParsedExpression.php" title="Symfony\Component\ExpressionLanguage\ParsedExpression"><span class="pre">ParsedExpression</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ParsedExpression.php]</span></span></code>.
+Now, the <code class="docutils literal notranslate"><span class="pre">compile()</span></code> method just returns the string conversion of this object.
+The <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> method needs to loop through the “nodes” (pieces of an
+expression saved in the <code class="docutils literal notranslate"><span class="pre">ParsedExpression</span></code>) and evaluate them on the fly.</p>
+<p>To save time, the <code class="docutils literal notranslate"><span class="pre">ExpressionLanguage</span></code> caches the <code class="docutils literal notranslate"><span class="pre">ParsedExpression</span></code> so
+it can skip the tokenize and parse steps with duplicate expressions. The
+caching is done by a PSR-6 <a class="reference external" href="https://github.com/php-fig/cache/blob/master/src/CacheItemPoolInterface.php">CacheItemPoolInterface</a><span class="link-target"> [https://github.com/php-fig/cache/blob/master/src/CacheItemPoolInterface.php]</span> instance (by default, it
+uses an <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/ArrayAdapter.php" title="Symfony\Component\Cache\Adapter\ArrayAdapter"><span class="pre">ArrayAdapter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/ArrayAdapter.php]</span></span></code>). You can
+customize this by creating a custom cache pool or using one of the available
+ones and injecting this using the constructor:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\RedisAdapter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\ExpressionLanguage</span><span class="p">;</span>
+
+<span class="nv">$cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RedisAdapter</span><span class="p">(</span><span class="o">...</span><span class="p">);</span>
+<span class="nv">$expressionLanguage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ExpressionLanguage</span><span class="p">(</span><span class="nv">$cache</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See the <a class="reference internal" href="../cache.xhtml"><span class="doc">The Cache Component</span></a> documentation for more information about
+available cache adapters.</p>
+</div>
+</div>
+<div class="section" id="using-parsed-and-serialized-expressions">
+<h2>Using Parsed and Serialized Expressions</h2>
+<p>Both <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> and <code class="docutils literal notranslate"><span class="pre">compile()</span></code> can handle <code class="docutils literal notranslate"><span class="pre">ParsedExpression</span></code> and
+<code class="docutils literal notranslate"><span class="pre">SerializedParsedExpression</span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+
+<span class="c1">// the parse() method returns a ParsedExpression</span>
+<span class="nv">$expression</span> <span class="o">=</span> <span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">parse</span><span class="p">(</span><span class="s1">&#39;1 + 4&#39;</span><span class="p">,</span> <span class="p">[]);</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span><span class="nv">$expression</span><span class="p">));</span> <span class="c1">// prints 5</span>
+</pre></div>
+</div>
+<div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\SerializedParsedExpression</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="nv">$expression</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SerializedParsedExpression</span><span class="p">(</span>
+    <span class="s1">&#39;1 + 4&#39;</span><span class="p">,</span>
+    <span class="nb">serialize</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">parse</span><span class="p">(</span><span class="s1">&#39;1 + 4&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">-&gt;</span><span class="na">getNodes</span><span class="p">())</span>
+<span class="p">);</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span><span class="nv">$expression</span><span class="p">));</span> <span class="c1">// prints 5</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

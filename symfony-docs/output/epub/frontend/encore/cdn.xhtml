@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Using a CDN</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-a-cdn">
+<h1>Using a CDN</h1>
+<p>Are you deploying to a CDN? That’s awesome :) Once you’ve made sure that your
+built files are uploaded to the CDN, configure it in Encore:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span>// webpack.config.js
+// ...
+
+Encore
+    .setOutputPath(&#39;public/build/&#39;)
+    // in dev mode, don&#39;t use the CDN
+    .setPublicPath(&#39;/build&#39;);
+    // ...
+;
+
+<span class="gi">+ if (Encore.isProduction()) {</span>
+<span class="gi">+     Encore.setPublicPath(&#39;https://my-cool-app.com.global.prod.fastly.net&#39;);</span>
+<span class="gi">+</span>
+<span class="gi">+     // guarantee that the keys in manifest.json are *still*</span>
+<span class="gi">+     // prefixed with build/</span>
+<span class="gi">+     // (e.g. &quot;build/dashboard.js&quot;: &quot;https://my-cool-app.com.global.prod.fastly.net/dashboard.js&quot;)</span>
+<span class="gi">+     Encore.setManifestKeyPrefix(&#39;build/&#39;);</span>
+<span class="gi">+ }</span>
+</pre></div>
+</td></tr></table></div>
+<p>That’s it! Internally, Webpack will now know to load assets from your CDN -
+e.g. <code class="docutils literal notranslate"><span class="pre">https://my-cool-app.com.global.prod.fastly.net/dashboard.js</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It’s still your responsibility to put your assets on the CDN - e.g. by
+uploading them or by using “origin pull”, where your CDN pulls assets
+directly from your web server.</p>
+</div>
+<p>You <em>do</em> need to make sure that the <code class="docutils literal notranslate"><span class="pre">script</span></code> and <code class="docutils literal notranslate"><span class="pre">link</span></code> tags you include on your
+pages also use the CDN. Fortunately, the
+<a class="reference internal" href="simple-example.xhtml#encore-entrypointsjson-simple-description"><span class="std std-ref">entrypoints.json</span></a> paths are updated
+to include the full URL to the CDN.</p>
+<p>If you are using <code class="docutils literal notranslate"><span class="pre">Encore.enableIntegrityHashes()</span></code> and your CDN and your domain
+are not the <a class="reference external" href="https://en.wikipedia.org/wiki/Same-origin_policy">same-origin</a><span class="link-target"> [https://en.wikipedia.org/wiki/Same-origin_policy]</span>, you may need to set the <code class="docutils literal notranslate"><span class="pre">crossorigin</span></code> option in
+your webpack_encore.yaml configuration to <code class="docutils literal notranslate"><span class="pre">anonymous</span></code> or <code class="docutils literal notranslate"><span class="pre">use-credentials</span></code>
+to overcome CORS errors.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

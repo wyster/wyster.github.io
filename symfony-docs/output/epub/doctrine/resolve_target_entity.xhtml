@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Define Relationships with Abstract Classes and Interfaces</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-define-relationships-with-abstract-classes-and-interfaces">
+<span id="index-0"></span><h1>How to Define Relationships with Abstract Classes and Interfaces</h1>
+<p>One of the goals of bundles is to create discreet bundles of functionality
+that do not have many (if any) dependencies, allowing you to use that
+functionality in other applications without including unnecessary items.</p>
+<p>Doctrine 2.2 includes a new utility called the <code class="docutils literal notranslate"><span class="pre">ResolveTargetEntityListener</span></code>,
+that functions by intercepting certain calls inside Doctrine and rewriting
+<code class="docutils literal notranslate"><span class="pre">targetEntity</span></code> parameters in your metadata mapping at runtime. It means that
+in your bundle you are able to use an interface or abstract class in your
+mappings and expect correct mapping to a concrete entity at runtime.</p>
+<p>This functionality allows you to define relationships between different entities
+without making them hard dependencies.</p>
+<div class="section" id="background">
+<h2>Background</h2>
+<p>Suppose you have an InvoiceBundle which provides invoicing functionality
+and a CustomerBundle that contains customer management tools. You want
+to keep these separated, because they can be used in other systems without
+each other, but for your application you want to use them together.</p>
+<p>In this case, you have an <code class="docutils literal notranslate"><span class="pre">Invoice</span></code> entity with a relationship to a
+non-existent object, an <code class="docutils literal notranslate"><span class="pre">InvoiceSubjectInterface</span></code>. The goal is to get
+the <code class="docutils literal notranslate"><span class="pre">ResolveTargetEntityListener</span></code> to replace any mention of the interface
+with a real object that implements that interface.</p>
+</div>
+<div class="section" id="set-up">
+<h2>Set up</h2>
+<p>This article uses the following two basic entities (which are incomplete for
+brevity) to explain how to set up and use the <code class="docutils literal notranslate"><span class="pre">ResolveTargetEntityListener</span></code>.</p>
+<p>A Customer entity:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Customer.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Entity\CustomerInterface</span> <span class="k">as</span> <span class="nx">BaseCustomer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Model\InvoiceSubjectInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Doctrine\ORM\Mapping</span> <span class="k">as</span> <span class="nx">ORM</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @ORM\Entity</span>
+<span class="sd"> * @ORM\Table(name=&quot;customer&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">Customer</span> <span class="k">extends</span> <span class="nx">BaseCustomer</span> <span class="k">implements</span> <span class="nx">InvoiceSubjectInterface</span>
+<span class="p">{</span>
+    <span class="c1">// In this example, any methods defined in the InvoiceSubjectInterface</span>
+    <span class="c1">// are already implemented in the BaseCustomer</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>An Invoice entity:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Invoice.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Model\InvoiceSubjectInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Doctrine\ORM\Mapping</span> <span class="k">as</span> <span class="nx">ORM</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * Represents an Invoice.</span>
+<span class="sd"> *</span>
+<span class="sd"> * @ORM\Entity</span>
+<span class="sd"> * @ORM\Table(name=&quot;invoice&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">Invoice</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @ORM\ManyToOne(targetEntity=&quot;App\Model\InvoiceSubjectInterface&quot;)</span>
+<span class="sd">     * @var InvoiceSubjectInterface</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$subject</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>An InvoiceSubjectInterface:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Model/InvoiceSubjectInterface.php</span>
+<span class="k">namespace</span> <span class="nx">App\Model</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * An interface that the invoice Subject object should implement.</span>
+<span class="sd"> * In most circumstances, only a single object should implement</span>
+<span class="sd"> * this interface as the ResolveTargetEntityListener can only</span>
+<span class="sd"> * change the target to a single object.</span>
+<span class="sd"> */</span>
+<span class="k">interface</span> <span class="nx">InvoiceSubjectInterface</span>
+<span class="p">{</span>
+    <span class="c1">// List any additional methods that your InvoiceBundle</span>
+    <span class="c1">// will need to access on the subject so that you can</span>
+    <span class="c1">// be sure that you have access to those methods.</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Next, you need to configure the listener, which tells the DoctrineBundle
+about the replacement:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/doctrine.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">doctrine</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+    <span class="l l-Scalar l-Scalar-Plain">orm</span><span class="p p-Indicator">:</span>
+        <span class="c1"># ...</span>
+        <span class="l l-Scalar l-Scalar-Plain">resolve_target_entities</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">App\Model\InvoiceSubjectInterface</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Entity\Customer</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/doctrine.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:doctrine=</span><span class="s">&quot;http://symfony.com/schema/dic/doctrine&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/doctrine</span>
+<span class="s">        https://symfony.com/schema/dic/doctrine/doctrine-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;doctrine:config&gt;</span>
+        <span class="nt">&lt;doctrine:orm&gt;</span>
+            <span class="c">&lt;!-- ... --&gt;</span>
+            <span class="nt">&lt;doctrine:resolve-target-entity</span> <span class="na">interface=</span><span class="s">&quot;App\Model\InvoiceSubjectInterface&quot;</span><span class="nt">&gt;</span>App\Entity\Customer<span class="nt">&lt;/doctrine:resolve-target-entity&gt;</span>
+        <span class="nt">&lt;/doctrine:orm&gt;</span>
+    <span class="nt">&lt;/doctrine:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/doctrine.php</span>
+<span class="k">use</span> <span class="nx">App\Entity\Customer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\Model\InvoiceSubjectInterface</span><span class="p">;</span>
+
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;doctrine&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;orm&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="c1">// ...</span>
+        <span class="s1">&#39;resolve_target_entities&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="nx">InvoiceSubjectInterface</span><span class="o">::</span><span class="na">class</span> <span class="o">=&gt;</span> <span class="nx">Customer</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="final-thoughts">
+<h2>Final Thoughts</h2>
+<p>With the <code class="docutils literal notranslate"><span class="pre">ResolveTargetEntityListener</span></code>, you are able to decouple your
+bundles, keeping them usable by themselves, but still being able to
+define relationships between different objects. By using this method,
+your bundles will end up being easier to maintain independently.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

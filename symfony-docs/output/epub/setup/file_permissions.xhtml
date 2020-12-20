@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Setting up or Fixing File Permissions</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="setting-up-or-fixing-file-permissions">
+<h1>Setting up or Fixing File Permissions</h1>
+<p>Symfony generates certain files in the <code class="docutils literal notranslate"><span class="pre">var/</span></code> directory of your project when
+running the application. In the <code class="docutils literal notranslate"><span class="pre">dev</span></code> <a class="reference internal" href="../configuration.xhtml#configuration-environments"><span class="std std-ref">environment</span></a>,
+the <code class="docutils literal notranslate"><span class="pre">bin/console</span></code> and <code class="docutils literal notranslate"><span class="pre">public/index.php</span></code> files use <code class="docutils literal notranslate"><span class="pre">umask()</span></code> to make sure
+that the directory is writable. This means that you don’t need to configure
+permissions when developing the application in your local machine.</p>
+<p>However, using <code class="docutils literal notranslate"><span class="pre">umask()</span></code> is not considered safe in production. That’s why you
+often need to configure some permissions explicitly in your production servers
+as explained in this article.</p>
+<div class="section" id="permissions-required-by-symfony-applications">
+<h2>Permissions Required by Symfony Applications</h2>
+<p>These are the permissions required to run Symfony applications:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">var/log/</span></code> directory must exist and must be writable by both your
+web server user and the terminal user;</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">var/cache/</span></code> directory must be writable by the terminal user (the
+user running <code class="docutils literal notranslate"><span class="pre">cache:warmup</span></code> or <code class="docutils literal notranslate"><span class="pre">cache:clear</span></code> commands);</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">var/cache/</span></code> directory must be writable by the web server user if you use
+a <a class="reference internal" href="../components/cache/adapters/filesystem_adapter.xhtml"><span class="doc">filesystem-based cache</span></a>.</p></li>
+</ul>
+</div>
+<div class="section" id="configuring-permissions-for-symfony-applications">
+<span id="setup-file-permissions"></span><h2>Configuring Permissions for Symfony Applications</h2>
+<p>On Linux and macOS systems, if your web server user is different from your
+command line user, you need to configure permissions properly to avoid issues.
+There are several ways to achieve that:</p>
+<div class="section" id="using-acl-on-a-system-that-supports-setfacl-linux-bsd">
+<h3>1. Using ACL on a System that Supports <code class="docutils literal notranslate"><span class="pre">setfacl</span></code> (Linux/BSD)</h3>
+<p>Using Access Control Lists (ACL) permissions is the most safe and
+recommended method to make the <code class="docutils literal notranslate"><span class="pre">var/</span></code> directory writable. You may need to
+install <code class="docutils literal notranslate"><span class="pre">setfacl</span></code> and <a class="reference external" href="https://help.ubuntu.com/community/FilePermissionsACLs">enable ACL support</a><span class="link-target"> [https://help.ubuntu.com/community/FilePermissionsACLs]</span> on your disk partition before
+using this method. Then, use the following script to determine your web
+server user and grant the needed permissions:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nv">HTTPDUSER</span><span class="o">=</span><span class="k">$(</span>ps axo user,comm <span class="p">|</span> grep -E <span class="s1">&#39;[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx&#39;</span> <span class="p">|</span> grep -v root <span class="p">|</span> head -1 <span class="p">|</span> cut -d<span class="se">\ </span> -f1<span class="k">)</span>
+<span class="c1"># if this doesn&#39;t work, try adding `-n` option</span>
+
+<span class="c1"># set permissions for future files and folders</span>
+<span class="gp">$</span> sudo setfacl -dR -m u:<span class="s2">&quot;</span><span class="nv">$HTTPDUSER</span><span class="s2">&quot;</span>:rwX -m u:<span class="k">$(</span>whoami<span class="k">)</span>:rwX var
+<span class="c1"># set permissions on the existing files and folders</span>
+<span class="gp">$</span> sudo setfacl -R -m u:<span class="s2">&quot;</span><span class="nv">$HTTPDUSER</span><span class="s2">&quot;</span>:rwX -m u:<span class="k">$(</span>whoami<span class="k">)</span>:rwX var
+</pre></div>
+</td></tr></table></div>
+<p>Both of these commands assign permissions for the system user (the one
+running these commands) and the web server user.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">setfacl</span></code> isn’t available on NFS mount points. However, storing cache and
+logs over NFS is strongly discouraged for performance reasons.</p>
+</div>
+</div>
+<div class="section" id="use-the-same-user-for-the-cli-and-the-web-server">
+<h3>2. Use the same User for the CLI and the Web Server</h3>
+<p>Edit your web server configuration (commonly <code class="docutils literal notranslate"><span class="pre">httpd.conf</span></code> or <code class="docutils literal notranslate"><span class="pre">apache2.conf</span></code>
+for Apache) and set its user to be the same as your CLI user (e.g. for Apache,
+update the <code class="docutils literal notranslate"><span class="pre">User</span></code> and <code class="docutils literal notranslate"><span class="pre">Group</span></code> directives).</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>If this solution is used in a production server, be sure this user only has
+limited privileges (no access to private data or servers, execution of
+unsafe binaries, etc.) as a compromised server would give to the hacker
+those privileges.</p>
+</div>
+</div>
+<div class="section" id="without-using-acl">
+<h3>3. Without Using ACL</h3>
+<p>If none of the previous methods work for you, change the <code class="docutils literal notranslate"><span class="pre">umask</span></code> so that the
+cache and log directories are group-writable or world-writable (depending
+if the web server user and the command line user are in the same group or not).
+To achieve this, put the following line at the beginning of the <code class="docutils literal notranslate"><span class="pre">bin/console</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">public/index.php</span></code> files:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nb">umask</span><span class="p">(</span><span class="mo">0002</span><span class="p">);</span> <span class="c1">// This will let the permissions be 0775</span>
+
+<span class="c1">// or</span>
+
+<span class="nb">umask</span><span class="p">(</span><span class="mo">0000</span><span class="p">);</span> <span class="c1">// This will let the permissions be 0777</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Changing the <code class="docutils literal notranslate"><span class="pre">umask</span></code> is not thread-safe, so the ACL methods are recommended
+when they are available.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -292,44 +292,11 @@ To manage these situations, Symfony follows the `ICU MessageFormat`_ syntax by
 using PHP's :phpclass:`MessageFormatter` class. Read more about this in
 :doc:`/translation/message_format`.
 
-Translatable Objects
---------------------
+.. versionadded:: 4.2
 
-.. versionadded:: 5.2
-
-    Translatable objects were introduced in Symfony 5.2.
-
-Sometimes translating contents in templates is cumbersome because you need the
-original message, the translation parameters and the translation domain for
-each content. Making the translation in the controller or services simplifies
-your templates, but requires injecting the translator service in different
-parts of your application and mocking it in your tests.
-
-Instead of translating a string at the time of creation, you can use a
-"translatable object", which is an instance of the
-:class:`Symfony\\Component\\Translation\\TranslatableMessage` class. This object stores
-all the information needed to fully translate its contents when needed::
-
-    use Symfony\Component\Translation\TranslatableMessage;
-
-    // the first argument is required and it's the original message
-    $message = new TranslatableMessage('Symfony is great!');
-    // the optional second argument defines the translation parameters and
-    // the optional third argument is the translation domain
-    $status = new TranslatableMessage('order.status', ['%status%' => $order->getStatus()], 'store');
-
-Templates are now much simpler because you can pass translatable objects to the
-``trans`` filter:
-
-.. code-block:: html+twig
-
-    <h1>{{ message|trans }}</h1>
-    <p>{{ status|trans }}</p>
-
-.. tip::
-
-    There's also a :ref:`function called t() <reference-twig-function-t>`,
-    available both in Twig and PHP, as a shortcut to create translatable objects.
+   Support for ICU MessageFormat was introduced in Symfony 4.2. Prior to this,
+   pluralization was managed by the
+   :method:`Symfony\\Component\\Translation\\Translator::transChoice` method.
 
 .. _translation-in-templates:
 
@@ -387,6 +354,11 @@ The ``translation:update`` command looks for missing translations in:
 * Any PHP file/class that injects or :doc:`autowires </service_container/autowiring>`
   the ``translator`` service and makes calls to the ``trans()`` function.
 
+.. versionadded:: 4.3
+
+    The extraction of missing translation strings from PHP files was introduced
+    in Symfony 4.3.
+
 .. _translation-resource-locations:
 
 Translation Resource/File Names and Locations
@@ -394,11 +366,18 @@ Translation Resource/File Names and Locations
 
 Symfony looks for message files (i.e. translations) in the following default locations:
 
-* the ``translations/`` directory (at the root of the project);
-* the ``Resources/translations/`` directory inside of any bundle.
+#. the ``translations/`` directory (at the root of the project);
+#. the ``src/Resources/<bundle name>/translations/`` directory;
+#. the ``Resources/translations/`` directory inside of any bundle.
+
+.. deprecated:: 4.2
+
+    Using the ``src/Resources/<bundle name>/translations/`` directory to store
+    translations was deprecated in Symfony 4.2. Use instead the directory
+    defined in the ``default_path`` option (which is ``translations/`` by default).
 
 The locations are listed here with the highest priority first. That is, you can
-override the translation messages of a bundle in the first directory.
+override the translation messages of a bundle in any of the top two directories.
 
 The override mechanism works at a key level: only the overridden keys need
 to be listed in a higher priority message file. When a key is not found
@@ -498,6 +477,13 @@ if you're generating translations with specialized programs or teams.
     :class:`Symfony\\Component\\Translation\\Loader\\LoaderInterface` interface.
     See the :ref:`dic-tags-translation-loader` tag for more information.
 
+.. versionadded:: 4.3
+
+    Starting from Symfony 4.3, when you create a new translation file (or
+    install a bundle that includes translation files), you don't have to clear
+    the cache with the command ``php bin/console cache:clear`` as you had to do
+    in previous Symfony versions.
+
 Handling the User's Locale
 --------------------------
 
@@ -563,6 +549,12 @@ checks translation resources for several locales:
                'translator' => ['fallbacks' => ['en']],
                // ...
            ]);
+
+.. deprecated:: 4.4
+
+    In Symfony versions before 4.4, the ``fallbacks`` option was initialized to
+    ``en`` (English) when not configured explicitly. Starting from Symfony 4.4,
+    this option is initialized to the same value as the ``default_locale`` option.
 
 .. note::
 

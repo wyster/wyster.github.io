@@ -37,7 +37,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Rate Limiter" href="../rate_limiter.html" />
+    <link rel="next" title="Security" href="../security.html" />
     <link rel="prev" title="Profiler" href="../profiler.html" /> 
 </head>
 
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,7 +115,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../profiler.html">Profiler</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../profiler.html#installation">Installation</a></li>
@@ -126,15 +125,14 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../profiler.html#updating-the-web-debug-toolbar-after-ajax-requests">Updating the Web Debug Toolbar After AJAX Requests</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">How to Create a custom Data Collector</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#creating-a-custom-data-collector">Creating a custom Data Collector</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#adding-web-profiler-templates">Adding Web Profiler Templates</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enabling-custom-data-collectors">Enabling Custom Data Collectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adding-web-profiler-templates">Adding Web Profiler Templates</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -235,23 +233,19 @@ bundled with a few of them, but you can also create your own.</p>
 <p>A data collector is a PHP class that implements the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/DataCollector/DataCollectorInterface.php" title="Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface"><span class="pre">DataCollectorInterface</span></a></code>.
 For convenience, your data collectors can also extend from the
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/DataCollector/AbstractDataCollector.php" title="Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector"><span class="pre">AbstractDataCollector</span></a></code>
-class, which implements the interface and provides some utilities and the
-<code class="docutils literal notranslate"><span class="pre">$this-&gt;data</span></code> property to store the collected information.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">AbstractDataCollector</span></code> class was introduced in Symfony 5.2.</p>
-</div>
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/DataCollector/DataCollector.php" title="Symfony\Component\HttpKernel\DataCollector\DataCollector"><span class="pre">DataCollector</span></a></code> class, which
+implements the interface and provides some utilities and the <code class="docutils literal notranslate"><span class="pre">$this-&gt;data</span></code>
+property to store the collected information.</p>
 <p>The following example shows a custom collector that stores information about the
 request:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/DataCollector/RequestCollector.php</span>
 <span class="k">namespace</span> <span class="nx">App\DataCollector</span><span class="p">;</span>
 
-<span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Request</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpKernel\DataCollector\DataCollector</span><span class="p">;</span>
 
-<span class="k">class</span> <span class="nc">RequestCollector</span> <span class="k">extends</span> <span class="nx">AbstractDataCollector</span>
+<span class="k">class</span> <span class="nc">RequestCollector</span> <span class="k">extends</span> <span class="nx">DataCollector</span>
 <span class="p">{</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">collect</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">,</span> <span class="nx">Response</span> <span class="nv">$response</span><span class="p">,</span> <span class="nx">\Throwable</span> <span class="nv">$exception</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span>
     <span class="p">{</span>
@@ -260,15 +254,27 @@ request:</p>
             <span class="s1">&#39;acceptable_content_types&#39;</span> <span class="o">=&gt;</span> <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">getAcceptableContentTypes</span><span class="p">(),</span>
         <span class="p">];</span>
     <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">reset</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">data</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getName</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">&#39;app.request_collector&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>These are the method that you can define in the data collector class:</p>
 <dl class="docutils">
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/DataCollector/DataCollectorInterface.php" title="Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface::collect()"><span class="pre">collect()</span></a></code> method:</dt>
 <dd><p class="first">Stores the collected data in local properties (<code class="docutils literal notranslate"><span class="pre">$this-&gt;data</span></code> if you extend
-from <code class="docutils literal notranslate"><span class="pre">AbstractDataCollector</span></code>). If you need some services to collect the
-data, inject those services in the data collector constructor.</p>
+from <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/DataCollector/DataCollector.php" title="Symfony\Component\HttpKernel\DataCollector\DataCollector"><span class="pre">DataCollector</span></a></code>).
+If the data to collect cannot be obtained through the request or response,
+inject the needed services in the data collector.</p>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>
 <p class="last">The <code class="docutils literal notranslate"><span class="pre">collect()</span></code> method is only called once. It is not used to “gather”
@@ -283,49 +289,43 @@ to provide your own <code class="docutils literal notranslate"><span class="pre"
 </div>
 </dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/DataCollector/DataCollectorInterface.php" title="Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface::reset()"><span class="pre">reset()</span></a></code> method:</dt>
-<dd>It’s called between requests to reset the state of the profiler. By default
-it only empties the <code class="docutils literal notranslate"><span class="pre">$this-&gt;data</span></code> contents, but you can override this method
-to do additional cleaning.</dd>
+<dd>It’s called between requests to reset the state of the profiler. Use it to
+remove all the information collected with the <code class="docutils literal notranslate"><span class="pre">collect()</span></code> method.</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/DataCollector/DataCollectorInterface.php" title="Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface::getName()"><span class="pre">getName()</span></a></code> method:</dt>
 <dd>Returns the collector identifier, which must be unique in the application.
-By default it returns the FQCN of the data collector class, but you can
-override this method to return a custom name (e.g. <code class="docutils literal notranslate"><span class="pre">app.request_collector</span></code>).
 This value is used later to access the collector information (see
-<a class="reference internal" href="../testing/profiling.html"><span class="doc">How to Use the Profiler in a Functional Test</span></a>) so you may prefer using short strings instead of FQCN strings.</dd>
+<a class="reference internal" href="../testing/profiling.html"><span class="doc">How to Use the Profiler in a Functional Test</span></a>) so it’s recommended to return a string which is
+short, lowercase and without white spaces.</dd>
 </dl>
 <p>The <code class="docutils literal notranslate"><span class="pre">collect()</span></code> method is called during the <a class="reference internal" href="../components/http_kernel.html#component-http-kernel-kernel-response"><span class="std std-ref">kernel.response</span></a>
 event. If you need to collect data that is only available later, implement
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/DataCollector/LateDataCollectorInterface.php" title="Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface"><span class="pre">LateDataCollectorInterface</span></a></code>
 and define the <code class="docutils literal notranslate"><span class="pre">lateCollect()</span></code> method, which is invoked right before the profiler
 data serialization (during <a class="reference internal" href="../components/http_kernel.html#component-http-kernel-kernel-terminate"><span class="std std-ref">kernel.terminate</span></a> event).</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If you’re using the <a class="reference internal" href="../service_container.html#service-container-services-load-example"><span class="std std-ref">default services.yaml configuration</span></a>
-with <code class="docutils literal notranslate"><span class="pre">autoconfigure</span></code>, then Symfony will start using your data collector after the
-next page refresh. Otherwise, <a class="reference internal" href="#data-collector-tag"><span class="std std-ref">enable the data collector by hand</span></a>.</p>
 </div>
+<div class="section" id="enabling-custom-data-collectors">
+<span id="data-collector-tag"></span><h2>Enabling Custom Data Collectors<a class="headerlink" href="#enabling-custom-data-collectors" title="Permalink to this headline">¶</a></h2>
+<p>If you’re using the <a class="reference internal" href="../service_container.html#service-container-services-load-example"><span class="std std-ref">default services.yaml configuration</span></a>
+with <code class="docutils literal notranslate"><span class="pre">autoconfigure</span></code>, then Symfony will automatically see your new data collector!
+Your <code class="docutils literal notranslate"><span class="pre">collect()</span></code> method should be called next time your refresh.</p>
+<p>If you’re not using <code class="docutils literal notranslate"><span class="pre">autoconfigure</span></code>, you can also <a class="reference internal" href="../service_container.html#services-explicitly-configure-wire-services"><span class="std std-ref">manually wire your service</span></a>
+and <a class="reference internal" href="../service_container/tags.html"><span class="doc">tag</span></a> it with <code class="docutils literal notranslate"><span class="pre">data_collector</span></code>.</p>
 </div>
 <div class="section" id="adding-web-profiler-templates">
 <h2>Adding Web Profiler Templates<a class="headerlink" href="#adding-web-profiler-templates" title="Permalink to this headline">¶</a></h2>
 <p>The information collected by your data collector can be displayed both in the
 web debug toolbar and in the web profiler. To do so, you need to create a Twig
 template that includes some specific blocks.</p>
-<p>First, add the <code class="docutils literal notranslate"><span class="pre">getTemplate()</span></code> method in your data collector class to return
-the path of the Twig template to use. Then, add some <em>getters</em> to give the
-template access to the collected information:::</p>
+<p>However, first you must add some getters in the data collector class to give the
+template access to the collected information:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/DataCollector/RequestCollector.php</span>
 <span class="k">namespace</span> <span class="nx">App\DataCollector</span><span class="p">;</span>
 
-<span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpKernel\DataCollector\DataCollector</span><span class="p">;</span>
 
-<span class="k">class</span> <span class="nc">RequestCollector</span> <span class="k">extends</span> <span class="nx">AbstractDataCollector</span>
+<span class="k">class</span> <span class="nc">RequestCollector</span> <span class="k">extends</span> <span class="nx">DataCollector</span>
 <span class="p">{</span>
     <span class="c1">// ...</span>
-
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">getTemplate</span><span class="p">()</span><span class="o">:</span> <span class="o">?</span><span class="nx">string</span>
-    <span class="p">{</span>
-        <span class="k">return</span> <span class="s1">&#39;data_collector/template.html.twig&#39;</span><span class="p">;</span>
-    <span class="p">}</span>
 
     <span class="k">public</span> <span class="k">function</span> <span class="nf">getMethod</span><span class="p">()</span>
     <span class="p">{</span>
@@ -368,9 +368,7 @@ block and set the value of two variables called <code class="docutils literal no
 24
 25
 26
-27
-28</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">{# templates/data_collector/template.html.twig #}</span>
-<span class="cp">{%</span> <span class="k">extends</span> <span class="s1">&#39;@WebProfiler/Profiler/layout.html.twig&#39;</span> <span class="cp">%}</span>
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">extends</span> <span class="s1">&#39;@WebProfiler/Profiler/layout.html.twig&#39;</span> <span class="cp">%}</span>
 
 <span class="cp">{%</span> <span class="k">block</span> <span class="nv">toolbar</span> <span class="cp">%}</span>
     <span class="cp">{%</span> <span class="k">set</span> <span class="nv">icon</span> <span class="cp">%}</span>
@@ -458,9 +456,7 @@ must also define additional blocks:</p>
 41
 42
 43
-44
-45</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">{# templates/data_collector/template.html.twig #}</span>
-<span class="cp">{%</span> <span class="k">extends</span> <span class="s1">&#39;@WebProfiler/Profiler/layout.html.twig&#39;</span> <span class="cp">%}</span>
+44</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">extends</span> <span class="s1">&#39;@WebProfiler/Profiler/layout.html.twig&#39;</span> <span class="cp">%}</span>
 
 <span class="cp">{%</span> <span class="k">block</span> <span class="nv">toolbar</span> <span class="cp">%}</span>
     <span class="cp">{%</span> <span class="k">set</span> <span class="nv">icon</span> <span class="cp">%}</span>
@@ -509,23 +505,8 @@ must also define additional blocks:</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">menu</span></code> and <code class="docutils literal notranslate"><span class="pre">panel</span></code> blocks are the only required blocks to define the
 contents displayed in the web profiler panel associated with this data collector.
 All blocks have access to the <code class="docutils literal notranslate"><span class="pre">collector</span></code> object.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The position of each panel in the toolbar is determined by the collector
-priority, which can only be defined when <a class="reference internal" href="#data-collector-tag"><span class="std std-ref">configuring the data collector by hand</span></a>.</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If you’re using the <a class="reference internal" href="../service_container.html#service-container-services-load-example"><span class="std std-ref">default services.yaml configuration</span></a>
-with <code class="docutils literal notranslate"><span class="pre">autoconfigure</span></code>, then Symfony will start displaying your collector data
-in the toolbar after the next page refresh. Otherwise, <a class="reference internal" href="#data-collector-tag"><span class="std std-ref">enable the data collector by hand</span></a>.</p>
-</div>
-</div>
-<div class="section" id="enabling-custom-data-collectors">
-<span id="data-collector-tag"></span><h2>Enabling Custom Data Collectors<a class="headerlink" href="#enabling-custom-data-collectors" title="Permalink to this headline">¶</a></h2>
-<p>If you don’t use Symfony’s default configuration with
-<a class="reference internal" href="../service_container.html#service-container-services-load-example"><span class="std std-ref">autowire and autoconfigure</span></a>
-you’ll need to configure the data collector explicitly:</p>
+<p>Finally, to enable the data collector template, override your service configuration
+to specify a tag that contains the template:</p>
 <div class="configuration-block">
 <ul class="simple">
 <li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -538,18 +519,16 @@ you’ll need to configure the data collector explicitly:</p>
  8
  9
 10
-11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
 <span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">App\DataCollector\RequestCollector</span><span class="p p-Indicator">:</span>
         <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
             <span class="p p-Indicator">-</span>
-                <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">data_collector</span>
-                <span class="c1"># must match the value returned by the getName() method</span>
-                <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="s">&#39;App\DataCollector\RequestCollector&#39;</span>
-                <span class="c1"># optional template (it has more priority than the value returned by getTemplate())</span>
+                <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span>     <span class="l l-Scalar l-Scalar-Plain">data_collector</span>
                 <span class="l l-Scalar l-Scalar-Plain">template</span><span class="p p-Indicator">:</span> <span class="s">&#39;data_collector/template.html.twig&#39;</span>
-                <span class="c1"># optional priority (positive or negative integer; default = 0)</span>
+                <span class="c1"># must match the value returned by the getName() method</span>
+                <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span>       <span class="s">&#39;app.request_collector&#39;</span>
+                <span class="c1"># optional priority</span>
                 <span class="c1"># priority: 300</span>
 </pre></div>
 </td></tr></table></div>
@@ -570,9 +549,7 @@ you’ll need to configure the data collector explicitly:</p>
 14
 15
 16
-17
-18
-19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
@@ -581,13 +558,11 @@ you’ll need to configure the data collector explicitly:</p>
 
     <span class="nt">&lt;services&gt;</span>
         <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\DataCollector\RequestCollector&quot;</span><span class="nt">&gt;</span>
-            <span class="c">&lt;!-- the &#39;template&#39; attribute has more priority than the value returned by getTemplate() --&gt;</span>
-            <span class="nt">&lt;tag</span> <span class="na">name=</span><span class="s">&quot;data_collector&quot;</span>
-                <span class="na">id=</span><span class="s">&quot;App\DataCollector\RequestCollector&quot;</span>
-                <span class="na">template=</span><span class="s">&quot;data_collector/template.html.twig&quot;</span>
-            <span class="nt">/&gt;</span>
-            <span class="c">&lt;!-- optional &#39;priority&#39; attribute (positive or negative integer; default = 0) --&gt;</span>
             <span class="c">&lt;!-- priority=&quot;300&quot; --&gt;</span>
+            <span class="nt">&lt;tag</span> <span class="na">name=</span><span class="s">&quot;data_collector&quot;</span>
+                <span class="na">template=</span><span class="s">&quot;data_collector/template.html.twig&quot;</span>
+                <span class="na">id=</span><span class="s">&quot;app.request_collector&quot;</span>
+            <span class="nt">/&gt;</span>
         <span class="nt">&lt;/service&gt;</span>
     <span class="nt">&lt;/services&gt;</span>
 <span class="nt">&lt;/container&gt;</span>
@@ -609,8 +584,7 @@ you’ll need to configure the data collector explicitly:</p>
 13
 14
 15
-16
-17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
 <span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\DataCollector\RequestCollector</span><span class="p">;</span>
@@ -619,11 +593,10 @@ you’ll need to configure the data collector explicitly:</p>
     <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
 
     <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">RequestCollector</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">autowire</span><span class="p">()</span>
         <span class="o">-&gt;</span><span class="na">tag</span><span class="p">(</span><span class="s1">&#39;data_collector&#39;</span><span class="p">,</span> <span class="p">[</span>
-            <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="nx">RequestCollector</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
-            <span class="c1">// optional template (it has more priority than the value returned by getTemplate())</span>
             <span class="s1">&#39;template&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;data_collector/template.html.twig&#39;</span><span class="p">,</span>
-            <span class="c1">// optional priority (positive or negative integer; default = 0)</span>
+            <span class="s1">&#39;id&#39;</span>       <span class="o">=&gt;</span> <span class="s1">&#39;app.request_collector&#39;</span><span class="p">,</span>
             <span class="c1">// &#39;priority&#39; =&gt; 300,</span>
         <span class="p">]);</span>
 <span class="p">};</span>
@@ -632,6 +605,10 @@ you’ll need to configure the data collector explicitly:</p>
 </li>
 </ul>
 </div>
+<p>The position of each panel in the toolbar is determined by the collector priority.
+Priorities are defined as positive or negative integers and they default to <code class="docutils literal notranslate"><span class="pre">0</span></code>.
+Most built-in collectors use <code class="docutils literal notranslate"><span class="pre">255</span></code> as their priority. If you want your collector
+to be displayed before them, use a higher value (like 300).</p>
 </div>
 </div>
 

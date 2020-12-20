@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../session.html">Sessions</a></li>
@@ -180,10 +178,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../security.html">The Security Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../serializer.html">The Serializer Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../string.html">The String Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../var_exporter.html">The VarExporter Component</a></li>
@@ -331,6 +326,9 @@ helper method allows creating and configuring a <a class="reference external" hr
     <span class="s1">&#39;memcached:?host[localhost]&amp;host[localhost:12345]&amp;host[/some/memcached.sock:]=3&#39;</span>
 <span class="p">);</span>
 </pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2: </span>The option to define multiple servers in a single DSN was introduced in Symfony 4.2.</p>
 </div>
 <p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Data_source_name">Data Source Name (DSN)</a> for this adapter must use the following format:</p>
 <div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>memcached://[user:pass@][ip|host|socket[:port]][?weight=int]

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Install or Upgrade to the Latest, Unreleased Symfony Version</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-install-or-upgrade-to-the-latest-unreleased-symfony-version">
+<h1>How to Install or Upgrade to the Latest, Unreleased Symfony Version</h1>
+<p>In this article, you’ll learn how to install and use new Symfony versions before
+they are released as stable versions.</p>
+<div class="section" id="creating-a-new-project-based-on-an-unstable-symfony-version">
+<h2>Creating a New Project Based on an Unstable Symfony Version</h2>
+<p>Suppose that the Symfony 4.0 version hasn’t been released yet and you want to create
+a new project to test its features. First, <a class="reference external" href="https://getcomposer.org/download/">install the Composer package manager</a><span class="link-target"> [https://getcomposer.org/download/]</span>.
+Then, open a command console, enter your project’s directory and
+run the following command:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Download the absolute latest commit</span>
+<span class="gp">$</span> composer create-project symfony/skeleton my_project -s dev
+</pre></div>
+</td></tr></table></div>
+<p>Once the command finishes, you’ll have a new Symfony project created
+in the <code class="docutils literal notranslate"><span class="pre">my_project/</span></code> directory.</p>
+</div>
+<div class="section" id="upgrading-your-project-to-an-unstable-symfony-version">
+<h2>Upgrading your Project to an Unstable Symfony Version</h2>
+<p>Suppose again that Symfony 4.0 hasn’t been released yet and you want to upgrade
+an existing application to test that your project works with it.</p>
+<p>First, open the <code class="docutils literal notranslate"><span class="pre">composer.json</span></code> file located in the root directory of your
+project. Then, edit the value of all of the <code class="docutils literal notranslate"><span class="pre">symfony/*</span></code> libraries to the
+new version and change your <code class="docutils literal notranslate"><span class="pre">minimum-stability</span></code> to <code class="docutils literal notranslate"><span class="pre">beta</span></code>:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{
+    &quot;require&quot;: {
+<span class="gi">+         &quot;symfony/framework-bundle&quot;: &quot;^4.0&quot;,</span>
+<span class="gi">+         &quot;symfony/finder&quot;: &quot;^4.0&quot;,</span>
+        &quot;...&quot;: &quot;...&quot;
+    },
+<span class="gi">+     &quot;minimum-stability&quot;: &quot;beta&quot;</span>
+}
+</pre></div>
+</td></tr></table></div>
+<p>You can also use set <code class="docutils literal notranslate"><span class="pre">minimum-stability</span></code> to <code class="docutils literal notranslate"><span class="pre">dev</span></code>, or omit this line
+entirely, and opt into your stability on each package by using constraints
+like <code class="docutils literal notranslate"><span class="pre">4.0.*&#64;beta</span></code>.</p>
+<p>Finally, from a terminal, update your project’s dependencies:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer update
+</pre></div>
+</td></tr></table></div>
+<p>After upgrading the Symfony version, read the <a class="reference internal" href="upgrade_major.xhtml#upgrade-major-symfony-deprecations"><span class="std std-ref">Symfony Upgrading Guide</span></a>
+to learn how you should proceed to update your application’s code in case the new
+Symfony version has deprecated some of its features.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you use Git to manage the project’s code, it’s a good practice to create
+a new branch to test the new Symfony version. This solution avoids introducing
+any issue in your application and allows you to test the new version with
+total confidence:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> projects/my_project/
+<span class="gp">$</span> git checkout -b testing_new_symfony
+<span class="c1"># ... update composer.json configuration</span>
+<span class="gp">$</span> composer update symfony/symfony
+
+<span class="c1"># ... after testing the new Symfony version</span>
+<span class="gp">$</span> git checkout master
+<span class="gp">$</span> git branch -D testing_new_symfony
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

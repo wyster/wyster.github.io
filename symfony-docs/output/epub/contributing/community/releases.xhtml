@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Release Process</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-release-process">
+<h1>The Release Process</h1>
+<p>This document explains the process followed by the Symfony project to develop,
+release and maintain its different versions.</p>
+<p>Symfony releases follow the <a class="reference external" href="https://semver.org/">semantic versioning</a><span class="link-target"> [https://semver.org/]</span> strategy and they are
+published through a <em>time-based model</em>:</p>
+<ul class="simple">
+<li><p>A new <strong>Symfony patch version</strong> (e.g. 4.4.12, 5.1.9) comes out roughly every
+month. It only contains bug fixes, so you can safely upgrade your applications;</p></li>
+<li><p>A new <strong>Symfony minor version</strong> (e.g. 4.4, 5.0, 5.1) comes out every <em>six months</em>:
+one in <em>May</em> and one in <em>November</em>. It contains bug fixes and new features, but
+it doesn’t include any breaking change, so you can safely upgrade your applications;</p></li>
+<li><p>A new <strong>Symfony major version</strong> (e.g. 4.0, 5.0) comes out every <em>two years</em>.
+It can contain breaking changes, so you may need to do some changes in your
+applications before upgrading.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><a class="reference external" href="https://symfony.com/account/notifications">Subscribe to Symfony Roadmap notifications</a><span class="link-target"> [https://symfony.com/account/notifications]</span> to receive an email when a new
+Symfony version is published or when a Symfony version reaches its end of life.</p>
+</div>
+<div class="section" id="development">
+<span id="contributing-release-development"></span><h2>Development</h2>
+<p>The full development period for any major or minor version lasts six months and
+is divided into two phases:</p>
+<ul class="simple">
+<li><p><strong>Development</strong>: <em>Four months</em> to add new features and to enhance existing
+ones;</p></li>
+<li><p><strong>Stabilization</strong>: <em>Two months</em> to fix bugs, prepare the release, and wait
+for the whole Symfony ecosystem (third-party libraries, bundles, and
+projects using Symfony) to catch up.</p></li>
+</ul>
+<p>During the development phase, any new feature can be reverted if it won’t be
+finished in time or if it won’t be stable enough to be included in the current
+final release.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Check out the <a class="reference external" href="https://symfony.com/releases">Symfony Roadmap</a><span class="link-target"> [https://symfony.com/releases]</span> to learn more about any specific version.</p>
+</div>
+</div>
+<div class="section" id="maintenance">
+<span id="releases-lts"></span><span id="symfony-versions"></span><span id="contributing-release-maintenance"></span><h2>Maintenance</h2>
+<p>Starting from the Symfony 3.x branch, the number of minor versions is limited to
+five per branch (X.0, X.1, X.2, X.3 and X.4). The last minor version of a branch
+(e.g. 4.4, 5.4) is considered a <strong>long-term support version</strong> and the other
+ones are considered <strong>standard versions</strong>:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 28%" />
+<col style="width: 42%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Version Type</p></th>
+<th class="head"><p>Bugs are fixed for…</p></th>
+<th class="head"><p>Security issues are fixed for…</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Standard</p></td>
+<td><p>8 months</p></td>
+<td><p>8 months</p></td>
+</tr>
+<tr class="row-odd"><td><p>Long-Term Support (LTS)</p></td>
+<td><p>3 years</p></td>
+<td><p>4 years</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After the active maintenance of a Symfony version has ended, you can get
+<a class="reference external" href="https://sensiolabs.com/">professional Symfony support</a><span class="link-target"> [https://sensiolabs.com/]</span> from SensioLabs, the company which sponsors
+the Symfony project.</p>
+</div>
+</div>
+<div class="section" id="backward-compatibility">
+<span id="deprecations"></span><h2>Backward Compatibility</h2>
+<p>Our <a class="reference internal" href="../code/bc.xhtml"><span class="doc">Backward Compatibility Promise</span></a> is very
+strict and allows developers to upgrade with confidence from one minor version
+of Symfony to the next one.</p>
+<p>When a feature implementation cannot be replaced with a better one without
+breaking backward compatibility, Symfony deprecates the old implementation and
+adds a new preferred one along side. Read the
+<a class="reference internal" href="../code/conventions.xhtml#contributing-code-conventions-deprecations"><span class="std std-ref">conventions</span></a> document to
+learn more about how deprecations are handled in Symfony.</p>
+<p id="major-version-development">This deprecation policy also requires a custom development process for major
+versions (5.0, 6.0, etc.) In those cases, Symfony develops at the same time
+two versions: the new major one (e.g. 5.0) and the latest version of the
+previous branch (e.g. 4.4).</p>
+<p>Both versions have the same new features, but they differ in the deprecated
+features. The oldest version (4.4 in this example) contains all the deprecated
+features whereas the new version (5.0 in this example) removes all of them.</p>
+<p>This allows you to upgrade your projects to the latest minor version (e.g. 4.4),
+see all the deprecation messages and fix them. Once you have fixed all those
+deprecations, you can upgrade to the new major version (e.g. 5.0) without
+effort, because it contains the same features (the only difference are the
+deprecated features, which your project no longer uses).</p>
+</div>
+<div class="section" id="rationale">
+<h2>Rationale</h2>
+<p>This release process was adopted to give more <em>predictability</em> and
+<em>transparency</em>. It was discussed based on the following goals:</p>
+<ul class="simple">
+<li><p>Shorten the release cycle (allow developers to benefit from the new
+features faster);</p></li>
+<li><p>Give more visibility to the developers using the framework and Open-Source
+projects using Symfony;</p></li>
+<li><p>Improve the experience of Symfony core contributors: everyone knows when a
+feature might be available in Symfony;</p></li>
+<li><p>Coordinate the Symfony timeline with popular PHP projects that work well
+with Symfony and with projects using Symfony;</p></li>
+<li><p>Give time to the Symfony ecosystem to catch up with the new versions
+(bundle authors, documentation writers, translators, …);</p></li>
+<li><p>Give companies a strict and predictable timeline they can rely on to plan
+their own projects development.</p></li>
+</ul>
+<p>The six month period was chosen as two releases fit in a year. It also allows
+for plenty of time to work on new features and it allows for non-ready
+features to be postponed to the next version without having to wait too long
+for the next cycle.</p>
+<p>The dual maintenance mode was adopted to make every Symfony user happy. Fast
+movers, who want to work with the latest and the greatest, use the standard
+version: a new version is published every six months, and there is a two months
+period to upgrade. Companies wanting more stability use the LTS versions: a new
+version is published every two years and there is a year to upgrade.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

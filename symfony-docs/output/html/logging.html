@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -139,10 +139,8 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -748,6 +746,10 @@ option of your handler to <code class="docutils literal notranslate"><span class
 any service whose class implements <code class="docutils literal notranslate"><span class="pre">Psr\Log\LoggerAwareInterface</span></code> will
 receive a call to its method <code class="docutils literal notranslate"><span class="pre">setLogger()</span></code> with the default logger service
 passed as a service.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2: </span>The automatic call to <code class="docutils literal notranslate"><span class="pre">setLogger()</span></code> when implementing <code class="docutils literal notranslate"><span class="pre">LoggerAwareInterface</span></code>
+was introduced in Symfony 4.2.</p>
+</div>
 <p>If you want to use in your own services a pre-configured logger which uses a
 specific channel (<code class="docutils literal notranslate"><span class="pre">app</span></code> by default), you can either <a class="reference internal" href="logging/channels_handlers.html#monolog-autowire-channels"><span class="std std-ref">autowire monolog channels</span></a>
 or use the <code class="docutils literal notranslate"><span class="pre">monolog.logger</span></code> tag  with the <code class="docutils literal notranslate"><span class="pre">channel</span></code> property as explained in the

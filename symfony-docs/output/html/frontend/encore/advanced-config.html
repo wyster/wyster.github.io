@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -155,10 +155,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -365,8 +363,8 @@ state of the current configuration to build a new one:</p>
 <span class="nx">Encore</span>
     <span class="p">.</span><span class="nx">setOutputPath</span><span class="p">(</span><span class="s1">&#39;public/build/first_build/&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">setPublicPath</span><span class="p">(</span><span class="s1">&#39;/build/first_build&#39;</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">addEntry</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/app.js&#39;</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">addStyleEntry</span><span class="p">(</span><span class="s1">&#39;global&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/styles/global.scss&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">addEntry</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/js/app.js&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">addStyleEntry</span><span class="p">(</span><span class="s1">&#39;global&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/css/global.scss&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">enableSassLoader</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">autoProvidejQuery</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">enableSourceMaps</span><span class="p">(</span><span class="o">!</span><span class="nx">Encore</span><span class="p">.</span><span class="nx">isProduction</span><span class="p">())</span>
@@ -385,8 +383,8 @@ state of the current configuration to build a new one:</p>
 <span class="nx">Encore</span>
     <span class="p">.</span><span class="nx">setOutputPath</span><span class="p">(</span><span class="s1">&#39;public/build/second_build/&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">setPublicPath</span><span class="p">(</span><span class="s1">&#39;/build/second_build&#39;</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">addEntry</span><span class="p">(</span><span class="s1">&#39;mobile&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/mobile.js&#39;</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">addStyleEntry</span><span class="p">(</span><span class="s1">&#39;mobile&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/styles/mobile.less&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">addEntry</span><span class="p">(</span><span class="s1">&#39;mobile&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/js/mobile.js&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">addStyleEntry</span><span class="p">(</span><span class="s1">&#39;mobile&#39;</span><span class="p">,</span> <span class="s1">&#39;./assets/css/mobile.less&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">enableLessLoader</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">enableSourceMaps</span><span class="p">(</span><span class="o">!</span><span class="nx">Encore</span><span class="p">.</span><span class="nx">isProduction</span><span class="p">())</span>
 <span class="p">;</span>

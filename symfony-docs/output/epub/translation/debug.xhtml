@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Find Missing or Unused Translation Messages</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-find-missing-or-unused-translation-messages">
+<span id="index-0"></span><h1>How to Find Missing or Unused Translation Messages</h1>
+<p>When maintaining an application or bundle, you may add or remove translation
+messages and forget to update the message catalogs. The <code class="docutils literal notranslate"><span class="pre">debug:translation</span></code>
+command helps you to find these missing or unused translation messages templates:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">{# messages can be found when using the trans filter and tag #}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">trans</span> <span class="cp">%}</span><span class="x">Symfony is great</span><span class="cp">{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
+
+<span class="cp">{{</span> <span class="s1">&#39;Symfony is great&#39;</span><span class="o">|</span><span class="nf">trans</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>The extractors can’t find messages translated outside templates, like form
+labels or controllers. Dynamic translations using variables or expressions
+in templates are not detected either:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">{# this translation uses a Twig variable, so it won&#39;t be detected #}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">set</span> <span class="nv">message</span> <span class="o">=</span> <span class="s1">&#39;Symfony is great&#39;</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Suppose your application’s default_locale is <code class="docutils literal notranslate"><span class="pre">fr</span></code> and you have configured
+<code class="docutils literal notranslate"><span class="pre">en</span></code> as the fallback locale (see <a class="reference internal" href="../translation.xhtml#translation-configuration"><span class="std std-ref">Configuration</span></a> and
+<a class="reference internal" href="../translation.xhtml#translation-fallback"><span class="std std-ref">Fallback Translation Locales</span></a> for how to configure these). And suppose
+you’ve already setup some translations for the <code class="docutils literal notranslate"><span class="pre">fr</span></code> locale:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- translations/messages.fr.xlf --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="nt">&lt;xliff</span> <span class="na">version=</span><span class="s">&quot;1.2&quot;</span> <span class="na">xmlns=</span><span class="s">&quot;urn:oasis:names:tc:xliff:document:1.2&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;file</span> <span class="na">source-language=</span><span class="s">&quot;en&quot;</span> <span class="na">datatype=</span><span class="s">&quot;plaintext&quot;</span> <span class="na">original=</span><span class="s">&quot;file.ext&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;body&gt;</span>
+            <span class="nt">&lt;trans-unit</span> <span class="na">id=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;source&gt;</span>Symfony is great<span class="nt">&lt;/source&gt;</span>
+                <span class="nt">&lt;target&gt;</span>J&#39;aime Symfony<span class="nt">&lt;/target&gt;</span>
+            <span class="nt">&lt;/trans-unit&gt;</span>
+        <span class="nt">&lt;/body&gt;</span>
+    <span class="nt">&lt;/file&gt;</span>
+<span class="nt">&lt;/xliff&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># translations/messages.fr.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">Symfony is great</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">J&#39;aime Symfony</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// translations/messages.fr.php</span>
+<span class="k">return</span> <span class="p">[</span>
+    <span class="s1">&#39;Symfony is great&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;J\&#39;aime Symfony&#39;</span><span class="p">,</span>
+<span class="p">];</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>and for the <code class="docutils literal notranslate"><span class="pre">en</span></code> locale:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- translations/messages.en.xlf --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="nt">&lt;xliff</span> <span class="na">version=</span><span class="s">&quot;1.2&quot;</span> <span class="na">xmlns=</span><span class="s">&quot;urn:oasis:names:tc:xliff:document:1.2&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;file</span> <span class="na">source-language=</span><span class="s">&quot;en&quot;</span> <span class="na">datatype=</span><span class="s">&quot;plaintext&quot;</span> <span class="na">original=</span><span class="s">&quot;file.ext&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;body&gt;</span>
+            <span class="nt">&lt;trans-unit</span> <span class="na">id=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;source&gt;</span>Symfony is great<span class="nt">&lt;/source&gt;</span>
+                <span class="nt">&lt;target&gt;</span>Symfony is great<span class="nt">&lt;/target&gt;</span>
+            <span class="nt">&lt;/trans-unit&gt;</span>
+        <span class="nt">&lt;/body&gt;</span>
+    <span class="nt">&lt;/file&gt;</span>
+<span class="nt">&lt;/xliff&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># translations/messages.en.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">Symfony is great</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Symfony is great</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// translations/messages.en.php</span>
+<span class="k">return</span> <span class="p">[</span>
+    <span class="s1">&#39;Symfony is great&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Symfony is great&#39;</span><span class="p">,</span>
+<span class="p">];</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>To inspect all messages in the <code class="docutils literal notranslate"><span class="pre">fr</span></code> locale for the application, run:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:translation fr
+
+<span class="go">---------  ------------------  ----------------------  -------------------------------</span>
+<span class="go"> State      Id                  Message Preview (fr)    Fallback Message Preview (en)</span>
+<span class="go">---------  ------------------  ----------------------  -------------------------------</span>
+<span class="go"> unused     Symfony is great    J&#39;aime Symfony          Symfony is great</span>
+<span class="go">---------  ------------------  ----------------------  -------------------------------</span>
+</pre></div>
+</td></tr></table></div>
+<p>It shows you a table with the result when translating the message in the <code class="docutils literal notranslate"><span class="pre">fr</span></code>
+locale and the result when the fallback locale <code class="docutils literal notranslate"><span class="pre">en</span></code> would be used. On top
+of that, it will also show you when the translation is the same as the fallback
+translation (this could indicate that the message was not correctly translated).
+Furthermore, it indicates that the message <code class="docutils literal notranslate"><span class="pre">Symfony</span> <span class="pre">is</span> <span class="pre">great</span></code> is unused
+because it is translated, but you haven’t used it anywhere yet.</p>
+<p>Now, if you translate the message in one of your templates, you will get this
+output:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:translation fr
+
+<span class="go">---------  ------------------  ----------------------  -------------------------------</span>
+<span class="go"> State      Id                  Message Preview (fr)    Fallback Message Preview (en)</span>
+<span class="go">---------  ------------------  ----------------------  -------------------------------</span>
+<span class="go">            Symfony is great    J&#39;aime Symfony          Symfony is great</span>
+<span class="go">---------  ------------------  ----------------------  -------------------------------</span>
+</pre></div>
+</td></tr></table></div>
+<p>The state is empty which means the message is translated in the <code class="docutils literal notranslate"><span class="pre">fr</span></code> locale
+and used in one or more templates.</p>
+<p>If you delete the message <code class="docutils literal notranslate"><span class="pre">Symfony</span> <span class="pre">is</span> <span class="pre">great</span></code> from your translation file
+for the <code class="docutils literal notranslate"><span class="pre">fr</span></code> locale and run the command, you will get:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:translation fr
+
+<span class="go">---------  ------------------  ----------------------  -------------------------------</span>
+<span class="go"> State      Id                  Message Preview (fr)    Fallback Message Preview (en)</span>
+<span class="go">---------  ------------------  ----------------------  -------------------------------</span>
+<span class="go"> missing    Symfony is great    Symfony is great        Symfony is great</span>
+<span class="go">---------  ------------------  ----------------------  -------------------------------</span>
+</pre></div>
+</td></tr></table></div>
+<p>The state indicates the message is missing because it is not translated in
+the <code class="docutils literal notranslate"><span class="pre">fr</span></code> locale but it is still used in the template. Moreover, the message
+in the <code class="docutils literal notranslate"><span class="pre">fr</span></code> locale equals to the message in the <code class="docutils literal notranslate"><span class="pre">en</span></code> locale. This is a
+special case because the untranslated message id equals its translation in
+the <code class="docutils literal notranslate"><span class="pre">en</span></code> locale.</p>
+<p>If you copy the content of the translation file in the <code class="docutils literal notranslate"><span class="pre">en</span></code> locale to the
+translation file in the <code class="docutils literal notranslate"><span class="pre">fr</span></code> locale and run the command, you will get:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:translation fr
+
+<span class="go">----------  ------------------  ----------------------  -------------------------------</span>
+<span class="go"> State       Id                  Message Preview (fr)    Fallback Message Preview (en)</span>
+<span class="go">----------  ------------------  ----------------------  -------------------------------</span>
+<span class="go"> fallback    Symfony is great    Symfony is great        Symfony is great</span>
+<span class="go">----------  ------------------  ----------------------  -------------------------------</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can see that the translations of the message are identical in the <code class="docutils literal notranslate"><span class="pre">fr</span></code>
+and <code class="docutils literal notranslate"><span class="pre">en</span></code> locales which means this message was probably copied from English
+to French and maybe you forgot to translate it.</p>
+<p>By default, all domains are inspected, but it is possible to specify a single
+domain:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:translation en --domain<span class="o">=</span>messages
+</pre></div>
+</td></tr></table></div>
+<p>When the application has a lot of messages, it is useful to display only the
+unused or only the missing messages, by using the <code class="docutils literal notranslate"><span class="pre">--only-unused</span></code> or
+<code class="docutils literal notranslate"><span class="pre">--only-missing</span></code> options:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:translation en --only-unused
+<span class="gp">$</span> php bin/console debug:translation en --only-missing
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -187,10 +185,7 @@
 <li class="toctree-l2"><a class="reference internal" href="property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="security.html">The Security Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="serializer.html">The Serializer Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="string.html">The String Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_exporter.html">The VarExporter Component</a></li>
@@ -336,8 +331,8 @@ that system:</p>
 <span class="sd">     */</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">handle</span><span class="p">(</span>
         <span class="nx">Request</span> <span class="nv">$request</span><span class="p">,</span>
-        <span class="nx">int</span> <span class="nv">$type</span> <span class="o">=</span> <span class="nx">self</span><span class="o">::</span><span class="na">MASTER_REQUEST</span><span class="p">,</span>
-        <span class="nx">bool</span> <span class="nv">$catch</span> <span class="o">=</span> <span class="k">true</span>
+        <span class="nv">$type</span> <span class="o">=</span> <span class="nx">self</span><span class="o">::</span><span class="na">MASTER_REQUEST</span><span class="p">,</span>
+        <span class="nv">$catch</span> <span class="o">=</span> <span class="k">true</span>
     <span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
@@ -725,10 +720,20 @@ object, which you can use to access the original exception via the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ExceptionEvent.php" title="Symfony\Component\HttpKernel\Event\ExceptionEvent::getThrowable()"><span class="pre">getThrowable()</span></a></code>
 method. A typical listener on this event will check for a certain type of
 exception and create an appropriate error <code class="docutils literal notranslate"><span class="pre">Response</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ExceptionEvent.php" title="Symfony\Component\HttpKernel\Event\ExceptionEvent::getThrowable()"><span class="pre">getThrowable()</span></a></code> and
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ExceptionEvent.php" title="Symfony\Component\HttpKernel\Event\ExceptionEvent::setThrowable()"><span class="pre">setThrowable()</span></a></code> methods
+were introduced in Symfony 4.4.</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.4: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ExceptionEvent.php" title="Symfony\Component\HttpKernel\Event\ExceptionEvent::getException()"><span class="pre">getException()</span></a></code> and
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ExceptionEvent.php" title="Symfony\Component\HttpKernel\Event\ExceptionEvent::setException()"><span class="pre">setException()</span></a></code> methods
+are deprecated since Symfony 4.4.</p>
+</div>
 <p>For example, to generate a 404 page, you might throw a special type of exception
 and then add a listener on this event that looks for this exception and
 creates and returns a 404 <code class="docutils literal notranslate"><span class="pre">Response</span></code>. In fact, the HttpKernel component
-comes with an <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/EventListener/ErrorListener.php" title="Symfony\Component\HttpKernel\EventListener\ErrorListener"><span class="pre">ErrorListener</span></a></code>,
+comes with an <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/EventListener/ExceptionListener.php" title="Symfony\Component\HttpKernel\EventListener\ExceptionListener"><span class="pre">ExceptionListener</span></a></code>,
 which if you choose to use, will do this and more by default (see the sidebar
 below for more details).</p>
 <div class="admonition note">
@@ -740,9 +745,9 @@ is stopped. This means listeners with lower priority won’t be executed.</p>
 <p class="first sidebar-title"><code class="docutils literal notranslate"><span class="pre">kernel.exception</span></code> in the Symfony Framework</p>
 <p>There are two main listeners to <code class="docutils literal notranslate"><span class="pre">kernel.exception</span></code> when using the
 Symfony Framework.</p>
-<p><strong>ErrorListener in the HttpKernel Component</strong></p>
+<p><strong>ExceptionListener in the HttpKernel Component</strong></p>
 <p>The first comes core to the HttpKernel component
-and is called <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/EventListener/ErrorListener.php" title="Symfony\Component\HttpKernel\EventListener\ErrorListener"><span class="pre">ErrorListener</span></a></code>.
+and is called <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/EventListener/ExceptionListener.php" title="Symfony\Component\HttpKernel\EventListener\ExceptionListener"><span class="pre">ExceptionListener</span></a></code>.
 The listener has several goals:</p>
 <ol class="arabic simple">
 <li>The thrown exception is converted into a
@@ -832,6 +837,19 @@ each event has their own event object:</p>
 </tr>
 </tbody>
 </table>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.3: </span>Since Symfony 4.3, most of the event classes were renamed.
+The following old classes were deprecated:</p>
+<ul class="simple">
+<li><cite>GetResponseEvent</cite> renamed to <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/RequestEvent.php" title="Symfony\Component\HttpKernel\Event\RequestEvent"><span class="pre">RequestEvent</span></a></code></li>
+<li><cite>FilterControllerEvent</cite> renamed to <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ControllerEvent.php" title="Symfony\Component\HttpKernel\Event\ControllerEvent"><span class="pre">ControllerEvent</span></a></code></li>
+<li><cite>FilterControllerArgumentsEvent</cite> renamed to <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ControllerArgumentsEvent.php" title="Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent"><span class="pre">ControllerArgumentsEvent</span></a></code></li>
+<li><cite>GetResponseForControllerResultEvent</cite> renamed to <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ViewEvent.php" title="Symfony\Component\HttpKernel\Event\ViewEvent"><span class="pre">ViewEvent</span></a></code></li>
+<li><cite>FilterResponseEvent</cite> renamed to <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ResponseEvent.php" title="Symfony\Component\HttpKernel\Event\ResponseEvent"><span class="pre">ResponseEvent</span></a></code></li>
+<li><cite>PostResponseEvent</cite> renamed to <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/TerminateEvent.php" title="Symfony\Component\HttpKernel\Event\TerminateEvent"><span class="pre">TerminateEvent</span></a></code></li>
+<li><cite>GetResponseForExceptionEvent</cite> renamed to <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ExceptionEvent.php" title="Symfony\Component\HttpKernel\Event\ExceptionEvent"><span class="pre">ExceptionEvent</span></a></code></li>
+</ul>
+</div>
 </div>
 <div class="section" id="a-full-working-example">
 <span id="http-kernel-working-example"></span><h2>A full Working Example<a class="headerlink" href="#a-full-working-example" title="Permalink to this headline">¶</a></h2>

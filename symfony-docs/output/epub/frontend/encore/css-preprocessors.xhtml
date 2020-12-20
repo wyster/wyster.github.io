@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>CSS Preprocessors: Sass, LESS, Stylus, etc.</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="css-preprocessors-sass-less-stylus-etc">
+<h1>CSS Preprocessors: Sass, LESS, Stylus, etc.</h1>
+<p>To use the Sass, LESS or Stylus pre-processors, enable the one you want in <code class="docutils literal notranslate"><span class="pre">webpack.config.js</span></code>:</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// webpack.config.js</span>
+<span class="c1">// ...</span>
+
+<span class="nx">Encore</span>
+    <span class="c1">// ...</span>
+
+    <span class="c1">// enable just the one you want</span>
+
+    <span class="c1">// processes files ending in .scss or .sass</span>
+    <span class="p">.</span><span class="nx">enableSassLoader</span><span class="p">()</span>
+
+    <span class="c1">// processes files ending in .less</span>
+    <span class="p">.</span><span class="nx">enableLessLoader</span><span class="p">()</span>
+
+    <span class="c1">// processes files ending in .styl</span>
+    <span class="p">.</span><span class="nx">enableStylusLoader</span><span class="p">()</span>
+<span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Then restart Encore. When you do, it will give you a command you can run to
+install any missing dependencies. After running that command and restarting
+Encore, you’re done!</p>
+<p>You can also pass configuration options to each of the loaders. See the
+<a class="reference external" href="https://github.com/symfony/webpack-encore/blob/master/index.js">Encore’s index.js file</a><span class="link-target"> [https://github.com/symfony/webpack-encore/blob/master/index.js]</span> for detailed documentation.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

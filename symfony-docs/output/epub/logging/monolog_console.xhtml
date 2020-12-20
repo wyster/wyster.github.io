@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Configure Monolog to Display Console Messages</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-configure-monolog-to-display-console-messages">
+<span id="index-0"></span><h1>How to Configure Monolog to Display Console Messages</h1>
+<p>It is possible to use the console to print messages for certain
+<a class="reference internal" href="../console/verbosity.xhtml"><span class="doc">verbosity levels</span></a> using the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Output/OutputInterface.php" title="Symfony\Component\Console\Output\OutputInterface"><span class="pre">OutputInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Output/OutputInterface.php]</span></span></code> instance that
+is passed when a command is run.</p>
+<p>When a lot of logging has to happen, it’s cumbersome to print information
+depending on the verbosity settings (<code class="docutils literal notranslate"><span class="pre">-v</span></code>, <code class="docutils literal notranslate"><span class="pre">-vv</span></code>, <code class="docutils literal notranslate"><span class="pre">-vvv</span></code>) because the
+calls need to be wrapped in conditions. For example:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
+
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$output</span><span class="o">-&gt;</span><span class="na">isDebug</span><span class="p">())</span> <span class="p">{</span>
+        <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;Some info&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$output</span><span class="o">-&gt;</span><span class="na">isVerbose</span><span class="p">())</span> <span class="p">{</span>
+        <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;Some more info&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Instead of using these semantic methods to test for each of the verbosity
+levels, the <a class="reference external" href="https://github.com/symfony/monolog-bridge">MonologBridge</a><span class="link-target"> [https://github.com/symfony/monolog-bridge]</span> provides a
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Handler/ConsoleHandler.php" title="Symfony\Bridge\Monolog\Handler\ConsoleHandler"><span class="pre">ConsoleHandler</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Handler/ConsoleHandler.php]</span></span></code> that listens to
+console events and writes log messages to the console output depending on
+the current log level and the console verbosity.</p>
+<p>The example above could then be rewritten as:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Command/YourCommand.php</span>
+<span class="k">namespace</span> <span class="nx">App\Command</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Psr\Log\LoggerInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Command\Command</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
+<span class="c1">// ...</span>
+
+<span class="k">class</span> <span class="nc">YourCommand</span> <span class="k">extends</span> <span class="nx">Command</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$logger</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">LoggerInterface</span> <span class="nv">$logger</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span> <span class="o">=</span> <span class="nv">$logger</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">debug</span><span class="p">(</span><span class="s1">&#39;Some info&#39;</span><span class="p">);</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">notice</span><span class="p">(</span><span class="s1">&#39;Some more info&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Depending on the verbosity level that the command is run in and the user’s
+configuration (see below), these messages may or may not be displayed to
+the console. If they are displayed, they are timestamped and colored appropriately.
+Additionally, error logs are written to the error output (<code class="docutils literal notranslate"><span class="pre">php://stderr</span></code>).
+There is no need to conditionally handle the verbosity settings anymore.</p>
+<p>The Monolog console handler is enabled by default:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/dev/monolog.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">monolog</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">handlers</span><span class="p p-Indicator">:</span>
+        <span class="c1"># ...</span>
+        <span class="l l-Scalar l-Scalar-Plain">console</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span>   <span class="l l-Scalar l-Scalar-Plain">console</span>
+            <span class="l l-Scalar l-Scalar-Plain">process_psr_3_messages</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+            <span class="l l-Scalar l-Scalar-Plain">channels</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;!event&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;!doctrine&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;!console&#39;</span><span class="p p-Indicator">]</span>
+
+            <span class="c1"># optionally configure the mapping between verbosity levels and log levels</span>
+            <span class="c1"># verbosity_levels:</span>
+            <span class="c1">#     VERBOSITY_NORMAL: NOTICE</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/dev/monolog.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:monolog=</span><span class="s">&quot;http://symfony.com/schema/dic/monolog&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;monolog:config&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+
+        <span class="nt">&lt;monolog:handler</span> <span class="na">name=</span><span class="s">&quot;console&quot;</span> <span class="na">type=</span><span class="s">&quot;console&quot;</span> <span class="na">process-psr-3-messages=</span><span class="s">&quot;false&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;monolog:channels&gt;</span>
+                <span class="nt">&lt;monolog:channel&gt;</span>!event<span class="nt">&lt;/monolog:channel&gt;</span>
+                <span class="nt">&lt;monolog:channel&gt;</span>!doctrine<span class="nt">&lt;/monolog:channel&gt;</span>
+                <span class="nt">&lt;monolog:channel&gt;</span>!console<span class="nt">&lt;/monolog:channel&gt;</span>
+            <span class="nt">&lt;/monolog:channels&gt;</span>
+        <span class="nt">&lt;/monolog:handler&gt;</span>
+    <span class="nt">&lt;/monolog:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/dev/monolog.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;monolog&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;handlers&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;console&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+           <span class="s1">&#39;type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;console&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;process_psr_3_messages&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
+           <span class="s1">&#39;channels&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;!event&#39;</span><span class="p">,</span> <span class="s1">&#39;!doctrine&#39;</span><span class="p">,</span> <span class="s1">&#39;!console&#39;</span><span class="p">],</span>
+        <span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>Now, log messages will be shown on the console based on the log levels and verbosity.
+By default (normal verbosity level), warnings and higher will be shown. But in
+<a class="reference internal" href="../console/verbosity.xhtml"><span class="doc">full verbosity mode</span></a>, all messages will be shown.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

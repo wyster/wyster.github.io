@@ -307,7 +307,7 @@ create a class which implements
 
     class WsseFactory implements SecurityFactoryInterface
     {
-        public function create(ContainerBuilder $container, string $id, array $config, string $userProvider, ?string $defaultEntryPoint)
+        public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
         {
             $providerId = 'security.authentication.provider.wsse.'.$id;
             $container
@@ -410,7 +410,7 @@ to service ids that may not exist yet: ``App\Security\Authentication\Provider\Ws
 
             <services>
                 <service id="App\Security\Authentication\Provider\WsseProvider">
-                    <argument key="$cachePool" type="service" id="cache.app"/>
+                    <argument key="$cachePool" type="service" id="cache.app"></argument>
                 </service>
 
                 <service id="App\Security\Firewall\WsseListener">
@@ -433,14 +433,13 @@ to service ids that may not exist yet: ``App\Security\Authentication\Provider\Ws
             $services = $configurator->services();
 
             $services->set(WsseProvider::class)
-                ->arg('$cachePool', service('cache.app'))
+                ->arg('$cachePool', ref('cache.app'))
             ;
 
             $services->set(WsseListener::class)
                 ->args([
-                    // In versions earlier to Symfony 5.1 the service() function was called ref()
-                    service('security.token_storage'),
-                    service('security.authentication.manager'),
+                    ref('security.token_storage'),
+                    ref('security.authentication.manager'),
                 ])
             ;
         };
@@ -489,9 +488,7 @@ You are finished! You can now define parts of your app as under WSSE protection.
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd
-                http://symfony.com/schema/dic/security
-                https://symfony.com/schema/dic/security/security-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd">
 
             <config>
                 <!-- ... -->
@@ -571,7 +568,7 @@ in order to put it to use::
 
     class WsseFactory implements SecurityFactoryInterface
     {
-        public function create(ContainerBuilder $container, string $id, array $config, string $userProvider, ?string $defaultEntryPoint)
+        public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
         {
             $providerId = 'security.authentication.provider.wsse.'.$id;
             $container
@@ -615,9 +612,7 @@ set to any desirable value per firewall.
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd
-                http://symfony.com/schema/dic/security
-                https://symfony.com/schema/dic/security/security-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd">
 
             <config>
                 <!-- ... -->

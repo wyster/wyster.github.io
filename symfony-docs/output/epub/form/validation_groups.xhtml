@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Define the Validation Groups to Use</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-define-the-validation-groups-to-use">
+<span id="index-0"></span><h1>How to Define the Validation Groups to Use</h1>
+<div class="section" id="validation-groups">
+<h2>Validation Groups</h2>
+<p>If your object takes advantage of <a class="reference internal" href="../validation/groups.xhtml"><span class="doc">validation groups</span></a>,
+you’ll need to specify which validation group(s) your form should use. Pass
+this as an option when <a class="reference internal" href="../forms.xhtml#creating-forms-in-controllers"><span class="std std-ref">creating forms in controllers</span></a>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$form</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createFormBuilder</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;validation_groups&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;registration&#39;</span><span class="p">],</span>
+<span class="p">])</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="o">...</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>When <a class="reference internal" href="../forms.xhtml#creating-forms-in-classes"><span class="std std-ref">creating forms in classes</span></a>, add the
+following to the <code class="docutils literal notranslate"><span class="pre">configureOptions()</span></code> method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\OptionsResolver\OptionsResolver</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">configureOptions</span><span class="p">(</span><span class="nx">OptionsResolver</span> <span class="nv">$resolver</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">setDefaults</span><span class="p">([</span>
+        <span class="c1">// ...</span>
+        <span class="s1">&#39;validation_groups&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;registration&#39;</span><span class="p">],</span>
+    <span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In both of these cases, <em>only</em> the <code class="docutils literal notranslate"><span class="pre">registration</span></code> validation group will
+be used to validate the underlying object. To apply the <code class="docutils literal notranslate"><span class="pre">registration</span></code>
+group <em>and</em> all constraints that are not in a group, use:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;validation_groups&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;Default&#39;</span><span class="p">,</span> <span class="s1">&#39;registration&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can choose any name for your validation groups, but Symfony recommends
+using “lower snake case” names (e.g. <code class="docutils literal notranslate"><span class="pre">foo_bar</span></code>) in contrast with the
+automatic validation groups created by Symfony, which use “upper camel case”
+(e.g. <code class="docutils literal notranslate"><span class="pre">Default</span></code>, <code class="docutils literal notranslate"><span class="pre">SomeClassName</span></code>).</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

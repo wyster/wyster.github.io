@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Date</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="date">
+<h1>Date</h1>
+<p>Validates that a value is a valid date, meaning a string (or an object that can
+be cast into a string) that follows a valid <code class="docutils literal notranslate"><span class="pre">YYYY-MM-DD</span></code> format.</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 87%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Applies to</p></td>
+<td><p><a class="reference internal" href="../../validation.xhtml#validation-property-target"><span class="std std-ref">property or method</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>Options</p></td>
+<td><ul class="simple">
+<li><p><a class="reference internal" href="#groups">groups</a></p></li>
+<li><p><a class="reference internal" href="#message">message</a></p></li>
+<li><p><a class="reference internal" href="#payload">payload</a></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Class</p></td>
+<td><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/Constraints/Date.php" title="Symfony\Component\Validator\Constraints\Date"><span class="pre">Date</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/Constraints/Date.php]</span></span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Validator</p></td>
+<td><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/Constraints/DateValidator.php" title="Symfony\Component\Validator\Constraints\DateValidator"><span class="pre">DateValidator</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/Constraints/DateValidator.php]</span></span></code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="basic-usage">
+<h2>Basic Usage</h2>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Author</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @Assert\Date</span>
+<span class="sd">     * @var string A &quot;Y-m-d&quot; formatted value</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$birthday</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/validator/validation.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">App\Entity\Author</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">properties</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">birthday</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Date</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/validator/validation.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;constraint-mapping</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;class</span> <span class="na">name=</span><span class="s">&quot;App\Entity\Author&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;birthday&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;constraint</span> <span class="na">name=</span><span class="s">&quot;Date&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/class&gt;</span>
+<span class="nt">&lt;/constraint-mapping&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Mapping\ClassMetadata</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Author</span>
+<span class="p">{</span>
+   <span class="sd">/**</span>
+<span class="sd">    * @var string A &quot;Y-m-d&quot; formatted value</span>
+<span class="sd">    */</span>
+    <span class="k">protected</span> <span class="nv">$birthday</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">loadValidatorMetadata</span><span class="p">(</span><span class="nx">ClassMetadata</span> <span class="nv">$metadata</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$metadata</span><span class="o">-&gt;</span><span class="na">addPropertyConstraint</span><span class="p">(</span><span class="s1">&#39;birthday&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert\Date</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As with most of the other constraints, <code class="docutils literal notranslate"><span class="pre">null</span></code> and empty strings are
+considered valid values. This is to allow them to be optional values.
+If the value is mandatory, a common solution is to combine this constraint
+with <a class="reference internal" href="NotBlank.xhtml"><span class="doc">NotBlank</span></a>.</p>
+</div>
+</div>
+<div class="section" id="options">
+<h2>Options</h2>
+<div class="section" id="groups">
+<h3><code class="docutils literal notranslate"><span class="pre">groups</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> | <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<p>It defines the validation group or groups this constraint belongs to. Read more
+about <a class="reference internal" href="../../validation/groups.xhtml"><span class="doc">validation groups</span></a>.</p>
+</div>
+<div class="section" id="message">
+<h3><code class="docutils literal notranslate"><span class="pre">message</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">date.</span></code></p>
+<p>This message is shown if the underlying data is not a valid date.</p>
+<p>You can use the following parameters in this message:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 81%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></p></td>
+<td><p>The current (invalid) value</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="payload">
+<h3><code class="docutils literal notranslate"><span class="pre">payload</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">mixed</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+<p>This option can be used to attach arbitrary domain-specific data to a constraint.
+The configured payload is not used by the Validator component, but its processing
+is completely up to you.</p>
+<p>For example, you may want to use
+<a class="reference internal" href="../../validation/severity.xhtml"><span class="doc">several error levels</span></a> to present failed
+constraints differently in the front-end depending on the severity of the
+error.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

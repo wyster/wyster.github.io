@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Choose Validation Groups Based on the Clicked Button</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-choose-validation-groups-based-on-the-clicked-button">
+<span id="index-0"></span><h1>How to Choose Validation Groups Based on the Clicked Button</h1>
+<p>When your form contains multiple submit buttons, you can change the validation
+group depending on which button is used to submit the form. For example,
+consider a form in a wizard that lets you advance to the next step or go back
+to the previous step. Also assume that when returning to the previous step,
+the data of the form should be saved, but not validated.</p>
+<p>First, we need to add the two buttons to the form:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$form</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createFormBuilder</span><span class="p">(</span><span class="nv">$task</span><span class="p">)</span>
+    <span class="c1">// ...</span>
+    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;nextStep&#39;</span><span class="p">,</span> <span class="nx">SubmitType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;previousStep&#39;</span><span class="p">,</span> <span class="nx">SubmitType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">getForm</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Then, we configure the button for returning to the previous step to run
+specific validation groups. In this example, we want it to suppress validation,
+so we set its <code class="docutils literal notranslate"><span class="pre">validation_groups</span></code> option to false:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$form</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createFormBuilder</span><span class="p">(</span><span class="nv">$task</span><span class="p">)</span>
+    <span class="c1">// ...</span>
+    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;previousStep&#39;</span><span class="p">,</span> <span class="nx">SubmitType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">&#39;validation_groups&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
+    <span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">getForm</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Now the form will skip your validation constraints. It will still validate
+basic integrity constraints, such as checking whether an uploaded file was too
+large or whether you tried to submit text in a number field.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>To see how to use a service to resolve <code class="docutils literal notranslate"><span class="pre">validation_groups</span></code> dynamically
+read the <a class="reference internal" href="validation_group_service_resolver.xhtml"><span class="doc">How to Dynamically Configure Form Validation Groups</span></a> article.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

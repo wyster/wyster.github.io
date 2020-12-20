@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -174,7 +172,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#session">Session</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#safe-content-preference">Safe Content Preference</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#learn-more">Learn More</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="http_foundation/session_configuration.html">Configuring Sessions and Save Handlers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="http_foundation/session_php_bridge.html">Integrating with Legacy Sessions</a></li>
@@ -216,10 +213,7 @@
 <li class="toctree-l2"><a class="reference internal" href="property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="security.html">The Security Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="serializer.html">The Serializer Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="string.html">The String Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_exporter.html">The VarExporter Component</a></li>
@@ -372,14 +366,12 @@ can be accessed via several public properties:</p>
 <p>Each property is a <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ParameterBag.php" title="Symfony\Component\HttpFoundation\ParameterBag"><span class="pre">ParameterBag</span></a></code>
 instance (or a sub-class of), which is a data holder class:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">request</span></code>: <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ParameterBag.php" title="Symfony\Component\HttpFoundation\ParameterBag"><span class="pre">ParameterBag</span></a></code> or
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/InputBag.php" title="Symfony\Component\HttpFoundation\InputBag"><span class="pre">InputBag</span></a></code> if the data is
-coming from <code class="docutils literal notranslate"><span class="pre">$_POST</span></code> parameters;</li>
-<li><code class="docutils literal notranslate"><span class="pre">query</span></code>: <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/InputBag.php" title="Symfony\Component\HttpFoundation\InputBag"><span class="pre">InputBag</span></a></code>;</li>
-<li><code class="docutils literal notranslate"><span class="pre">cookies</span></code>: <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/InputBag.php" title="Symfony\Component\HttpFoundation\InputBag"><span class="pre">InputBag</span></a></code>;</li>
+<li><code class="docutils literal notranslate"><span class="pre">request</span></code>: <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ParameterBag.php" title="Symfony\Component\HttpFoundation\ParameterBag"><span class="pre">ParameterBag</span></a></code>;</li>
+<li><code class="docutils literal notranslate"><span class="pre">query</span></code>:   <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ParameterBag.php" title="Symfony\Component\HttpFoundation\ParameterBag"><span class="pre">ParameterBag</span></a></code>;</li>
+<li><code class="docutils literal notranslate"><span class="pre">cookies</span></code>: <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ParameterBag.php" title="Symfony\Component\HttpFoundation\ParameterBag"><span class="pre">ParameterBag</span></a></code>;</li>
 <li><code class="docutils literal notranslate"><span class="pre">attributes</span></code>: <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ParameterBag.php" title="Symfony\Component\HttpFoundation\ParameterBag"><span class="pre">ParameterBag</span></a></code>;</li>
-<li><code class="docutils literal notranslate"><span class="pre">files</span></code>: <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/FileBag.php" title="Symfony\Component\HttpFoundation\FileBag"><span class="pre">FileBag</span></a></code>;</li>
-<li><code class="docutils literal notranslate"><span class="pre">server</span></code>: <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ServerBag.php" title="Symfony\Component\HttpFoundation\ServerBag"><span class="pre">ServerBag</span></a></code>;</li>
+<li><code class="docutils literal notranslate"><span class="pre">files</span></code>:   <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/FileBag.php" title="Symfony\Component\HttpFoundation\FileBag"><span class="pre">FileBag</span></a></code>;</li>
+<li><code class="docutils literal notranslate"><span class="pre">server</span></code>:  <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ServerBag.php" title="Symfony\Component\HttpFoundation\ServerBag"><span class="pre">ServerBag</span></a></code>;</li>
 <li><code class="docutils literal notranslate"><span class="pre">headers</span></code>: <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/HeaderBag.php" title="Symfony\Component\HttpFoundation\HeaderBag"><span class="pre">HeaderBag</span></a></code>.</li>
 </ul>
 <p>All <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ParameterBag.php" title="Symfony\Component\HttpFoundation\ParameterBag"><span class="pre">ParameterBag</span></a></code> instances have
@@ -458,16 +450,8 @@ accessed from many different points in your application.</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$content</span> <span class="o">=</span> <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">getContent</span><span class="p">();</span>
 </pre></div>
 </div>
-<p>For instance, this may be useful to process a XML string sent to the
+<p>For instance, this may be useful to process a JSON string sent to the
 application by a remote service using the HTTP POST method.</p>
-<p>If the request body is a JSON string, it can be accessed using
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Request.php" title="Symfony\Component\HttpFoundation\Request::toArray()"><span class="pre">toArray()</span></a></code>:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$data</span> <span class="o">=</span> <span class="nv">$request</span><span class="o">-&gt;</span><span class="na">toArray</span><span class="p">();</span>
-</pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">toArray()</span></code> method was introduced in Symfony 5.2.</p>
-</div>
 </div>
 <div class="section" id="identifying-a-request">
 <h3>Identifying a Request<a class="headerlink" href="#identifying-a-request" title="Permalink to this headline">¶</a></h3>
@@ -545,14 +529,7 @@ this complexity and defines some methods for the most common tasks:</p>
 <span class="c1">// Decodes a quoted string</span>
 <span class="nx">HeaderUtils</span><span class="o">::</span><span class="na">unquote</span><span class="p">(</span><span class="s1">&#39;&quot;foo \&quot;bar\&quot;&quot;&#39;</span><span class="p">);</span>
 <span class="c1">// =&gt; &#39;foo &quot;bar&quot;&#39;</span>
-
-<span class="c1">// Parses a query string but maintains dots (PHP parse_str() replaces &#39;.&#39; by &#39;_&#39;)</span>
-<span class="nx">HeaderUtils</span><span class="o">::</span><span class="na">parseQuery</span><span class="p">(</span><span class="s1">&#39;foo[bar.baz]=qux&#39;</span><span class="p">);</span>
-<span class="c1">// =&gt; [&#39;foo&#39; =&gt; [&#39;bar.baz&#39; =&gt; &#39;qux&#39;]]</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">parseQuery()</span></code> method was introduced in Symfony 5.2.</p>
 </div>
 </div>
 <div class="section" id="accessing-accept-headers-data">
@@ -598,6 +575,9 @@ are also supported:</p>
 </div>
 <div class="section" id="anonymizing-ip-addresses">
 <h3>Anonymizing IP Addresses<a class="headerlink" href="#anonymizing-ip-addresses" title="Permalink to this headline">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">anonymize()</span></code> method was introduced in Symfony 4.4.</p>
+</div>
 <p>An increasingly common need for applications to comply with user protection
 regulations is to anonymize IP addresses before logging and storing them for
 analysis purposes. Use the <code class="docutils literal notranslate"><span class="pre">anonymize()</span></code> method from the
@@ -716,21 +696,9 @@ method takes an instance of
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Cookie.php" title="Symfony\Component\HttpFoundation\Cookie"><span class="pre">Cookie</span></a></code> as an argument.</p>
 <p>You can clear a cookie via the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/ResponseHeaderBag.php" title="Symfony\Component\HttpFoundation\ResponseHeaderBag::clearCookie()"><span class="pre">clearCookie()</span></a></code> method.</p>
-<p>In addition to the <code class="docutils literal notranslate"><span class="pre">Cookie::create()</span></code> method, you can create a <code class="docutils literal notranslate"><span class="pre">Cookie</span></code>
-object from a raw header value using <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Cookie.php" title="Symfony\Component\HttpFoundation\Cookie::fromString()"><span class="pre">fromString()</span></a></code>
-method. You can also use the <code class="docutils literal notranslate"><span class="pre">with*()</span></code> methods to change some Cookie property (or
-to build the entire Cookie using a fluent interface). Each <code class="docutils literal notranslate"><span class="pre">with*()</span></code> method returns
-a new object with the modified property:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$cookie</span> <span class="o">=</span> <span class="nx">Cookie</span><span class="o">::</span><span class="na">create</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">withValue</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">withExpires</span><span class="p">(</span><span class="nb">strtotime</span><span class="p">(</span><span class="s1">&#39;Fri, 20-May-2011 15:25:52 GMT&#39;</span><span class="p">))</span>
-    <span class="o">-&gt;</span><span class="na">withDomain</span><span class="p">(</span><span class="s1">&#39;.example.com&#39;</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">withSecure</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">with*()</span></code> methods were introduced in Symfony 5.1.</p>
-</div>
+<p>Note you can create a
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Cookie.php" title="Symfony\Component\HttpFoundation\Cookie"><span class="pre">Cookie</span></a></code> object from a raw header
+value using <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Cookie.php" title="Symfony\Component\HttpFoundation\Cookie::fromString()"><span class="pre">fromString()</span></a></code>.</p>
 </div>
 <div class="section" id="managing-the-http-cache">
 <h3>Managing the HTTP Cache<a class="headerlink" href="#managing-the-http-cache" title="Permalink to this headline">¶</a></h3>
@@ -760,24 +728,15 @@ object that implements <code class="docutils literal notranslate"><span class="p
 can be used to set the most commonly used cache information in one method
 call:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setCache</span><span class="p">([</span>
-    <span class="s1">&#39;must_revalidate&#39;</span>  <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;no_cache&#39;</span>         <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;no_store&#39;</span>         <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;no_transform&#39;</span>     <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;public&#39;</span>           <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
-    <span class="s1">&#39;private&#39;</span>          <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;proxy_revalidate&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
-    <span class="s1">&#39;max_age&#39;</span>          <span class="o">=&gt;</span> <span class="mi">600</span><span class="p">,</span>
-    <span class="s1">&#39;s_maxage&#39;</span>         <span class="o">=&gt;</span> <span class="mi">600</span><span class="p">,</span>
-    <span class="s1">&#39;immutable&#39;</span>        <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
-    <span class="s1">&#39;last_modified&#39;</span>    <span class="o">=&gt;</span> <span class="k">new</span> <span class="nx">\DateTime</span><span class="p">(),</span>
-    <span class="s1">&#39;etag&#39;</span>             <span class="o">=&gt;</span> <span class="s1">&#39;abcdef&#39;</span>
+    <span class="s1">&#39;etag&#39;</span>          <span class="o">=&gt;</span> <span class="s1">&#39;abcdef&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;last_modified&#39;</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nx">\DateTime</span><span class="p">(),</span>
+    <span class="s1">&#39;max_age&#39;</span>       <span class="o">=&gt;</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s1">&#39;s_maxage&#39;</span>      <span class="o">=&gt;</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s1">&#39;private&#39;</span>       <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
+    <span class="s1">&#39;public&#39;</span>        <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+    <span class="s1">&#39;immutable&#39;</span>     <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
 <span class="p">]);</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">must_revalidate</span></code>, <code class="docutils literal notranslate"><span class="pre">no_cache</span></code>, <code class="docutils literal notranslate"><span class="pre">no_store</span></code>, <code class="docutils literal notranslate"><span class="pre">no_transform</span></code> and
-<code class="docutils literal notranslate"><span class="pre">proxy_revalidate</span></code> directives were introduced in Symfony 5.1.</p>
 </div>
 <p>To check if the Response validators (<code class="docutils literal notranslate"><span class="pre">ETag</span></code>, <code class="docutils literal notranslate"><span class="pre">Last-Modified</span></code>) match a
 conditional value specified in the client Request, use the
@@ -992,34 +951,6 @@ the response content will look like this:</p>
 <div class="section" id="session">
 <h2>Session<a class="headerlink" href="#session" title="Permalink to this headline">¶</a></h2>
 <p>The session information is in its own document: <a class="reference internal" href="http_foundation/sessions.html"><span class="doc">Session Management</span></a>.</p>
-</div>
-<div class="section" id="safe-content-preference">
-<h2>Safe Content Preference<a class="headerlink" href="#safe-content-preference" title="Permalink to this headline">¶</a></h2>
-<p>Some web sites have a “safe” mode to assist those who don’t want to be exposed
-to content to which they might object. The  <a class="reference external" href="https://tools.ietf.org/html/rfc8674">RFC 8674</a> specification defines a
-way for user agents to ask for safe content to a server.</p>
-<p>The specification does not define what content might be considered objectionable,
-so the concept of “safe” is not precisely defined. Rather, the term is interpreted
-by the server and within the scope of each web site that chooses to act upon this information.</p>
-<p>Symfony offers two methods to interact with this preference:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Request.php" title="Symfony\Component\HttpFoundation\Request::preferSafeContent()"><span class="pre">preferSafeContent()</span></a></code>;</li>
-<li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Response.php" title="Symfony\Component\HttpFoundation\Response::setContentSafe()"><span class="pre">setContentSafe()</span></a></code>;</li>
-</ul>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">preferSafeContent()</span></code> and <code class="docutils literal notranslate"><span class="pre">setContentSafe()</span></code> methods were introduced
-in Symfony 5.1.</p>
-</div>
-<p>The following example shows how to detect if the user agent prefers “safe” content:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="nv">$request</span><span class="o">-&gt;</span><span class="na">preferSafeContent</span><span class="p">())</span> <span class="p">{</span>
-    <span class="nv">$response</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="nv">$alternativeContent</span><span class="p">);</span>
-    <span class="c1">// this informs the user we respected their preferences</span>
-    <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">setContentSafe</span><span class="p">();</span>
-
-    <span class="k">return</span> <span class="nv">$response</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 </div>
 <div class="section" id="learn-more">
 <h2>Learn More<a class="headerlink" href="#learn-more" title="Permalink to this headline">¶</a></h2>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Extending the ExpressionLanguage</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="extending-the-expressionlanguage">
+<span id="index-0"></span><h1>Extending the ExpressionLanguage</h1>
+<p>The ExpressionLanguage can be extended by adding custom functions. For
+instance, in the Symfony Framework, the security has custom functions to check
+the user’s role.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to learn how to use functions in an expression, read
+“<a class="reference internal" href="syntax.xhtml#component-expression-functions"><span class="std std-ref">Working with Functions</span></a>”.</p>
+</div>
+<div class="section" id="registering-functions">
+<h2>Registering Functions</h2>
+<p>Functions are registered on each specific <code class="docutils literal notranslate"><span class="pre">ExpressionLanguage</span></code> instance.
+That means the functions can be used in any expression executed by that
+instance.</p>
+<p>To register a function, use
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php" title="Symfony\Component\ExpressionLanguage\ExpressionLanguage::register()"><span class="pre">register()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php]</span></span></code>.
+This method has 3 arguments:</p>
+<ul class="simple">
+<li><p><strong>name</strong> - The name of the function in an expression;</p></li>
+<li><p><strong>compiler</strong> - A function executed when compiling an expression using the
+function;</p></li>
+<li><p><strong>evaluator</strong> - A function executed when the expression is evaluated.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\ExpressionLanguage</span><span class="p">;</span>
+
+<span class="nv">$expressionLanguage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ExpressionLanguage</span><span class="p">();</span>
+<span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;lowercase&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$str</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;(is_string(%1$s) ? strtolower(%1$s) : %1$s)&#39;</span><span class="p">,</span> <span class="nv">$str</span><span class="p">);</span>
+<span class="p">},</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$arguments</span><span class="p">,</span> <span class="nv">$str</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">is_string</span><span class="p">(</span><span class="nv">$str</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$str</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nb">strtolower</span><span class="p">(</span><span class="nv">$str</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">evaluate</span><span class="p">(</span><span class="s1">&#39;lowercase(&quot;HELLO&quot;)&#39;</span><span class="p">));</span>
+<span class="c1">// this will print: hello</span>
+</pre></div>
+</div>
+<p>In addition to the custom function arguments, the <strong>evaluator</strong> is passed an
+<code class="docutils literal notranslate"><span class="pre">arguments</span></code> variable as its first argument, which is equal to the second
+argument of <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> (e.g. the “values” when evaluating an expression).</p>
+</div>
+<div class="section" id="using-expression-providers">
+<span id="components-expression-language-provider"></span><h2>Using Expression Providers</h2>
+<p>When you use the <code class="docutils literal notranslate"><span class="pre">ExpressionLanguage</span></code> class in your library, you often want
+to add custom functions. To do so, you can create a new expression provider by
+creating a class that implements
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionFunctionProviderInterface.php" title="Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface"><span class="pre">ExpressionFunctionProviderInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionFunctionProviderInterface.php]</span></span></code>.</p>
+<p>This interface requires one method:
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionFunctionProviderInterface.php" title="Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface::getFunctions()"><span class="pre">getFunctions()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionFunctionProviderInterface.php]</span></span></code>,
+which returns an array of expression functions (instances of
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionFunction.php" title="Symfony\Component\ExpressionLanguage\ExpressionFunction"><span class="pre">ExpressionFunction</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionFunction.php]</span></span></code>) to
+register:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\ExpressionFunction</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">StringExpressionLanguageProvider</span> <span class="k">implements</span> <span class="nx">ExpressionFunctionProviderInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getFunctions</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="k">new</span> <span class="nx">ExpressionFunction</span><span class="p">(</span><span class="s1">&#39;lowercase&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$str</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;(is_string(%1$s) ? strtolower(%1$s) : %1$s)&#39;</span><span class="p">,</span> <span class="nv">$str</span><span class="p">);</span>
+            <span class="p">},</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$arguments</span><span class="p">,</span> <span class="nv">$str</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">is_string</span><span class="p">(</span><span class="nv">$str</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="nv">$str</span><span class="p">;</span>
+                <span class="p">}</span>
+
+                <span class="k">return</span> <span class="nb">strtolower</span><span class="p">(</span><span class="nv">$str</span><span class="p">);</span>
+            <span class="p">}),</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>To create an expression function from a PHP function with the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionFunction.php" title="Symfony\Component\ExpressionLanguage\ExpressionFunction::fromPhp()"><span class="pre">fromPhp()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionFunction.php]</span></span></code> static method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nx">ExpressionFunction</span><span class="o">::</span><span class="na">fromPhp</span><span class="p">(</span><span class="s1">&#39;strtoupper&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Namespaced functions are supported, but they require a second argument to
+define the name of the expression:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nx">ExpressionFunction</span><span class="o">::</span><span class="na">fromPhp</span><span class="p">(</span><span class="s1">&#39;My\strtoupper&#39;</span><span class="p">,</span> <span class="s1">&#39;my_strtoupper&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<p>You can register providers using
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php" title="Symfony\Component\ExpressionLanguage\ExpressionLanguage::registerProvider()"><span class="pre">registerProvider()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/ExpressionLanguage.php]</span></span></code>
+or by using the second argument of the constructor:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\ExpressionLanguage</span><span class="p">;</span>
+
+<span class="c1">// using the constructor</span>
+<span class="nv">$expressionLanguage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ExpressionLanguage</span><span class="p">(</span><span class="k">null</span><span class="p">,</span> <span class="p">[</span>
+    <span class="k">new</span> <span class="nx">StringExpressionLanguageProvider</span><span class="p">(),</span>
+    <span class="c1">// ...</span>
+<span class="p">]);</span>
+
+<span class="c1">// using registerProvider()</span>
+<span class="nv">$expressionLanguage</span><span class="o">-&gt;</span><span class="na">registerProvider</span><span class="p">(</span><span class="k">new</span> <span class="nx">StringExpressionLanguageProvider</span><span class="p">());</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>It is recommended to create your own <code class="docutils literal notranslate"><span class="pre">ExpressionLanguage</span></code> class in your
+library. Now you can add the extension by overriding the constructor:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Psr\Cache\CacheItemPoolInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\ExpressionLanguage</span> <span class="k">as</span> <span class="nx">BaseExpressionLanguage</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ExpressionLanguage</span> <span class="k">extends</span> <span class="nx">BaseExpressionLanguage</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">CacheItemPoolInterface</span> <span class="nv">$cache</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$providers</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="p">{</span>
+        <span class="c1">// prepends the default provider to let users override it</span>
+        <span class="nb">array_unshift</span><span class="p">(</span><span class="nv">$providers</span><span class="p">,</span> <span class="k">new</span> <span class="nx">StringExpressionLanguageProvider</span><span class="p">());</span>
+
+        <span class="k">parent</span><span class="o">::</span><span class="na">__construct</span><span class="p">(</span><span class="nv">$cache</span><span class="p">,</span> <span class="nv">$providers</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Find Errors in Translation Files</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-find-errors-in-translation-files">
+<span id="index-0"></span><h1>How to Find Errors in Translation Files</h1>
+<p>Symfony processes all the application translation files as part of the process
+that compiles the application code before executing it. If there’s an error in
+any translation file, you’ll see an error message explaining the problem.</p>
+<p>If you prefer, you can also validate the contents of any YAML and XLIFF
+translation file using the <code class="docutils literal notranslate"><span class="pre">lint:yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">lint:xliff</span></code> commands:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># lint a single file</span>
+<span class="gp">$</span> php bin/console lint:yaml translations/messages.en.yaml
+<span class="gp">$</span> php bin/console lint:xliff translations/messages.en.xlf
+
+<span class="c1"># lint a whole directory</span>
+<span class="gp">$</span> php bin/console lint:yaml translations
+<span class="gp">$</span> php bin/console lint:xliff translations
+
+<span class="c1"># lint multiple files or directories</span>
+<span class="gp">$</span> php bin/console lint:yaml translations path/to/trans
+<span class="gp">$</span> php bin/console lint:xliff translations/messages.en.xlf translations/messages.es.xlf
+</pre></div>
+</td></tr></table></div>
+<p>The linter results can be exported to JSON using the <code class="docutils literal notranslate"><span class="pre">--format</span></code> option:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console lint:yaml translations/ --format<span class="o">=</span>json
+<span class="gp">$</span> php bin/console lint:xliff translations/ --format<span class="o">=</span>json
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

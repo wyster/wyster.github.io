@@ -430,6 +430,12 @@ libraries are used in your application:
         {% endfor %}
     {% endblock %}
 
+.. note::
+
+    Symfony 4.2 deprecated calling ``FormRenderer::searchAndRenderBlock`` for
+    fields that have already been rendered. That's why the previous example
+    includes the ``... if not child.rendered`` statement.
+
 The first part of the Twig block name (e.g. ``postal_address``) comes from the
 class name (``PostalAddressType`` -> ``postal_address``). This can be controlled
 by overriding the ``getBlockPrefix()`` method in ``PostalAddressType``. The

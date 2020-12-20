@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -155,14 +153,11 @@
 <li class="toctree-l3"><a class="reference internal" href="IsFalse.html">IsFalse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Type.html">Type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Email.html">Email</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ExpressionLanguageSyntax.html">ExpressionLanguageSyntax</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Length.html">Length</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Url.html">Url</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Regex.html">Regex</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Hostname.html">Hostname</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Ip.html">Ip</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Uuid.html">UUID</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Ulid.html">ULID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Json.html">Json</a></li>
 <li class="toctree-l3"><a class="reference internal" href="EqualTo.html">EqualTo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="NotEqualTo.html">NotEqualTo</a></li>
@@ -204,10 +199,6 @@
 <li class="toctree-l3"><a class="reference internal" href="Bic.html">Bic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Isbn.html">Isbn</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Issn.html">Issn</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Isin.html">Isin</a></li>
-<li class="toctree-l3"><a class="reference internal" href="AtLeastOneOf.html">AtLeastOneOf</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Sequentially.html">Sequentially</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Compound.html">Compound</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Callback.html">Callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Expression.html">Expression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="All.html">All</a></li>
@@ -313,7 +304,6 @@
 <tr class="row-even"><td>Options</td>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="#groups">groups</a></li>
-<li><a class="reference internal" href="#invaliddatetimemessage">invalidDateTimeMessage</a></li>
 <li><a class="reference internal" href="#invalidmessage">invalidMessage</a></li>
 <li><a class="reference internal" href="#max">max</a></li>
 <li><a class="reference internal" href="#maxmessage">maxMessage</a></li>
@@ -838,37 +828,11 @@ can check that a delivery date starts within the next five hours like this:</p>
 <p>It defines the validation group or groups this constraint belongs to. Read more
 about <a class="reference internal" href="../../validation/groups.html"><span class="doc">validation groups</span></a>.</p>
 </div>
-<div class="section" id="invaliddatetimemessage">
-<h3>invalidDateTimeMessage<a class="headerlink" href="#invaliddatetimemessage" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">number.</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">invalidDateTimeMessage</span></code> option was introduced in Symfony 5.2.</p>
-</div>
-<p>The message displayed when the <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> values are PHP datetimes but
-the given value is not.</p>
-<p>You can use the following parameters in this message:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="19%" />
-<col width="81%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Parameter</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></td>
-<td>The current (invalid) value</td>
-</tr>
-</tbody>
-</table>
-</div>
 <div class="section" id="invalidmessage">
 <h3>invalidMessage<a class="headerlink" href="#invalidmessage" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">number.</span></code></p>
-<p>The message displayed when the <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> values are numeric (per
-the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.is-numeric.php" title="is_numeric"><span class="pre">is_numeric</span></a></code> PHP function) but the given value is not.</p>
+<p>The message that will be shown if the underlying value is not a number (per
+the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.is-numeric.php" title="is_numeric"><span class="pre">is_numeric</span></a></code> PHP function).</p>
 <p>You can use the following parameters in this message:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -884,14 +848,8 @@ the <code class="docutils literal notranslate"><a class="reference external" hre
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></td>
 <td>The current (invalid) value</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code></td>
-<td>Corresponding form field label</td>
-</tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code> parameter was introduced in Symfony 5.2.</p>
-</div>
 </div>
 <div class="section" id="max">
 <h3>max<a class="headerlink" href="#max" title="Permalink to this headline">¶</a></h3>
@@ -929,7 +887,10 @@ value is <strong>greater</strong> than this max value.</p>
 <div class="section" id="maxpropertypath">
 <h3>maxPropertyPath<a class="headerlink" href="#maxpropertypath" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
-<p>It defines the object property whose value is used as <code class="docutils literal notranslate"><span class="pre">max</span></code> option.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">maxPropertyPath</span></code> option was introduced in Symfony 4.4.</p>
+</div>
+<p>It defines the object property whose value is used as <a class="reference internal" href="#max">max</a> option.</p>
 <p>For example, if you want to compare the <code class="docutils literal notranslate"><span class="pre">$submittedDate</span></code> property of some object
 with regard to the <code class="docutils literal notranslate"><span class="pre">$deadline</span></code> property of the same object, use
 <code class="docutils literal notranslate"><span class="pre">maxPropertyPath=&quot;deadline&quot;</span></code> in the range constraint of <code class="docutils literal notranslate"><span class="pre">$submittedDate</span></code>.</p>
@@ -977,7 +938,10 @@ value is <strong>less</strong> than this min value.</p>
 <div class="section" id="minpropertypath">
 <h3>minPropertyPath<a class="headerlink" href="#minpropertypath" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
-<p>It defines the object property whose value is used as <code class="docutils literal notranslate"><span class="pre">min</span></code> option.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">minPropertyPath</span></code> option was introduced in Symfony 4.4.</p>
+</div>
+<p>It defines the object property whose value is used as <a class="reference internal" href="#min">min</a> option.</p>
 <p>For example, if you want to compare the <code class="docutils literal notranslate"><span class="pre">$endDate</span></code> property of some object
 with regard to the <code class="docutils literal notranslate"><span class="pre">$startDate</span></code> property of the same object, use
 <code class="docutils literal notranslate"><span class="pre">minPropertyPath=&quot;startDate&quot;</span></code> in the range constraint of <code class="docutils literal notranslate"><span class="pre">$endDate</span></code>.</p>
@@ -992,6 +956,9 @@ using APIs for doing any mapping logic on client-side.</p>
 <div class="section" id="notinrangemessage">
 <h3>notInRangeMessage<a class="headerlink" href="#notinrangemessage" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">between</span> <span class="pre">{{</span> <span class="pre">min</span> <span class="pre">}}</span> <span class="pre">and</span> <span class="pre">{{</span> <span class="pre">max</span> <span class="pre">}}.</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">notInRangeMessage</span></code> option was introduced in Symfony 4.4.</p>
+</div>
 <p>The message that will be shown if the underlying value is less than the
 <a class="reference internal" href="#min">min</a> option or greater than the <a class="reference internal" href="#max">max</a> option.</p>
 <p>You can use the following parameters in this message:</p>

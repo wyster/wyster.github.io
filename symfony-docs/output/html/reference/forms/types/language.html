@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../session.html">Sessions</a></li>
@@ -288,8 +286,8 @@ field type automatically uses a large list of languages. You <em>can</em> specif
 manually, but then you should just use the <code class="docutils literal notranslate"><span class="pre">ChoiceType</span></code> directly.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="27%" />
-<col width="73%" />
+<col width="15%" />
+<col width="85%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>Rendered as</td>
@@ -298,20 +296,20 @@ manually, but then you should just use the <code class="docutils literal notrans
 <tr class="row-even"><td>Options</td>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="#alpha3">alpha3</a></li>
-<li><a class="reference internal" href="#choice-self-translation">choice_self_translation</a></li>
 <li><a class="reference internal" href="#choice-translation-locale">choice_translation_locale</a></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>Overridden options</td>
+<tr class="row-odd"><td>Overridden
+options</td>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="#choices">choices</a></li>
 <li><a class="reference internal" href="#choice-translation-domain">choice_translation_domain</a></li>
-<li><a class="reference internal" href="#invalid-message">invalid_message</a></li>
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td>Inherited options</td>
+<tr class="row-even"><td>Inherited
+options</td>
 <td><p class="first">from the <a class="reference internal" href="choice.html"><span class="doc">ChoiceType</span></a></p>
 <ul class="simple">
 <li><a class="reference internal" href="#error-bubbling">error_bubbling</a></li>
@@ -340,12 +338,6 @@ manually, but then you should just use the <code class="docutils literal notrans
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>Default invalid message</td>
-<td>Please select a valid language.</td>
-</tr>
-<tr class="row-even"><td>Legacy invalid message</td>
-<td>The value {{ value }} is not valid.</td>
-</tr>
 <tr class="row-odd"><td>Parent type</td>
 <td><a class="reference internal" href="choice.html"><span class="doc">ChoiceType</span></a></td>
 </tr>
@@ -369,24 +361,12 @@ available running this command in your app:</p>
 <div class="section" id="alpha3">
 <h3>alpha3<a class="headerlink" href="#alpha3" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">alpha3</span></code> option was introduced in Symfony 4.4.</p>
+</div>
 <p>If this option is <code class="docutils literal notranslate"><span class="pre">true</span></code>, the choice values use the <a class="reference external" href="https://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2 alpha-3</a>
 three-letter codes (e.g. French = <code class="docutils literal notranslate"><span class="pre">fra</span></code>) instead of the default
 <a class="reference external" href="https://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1 alpha-2</a> two-letter codes (e.g. French = <code class="docutils literal notranslate"><span class="pre">fr</span></code>).</p>
-</div>
-<div class="section" id="choice-self-translation">
-<h3>choice_self_translation<a class="headerlink" href="#choice-self-translation" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">choice_self_translation</span></code> option was introduced in Symfony 5.1.</p>
-</div>
-<p>By default, language names are translated into the current locale of the
-application. For example, when browsing the application in English, you’ll get
-an array like <code class="docutils literal notranslate"><span class="pre">[...,</span> <span class="pre">'cs'</span> <span class="pre">=&gt;</span> <span class="pre">'Czech',</span> <span class="pre">...,</span> <span class="pre">'es'</span> <span class="pre">=&gt;</span> <span class="pre">'Spanish',</span> <span class="pre">...,</span> <span class="pre">'zh'</span> <span class="pre">=&gt;</span> <span class="pre">'Chinese']</span></code>
-and when browsing it in French, you’ll get the following array:
-<code class="docutils literal notranslate"><span class="pre">[...,</span> <span class="pre">'cs'</span> <span class="pre">=&gt;</span> <span class="pre">'tchèque',</span> <span class="pre">...,</span> <span class="pre">'es'</span> <span class="pre">=&gt;</span> <span class="pre">'espagnol',</span> <span class="pre">...,</span> <span class="pre">'zh'</span> <span class="pre">=&gt;</span> <span class="pre">'chinois']</span></code>.</p>
-<p>If this option is <code class="docutils literal notranslate"><span class="pre">true</span></code>, each language is translated into its own language,
-regardless of the current application locale:
-<code class="docutils literal notranslate"><span class="pre">[...,</span> <span class="pre">'cs'</span> <span class="pre">=&gt;</span> <span class="pre">'čeština',</span> <span class="pre">...,</span> <span class="pre">'es'</span> <span class="pre">=&gt;</span> <span class="pre">'español',</span> <span class="pre">...,</span> <span class="pre">'zh'</span> <span class="pre">=&gt;</span> <span class="pre">'中文']</span></code>.</p>
 </div>
 <div class="section" id="choice-translation-locale">
 <h3>choice_translation_locale<a class="headerlink" href="#choice-translation-locale" title="Permalink to this headline">¶</a></h3>
@@ -419,19 +399,6 @@ translation domain.</p>
 translation domain), <code class="docutils literal notranslate"><span class="pre">false</span></code> (disable translation), <code class="docutils literal notranslate"><span class="pre">null</span></code> (uses the parent translation
 domain or the default domain) or a string which represents the exact translation
 domain to use.</p>
-</div>
-<div class="section" id="invalid-message">
-<h3><code class="docutils literal notranslate"><span class="pre">invalid_message</span></code><a class="headerlink" href="#invalid-message" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">valid</span></code></p>
-<p>This is the validation error message that’s used if the data entered into
-this field doesn’t make sense (i.e. fails validation).</p>
-<p>This might happen, for example, if the user enters a nonsense string into
-a <a class="reference internal" href="time.html"><span class="doc">TimeType</span></a> field that cannot be converted
-into a real time or if the user enters a string (e.g. <code class="docutils literal notranslate"><span class="pre">apple</span></code>) into a
-number field.</p>
-<p>Normal (business logic) validation (such as when setting a minimum length
-for a field) should be set using validation messages with your validation
-rules (<a class="reference internal" href="../../../validation.html#validation-constraint-configuration"><span class="std std-ref">reference</span></a>).</p>
 </div>
 </div>
 <div class="section" id="inherited-options">
@@ -562,6 +529,11 @@ form of languages, you can list the most popular on top, like Bork and Pirate:</
 <span class="p">]);</span>
 </pre></div>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>Starting from Symfony 4.4, the preferred choices are displayed both at the
+top of the list and at their original locations on the list. In prior
+Symfony versions, they were only displayed at the top of the list.</p>
+</div>
 <p>This options can also be a callback function to give you more flexibility. This might
 be especially useful if your values are objects:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\ChoiceType</span><span class="p">;</span>
@@ -604,20 +576,6 @@ when rendering the field:</p>
 </td></tr></table></div>
 </li>
 </ul>
-</div>
-<div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p>When defining a custom type, you should use the
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/ChoiceList/ChoiceList.php" title="Symfony\Component\Form\ChoiceList\ChoiceList"><span class="pre">ChoiceList</span></a></code> class helper:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Form\ChoiceList\ChoiceList</span><span class="p">;</span>
-
-<span class="c1">// ...</span>
-<span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;choices&#39;</span><span class="p">,</span> <span class="nx">ChoiceType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
-    <span class="s1">&#39;preferred_choices&#39;</span> <span class="o">=&gt;</span> <span class="nx">ChoiceList</span><span class="o">::</span><span class="na">preferred</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="s1">&#39;taggedAsFavorite&#39;</span><span class="p">),</span>
-<span class="p">]);</span>
-</pre></div>
-</div>
-<p class="last">See the <a class="reference internal" href="choice.html#reference-form-choice-loader"><span class="std std-ref">“choice_loader” option documentation</span></a>.</p>
 </div>
 </div>
 <div class="section" id="trim">
@@ -876,6 +834,9 @@ to render the <a class="reference internal" href="../../../form/form_customizati
 <p class="first admonition-title">See also</p>
 <p class="last">Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
 the <a class="reference internal" href="../../../form/form_customization.html#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
 </div>
 </div>
 </div>

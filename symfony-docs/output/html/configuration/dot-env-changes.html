@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -141,10 +141,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -275,12 +273,16 @@ of these, you <em>will</em> need to modify a few files in your existing app.</p>
 any changes! Otherwise, here is the list of changes you’ll need to make - these
 changes can be made to any Symfony 3.4 or higher app:</p>
 <ol class="arabic">
-<li><p class="first">Update your <code class="docutils literal notranslate"><span class="pre">public/index.php</span></code> file to add the code of the <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/5.1/public/index.php">public/index.php</a>
-file provided by Symfony. If you’ve customized this file, make sure to keep
-those changes (but add the rest of the changes made by Symfony).</p>
+<li><p class="first">Create a new <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/4.2/config/bootstrap.php">config/bootstrap.php</a> file in your project. This file loads Composer’s
+autoloader and loads all the <code class="docutils literal notranslate"><span class="pre">.env</span></code> files as needed (note: in an earlier recipe,
+this file was called <code class="docutils literal notranslate"><span class="pre">src/.bootstrap.php</span></code>; if you are upgrading from Symfony 3.3
+or 4.1, use the <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/3.3/config/bootstrap.php">3.3/config/bootstrap.php</a> file instead).</p>
 </li>
-<li><p class="first">Update your <code class="docutils literal notranslate"><span class="pre">bin/console</span></code> file to add the code of the <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/console/5.1/bin/console">bin/console</a> file
-provided by Symfony.</p>
+<li><p class="first">Update your <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/4.2/public/index.php">public/index.php</a> (<a class="reference external" href="https://github.com/symfony/recipes/compare/8a4e5555e30d5dff64275e2788a901f31a214e79...86e2b6795c455f026e5ab0cba2aff2c7a18511f7#diff-7d73eabd1e5eb7d969ddf9a7ce94f954">index.php diff</a>) file to load the new <code class="docutils literal notranslate"><span class="pre">config/bootstrap.php</span></code>
+file. If you’ve customized this file, make sure to keep those changes (but use
+the rest of the changes).</p>
+</li>
+<li><p class="first">Update your <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/console/3.3/bin/console">bin/console</a> file to load the new <code class="docutils literal notranslate"><span class="pre">config/bootstrap.php</span></code> file.</p>
 </li>
 <li><p class="first">Update <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>:</p>
 <div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -324,7 +326,7 @@ provided by Symfony.</p>
 <p>You can also update the <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/flex/1.0/.env">comment on the top of .env</a> to reflect the new changes.</p>
 </li>
 <li><p class="first">If you’re using PHPUnit, you will also need to <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/phpunit-bridge/3.3/.env.test">create a new .env.test</a> file
-and update your <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/phpunit-bridge/3.3/phpunit.xml.dist">phpunit.xml.dist file</a> so it loads the <code class="docutils literal notranslate"><span class="pre">tests/bootstrap.php</span></code>
+and update your <a class="reference external" href="https://github.com/symfony/recipes/blob/master/symfony/phpunit-bridge/3.3/phpunit.xml.dist">phpunit.xml.dist file</a> so it loads the <code class="docutils literal notranslate"><span class="pre">config/bootstrap.php</span></code>
 file.</p>
 </li>
 </ol>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The XLIFF format</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-xliff-format">
+<h1>The XLIFF format</h1>
+<p>Most professional translation tools support <a class="reference external" href="http://docs.oasis-open.org/xliff/xliff-core/v2.1/xliff-core-v2.1.html">XLIFF</a><span class="link-target"> [http://docs.oasis-open.org/xliff/xliff-core/v2.1/xliff-core-v2.1.html]</span>. These files use the XML
+format and are supported by Symfony by default. Besides supporting
+<a class="reference internal" href="../translation.xhtml"><span class="doc">all Symfony translation features</span></a>, the XLIFF format also
+has some specific features.</p>
+<div class="section" id="adding-notes-to-translation-contents">
+<h2>Adding Notes to Translation Contents</h2>
+<p>Sometimes translators need additional context to better decide how to translate
+some content. This context can be provided with notes, which are a collection of
+comments used to store end user readable information. The only format that
+supports loading and dumping notes is XLIFF version 2.</p>
+<p>If the XLIFF 2.0 document contains <code class="docutils literal notranslate"><span class="pre">&lt;notes&gt;</span></code> nodes, they are automatically
+loaded/dumped inside a Symfony application:</p>
+<div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;xliff</span> <span class="na">xmlns=</span><span class="s">&quot;urn:oasis:names:tc:xliff:document:2.1&quot;</span> <span class="na">version=</span><span class="s">&quot;2.1&quot;</span>
+    <span class="na">srcLang=</span><span class="s">&quot;fr-FR&quot;</span> <span class="na">trgLang=</span><span class="s">&quot;en-US&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;file</span> <span class="na">id=</span><span class="s">&quot;messages.en_US&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;unit</span> <span class="na">id=</span><span class="s">&quot;LCa0a2j&quot;</span> <span class="na">name=</span><span class="s">&quot;original-content&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;notes&gt;</span>
+                <span class="nt">&lt;note</span> <span class="na">category=</span><span class="s">&quot;state&quot;</span><span class="nt">&gt;</span>new<span class="nt">&lt;/note&gt;</span>
+                <span class="nt">&lt;note</span> <span class="na">category=</span><span class="s">&quot;approved&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/note&gt;</span>
+                <span class="nt">&lt;note</span> <span class="na">category=</span><span class="s">&quot;section&quot;</span> <span class="na">priority=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>user login<span class="nt">&lt;/note&gt;</span>
+            <span class="nt">&lt;/notes&gt;</span>
+            <span class="nt">&lt;segment&gt;</span>
+                <span class="nt">&lt;source&gt;</span>original-content<span class="nt">&lt;/source&gt;</span>
+                <span class="nt">&lt;target&gt;</span>translated-content<span class="nt">&lt;/target&gt;</span>
+            <span class="nt">&lt;/segment&gt;</span>
+        <span class="nt">&lt;/unit&gt;</span>
+    <span class="nt">&lt;/file&gt;</span>
+<span class="nt">&lt;/xliff&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

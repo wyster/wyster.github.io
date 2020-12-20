@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Authorization</title>
+    <link rel="stylesheet" href="../../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="authorization">
+<span id="index-0"></span><h1>Authorization</h1>
+<p>When any of the authentication providers (see <a class="reference internal" href="authentication.xhtml#authentication-providers"><span class="std std-ref">Authentication Providers</span></a>)
+has verified the still-unauthenticated token, an authenticated token will
+be returned. The authentication listener should set this token directly
+in the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/Storage/TokenStorageInterface.php" title="Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface"><span class="pre">TokenStorageInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/Storage/TokenStorageInterface.php]</span></span></code>
+using its <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/Storage/TokenStorageInterface.php" title="Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface::setToken()"><span class="pre">setToken()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/Storage/TokenStorageInterface.php]</span></span></code>
+method.</p>
+<p>From then on, the user is authenticated, i.e. identified. Now, other parts
+of the application can use the token to decide whether or not the user may
+request a certain URI, or modify a certain object. This decision will be made
+by an instance of <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/AccessDecisionManagerInterface.php" title="Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface"><span class="pre">AccessDecisionManagerInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/AccessDecisionManagerInterface.php]</span></span></code>.</p>
+<p>An authorization decision will always be based on a few things:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The current token</dt>
+<dd><p>For instance, the token’s <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php" title="Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getRoles()"><span class="pre">getRoles()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php]</span></span></code>
+method may be used to retrieve the roles of the current user (e.g.
+<code class="docutils literal notranslate"><span class="pre">ROLE_SUPER_ADMIN</span></code>), or a decision may be based on the class of the token.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>A set of attributes</dt>
+<dd><p>Each attribute stands for a certain right the user should have, e.g.
+<code class="docutils literal notranslate"><span class="pre">ROLE_ADMIN</span></code> to make sure the user is an administrator.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>An object (optional)</dt>
+<dd><p>Any object for which access control needs to be checked, like
+an article or a comment object.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="section" id="access-decision-manager">
+<span id="components-security-access-decision-manager"></span><h2>Access Decision Manager</h2>
+<p>Since deciding whether or not a user is authorized to perform a certain
+action can be a complicated process, the standard <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/AccessDecisionManager.php" title="Symfony\Component\Security\Core\Authorization\AccessDecisionManager"><span class="pre">AccessDecisionManager</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/AccessDecisionManager.php]</span></span></code>
+itself depends on multiple voters, and makes a final verdict based on all
+the votes (either positive, negative or neutral) it has received. It
+recognizes several strategies:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">affirmative</span></code> (default)</dt>
+<dd><p>grant access as soon as there is one voter granting access;</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">consensus</span></code></dt>
+<dd><p>grant access if there are more voters granting access than there are denying;</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unanimous</span></code></dt>
+<dd><p>only grant access if none of the voters has denied access. If all voters
+abstained from voting, the decision is based on the <code class="docutils literal notranslate"><span class="pre">allow_if_all_abstain</span></code>
+config option (which defaults to <code class="docutils literal notranslate"><span class="pre">false</span></code>).</p>
+</dd>
+</dl>
+<p>Usage of the available options in detail:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authorization\AccessDecisionManager</span><span class="p">;</span>
+
+<span class="c1">// instances of Symfony\Component\Security\Core\Authorization\Voter\VoterInterface</span>
+<span class="nv">$voters</span> <span class="o">=</span> <span class="p">[</span><span class="o">...</span><span class="p">];</span>
+
+<span class="c1">// one of &quot;affirmative&quot;, &quot;consensus&quot;, &quot;unanimous&quot;</span>
+<span class="nv">$strategy</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="c1">// whether or not to grant access when all voters abstain</span>
+<span class="nv">$allowIfAllAbstainDecisions</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="c1">// whether or not to grant access when there is no majority (applies only to the &quot;consensus&quot; strategy)</span>
+<span class="nv">$allowIfEqualGrantedDeniedDecisions</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="nv">$accessDecisionManager</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AccessDecisionManager</span><span class="p">(</span>
+    <span class="nv">$voters</span><span class="p">,</span>
+    <span class="nv">$strategy</span><span class="p">,</span>
+    <span class="nv">$allowIfAllAbstainDecisions</span><span class="p">,</span>
+    <span class="nv">$allowIfEqualGrantedDeniedDecisions</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>You can change the default strategy in the
+<a class="reference internal" href="../../security/voters.xhtml#security-voters-change-strategy"><span class="std std-ref">configuration</span></a>.</p>
+</div>
+</div>
+<div class="section" id="voters">
+<h2>Voters</h2>
+<p>Voters are instances
+of <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/VoterInterface.php" title="Symfony\Component\Security\Core\Authorization\Voter\VoterInterface"><span class="pre">VoterInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/VoterInterface.php]</span></span></code>,
+which means they have to implement a few methods which allows the decision
+manager to use them:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">vote(TokenInterface</span> <span class="pre">$token,</span> <span class="pre">$object,</span> <span class="pre">array</span> <span class="pre">$attributes)</span></code></dt>
+<dd><p>this method will do the actual voting and return a value equal to one
+of the class constants of <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/VoterInterface.php" title="Symfony\Component\Security\Core\Authorization\Voter\VoterInterface"><span class="pre">VoterInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/VoterInterface.php]</span></span></code>,
+i.e. <code class="docutils literal notranslate"><span class="pre">VoterInterface::ACCESS_GRANTED</span></code>, <code class="docutils literal notranslate"><span class="pre">VoterInterface::ACCESS_DENIED</span></code>
+or <code class="docutils literal notranslate"><span class="pre">VoterInterface::ACCESS_ABSTAIN</span></code>;</p>
+</dd>
+</dl>
+<p>The Security component contains some standard voters which cover many use
+cases:</p>
+<div class="section" id="authenticatedvoter">
+<h3>AuthenticatedVoter</h3>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/AuthenticatedVoter.php" title="Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter"><span class="pre">AuthenticatedVoter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/AuthenticatedVoter.php]</span></span></code>
+voter supports the attributes <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_FULLY</span></code>, <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_REMEMBERED</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_ANONYMOUSLY</span></code> and grants access based on the current
+level of authentication, i.e. is the user fully authenticated, or only based
+on a “remember-me” cookie, or even authenticated anonymously?:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolver</span><span class="p">;</span>
+
+<span class="nv">$trustResolver</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AuthenticationTrustResolver</span><span class="p">();</span>
+
+<span class="nv">$authenticatedVoter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AuthenticatedVoter</span><span class="p">(</span><span class="nv">$trustResolver</span><span class="p">);</span>
+
+<span class="c1">// instance of Symfony\Component\Security\Core\Authentication\Token\TokenInterface</span>
+<span class="nv">$token</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="c1">// any object</span>
+<span class="nv">$object</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="nv">$vote</span> <span class="o">=</span> <span class="nv">$authenticatedVoter</span><span class="o">-&gt;</span><span class="na">vote</span><span class="p">(</span><span class="nv">$token</span><span class="p">,</span> <span class="nv">$object</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;IS_AUTHENTICATED_FULLY&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rolevoter">
+<h3>RoleVoter</h3>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/RoleVoter.php" title="Symfony\Component\Security\Core\Authorization\Voter\RoleVoter"><span class="pre">RoleVoter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/RoleVoter.php]</span></span></code>
+supports attributes starting with <code class="docutils literal notranslate"><span class="pre">ROLE_</span></code> and grants access to the user
+when at least one required <code class="docutils literal notranslate"><span class="pre">ROLE_*</span></code> attribute can be found in the array of
+roles returned by the token’s <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php" title="Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getRoles()"><span class="pre">getRoles()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php]</span></span></code>
+method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authorization\Voter\RoleVoter</span><span class="p">;</span>
+
+<span class="nv">$roleVoter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RoleVoter</span><span class="p">(</span><span class="s1">&#39;ROLE_&#39;</span><span class="p">);</span>
+
+<span class="nv">$roleVoter</span><span class="o">-&gt;</span><span class="na">vote</span><span class="p">(</span><span class="nv">$token</span><span class="p">,</span> <span class="nv">$object</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ROLE_ADMIN&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rolehierarchyvoter">
+<h3>RoleHierarchyVoter</h3>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/RoleHierarchyVoter.php" title="Symfony\Component\Security\Core\Authorization\Voter\RoleHierarchyVoter"><span class="pre">RoleHierarchyVoter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/RoleHierarchyVoter.php]</span></span></code>
+extends <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/RoleVoter.php" title="Symfony\Component\Security\Core\Authorization\Voter\RoleVoter"><span class="pre">RoleVoter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/RoleVoter.php]</span></span></code>
+and provides some additional functionality: it knows how to handle a
+hierarchy of roles. For instance, a <code class="docutils literal notranslate"><span class="pre">ROLE_SUPER_ADMIN</span></code> role may have sub-roles
+<code class="docutils literal notranslate"><span class="pre">ROLE_ADMIN</span></code> and <code class="docutils literal notranslate"><span class="pre">ROLE_USER</span></code>, so that when a certain object requires the
+user to have the <code class="docutils literal notranslate"><span class="pre">ROLE_ADMIN</span></code> role, it grants access to users who in fact
+have the <code class="docutils literal notranslate"><span class="pre">ROLE_ADMIN</span></code> role, but also to users having the <code class="docutils literal notranslate"><span class="pre">ROLE_SUPER_ADMIN</span></code>
+role:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authorization\Voter\RoleHierarchyVoter</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Role\RoleHierarchy</span><span class="p">;</span>
+
+<span class="nv">$hierarchy</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;ROLE_SUPER_ADMIN&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;ROLE_ADMIN&#39;</span><span class="p">,</span> <span class="s1">&#39;ROLE_USER&#39;</span><span class="p">],</span>
+<span class="p">];</span>
+
+<span class="nv">$roleHierarchy</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RoleHierarchy</span><span class="p">(</span><span class="nv">$hierarchy</span><span class="p">);</span>
+
+<span class="nv">$roleHierarchyVoter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RoleHierarchyVoter</span><span class="p">(</span><span class="nv">$roleHierarchy</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="expressionvoter">
+<h3>ExpressionVoter</h3>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/ExpressionVoter.php" title="Symfony\Component\Security\Core\Authorization\Voter\ExpressionVoter"><span class="pre">ExpressionVoter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/ExpressionVoter.php]</span></span></code>
+grants access based on the evaluation of expressions created with the
+<a class="reference internal" href="../expression_language.xhtml"><span class="doc">ExpressionLanguage component</span></a>. These
+expressions have access to a number of
+<a class="reference internal" href="../../security/expressions.xhtml#security-expression-variables"><span class="std std-ref">special security variables</span></a>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\ExpressionLanguage\Expression</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authorization\Voter\ExpressionVoter</span><span class="p">;</span>
+
+<span class="c1">// Symfony\Component\Security\Core\Authorization\ExpressionLanguage;</span>
+<span class="nv">$expressionLanguage</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="c1">// instance of Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface</span>
+<span class="nv">$trustResolver</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="c1">// Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface</span>
+<span class="nv">$authorizationChecker</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="nv">$expressionVoter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ExpressionVoter</span><span class="p">(</span><span class="nv">$expressionLanguage</span><span class="p">,</span> <span class="nv">$trustResolver</span><span class="p">,</span> <span class="nv">$authorizationChecker</span><span class="p">);</span>
+
+<span class="c1">// instance of Symfony\Component\Security\Core\Authentication\Token\TokenInterface</span>
+<span class="nv">$token</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="c1">// any object</span>
+<span class="nv">$object</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+<span class="nv">$expression</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Expression</span><span class="p">(</span>
+    <span class="s1">&#39;&quot;ROLE_ADMIN&quot; in roles or (not is_anonymous() and user.isSuperAdmin())&#39;</span>
+<span class="p">)</span>
+
+<span class="nv">$vote</span> <span class="o">=</span> <span class="nv">$expressionVoter</span><span class="o">-&gt;</span><span class="na">vote</span><span class="p">(</span><span class="nv">$token</span><span class="p">,</span> <span class="nv">$object</span><span class="p">,</span> <span class="p">[</span><span class="nv">$expression</span><span class="p">]);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When you make your own voter, you can use its constructor to inject any
+dependencies it needs to come to a decision.</p>
+</div>
+</div>
+</div>
+<div class="section" id="roles">
+<h2>Roles</h2>
+<p>Roles are strings that give expression to a certain right the user has (e.g.
+<em>“edit a blog post”</em>, <em>“create an invoice”</em>). You can freely choose those
+strings. The only requirement is that they must start with the <code class="docutils literal notranslate"><span class="pre">ROLE_</span></code> prefix
+(e.g. <code class="docutils literal notranslate"><span class="pre">ROLE_POST_EDIT</span></code>, <code class="docutils literal notranslate"><span class="pre">ROLE_INVOICE_CREATE</span></code>).</p>
+</div>
+<div class="section" id="using-the-decision-manager">
+<h2>Using the Decision Manager</h2>
+<div class="section" id="the-access-listener">
+<h3>The Access Listener</h3>
+<p>The access decision manager can be used at any point in a request to decide whether
+or not the current user is entitled to access a given resource. One optional,
+but useful, method for restricting access based on a URL pattern is the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Http/Firewall/AccessListener.php" title="Symfony\Component\Security\Http\Firewall\AccessListener"><span class="pre">AccessListener</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Http/Firewall/AccessListener.php]</span></span></code>,
+which is one of the firewall listeners (see <a class="reference internal" href="firewall.xhtml#firewall-listeners"><span class="std std-ref">Firewall Listeners</span></a>) that
+is triggered for each request matching the firewall map (see <a class="reference internal" href="firewall.xhtml#firewall"><span class="std std-ref">A Firewall for HTTP Requests</span></a>).</p>
+<p>It uses an access map (which should be an instance of <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Http/AccessMapInterface.php" title="Symfony\Component\Security\Http\AccessMapInterface"><span class="pre">AccessMapInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Http/AccessMapInterface.php]</span></span></code>)
+which contains request matchers and a corresponding set of attributes that
+are required for the current user to get access to the application:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\RequestMatcher</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Security\Http\AccessMap</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Security\Http\Firewall\AccessListener</span><span class="p">;</span>
+
+<span class="nv">$accessMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AccessMap</span><span class="p">();</span>
+<span class="nv">$tokenStorage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TokenStorage</span><span class="p">();</span>
+<span class="nv">$requestMatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RequestMatcher</span><span class="p">(</span><span class="s1">&#39;^/admin&#39;</span><span class="p">);</span>
+<span class="nv">$accessMap</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="nv">$requestMatcher</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ROLE_ADMIN&#39;</span><span class="p">]);</span>
+
+<span class="nv">$accessListener</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AccessListener</span><span class="p">(</span>
+    <span class="nv">$tokenStorage</span><span class="p">,</span>
+    <span class="nv">$accessDecisionManager</span><span class="p">,</span>
+    <span class="nv">$accessMap</span><span class="p">,</span>
+    <span class="nv">$authenticationManager</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="authorization-checker">
+<h3>Authorization Checker</h3>
+<p>The access decision manager is also available to other parts of the application
+via the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/AuthorizationChecker.php" title="Symfony\Component\Security\Core\Authorization\AuthorizationChecker::isGranted()"><span class="pre">isGranted()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/AuthorizationChecker.php]</span></span></code>
+method of the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/AuthorizationChecker.php" title="Symfony\Component\Security\Core\Authorization\AuthorizationChecker"><span class="pre">AuthorizationChecker</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/AuthorizationChecker.php]</span></span></code>.
+A call to this method will directly delegate the question to the access
+decision manager:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authorization\AuthorizationChecker</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Exception\AccessDeniedException</span><span class="p">;</span>
+
+<span class="nv">$authorizationChecker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AuthorizationChecker</span><span class="p">(</span>
+    <span class="nv">$tokenStorage</span><span class="p">,</span>
+    <span class="nv">$authenticationManager</span><span class="p">,</span>
+    <span class="nv">$accessDecisionManager</span>
+<span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$authorizationChecker</span><span class="o">-&gt;</span><span class="na">isGranted</span><span class="p">(</span><span class="s1">&#39;ROLE_ADMIN&#39;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nx">AccessDeniedException</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Twig Extensions Defined by Symfony</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="twig-extensions-defined-by-symfony">
+<span id="index-0"></span><h1>Twig Extensions Defined by Symfony</h1>
+<p><a class="reference internal" href="../templates.xhtml#twig-language"><span class="std std-ref">Twig</span></a> is the template engine used in Symfony applications.
+There are tens of <a class="reference external" href="https://twig.symfony.com/doc/2.x/#reference">default filters and functions defined by Twig</a><span class="link-target"> [https://twig.symfony.com/doc/2.x/#reference]</span>, but Symfony
+also defines some filters, functions and tags to integrate the various Symfony
+components with Twig templates. This article explains them all.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If these extensions provided by Symfony are not enough, you can
+<a class="reference internal" href="../templating/twig_extension.xhtml"><span class="doc">create a custom Twig extension</span></a> to define
+even more filters and functions.</p>
+</div>
+<div class="section" id="functions">
+<span id="reference-twig-functions"></span><h2>Functions</h2>
+<div class="section" id="render">
+<span id="reference-twig-function-render"></span><h3>render</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">render</span><span class="o">(</span><span class="nv">uri</span><span class="o">,</span> <span class="nv">options</span> <span class="o">=</span> <span class="o">[])</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">uri</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> | <code class="docutils literal notranslate"><span class="pre">ControllerReference</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">options</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+</dl>
+<p>Makes a request to the given internal URI or controller and returns the result.
+The render strategy can be specified in the <code class="docutils literal notranslate"><span class="pre">strategy</span></code> key of the options.
+It’s commonly used to <a class="reference internal" href="../templates.xhtml#templates-embed-controllers"><span class="std std-ref">embed controllers in templates</span></a>.</p>
+</div>
+<div class="section" id="render-esi">
+<span id="reference-twig-function-render-esi"></span><h3>render_esi</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">render_esi</span><span class="o">(</span><span class="nv">uri</span><span class="o">,</span> <span class="nv">options</span> <span class="o">=</span> <span class="o">[])</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">uri</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> | <code class="docutils literal notranslate"><span class="pre">ControllerReference</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">options</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+</dl>
+<p>It’s similar to the <a class="reference internal" href="#render">render</a> function and defines the same arguments. However,
+it generates an ESI tag when <a class="reference internal" href="../http_cache/esi.xhtml"><span class="doc">ESI support</span></a> is enabled or
+falls back to the behavior of <a class="reference internal" href="#render">render</a> otherwise.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">render_esi()</span></code> function is an example of the shortcut functions
+of <code class="docutils literal notranslate"><span class="pre">render</span></code>. It automatically sets the strategy based on what’s given
+in the function name, e.g. <code class="docutils literal notranslate"><span class="pre">render_hinclude()</span></code> will use the hinclude.js
+strategy. This works for all <code class="docutils literal notranslate"><span class="pre">render_*()</span></code> functions.</p>
+</div>
+</div>
+<div class="section" id="controller">
+<h3>controller</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">controller</span><span class="o">(</span><span class="nv">controller</span><span class="o">,</span> <span class="nv">attributes</span> <span class="o">=</span> <span class="o">[],</span> <span class="nv">query</span> <span class="o">=</span> <span class="o">[])</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">controller</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">attributes</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">query</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+</dl>
+<p>Returns an instance of <code class="docutils literal notranslate"><span class="pre">ControllerReference</span></code> to be used with functions
+like <a class="reference internal" href="#reference-twig-function-render"><span class="std std-ref">render()</span></a> and
+<a class="reference internal" href="#reference-twig-function-render-esi"><span class="std std-ref">render_esi()</span></a>.</p>
+</div>
+<div class="section" id="asset">
+<span id="reference-twig-function-asset"></span><h3>asset</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">asset</span><span class="o">(</span><span class="nv">path</span><span class="o">,</span> <span class="nv">packageName</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">path</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">packageName</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> | <code class="docutils literal notranslate"><span class="pre">null</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+</dd>
+</dl>
+<p>Returns the public path of the given asset path (which can be a CSS file, a
+JavaScript file, an image path, etc.). This function takes into account where
+the application is installed (e.g. in case the project is accessed in a host
+subdirectory) and the optional asset package base path.</p>
+<p>Symfony provides various cache busting implementations via the
+<a class="reference internal" href="configuration/framework.xhtml#reference-framework-assets-version"><span class="std std-ref">version</span></a>, <a class="reference internal" href="configuration/framework.xhtml#reference-assets-version-strategy"><span class="std std-ref">version_strategy</span></a>,
+and <a class="reference internal" href="configuration/framework.xhtml#reference-assets-json-manifest-path"><span class="std std-ref">json_manifest_path</span></a> configuration options.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Read more about <a class="reference internal" href="../templates.xhtml#templates-link-to-assets"><span class="std std-ref">linking to web assets from templates</span></a>.</p>
+</div>
+</div>
+<div class="section" id="asset-version">
+<h3>asset_version</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">asset_version</span><span class="o">(</span><span class="nv">packageName</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">packageName</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> | <code class="docutils literal notranslate"><span class="pre">null</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+</dd>
+</dl>
+<p>Returns the current version of the package, more information in
+<a class="reference internal" href="../templates.xhtml#templates-link-to-assets"><span class="std std-ref">Linking to CSS, JavaScript and Image Assets</span></a>.</p>
+</div>
+<div class="section" id="csrf-token">
+<span id="reference-twig-function-csrf-token"></span><h3>csrf_token</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">csrf_token</span><span class="o">(</span><span class="nv">intention</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">intention</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> - an arbitrary string used to identify the token.</p>
+</dd>
+</dl>
+<p>Renders a CSRF token. Use this function if you want <a class="reference internal" href="../security/csrf.xhtml"><span class="doc">CSRF protection</span></a>
+in a regular HTML form not managed by the Symfony Form component.</p>
+</div>
+<div class="section" id="is-granted">
+<h3>is_granted</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">is_granted</span><span class="o">(</span><span class="nv">role</span><span class="o">,</span> <span class="nv">object</span> <span class="o">=</span> <span class="kp">null</span><span class="o">,</span> <span class="nv">field</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">role</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code>, <code class="docutils literal notranslate"><span class="pre">string[]</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">object</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">field</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the current user has the given role. If several roles are
+passed in an array, <code class="docutils literal notranslate"><span class="pre">true</span></code> is returned if the user has at least one of
+them.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.4: </span>The feature to pass an array of roles to <code class="docutils literal notranslate"><span class="pre">is_granted()</span></code> was deprecated in Symfony 4.4.</p>
+</div>
+<p>Optionally, an object can be passed to be used by the voter. More information
+can be found in <a class="reference internal" href="../security.xhtml#security-template"><span class="std std-ref">Access Control in Templates</span></a>.</p>
+</div>
+<div class="section" id="logout-path">
+<h3>logout_path</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">logout_path</span><span class="o">(</span><span class="nv">key</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">key</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Generates a relative logout URL for the given firewall. If no key is provided,
+the URL is generated for the current firewall the user is logged into.</p>
+</div>
+<div class="section" id="logout-url">
+<h3>logout_url</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">logout_url</span><span class="o">(</span><span class="nv">key</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">key</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Equal to the <a class="reference internal" href="#logout-path">logout_path</a> function, but it’ll generate an absolute URL
+instead of a relative one.</p>
+</div>
+<div class="section" id="path">
+<h3>path</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">path</span><span class="o">(</span><span class="nv">route_name</span><span class="o">,</span> <span class="nv">route_parameters</span> <span class="o">=</span> <span class="o">[],</span> <span class="nv">relative</span> <span class="o">=</span> <span class="kp">false</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">parameters</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">relative</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+<p>Returns the relative URL (without the scheme and host) for the given route.
+If <code class="docutils literal notranslate"><span class="pre">relative</span></code> is enabled, it’ll create a path relative to the current path.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Read more about <a class="reference internal" href="../routing.xhtml"><span class="doc">Symfony routing</span></a> and about
+<a class="reference internal" href="../templates.xhtml#templates-link-to-pages"><span class="std std-ref">creating links in Twig templates</span></a>.</p>
+</div>
+</div>
+<div class="section" id="url">
+<h3>url</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">url</span><span class="o">(</span><span class="nv">route_name</span><span class="o">,</span> <span class="nv">route_parameters</span> <span class="o">=</span> <span class="o">[],</span> <span class="nv">schemeRelative</span> <span class="o">=</span> <span class="kp">false</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">parameters</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">schemeRelative</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+<p>Returns the absolute URL (with scheme and host) for the given route. If
+<code class="docutils literal notranslate"><span class="pre">schemeRelative</span></code> is enabled, it’ll create a scheme-relative URL.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Read more about <a class="reference internal" href="../routing.xhtml"><span class="doc">Symfony routing</span></a> and about
+<a class="reference internal" href="../templates.xhtml#templates-link-to-pages"><span class="std std-ref">creating links in Twig templates</span></a>.</p>
+</div>
+</div>
+<div class="section" id="absolute-url">
+<h3>absolute_url</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">absolute_url</span><span class="o">(</span><span class="nv">path</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">path</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Returns the absolute URL (with scheme and host) from the passed relative path. Combine it with the
+<a class="reference internal" href="#reference-twig-function-asset"><span class="std std-ref">asset() function</span></a> to generate absolute URLs
+for web assets. Read more about <a class="reference internal" href="../templates.xhtml#templates-link-to-assets"><span class="std std-ref">Linking to CSS, JavaScript and Image Assets</span></a>.</p>
+</div>
+<div class="section" id="relative-path">
+<h3>relative_path</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">relative_path</span><span class="o">(</span><span class="nv">path</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">path</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Returns the relative path from the passed absolute URL. For example, assume
+you’re on the following page in your app:
+<code class="docutils literal notranslate"><span class="pre">http://example.com/products/hover-board</span></code>.</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">relative_path</span><span class="o">(</span><span class="s1">&#39;http://example.com/human.txt&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+<span class="c">{# ../human.txt #}</span><span class="x"></span>
+
+<span class="cp">{{</span> <span class="nv">relative_path</span><span class="o">(</span><span class="s1">&#39;http://example.com/products/products_icon.png&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+<span class="c">{# products_icon.png #}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="expression">
+<h3>expression</h3>
+<p>Creates an <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/Expression.php" title="Symfony\Component\ExpressionLanguage\Expression"><span class="pre">Expression</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/Expression.php]</span></span></code> related
+to the <a class="reference internal" href="../components/expression_language.xhtml"><span class="doc">ExpressionLanguage component</span></a>.</p>
+</div>
+<div class="section" id="form-related-functions">
+<h3>Form Related Functions</h3>
+<p>The following functions related to Symfony Forms are also available. They are
+explained in the article about <a class="reference internal" href="../form/form_customization.xhtml"><span class="doc">customizing form rendering</span></a>:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#reference-forms-twig-form"><span class="std std-ref">form()</span></a></p></li>
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#reference-forms-twig-start"><span class="std std-ref">form_start()</span></a></p></li>
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#reference-forms-twig-end"><span class="std std-ref">form_end()</span></a></p></li>
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#reference-forms-twig-widget"><span class="std std-ref">form_widget()</span></a></p></li>
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#reference-forms-twig-errors"><span class="std std-ref">form_errors()</span></a></p></li>
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#reference-forms-twig-label"><span class="std std-ref">form_label()</span></a></p></li>
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#reference-forms-twig-help"><span class="std std-ref">form_help()</span></a></p></li>
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#reference-forms-twig-row"><span class="std std-ref">form_row()</span></a></p></li>
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#reference-forms-twig-rest"><span class="std std-ref">form_rest()</span></a></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="filters">
+<span id="reference-twig-filters"></span><h2>Filters</h2>
+<div class="section" id="humanize">
+<span id="reference-twig-humanize-filter"></span><h3>humanize</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">text</span><span class="o">|</span><span class="nf">humanize</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">text</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Makes a technical name human readable (i.e. replaces underscores by spaces
+or transforms camelCase text like <code class="docutils literal notranslate"><span class="pre">helloWorld</span></code> to <code class="docutils literal notranslate"><span class="pre">hello</span> <span class="pre">world</span></code>
+and then capitalizes the string).</p>
+</div>
+<div class="section" id="trans">
+<h3>trans</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span><span class="o">(</span><span class="nv">arguments</span> <span class="o">=</span> <span class="o">[],</span> <span class="nv">domain</span> <span class="o">=</span> <span class="kp">null</span><span class="o">,</span> <span class="nv">locale</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">message</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">arguments</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">domain</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">locale</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+</dd>
+</dl>
+<p>Translates the text into the current language. More information in
+<a class="reference internal" href="../translation/templates.xhtml#translation-filters"><span class="std std-ref">Translation Filters</span></a>.</p>
+</div>
+<div class="section" id="transchoice">
+<h3>transchoice</h3>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> filter is deprecated since Symfony 4.2 and will be
+removed in 5.0. Use the <a class="reference internal" href="../translation/message_format.xhtml"><span class="doc">ICU MessageFormat</span></a> with
+the <code class="docutils literal notranslate"><span class="pre">trans</span></code> filter instead.</p>
+</div>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">transchoice</span><span class="o">(</span><span class="nv">count</span><span class="o">,</span> <span class="nv">arguments</span> <span class="o">=</span> <span class="o">[],</span> <span class="nv">domain</span> <span class="o">=</span> <span class="kp">null</span><span class="o">,</span> <span class="nv">locale</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">message</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">count</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">arguments</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">domain</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">locale</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+</dd>
+</dl>
+<p>Translates the text with pluralization support. More information in
+<a class="reference internal" href="../translation/templates.xhtml#translation-filters"><span class="std std-ref">Translation Filters</span></a>.</p>
+</div>
+<div class="section" id="yaml-encode">
+<h3>yaml_encode</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">input</span><span class="o">|</span><span class="nf">yaml_encode</span><span class="o">(</span><span class="nv">inline</span> <span class="o">=</span> <span class="m">0</span><span class="o">,</span> <span class="nv">dumpObjects</span> <span class="o">=</span> <span class="kp">false</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">input</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">mixed</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inline</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">0</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dumpObjects</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+<p>Transforms the input into YAML syntax. See <a class="reference internal" href="../components/yaml.xhtml#components-yaml-dump"><span class="std std-ref">Writing YAML Files</span></a> for
+more information.</p>
+</div>
+<div class="section" id="yaml-dump">
+<h3>yaml_dump</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">value</span><span class="o">|</span><span class="nf">yaml_dump</span><span class="o">(</span><span class="nv">inline</span> <span class="o">=</span> <span class="m">0</span><span class="o">,</span> <span class="nv">dumpObjects</span> <span class="o">=</span> <span class="kp">false</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">value</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">mixed</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inline</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">0</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dumpObjects</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+<p>Does the same as <a class="reference external" href="yaml_encode">yaml_encode()</a>, but includes the type in
+the output.</p>
+</div>
+<div class="section" id="abbr-class">
+<h3>abbr_class</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">class</span><span class="o">|</span><span class="nf">abbr_class</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">class</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Generates an <code class="docutils literal notranslate"><span class="pre">&lt;abbr&gt;</span></code> element with the short name of a PHP class (the
+FQCN will be shown in a tooltip when a user hovers over the element).</p>
+</div>
+<div class="section" id="abbr-method">
+<h3>abbr_method</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">method</span><span class="o">|</span><span class="nf">abbr_method</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">method</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Generates an <code class="docutils literal notranslate"><span class="pre">&lt;abbr&gt;</span></code> element using the <code class="docutils literal notranslate"><span class="pre">FQCN::method()</span></code> syntax. If
+<code class="docutils literal notranslate"><span class="pre">method</span></code> is <code class="docutils literal notranslate"><span class="pre">Closure</span></code>, <code class="docutils literal notranslate"><span class="pre">Closure</span></code> will be used instead and if <code class="docutils literal notranslate"><span class="pre">method</span></code>
+doesn’t have a class name, it’s shown as a function (<code class="docutils literal notranslate"><span class="pre">method()</span></code>).</p>
+</div>
+<div class="section" id="format-args">
+<h3>format_args</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">args</span><span class="o">|</span><span class="nf">format_args</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">args</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+</dd>
+</dl>
+<p>Generates a string with the arguments and their types (within <code class="docutils literal notranslate"><span class="pre">&lt;em&gt;</span></code> elements).</p>
+</div>
+<div class="section" id="format-args-as-text">
+<h3>format_args_as_text</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">args</span><span class="o">|</span><span class="nf">format_args_as_text</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">args</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code></p>
+</dd>
+</dl>
+<p>Equal to the <a class="reference internal" href="#format-args">format_args</a> filter, but without using HTML tags.</p>
+</div>
+<div class="section" id="file-excerpt">
+<h3>file_excerpt</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">file</span><span class="o">|</span><span class="nf">file_excerpt</span><span class="o">(</span><span class="nv">line</span><span class="o">,</span> <span class="nv">srcContext</span> <span class="o">=</span> <span class="m">3</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">file</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">line</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">srcContext</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+</dd>
+</dl>
+<p>Generates an excerpt of a code file around the given <code class="docutils literal notranslate"><span class="pre">line</span></code> number. The
+<code class="docutils literal notranslate"><span class="pre">srcContext</span></code> argument defines the total number of lines to display around the
+given line number (use <code class="docutils literal notranslate"><span class="pre">-1</span></code> to display the whole file).</p>
+</div>
+<div class="section" id="format-file">
+<h3>format_file</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">file</span><span class="o">|</span><span class="nf">format_file</span><span class="o">(</span><span class="nv">line</span><span class="o">,</span> <span class="nv">text</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">file</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">line</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">text</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+</dd>
+</dl>
+<p>Generates the file path inside an <code class="docutils literal notranslate"><span class="pre">&lt;a&gt;</span></code> element. If the path is inside
+the kernel root directory, the kernel root directory path is replaced by
+<code class="docutils literal notranslate"><span class="pre">kernel.project_dir</span></code> (showing the full path in a tooltip on hover).</p>
+</div>
+<div class="section" id="format-file-from-text">
+<h3>format_file_from_text</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">text</span><span class="o">|</span><span class="nf">format_file_from_text</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">text</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Uses <a class="reference internal" href="#format-file">format_file</a> to improve the output of default PHP errors.</p>
+</div>
+<div class="section" id="file-link">
+<h3>file_link</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">file</span><span class="o">|</span><span class="nf">file_link</span><span class="o">(</span><span class="nv">line</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">file</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">line</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+</dd>
+</dl>
+<p>Generates a link to the provided file and line number using
+a preconfigured scheme.</p>
+</div>
+<div class="section" id="file-relative">
+<h3>file_relative</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">file</span><span class="o">|</span><span class="nf">file_relative</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">file</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>It transforms the given absolute file path into a new file path relative to
+project’s root directory:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="s1">&#39;/var/www/blog/templates/admin/index.html.twig&#39;</span><span class="o">|</span><span class="nf">file_relative</span> <span class="cp">}}</span><span class="x"></span>
+<span class="c">{# if project root dir is &#39;/var/www/blog/&#39;, it returns &#39;templates/admin/index.html.twig&#39; #}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<p>If the given file path is out of the project directory, a <code class="docutils literal notranslate"><span class="pre">null</span></code> value
+will be returned.</p>
+</div>
+</div>
+<div class="section" id="tags">
+<span id="reference-twig-tags"></span><h2>Tags</h2>
+<div class="section" id="form-theme">
+<span id="reference-twig-tag-form-theme"></span><h3>form_theme</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">form_theme</span> <span class="nv">form</span> <span class="nv">resources</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">form</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">FormView</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">resources</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> | <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Sets the resources to override the form theme for the given form view instance.
+You can use <code class="docutils literal notranslate"><span class="pre">_self</span></code> as resources to set it to the current resource. More
+information in <a class="reference internal" href="../form/form_customization.xhtml"><span class="doc">How to Customize Form Rendering</span></a>.</p>
+</div>
+<div class="section" id="id2">
+<h3>trans</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">trans</span> <span class="nv">with</span> <span class="nv">vars</span> <span class="nv">from</span> <span class="nv">domain</span> <span class="nv">into</span> <span class="nv">locale</span> <span class="cp">%}{%</span> <span class="k">endtrans</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">vars</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">domain</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">locale</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>Renders the translation of the content. More information in <a class="reference internal" href="../translation/templates.xhtml#translation-tags"><span class="std std-ref">Using Twig Tags</span></a>.</p>
+</div>
+<div class="section" id="id3">
+<h3>transchoice</h3>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> tag is deprecated since Symfony 4.2 and will be
+removed in 5.0. Use the <a class="reference internal" href="../translation/message_format.xhtml"><span class="doc">ICU MessageFormat</span></a> with
+the <code class="docutils literal notranslate"><span class="pre">trans</span></code> tag instead.</p>
+</div>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">transchoice</span> <span class="nv">count</span> <span class="nv">with</span> <span class="nv">vars</span> <span class="nv">from</span> <span class="nv">domain</span> <span class="nv">into</span> <span class="nv">locale</span> <span class="cp">%}{%</span> <span class="k">endtranschoice</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">count</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vars</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">domain</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">locale</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
+</dd>
+</dl>
+<p>Renders the translation of the content with pluralization support, more
+information in <a class="reference internal" href="../translation/templates.xhtml#translation-tags"><span class="std std-ref">Using Twig Tags</span></a>.</p>
+</div>
+<div class="section" id="trans-default-domain">
+<h3>trans_default_domain</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">trans_default_domain</span> <span class="nv">domain</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">domain</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<p>This will set the default domain in the current template.</p>
+</div>
+<div class="section" id="stopwatch">
+<span id="reference-twig-tag-stopwatch"></span><h3>stopwatch</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">stopwatch</span> <span class="s1">&#39;event_name&#39;</span> <span class="cp">%}</span><span class="x">...</span><span class="cp">{%</span> <span class="k">endstopwatch</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<p>This measures the time and memory used to execute some code in the template and
+displays it in the Symfony profiler. See <a class="reference internal" href="../performance.xhtml#profiling-applications"><span class="std std-ref">how to profile Symfony applications</span></a>.</p>
+</div>
+</div>
+<div class="section" id="tests">
+<span id="reference-twig-tests"></span><h2>Tests</h2>
+<p>The following tests related to Symfony Forms are available. They are explained
+in the article about <a class="reference internal" href="../form/form_customization.xhtml"><span class="doc">customizing form rendering</span></a>:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#form-twig-selectedchoice"><span class="std std-ref">selectedchoice()</span></a></p></li>
+<li><p><a class="reference internal" href="../form/form_customization.xhtml#form-twig-rootform"><span class="std std-ref">rootform()</span></a></p></li>
+</ul>
+</div>
+<div class="section" id="global-variables">
+<h2>Global Variables</h2>
+<div class="section" id="app">
+<h3>app</h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">app</span></code> variable is injected automatically by Symfony in all templates and
+provides access to lots of useful application information. Read more about the
+<a class="reference internal" href="../templates.xhtml#twig-app-variable"><span class="std std-ref">Twig global app variable</span></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

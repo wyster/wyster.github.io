@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../session.html">Sessions</a></li>
@@ -188,10 +186,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../security.html">The Security Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../serializer.html">The Serializer Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../string.html">The String Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../var_exporter.html">The VarExporter Component</a></li>
@@ -322,13 +317,17 @@ you can also set the current progress by calling the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProgressBar.php" title="Symfony\Component\Console\Helper\ProgressBar::setProgress()"><span class="pre">setProgress()</span></a></code> method.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">If your platform doesn’t support ANSI codes, updates to the progress
+<p>If your platform doesn’t support ANSI codes, updates to the progress
 bar are added as new lines. To prevent the output from being flooded,
 use the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProgressBar.php" title="Symfony\Component\Console\Helper\ProgressBar::minSecondsBetweenRedraws()"><span class="pre">minSecondsBetweenRedraws()</span></a></code>
 method to limit the number of redraws and the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProgressBar.php" title="Symfony\Component\Console\Helper\ProgressBar::setRedrawFrequency()"><span class="pre">setRedrawFrequency()</span></a></code> method
 to redraw every N iterations. By default, redraw frequency is
 <strong>100ms</strong> or <strong>10%</strong> of your <code class="docutils literal notranslate"><span class="pre">max</span></code>.</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">minSecondsBetweenRedraws()</span></code> and <code class="docutils literal notranslate"><span class="pre">maxSecondsBetweenRedraws()</span></code>
+methods were introduced in Symfony 4.4.</p>
+</div>
 </div>
 <p>If you don’t know the exact number of steps in advance, set it to a reasonable
 value and then call the <code class="docutils literal notranslate"><span class="pre">setMaxSteps()</span></code> method to update it as needed:</p>
@@ -404,6 +403,9 @@ which starts, advances and finishes the progress bar automatically:</p>
 2/2 [============================] 100%
 </pre></div>
 </td></tr></table></div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">iterate()</span></code> method was introduced in Symfony 4.3.</p>
+</div>
 <div class="section" id="customizing-the-progress-bar">
 <h2>Customizing the Progress Bar<a class="headerlink" href="#customizing-the-progress-bar" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="built-in-formats">
@@ -588,7 +590,7 @@ to display it can be customized:</p>
 fast or to slow for your application, use the methods
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProgressBar.php" title="Symfony\Component\Console\Helper\ProgressBar::minSecondsBetweenRedraws()"><span class="pre">minSecondsBetweenRedraws()</span></a></code> and
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProgressBar.php" title="Symfony\Component\Console\Helper\ProgressBar::maxSecondsBetweenRedraws()"><span class="pre">maxSecondsBetweenRedraws()</span></a></code>:</p>
-<div class="last highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$progressBar</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ProgressBar</span><span class="p">(</span><span class="nv">$output</span><span class="p">,</span> <span class="mi">50000</span><span class="p">);</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$progressBar</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ProgressBar</span><span class="p">(</span><span class="nv">$output</span><span class="p">,</span> <span class="mi">50000</span><span class="p">);</span>
 <span class="nv">$progressBar</span><span class="o">-&gt;</span><span class="na">start</span><span class="p">();</span>
 
 <span class="c1">// this redraws the screen every 100 iterations, but sets additional limits:</span>
@@ -604,6 +606,10 @@ fast or to slow for your application, use the methods
     <span class="nv">$progressBar</span><span class="o">-&gt;</span><span class="na">advance</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">minSecondsBetweenRedraws</span></code> and <code class="docutils literal notranslate"><span class="pre">maxSecondsBetweenRedraws()</span></code> methods
+were introduced in Symfony 4.4.</p>
 </div>
 </div>
 </div>

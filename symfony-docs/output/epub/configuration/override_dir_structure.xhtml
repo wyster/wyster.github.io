@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Override Symfony’s default Directory Structure</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-override-symfony-s-default-directory-structure">
+<span id="index-0"></span><h1>How to Override Symfony’s default Directory Structure</h1>
+<p>Symfony applications have the following default directory structure, but you can
+override it to create your own structure:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span>your-project/
+├─ assets/
+├─ bin/
+│  └─ console
+├─ config/
+├─ public/
+│  └─ index.php
+├─ src/
+│  └─ ...
+├─ templates/
+├─ tests/
+├─ translations/
+├─ var/
+│  ├─ cache/
+│  ├─ log/
+│  └─ ...
+└─ vendor/
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="override-the-configuration-directory">
+<span id="override-config-dir"></span><h2>Override the Configuration Directory</h2>
+<p>The configuration directory is the only one which cannot be overridden in a
+Symfony application. Its location is hardcoded as the <code class="docutils literal notranslate"><span class="pre">config/</span></code> directory
+at your project root directory.</p>
+</div>
+<div class="section" id="override-the-cache-directory">
+<span id="override-cache-dir"></span><h2>Override the Cache Directory</h2>
+<p>You can change the default cache directory by overriding the <code class="docutils literal notranslate"><span class="pre">getCacheDir()</span></code>
+method in the <code class="docutils literal notranslate"><span class="pre">Kernel</span></code> class of your application:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Kernel.php</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">Kernel</span> <span class="k">extends</span> <span class="nx">BaseKernel</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getCacheDir</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">)</span><span class="o">.</span><span class="s1">&#39;/var/&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">environment</span><span class="o">.</span><span class="s1">&#39;/cache&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In this code, <code class="docutils literal notranslate"><span class="pre">$this-&gt;environment</span></code> is the current environment (i.e. <code class="docutils literal notranslate"><span class="pre">dev</span></code>).
+In this case you have changed the location of the cache directory to
+<code class="docutils literal notranslate"><span class="pre">var/{environment}/cache/</span></code>.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should keep the cache directory different for each environment,
+otherwise some unexpected behavior may happen. Each environment generates
+its own cached configuration files, and so each needs its own directory to
+store those cache files.</p>
+</div>
+</div>
+<div class="section" id="override-the-log-directory">
+<span id="override-logs-dir"></span><h2>Override the Log Directory</h2>
+<p>Overriding the <code class="docutils literal notranslate"><span class="pre">var/log/</span></code> directory is the same as overriding the <code class="docutils literal notranslate"><span class="pre">var/cache/</span></code>
+directory. The only difference is that you need to override the <code class="docutils literal notranslate"><span class="pre">getLogDir()</span></code>
+method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Kernel.php</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">Kernel</span> <span class="k">extends</span> <span class="nx">Kernel</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getLogDir</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">)</span><span class="o">.</span><span class="s1">&#39;/var/&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">environment</span><span class="o">.</span><span class="s1">&#39;/log&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here you have changed the location of the directory to <code class="docutils literal notranslate"><span class="pre">var/{environment}/log/</span></code>.</p>
+</div>
+<div class="section" id="override-the-templates-directory">
+<span id="override-templates-dir"></span><h2>Override the Templates Directory</h2>
+<p>If your templates are not stored in the default <code class="docutils literal notranslate"><span class="pre">templates/</span></code> directory, use
+the <a class="reference internal" href="../reference/configuration/twig.xhtml#config-twig-default-path"><span class="std std-ref">twig.default_path</span></a> configuration
+option to define your own templates directory (use <a class="reference internal" href="../reference/configuration/twig.xhtml#config-twig-paths"><span class="std std-ref">twig.paths</span></a>
+for multiple directories):</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/twig.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">twig</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+    <span class="l l-Scalar l-Scalar-Plain">default_path</span><span class="p p-Indicator">:</span> <span class="s">&quot;%kernel.project_dir%//resources/views&quot;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/twig.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:twig=</span><span class="s">&quot;http://symfony.com/schema/dic/twig&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/twig</span>
+<span class="s">        https://symfony.com/schema/dic/twig/twig-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;twig:config&gt;</span>
+        <span class="nt">&lt;twig:default-path&gt;</span>%kernel.project_dir%/resources/views<span class="nt">&lt;/twig:default-path&gt;</span>
+    <span class="nt">&lt;/twig:config&gt;</span>
+
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/twig.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;twig&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;default_path&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;%kernel.project_dir%/resources/views&#39;</span><span class="p">,</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="override-the-translations-directory">
+<h2>Override the Translations Directory</h2>
+<p>If your translation files are not stored in the default <code class="docutils literal notranslate"><span class="pre">translations/</span></code>
+directory, use the <a class="reference internal" href="../reference/configuration/framework.xhtml#reference-translator-default-path"><span class="std std-ref">framework.translator.default_path</span></a>
+configuration option to define your own translations directory (use <a class="reference internal" href="../reference/configuration/framework.xhtml#reference-translator-paths"><span class="std std-ref">framework.translator.paths</span></a> for multiple directories):</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/translation.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">framework</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">translator</span><span class="p p-Indicator">:</span>
+        <span class="c1"># ...</span>
+        <span class="l l-Scalar l-Scalar-Plain">default_path</span><span class="p p-Indicator">:</span> <span class="s">&quot;%kernel.project_dir%/i18n&quot;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/translation.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:twig=</span><span class="s">&quot;http://symfony.com/schema/dic/twig&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/twig</span>
+<span class="s">        https://symfony.com/schema/dic/twig/twig-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;framework:config&gt;</span>
+        <span class="nt">&lt;framework:translator&gt;</span>
+            <span class="nt">&lt;framework:default-path&gt;</span>%kernel.project_dir%/i18n<span class="nt">&lt;/framework:default-path&gt;</span>
+        <span class="nt">&lt;/framework:translator&gt;</span>
+    <span class="nt">&lt;/framework:config&gt;</span>
+
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/translation.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;translator&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;default_path&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;%kernel.project_dir%/i18n&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="override-the-public-directory">
+<span id="override-the-web-directory"></span><span id="override-web-dir"></span><h2>Override the Public Directory</h2>
+<p>If you need to rename or move your <code class="docutils literal notranslate"><span class="pre">public/</span></code> directory, the only thing you
+need to guarantee is that the path to the <code class="docutils literal notranslate"><span class="pre">vendor/</span></code> directory is still correct in
+your <code class="docutils literal notranslate"><span class="pre">index.php</span></code> front controller. If you renamed the directory, you’re fine.
+But if you moved it in some way, you may need to modify these paths inside those
+files:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">require_once</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../path/to/vendor/autoload.php&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>You also need to change the <code class="docutils literal notranslate"><span class="pre">extra.public-dir</span></code> option in the <code class="docutils literal notranslate"><span class="pre">composer.json</span></code>
+file:</p>
+<div class="highlight-json notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;...&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;extra&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;...&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;public-dir&quot;</span><span class="p">:</span> <span class="s2">&quot;my_new_public_dir&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Some shared hosts have a <code class="docutils literal notranslate"><span class="pre">public_html/</span></code> web directory root. Renaming
+your web directory from <code class="docutils literal notranslate"><span class="pre">public/</span></code> to <code class="docutils literal notranslate"><span class="pre">public_html/</span></code> is one way to make
+your Symfony project work on your shared host. Another way is to deploy
+your application to a directory outside of your web root, delete your
+<code class="docutils literal notranslate"><span class="pre">public_html/</span></code> directory, and then replace it with a symbolic link to
+the <code class="docutils literal notranslate"><span class="pre">public/</span></code> dir in your project.</p>
+</div>
+</div>
+<div class="section" id="override-the-vendor-directory">
+<h2>Override the Vendor Directory</h2>
+<p>To override the <code class="docutils literal notranslate"><span class="pre">vendor/</span></code> directory, you need to define the <code class="docutils literal notranslate"><span class="pre">vendor-dir</span></code>
+option in your <code class="docutils literal notranslate"><span class="pre">composer.json</span></code> file like this:</p>
+<div class="highlight-json notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;bin-dir&quot;</span><span class="p">:</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;vendor-dir&quot;</span><span class="p">:</span> <span class="s2">&quot;/some/dir/vendor&quot;</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This modification can be of interest if you are working in a virtual
+environment and cannot use NFS - for example, if you’re running a Symfony
+application using Vagrant/VirtualBox in a guest operating system.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../security.html">Security</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../security.html#installation">1) Installation</a></li>
@@ -135,7 +133,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../security.html#frequently-asked-questions">Frequently Asked Questions</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../security.html#learn-more">Learn More</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../security.html#authentication-identifying-logging-in-the-user">Authentication (Identifying/Logging in the User)</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="experimental_authenticators.html">Using the new Authenticator-based Security</a></li>
 <li class="toctree-l4"><a class="reference internal" href="form_login_setup.html">How to Build a Login Form</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reset_password.html">How to Add a Reset Password Feature</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">How to Build a JSON Authentication Endpoint</a></li>
@@ -255,23 +252,21 @@ See <a class="reference internal" href="../security.html#security-user-providers
 <p>First, enable the JSON login under your firewall:</p>
 <div class="configuration-block">
 <ul class="simple">
-<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
 <span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
     <span class="c1"># ...</span>
 
     <span class="l l-Scalar l-Scalar-Plain">firewalls</span><span class="p p-Indicator">:</span>
         <span class="l l-Scalar l-Scalar-Plain">main</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-            <span class="l l-Scalar l-Scalar-Plain">lazy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">lazy</span>
             <span class="l l-Scalar l-Scalar-Plain">json_login</span><span class="p p-Indicator">:</span>
                 <span class="l l-Scalar l-Scalar-Plain">check_path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/login</span>
 </pre></div>
@@ -291,19 +286,17 @@ See <a class="reference internal" href="../security.html#security-user-providers
 12
 13
 14
-15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
-<span class="s">        http://symfony.com/schema/dic/security</span>
-<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
-        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span> <span class="na">anonymous=</span><span class="s">&quot;true&quot;</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;anonymous</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
             <span class="nt">&lt;json-login</span> <span class="na">check-path=</span><span class="s">&quot;/login&quot;</span><span class="nt">/&gt;</span>
         <span class="nt">&lt;/firewall&gt;</span>
     <span class="nt">&lt;/config&gt;</span>
@@ -321,13 +314,11 @@ See <a class="reference internal" href="../security.html#security-user-providers
  8
  9
 10
-11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
 <span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[</span>
     <span class="s1">&#39;firewalls&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
         <span class="s1">&#39;main&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-            <span class="s1">&#39;anonymous&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
-            <span class="s1">&#39;lazy&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+            <span class="s1">&#39;anonymous&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;lazy&#39;</span><span class="p">,</span>
             <span class="s1">&#39;json_login&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
                 <span class="s1">&#39;check_path&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;/login&#39;</span><span class="p">,</span>
             <span class="p">],</span>
@@ -500,15 +491,13 @@ and <code class="docutils literal notranslate"><span class="pre">password_path</
  8
  9
 10
-11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
 <span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
     <span class="c1"># ...</span>
 
     <span class="l l-Scalar l-Scalar-Plain">firewalls</span><span class="p p-Indicator">:</span>
         <span class="l l-Scalar l-Scalar-Plain">main</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-            <span class="l l-Scalar l-Scalar-Plain">lazy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">lazy</span>
             <span class="l l-Scalar l-Scalar-Plain">json_login</span><span class="p p-Indicator">:</span>
                 <span class="l l-Scalar l-Scalar-Plain">check_path</span><span class="p p-Indicator">:</span>    <span class="l l-Scalar l-Scalar-Plain">login</span>
                 <span class="l l-Scalar l-Scalar-Plain">username_path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">security.credentials.login</span>
@@ -532,19 +521,17 @@ and <code class="docutils literal notranslate"><span class="pre">password_path</
 14
 15
 16
-17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
-<span class="s">        http://symfony.com/schema/dic/security</span>
-<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
-        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span> <span class="na">anonymous=</span><span class="s">&quot;true&quot;</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;anonymous</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
             <span class="nt">&lt;json-login</span> <span class="na">check-path=</span><span class="s">&quot;login&quot;</span>
                 <span class="na">username-path=</span><span class="s">&quot;security.credentials.login&quot;</span>
                 <span class="na">password-path=</span><span class="s">&quot;security.credentials.password&quot;</span><span class="nt">/&gt;</span>
@@ -566,13 +553,11 @@ and <code class="docutils literal notranslate"><span class="pre">password_path</
 10
 11
 12
-13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
 <span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[</span>
     <span class="s1">&#39;firewalls&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
         <span class="s1">&#39;main&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-            <span class="s1">&#39;anonymous&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
-            <span class="s1">&#39;lazy&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+            <span class="s1">&#39;anonymous&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;lazy&#39;</span><span class="p">,</span>
             <span class="s1">&#39;json_login&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
                 <span class="s1">&#39;check_path&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;login&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;username_path&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;security.credentials.login&#39;</span><span class="p">,</span>

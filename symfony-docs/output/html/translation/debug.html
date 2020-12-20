@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -131,7 +129,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#basic-translation">Basic Translation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#message-format">Message Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../translation.html#translatable-objects">Translatable Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#translations-in-templates">Translations in Templates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#forcing-the-translator-locale">Forcing the Translator Locale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#extracting-translation-contents-and-updating-catalogs-automatically">Extracting Translation Contents and Updating Catalogs Automatically</a></li>
@@ -145,10 +142,7 @@
 <li class="toctree-l3"><a class="reference internal" href="message_format.html">How to Translate Messages using the ICU MessageFormat</a></li>
 <li class="toctree-l3"><a class="reference internal" href="templates.html">Using Translation in Templates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="locale.html">How to Work with the User’s Locale</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">How to Find Missing or Unused Translation Messages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#debug-command-exit-codes">Debug Command Exit Codes</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">How to Find Missing or Unused Translation Messages</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lint.html">How to Find Errors in Translation Files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xliff.html">The XLIFF format</a></li>
 </ul>
@@ -457,35 +451,6 @@ unused or only the missing messages, by using the <code class="docutils literal 
 <span class="gp">$</span> php bin/console debug:translation en --only-missing
 </pre></div>
 </td></tr></table></div>
-<div class="section" id="debug-command-exit-codes">
-<h2>Debug Command Exit Codes<a class="headerlink" href="#debug-command-exit-codes" title="Permalink to this headline">¶</a></h2>
-<p>The exit code of the <code class="docutils literal notranslate"><span class="pre">debug:translation</span></code> command changes depending on the
-status of the translations. Use the following public constants to check it:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\Command\TranslationDebugCommand</span><span class="p">;</span>
-
-<span class="c1">// generic failure (e.g. there are no translations)</span>
-<span class="nx">TranslationDebugCommand</span><span class="o">::</span><span class="na">EXIT_CODE_GENERAL_ERROR</span><span class="p">;</span>
-
-<span class="c1">// there are missing translations</span>
-<span class="nx">TranslationDebugCommand</span><span class="o">::</span><span class="na">EXIT_CODE_MISSING</span><span class="p">;</span>
-
-<span class="c1">// there are unused translations</span>
-<span class="nx">TranslationDebugCommand</span><span class="o">::</span><span class="na">EXIT_CODE_UNUSED</span><span class="p">;</span>
-
-<span class="c1">// some translations are using the fallback translation</span>
-<span class="nx">TranslationDebugCommand</span><span class="o">::</span><span class="na">EXIT_CODE_FALLBACK</span><span class="p">;</span>
-</pre></div>
-</div>
-<p>These constants are defined as “bit masks”, so you can combine them as follows:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="nx">TranslationDebugCommand</span><span class="o">::</span><span class="na">EXIT_CODE_MISSING</span> <span class="o">|</span> <span class="nx">TranslationDebugCommand</span><span class="o">::</span><span class="na">EXIT_CODE_UNUSED</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// ... there are missing and/or unused translations</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.1: </span>The exit codes were introduced in Symfony 5.1</p>
-</div>
-</div>
 </div>
 
 

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../routing.html">Routing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../routing.html#creating-routes">Creating Routes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../routing.html#route-parameters">Route Parameters</a></li>
@@ -127,7 +125,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../routing.html#special-routes">Special Routes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../routing.html#sub-domain-routing">Sub-Domain Routing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../routing.html#localized-routes-i18n">Localized Routes (i18n)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../routing.html#stateless-routes">Stateless Routes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../routing.html#generating-urls">Generating URLs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../routing.html#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../routing.html#learn-more-about-routing">Learn more about Routing</a><ul class="current">
@@ -177,6 +174,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../setup/homestead.html">Using Symfony with Homestead/Vagrant</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../setup/web_server_configuration.html">Configuring a Web Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../setup/built_in_web_server.html">How to Use PHP’s built-in Web Server</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../setup/bundles.html">Upgrading a Third-Party Bundle for a Major Symfony Version</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../setup/file_permissions.html">Setting up or Fixing File Permissions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../setup/flex.html">Upgrading Existing Applications to Symfony Flex</a></li>
@@ -184,7 +182,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../setup/unstable_versions.html">How to Install or Upgrade to the Latest, Unreleased Symfony Version</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../setup/upgrade_major.html">Upgrading a Major Version (e.g. 4.4.0 to 5.0.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../setup/upgrade_minor.html">Upgrading a Minor Version (e.g. 4.0.0 to 4.1.0)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../setup/upgrade_patch.html">Upgrading a Patch Version (e.g. 5.0.0 to 5.0.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../setup/upgrade_patch.html">Upgrading a Patch Version (e.g. 4.1.0 to 4.1.1)</a></li>
 </ul>
 </li>
 </ul>
@@ -487,7 +485,7 @@ which is a common practice when following the <a class="reference external" href
 <a class="reference internal" href="../controller.html#the-base-controller-class-services"><span class="std std-ref">AbstractController base controller</span></a>
 and use its shortcuts. But, you don’t need to! You can choose to extend <em>nothing</em>,
 and use dependency injection to access different services.</p>
-<p>The base <a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/Controller/AbstractController.php">Controller class source code</a> is a great way to see how to accomplish
+<p>The base <a class="reference external" href="https://github.com/symfony/symfony/blob/4.4/src/Symfony/Bundle/FrameworkBundle/Controller/ControllerTrait.php">Controller class source code</a> is a great way to see how to accomplish
 common tasks. For example, <code class="docutils literal notranslate"><span class="pre">$this-&gt;render()</span></code> is usually used to render a Twig
 template and return a Response. But, you can also do this directly:</p>
 <p>In a controller that’s defined as a service, you can instead inject the <code class="docutils literal notranslate"><span class="pre">twig</span></code>
@@ -524,7 +522,7 @@ to receive services as arguments to your controller action methods.</p>
 <div class="section" id="base-controller-methods-and-their-service-replacements">
 <h3>Base Controller Methods and Their Service Replacements<a class="headerlink" href="#base-controller-methods-and-their-service-replacements" title="Permalink to this headline">¶</a></h3>
 <p>The best way to see how to replace base <code class="docutils literal notranslate"><span class="pre">Controller</span></code> convenience methods is to
-look at the <a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/Controller/AbstractController.php">AbstractController</a> class that holds its logic.</p>
+look at the <a class="reference external" href="https://github.com/symfony/symfony/blob/4.4/src/Symfony/Bundle/FrameworkBundle/Controller/ControllerTrait.php">ControllerTrait</a> that holds its logic.</p>
 <p>If you want to know what type-hints to use for each service, see the
 <code class="docutils literal notranslate"><span class="pre">getSubscribedServices()</span></code> method in <a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/Controller/AbstractController.php">AbstractController</a>.</p>
 </div>

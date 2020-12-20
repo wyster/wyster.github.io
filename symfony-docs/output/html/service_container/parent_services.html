@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -425,8 +423,7 @@ avoid duplicated service definitions:</p>
 22
 23
 24
-25
-26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
 <span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\Repository\BaseDoctrineRepository</span><span class="p">;</span>
@@ -438,9 +435,8 @@ avoid duplicated service definitions:</p>
 
     <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">BaseDoctrineRepository</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
         <span class="o">-&gt;</span><span class="na">abstract</span><span class="p">()</span>
-        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">service</span><span class="p">(</span><span class="s1">&#39;doctrine.orm.entity_manager&#39;</span><span class="p">)])</span>
-        <span class="c1">// In versions earlier to Symfony 5.1 the service() function was called ref()</span>
-        <span class="o">-&gt;</span><span class="na">call</span><span class="p">(</span><span class="s1">&#39;setLogger&#39;</span><span class="p">,</span> <span class="p">[</span><span class="nx">service</span><span class="p">(</span><span class="s1">&#39;logger&#39;</span><span class="p">)])</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;doctrine.orm.entity_manager&#39;</span><span class="p">)])</span>
+        <span class="o">-&gt;</span><span class="na">call</span><span class="p">(</span><span class="s1">&#39;setLogger&#39;</span><span class="p">,</span> <span class="p">[</span><span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;logger&#39;</span><span class="p">)])</span>
     <span class="p">;</span>
 
     <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">DoctrineUserRepository</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
@@ -463,6 +459,12 @@ Specifically, the <code class="docutils literal notranslate"><span class="pre">E
 be called when <code class="docutils literal notranslate"><span class="pre">App\Repository\DoctrineUserRepository</span></code> is instantiated.</p>
 <p>All attributes on the parent service are shared with the child <strong>except</strong> for
 <code class="docutils literal notranslate"><span class="pre">shared</span></code>, <code class="docutils literal notranslate"><span class="pre">abstract</span></code> and <code class="docutils literal notranslate"><span class="pre">tags</span></code>. These are <em>not</em> inherited from the parent.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you have a <code class="docutils literal notranslate"><span class="pre">_defaults</span></code> section in your <code class="docutils literal notranslate"><span class="pre">services.yaml</span></code> file, all child
+services are required to explicitly override those values to avoid ambiguity.
+You will see a clear error message about this.</p>
+</div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">In the examples shown, the classes sharing the same configuration also
@@ -636,14 +638,14 @@ the child class:</p>
 
         <span class="c1">// appends the &#39;@app.username_checker&#39; argument to the parent</span>
         <span class="c1">// argument list</span>
-        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">service</span><span class="p">(</span><span class="s1">&#39;app.username_checker&#39;</span><span class="p">)])</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;app.username_checker&#39;</span><span class="p">)])</span>
     <span class="p">;</span>
 
     <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">DoctrinePostRepository</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
         <span class="o">-&gt;</span><span class="na">parent</span><span class="p">(</span><span class="nx">BaseDoctrineRepository</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
 
         <span class="c1"># overrides the first argument</span>
-        <span class="o">-&gt;</span><span class="na">arg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;doctrine.custom_entity_manager&#39;</span><span class="p">))</span>
+        <span class="o">-&gt;</span><span class="na">arg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;doctrine.custom_entity_manager&#39;</span><span class="p">))</span>
     <span class="p">;</span>
 <span class="p">};</span>
 </pre></div>

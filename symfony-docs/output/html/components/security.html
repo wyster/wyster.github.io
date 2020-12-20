@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -176,7 +174,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../security/auth_providers.html">Built-in Authentication Providers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/csrf.html">How to Implement CSRF Protection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/custom_authentication_provider.html">How to Create a custom Authentication Provider</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../security/experimental_authenticators.html">Using the new Authenticator-based Security</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/expressions.html">Security: Complex Access Controls with Expressions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/firewall_restriction.html">How to Restrict Firewalls to a Request</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/force_https.html">How to Force HTTPS or HTTP for different URLs</a></li>
@@ -186,7 +183,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../security/impersonating_user.html">How to Impersonate a User</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/json_login_setup.html">How to Build a JSON Authentication Endpoint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/ldap.html">Authenticating against an LDAP server</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../security/login_link.html">How to use Passwordless Login Link Authentication</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/multiple_guard_authenticators.html">How to Use Multiple Guard Authenticators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/named_encoders.html">How to Use A Different Password Encoder Algorithm Per User</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../security/password_migration.html">How to Migrate a Password Hash</a></li>
@@ -202,10 +198,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="serializer.html">The Serializer Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="string.html">The String Component</a></li>
-<li class="toctree-l2"><a class="reference internal" href="uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_exporter.html">The VarExporter Component</a></li>
@@ -300,6 +293,16 @@ component provides ways to authorize authenticated users based on their
 roles.</div></blockquote>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/security
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you install this component outside of a Symfony application, you must
+require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
+autoloading mechanism provided by Composer. Read
+<a class="reference internal" href="using_components.html"><span class="doc">this article</span></a> for more details.</p>
+</div>
 <p>The Security component is divided into several smaller sub-components which can
 be used separately:</p>
 <dl class="docutils">
@@ -315,23 +318,6 @@ requests and responses.</dd>
 <dd>It brings many layers of authentication together, allowing the creation
 of complex authentication systems.</dd>
 </dl>
-<p>You can install each of them separately in your project:</p>
-<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/security-core
-<span class="gp">$</span> composer require symfony/security-http
-<span class="gp">$</span> composer require symfony/security-csrf
-<span class="gp">$</span> composer require symfony/security-guard
-</pre></div>
-</td></tr></table></div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If you install this component outside of a Symfony application, you must
-require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
-autoloading mechanism provided by Composer. Read
-<a class="reference internal" href="using_components.html"><span class="doc">this article</span></a> for more details.</p>
-</div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">This article explains how to use the Security features as an independent
@@ -354,7 +340,6 @@ about how to use it in Symfony applications.</p>
 <li class="toctree-l1"><a class="reference internal" href="../security/auth_providers.html">Built-in Authentication Providers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/csrf.html">How to Implement CSRF Protection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/custom_authentication_provider.html">How to Create a custom Authentication Provider</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../security/experimental_authenticators.html">Using the new Authenticator-based Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/expressions.html">Security: Complex Access Controls with Expressions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/firewall_restriction.html">How to Restrict Firewalls to a Request</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/force_https.html">How to Force HTTPS or HTTP for different URLs</a></li>
@@ -364,7 +349,6 @@ about how to use it in Symfony applications.</p>
 <li class="toctree-l1"><a class="reference internal" href="../security/impersonating_user.html">How to Impersonate a User</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/json_login_setup.html">How to Build a JSON Authentication Endpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/ldap.html">Authenticating against an LDAP server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../security/login_link.html">How to use Passwordless Login Link Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/multiple_guard_authenticators.html">How to Use Multiple Guard Authenticators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/named_encoders.html">How to Use A Different Password Encoder Algorithm Per User</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/password_migration.html">How to Migrate a Password Hash</a></li>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.x}
+                4.4}
               </div>
             
           
@@ -115,10 +115,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -147,9 +145,9 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Configuring in the Kernel</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#charset">Charset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#kernel-name">Kernel Name</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project-directory">Project Directory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cache-directory">Cache Directory</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#build-directory">Build Directory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#log-directory">Log Directory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#container-build-time">Container Build Time</a></li>
 </ul>
@@ -245,16 +243,12 @@ the parent <code class="docutils literal notranslate"><a class="reference extern
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference internal" href="#charset">Charset</a></li>
+<li><a class="reference internal" href="#kernel-name">Kernel Name</a></li>
 <li><a class="reference internal" href="#project-directory">Project Directory</a></li>
 <li><a class="reference internal" href="#cache-directory">Cache Directory</a></li>
 <li><a class="reference internal" href="#log-directory">Log Directory</a></li>
 <li><a class="reference internal" href="#container-build-time">Container Build Time</a></li>
 </ul>
-<p>In previous Symfony versions there was another configuration option to define
-the “kernel name”, which is only important when
-<a class="reference internal" href="../../configuration/multiple_kernels.html"><span class="doc">using applications with multiple kernels</span></a>.
-If you need a unique ID for your kernels use the <code class="docutils literal notranslate"><span class="pre">kernel.container_class</span></code>
-parameter or the <code class="docutils literal notranslate"><span class="pre">Kernel::getContainerClass()</span></code> method.</p>
 <div class="section" id="charset">
 <span id="configuration-kernel-charset"></span><h3>Charset<a class="headerlink" href="#charset" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">UTF-8</span></code></p>
@@ -278,6 +272,24 @@ charset:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="kernel-name">
+<h3>Kernel Name<a class="headerlink" href="#kernel-name" title="Permalink to this headline">¶</a></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">src</span></code> (i.e. the directory name holding
+the kernel class)</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">kernel.name</span></code> parameter and the <code class="docutils literal notranslate"><span class="pre">Kernel::getName()</span></code> method were
+deprecated in Symfony 4.2. If you need a unique ID for your kernels use the
+<code class="docutils literal notranslate"><span class="pre">kernel.container_class</span></code> parameter or the <code class="docutils literal notranslate"><span class="pre">Kernel::getContainerClass()</span></code> method.</p>
+</div>
+<p>The name of the kernel isn’t usually directly important - it’s used in the
+generation of cache files - and you probably will only change it when
+<a class="reference internal" href="../../configuration/multiple_kernels.html"><span class="doc">using applications with multiple kernels</span></a>.</p>
+<p>This value is exposed via the <code class="docutils literal notranslate"><span class="pre">kernel.name</span></code> configuration parameter and the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Kernel.php" title="Symfony\Component\HttpKernel\Kernel::getName()"><span class="pre">getName()</span></a></code> method.</p>
+<p>To change this setting, override the <code class="docutils literal notranslate"><span class="pre">getName()</span></code> method. Alternatively, move
+your kernel into a different directory. For example, if you moved the kernel
+into a <code class="docutils literal notranslate"><span class="pre">foo/</span></code> directory (instead of <code class="docutils literal notranslate"><span class="pre">src/</span></code>), the kernel name will be <code class="docutils literal notranslate"><span class="pre">foo</span></code>.</p>
 </div>
 <div class="section" id="project-directory">
 <span id="configuration-kernel-project-directory"></span><h3>Project Directory<a class="headerlink" href="#project-directory" title="Permalink to this headline">¶</a></h3>
@@ -316,32 +328,19 @@ method to return the right project directory:</p>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">$this-&gt;getProjectDir()/var/cache/$this-&gt;environment</span></code></p>
 <p>This returns the absolute path of the cache directory of your Symfony project.
 It’s calculated automatically based on the current
-<a class="reference internal" href="../../configuration.html#configuration-environments"><span class="std std-ref">environment</span></a>. Data might be written to this
-path at runtime.</p>
+<a class="reference internal" href="../../configuration.html#configuration-environments"><span class="std std-ref">environment</span></a>.</p>
 <p>This value is exposed via the <code class="docutils literal notranslate"><span class="pre">kernel.cache_dir</span></code> configuration parameter and
 the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Kernel.php" title="Symfony\Component\HttpKernel\Kernel::getCacheDir()"><span class="pre">getCacheDir()</span></a></code> method. To
-change this setting, override the <code class="docutils literal notranslate"><span class="pre">getCacheDir()</span></code> method to return the correct
+change this setting, override the <code class="docutils literal notranslate"><span class="pre">getCacheDir()</span></code> method to return the right
 cache directory.</p>
-</div>
-<div class="section" id="build-directory">
-<h3>Build Directory<a class="headerlink" href="#build-directory" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">$this-&gt;getCacheDir()</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 5.2: </span>The build directory feature was introduced in Symfony 5.2.</p>
-</div>
-<p>This returns the absolute path of a build directory of your Symfony project. This
-directory can be used to separate read-only cache (i.e. the compiled container)
-from read-write cache (i.e. <a class="reference internal" href="../../cache.html"><span class="doc">cache pools</span></a>). Specify a non-default
-value when the application is deployed in a read-only filesystem like a Docker
-container or AWS Lambda.</p>
-<p>This value is exposed via the <code class="docutils literal notranslate"><span class="pre">kernel.build_dir</span></code> configuration parameter and
-the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Kernel.php" title="Symfony\Component\HttpKernel\Kernel::getBuildDir()"><span class="pre">getBuildDir()</span></a></code> method. To
-change this setting, override the <code class="docutils literal notranslate"><span class="pre">getBuildDir()</span></code> method to return the correct
-build directory.</p>
 </div>
 <div class="section" id="log-directory">
 <h3>Log Directory<a class="headerlink" href="#log-directory" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">$this-&gt;getProjectDir()/var/log</span></code></p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">kernel.log_dir</span></code> parameter was deprecated in Symfony 4.2,
+use <code class="docutils literal notranslate"><span class="pre">kernel.logs_dir</span></code> instead.</p>
+</div>
 <p>This returns the absolute path of the log directory of your Symfony project.
 It’s calculated automatically based on the current
 <a class="reference internal" href="../../configuration.html#configuration-environments"><span class="std std-ref">environment</span></a>.</p>

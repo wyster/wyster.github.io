@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Normalizers</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="normalizers">
+<span id="index-0"></span><h1>Normalizers</h1>
+<p>Normalizers turn <strong>objects</strong> into <strong>arrays</strong> and vice versa. They implement
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/NormalizerInterface.php" title="Symfony\Component\Serializer\Normalizer\NormalizerInterface"><span class="pre">NormalizerInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/NormalizerInterface.php]</span></span></code> for
+normalizing (object to array) and
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DenormalizerInterface.php" title="Symfony\Component\Serializer\Normalizer\DenormalizerInterface"><span class="pre">DenormalizerInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DenormalizerInterface.php]</span></span></code> for
+denormalizing (array to object).</p>
+<p>Normalizers are enabled in the serializer passing them as its first argument:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Normalizer\ObjectNormalizer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Serializer</span><span class="p">;</span>
+
+<span class="nv">$normalizers</span> <span class="o">=</span> <span class="p">[</span><span class="k">new</span> <span class="nx">ObjectNormalizer</span><span class="p">()];</span>
+<span class="nv">$serializer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Serializer</span><span class="p">(</span><span class="nv">$normalizers</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="built-in-normalizers">
+<h2>Built-in Normalizers</h2>
+<p>Symfony includes the following normalizers but you can also
+<a class="reference internal" href="custom_normalizer.xhtml"><span class="doc">create your own normalizer</span></a>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ObjectNormalizer.php" title="Symfony\Component\Serializer\Normalizer\ObjectNormalizer"><span class="pre">ObjectNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ObjectNormalizer.php]</span></span></code> to
+normalize PHP object using the <a class="reference internal" href="../components/property_access.xhtml"><span class="doc">PropertyAccessor component</span></a>;</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DateTimeZoneNormalizer.php" title="Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer"><span class="pre">DateTimeZoneNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DateTimeZoneNormalizer.php]</span></span></code>
+for <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.datetimezone.php" title="DateTimeZone"><span class="pre">DateTimeZone</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/class.datetimezone.php]</span></span></code> objects</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DateTimeNormalizer.php" title="Symfony\Component\Serializer\Normalizer\DateTimeNormalizer"><span class="pre">DateTimeNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DateTimeNormalizer.php]</span></span></code> for
+objects implementing the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.datetimeinterface.php" title="DateTimeInterface"><span class="pre">DateTimeInterface</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/class.datetimeinterface.php]</span></span></code> interface</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DateIntervalNormalizer.php" title="Symfony\Component\Serializer\Normalizer\DateIntervalNormalizer"><span class="pre">DateIntervalNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DateIntervalNormalizer.php]</span></span></code>
+for <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.dateinterval.php" title="DateInterval"><span class="pre">DateInterval</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/class.dateinterval.php]</span></span></code> objects</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DataUriNormalizer.php" title="Symfony\Component\Serializer\Normalizer\DataUriNormalizer"><span class="pre">DataUriNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DataUriNormalizer.php]</span></span></code> to
+transform <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.splfileinfo.php" title="SplFileInfo"><span class="pre">SplFileInfo</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/class.splfileinfo.php]</span></span></code> objects in <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs">Data URIs</a><span class="link-target"> [https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs]</span></p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/CustomNormalizer.php" title="Symfony\Component\Serializer\Normalizer\CustomNormalizer"><span class="pre">CustomNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/CustomNormalizer.php]</span></span></code> to
+normalize PHP object using an object that implements
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/NormalizableInterface.php" title="Symfony\Component\Serializer\Normalizer\NormalizableInterface"><span class="pre">NormalizableInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/NormalizableInterface.php]</span></span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/GetSetMethodNormalizer.php" title="Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer"><span class="pre">GetSetMethodNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/GetSetMethodNormalizer.php]</span></span></code> to
+normalize PHP object using the getter and setter methods of the object;</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/PropertyNormalizer.php" title="Symfony\Component\Serializer\Normalizer\PropertyNormalizer"><span class="pre">PropertyNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/PropertyNormalizer.php]</span></span></code> to
+normalize PHP object using <a class="reference external" href="https://php.net/manual/en/book.reflection.php">PHP reflection</a><span class="link-target"> [https://php.net/manual/en/book.reflection.php]</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ConstraintViolationListNormalizer.php" title="Symfony\Component\Serializer\Normalizer\ConstraintViolationListNormalizer"><span class="pre">ConstraintViolationListNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ConstraintViolationListNormalizer.php]</span></span></code> for objects implementing the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/ConstraintViolationListInterface.php" title="Symfony\Component\Validator\ConstraintViolationListInterface"><span class="pre">ConstraintViolationListInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/ConstraintViolationListInterface.php]</span></span></code> interface</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ProblemNormalizer.php" title="Symfony\Component\Serializer\Normalizer\ProblemNormalizer"><span class="pre">ProblemNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ProblemNormalizer.php]</span></span></code> for <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ErrorHandler/Exception/FlattenException.php" title="Symfony\Component\ErrorHandler\Exception\FlattenException"><span class="pre">FlattenException</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ErrorHandler/Exception/FlattenException.php]</span></span></code> objects</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/JsonSerializableNormalizer.php" title="Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer"><span class="pre">JsonSerializableNormalizer</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/JsonSerializableNormalizer.php]</span></span></code>
+to deal with objects implementing the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.jsonserializable.php" title="JsonSerializable"><span class="pre">JsonSerializable</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/class.jsonserializable.php]</span></span></code> interface</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

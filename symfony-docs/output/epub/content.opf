@@ -1,0 +1,1398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" xml:lang="en"
+ unique-identifier="unknown"
+ prefix="ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/">
+  <metadata xmlns:opf="http://www.idpf.org/2007/opf"
+        xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:language>en</dc:language>
+    <dc:title>Symfony Framework Documentation  documentation</dc:title>
+    <dc:description>unknown</dc:description>
+    <dc:creator>unknown</dc:creator>
+    <dc:contributor>unknown</dc:contributor>
+    <dc:publisher>unknown</dc:publisher>
+    <dc:rights>2004-2020 Fabien Potencier</dc:rights>
+    <dc:identifier id="unknown">unknown</dc:identifier>
+    <dc:date>2020-12-20T01:04:35Z</dc:date>
+    <meta property="dcterms:modified">2020-12-20T01:04:35Z</meta>
+    <meta property="ibooks:version">4.4}</meta>
+    <meta property="ibooks:specified-fonts">true</meta>
+    <meta property="ibooks:binding">true</meta>
+    <meta property="ibooks:scroll-axis">vertical</meta>
+  </metadata>
+  <manifest>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+    <item id="epub-0" href="best_practices.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-1" href="bundles.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-2" href="cache.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-3" href="configuration.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-4" href="console.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-5" href="controller.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-6" href="deployment.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-7" href="doctrine.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-8" href="email.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-9" href="event_dispatcher.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-10" href="forms.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-11" href="frontend.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-12" href="genindex.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-13" href="http_cache.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-14" href="http_client.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-15" href="index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-16" href="lock.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-17" href="logging.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-18" href="mailer.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-19" href="mercure.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-20" href="messenger.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-21" href="migration.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-22" href="page_creation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-23" href="performance.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-24" href="profiler.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-25" href="routing.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-26" href="security.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-27" href="serializer.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-28" href="service_container.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-29" href="session.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-30" href="setup.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-31" href="templates.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-32" href="testing.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-33" href="translation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-34" href="validation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-35" href="web_link.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-36" href="workflow.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-37" href="_images/01-simple.png" media-type="image/png" />
+    <item id="epub-38" href="_images/02-multi-line-str.png" media-type="image/png" />
+    <item id="epub-39" href="_images/03-object.png" media-type="image/png" />
+    <item id="epub-40" href="_images/04-dynamic-property.png" media-type="image/png" />
+    <item id="epub-41" href="_images/05-soft-ref.png" media-type="image/png" />
+    <item id="epub-42" href="_images/06-constants.png" media-type="image/png" />
+    <item id="epub-43" href="_images/07-hard-ref.png" media-type="image/png" />
+    <item id="epub-44" href="_images/08-virtual-property.png" media-type="image/png" />
+    <item id="epub-45" href="_images/09-cut.png" media-type="image/png" />
+    <item id="epub-46" href="_images/anonymous_wdt.png" media-type="image/png" />
+    <item id="epub-47" href="_images/blogpost.png" media-type="image/png" />
+    <item id="epub-48" href="_images/blogpost_puml.png" media-type="image/png" />
+    <item id="epub-49" href="_images/choice-example1.png" media-type="image/png" />
+    <item id="epub-50" href="_images/choice-example2.png" media-type="image/png" />
+    <item id="epub-51" href="_images/choice-example3.png" media-type="image/png" />
+    <item id="epub-52" href="_images/choice-example4.png" media-type="image/png" />
+    <item id="epub-53" href="_images/choice-example5.png" media-type="image/png" />
+    <item id="epub-54" href="_images/chrome.png" media-type="image/png" />
+    <item id="epub-55" href="_images/data-transformer-types.png" media-type="image/png" />
+    <item id="epub-56" href="_images/debug_formatter.png" media-type="image/png" />
+    <item id="epub-57" href="_images/deprecations-in-profiler.png" media-type="image/png" />
+    <item id="epub-58" href="_images/discovery.png" media-type="image/png" />
+    <item id="epub-59" href="_images/docs-github-create-pr.png" media-type="image/png" />
+    <item id="epub-60" href="_images/docs-github-edit-page.png" media-type="image/png" />
+    <item id="epub-61" href="_images/docs-pull-request-change-base.png" media-type="image/png" />
+    <item id="epub-62" href="_images/docs-pull-request-symfonycloud.png" media-type="image/png" />
+    <item id="epub-63" href="_images/doctrine_web_debug_toolbar.png" media-type="image/png" />
+    <item id="epub-64" href="_images/errors-in-prod-environment.png" media-type="image/png" />
+    <item id="epub-65" href="_images/exceptions-in-dev-environment.png" media-type="image/png" />
+    <item id="epub-66" href="_images/general_flow.png" media-type="image/png" />
+    <item id="epub-67" href="_images/job_application.png" media-type="image/png" />
+    <item id="epub-68" href="_images/mapping_relations.png" media-type="image/png" />
+    <item id="epub-69" href="_images/mapping_relations_proxy.png" media-type="image/png" />
+    <item id="epub-70" href="_images/mapping_single_entity.png" media-type="image/png" />
+    <item id="epub-71" href="_images/no_routes_page.png" media-type="image/png" />
+    <item id="epub-72" href="_images/panel.png" media-type="image/png" />
+    <item id="epub-73" href="_images/process-helper-debug.png" media-type="image/png" />
+    <item id="epub-74" href="_images/process-helper-error-debug.png" media-type="image/png" />
+    <item id="epub-75" href="_images/process-helper-verbose.png" media-type="image/png" />
+    <item id="epub-76" href="_images/progressbar.gif" media-type="image/gif" />
+    <item id="epub-77" href="_images/pull_request.png" media-type="image/png" />
+    <item id="epub-78" href="_images/pull_request_puml_styled.png" media-type="image/png" />
+    <item id="epub-79" href="_images/schema.png" media-type="image/png" />
+    <item id="epub-80" href="_images/set_data_flow.png" media-type="image/png" />
+    <item id="epub-81" href="_images/simple-form.png" media-type="image/png" />
+    <item id="epub-82" href="_images/simple.png" media-type="image/png" />
+    <item id="epub-83" href="_images/stack-trace.gif" media-type="image/gif" />
+    <item id="epub-84" href="_images/states_transitions.png" media-type="image/png" />
+    <item id="epub-85" href="_images/submission_flow.png" media-type="image/png" />
+    <item id="epub-86" href="_images/symfony_loggedin_wdt.png" media-type="image/png" />
+    <item id="epub-87" href="_images/web-interface.png" media-type="image/png" />
+    <item id="epub-88" href="_images/xkcd-full.png" media-type="image/png" />
+    <item id="epub-89" href="_images/xkcd-request.png" media-type="image/png" />
+    <item id="epub-90" href="_static/ajax-loader.gif" media-type="image/gif" />
+    <item id="epub-91" href="_static/basic.css" media-type="text/css" />
+    <item id="epub-92" href="_static/comment-bright.png" media-type="image/png" />
+    <item id="epub-93" href="_static/comment-close.png" media-type="image/png" />
+    <item id="epub-94" href="_static/comment.png" media-type="image/png" />
+    <item id="epub-95" href="_static/down-pressed.png" media-type="image/png" />
+    <item id="epub-96" href="_static/down.png" media-type="image/png" />
+    <item id="epub-97" href="_static/epub.css" media-type="text/css" />
+    <item id="epub-98" href="_static/file.png" media-type="image/png" />
+    <item id="epub-99" href="_static/minus.png" media-type="image/png" />
+    <item id="epub-100" href="_static/plus.png" media-type="image/png" />
+    <item id="epub-101" href="_static/pygments.css" media-type="text/css" />
+    <item id="epub-102" href="_static/rtd_custom.css" media-type="text/css" />
+    <item id="epub-103" href="_static/symfony-logo.svg" media-type="image/svg+xml" />
+    <item id="epub-104" href="_static/up-pressed.png" media-type="image/png" />
+    <item id="epub-105" href="_static/up.png" media-type="image/png" />
+    <item id="epub-106" href="bundles/best_practices.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-107" href="bundles/configuration.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-108" href="bundles/extension.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-109" href="bundles/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-110" href="bundles/override.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-111" href="bundles/prepend_extension.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-112" href="components/asset.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-113" href="components/browser_kit.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-114" href="components/cache.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-115" href="components/config.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-116" href="components/console.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-117" href="components/contracts.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-118" href="components/css_selector.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-119" href="components/dependency_injection.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-120" href="components/dom_crawler.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-121" href="components/event_dispatcher.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-122" href="components/expression_language.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-123" href="components/filesystem.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-124" href="components/finder.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-125" href="components/form.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-126" href="components/http_foundation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-127" href="components/http_kernel.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-128" href="components/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-129" href="components/inflector.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-130" href="components/intl.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-131" href="components/ldap.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-132" href="components/lock.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-133" href="components/messenger.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-134" href="components/mime.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-135" href="components/options_resolver.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-136" href="components/phpunit_bridge.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-137" href="components/process.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-138" href="components/property_access.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-139" href="components/property_info.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-140" href="components/psr7.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-141" href="components/security.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-142" href="components/serializer.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-143" href="components/using_components.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-144" href="components/validator.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-145" href="components/var_dumper.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-146" href="components/var_exporter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-147" href="components/workflow.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-148" href="components/yaml.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-149" href="components/cache/cache_invalidation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-150" href="components/cache/cache_items.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-151" href="components/cache/cache_pools.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-152" href="components/cache/psr6_psr16_adapters.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-153" href="components/cache/adapters/apcu_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-154" href="components/cache/adapters/array_cache_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-155" href="components/cache/adapters/chain_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-156" href="components/cache/adapters/doctrine_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-157" href="components/cache/adapters/filesystem_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-158" href="components/cache/adapters/memcached_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-159" href="components/cache/adapters/pdo_doctrine_dbal_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-160" href="components/cache/adapters/php_array_cache_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-161" href="components/cache/adapters/php_files_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-162" href="components/cache/adapters/proxy_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-163" href="components/cache/adapters/redis_adapter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-164" href="components/config/caching.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-165" href="components/config/definition.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-166" href="components/config/resources.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-167" href="components/console/changing_default_command.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-168" href="components/console/console_arguments.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-169" href="components/console/events.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-170" href="components/console/logger.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-171" href="components/console/single_command_tool.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-172" href="components/console/usage.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-173" href="components/console/helpers/debug_formatter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-174" href="components/console/helpers/formatterhelper.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-175" href="components/console/helpers/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-176" href="components/console/helpers/processhelper.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-177" href="components/console/helpers/progressbar.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-178" href="components/console/helpers/questionhelper.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-179" href="components/console/helpers/table.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-180" href="components/dependency_injection/compilation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-181" href="components/dependency_injection/workflow.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-182" href="components/event_dispatcher/container_aware_dispatcher.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-183" href="components/event_dispatcher/generic_event.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-184" href="components/event_dispatcher/immutable_dispatcher.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-185" href="components/event_dispatcher/traceable_dispatcher.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-186" href="components/expression_language/ast.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-187" href="components/expression_language/caching.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-188" href="components/expression_language/extending.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-189" href="components/expression_language/syntax.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-190" href="components/filesystem/lock_handler.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-191" href="components/http_foundation/session_configuration.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-192" href="components/http_foundation/session_php_bridge.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-193" href="components/http_foundation/session_testing.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-194" href="components/http_foundation/sessions.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-195" href="components/security/authentication.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-196" href="components/security/authorization.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-197" href="components/security/firewall.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-198" href="components/security/secure_tools.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-199" href="components/validator/metadata.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-200" href="components/validator/resources.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-201" href="components/var_dumper/advanced.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-202" href="components/yaml/yaml_format.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-203" href="configuration/dot-env-changes.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-204" href="configuration/env_var_processors.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-205" href="configuration/front_controllers_and_kernel.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-206" href="configuration/micro_kernel_trait.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-207" href="configuration/multiple_kernels.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-208" href="configuration/override_dir_structure.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-209" href="configuration/secrets.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-210" href="configuration/using_parameters_in_dic.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-211" href="console/calling_commands.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-212" href="console/coloring.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-213" href="console/command_in_controller.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-214" href="console/commands_as_services.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-215" href="console/hide_commands.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-216" href="console/input.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-217" href="console/lazy_commands.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-218" href="console/lockable_trait.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-219" href="console/style.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-220" href="console/verbosity.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-221" href="contributing/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-222" href="contributing/code/bc.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-223" href="contributing/code/bugs.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-224" href="contributing/code/conventions.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-225" href="contributing/code/core_team.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-226" href="contributing/code/experimental.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-227" href="contributing/code/git.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-228" href="contributing/code/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-229" href="contributing/code/license.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-230" href="contributing/code/maintenance.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-231" href="contributing/code/pull_requests.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-232" href="contributing/code/reproducer.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-233" href="contributing/code/security.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-234" href="contributing/code/stack_trace.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-235" href="contributing/code/standards.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-236" href="contributing/code/tests.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-237" href="contributing/code_of_conduct/care_team.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-238" href="contributing/code_of_conduct/code_of_conduct.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-239" href="contributing/code_of_conduct/concrete_example_document.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-240" href="contributing/code_of_conduct/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-241" href="contributing/code_of_conduct/reporting_guidelines.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-242" href="contributing/community/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-243" href="contributing/community/mentoring.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-244" href="contributing/community/releases.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-245" href="contributing/community/review-comments.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-246" href="contributing/community/reviews.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-247" href="contributing/community/speaker-mentoring.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-248" href="contributing/diversity/governance.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-249" href="contributing/diversity/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-250" href="contributing/documentation/format.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-251" href="contributing/documentation/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-252" href="contributing/documentation/license.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-253" href="contributing/documentation/overview.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-254" href="contributing/documentation/standards.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-255" href="contributing/documentation/translations.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-256" href="controller/argument_value_resolver.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-257" href="controller/error_pages.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-258" href="controller/forwarding.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-259" href="controller/service.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-260" href="controller/soap_web_service.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-261" href="controller/upload_file.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-262" href="create_framework/dependency_injection.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-263" href="create_framework/event_dispatcher.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-264" href="create_framework/front_controller.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-265" href="create_framework/http_foundation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-266" href="create_framework/http_kernel_controller_resolver.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-267" href="create_framework/http_kernel_httpkernel_class.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-268" href="create_framework/http_kernel_httpkernelinterface.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-269" href="create_framework/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-270" href="create_framework/introduction.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-271" href="create_framework/routing.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-272" href="create_framework/separation_of_concerns.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-273" href="create_framework/templating.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-274" href="create_framework/unit_testing.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-275" href="deployment/azure-website.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-276" href="deployment/fortrabbit.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-277" href="deployment/heroku.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-278" href="deployment/platformsh.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-279" href="deployment/proxies.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-280" href="doctrine/associations.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-281" href="doctrine/custom_dql_functions.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-282" href="doctrine/dbal.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-283" href="doctrine/events.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-284" href="doctrine/multiple_entity_managers.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-285" href="doctrine/registration_form.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-286" href="doctrine/resolve_target_entity.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-287" href="doctrine/reverse_engineering.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-288" href="event_dispatcher/before_after_filters.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-289" href="event_dispatcher/method_behavior.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-290" href="form/bootstrap4.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-291" href="form/button_based_validation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-292" href="form/create_custom_field_type.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-293" href="form/create_form_type_extension.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-294" href="form/data_based_validation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-295" href="form/data_mappers.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-296" href="form/data_transformers.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-297" href="form/direct_submit.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-298" href="form/disabling_validation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-299" href="form/dynamic_form_modification.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-300" href="form/embedded.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-301" href="form/events.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-302" href="form/form_collections.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-303" href="form/form_customization.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-304" href="form/form_dependencies.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-305" href="form/form_themes.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-306" href="form/inherit_data_option.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-307" href="form/multiple_buttons.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-308" href="form/type_guesser.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-309" href="form/unit_testing.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-310" href="form/use_empty_data.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-311" href="form/validation_group_service_resolver.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-312" href="form/validation_groups.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-313" href="form/without_class.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-314" href="frontend/custom_version_strategy.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-315" href="frontend/assetic/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-316" href="frontend/encore/advanced-config.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-317" href="frontend/encore/babel.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-318" href="frontend/encore/bootstrap.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-319" href="frontend/encore/cdn.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-320" href="frontend/encore/code-splitting.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-321" href="frontend/encore/copy-files.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-322" href="frontend/encore/css-preprocessors.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-323" href="frontend/encore/custom-loaders-plugins.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-324" href="frontend/encore/dev-server.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-325" href="frontend/encore/faq.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-326" href="frontend/encore/installation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-327" href="frontend/encore/legacy-applications.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-328" href="frontend/encore/page-specific-assets.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-329" href="frontend/encore/postcss.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-330" href="frontend/encore/reactjs.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-331" href="frontend/encore/server-data.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-332" href="frontend/encore/shared-entry.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-333" href="frontend/encore/simple-example.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-334" href="frontend/encore/sourcemaps.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-335" href="frontend/encore/split-chunks.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-336" href="frontend/encore/typescript.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-337" href="frontend/encore/url-loader.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-338" href="frontend/encore/versioning.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-339" href="frontend/encore/virtual-machine.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-340" href="frontend/encore/vuejs.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-341" href="getting_started/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-342" href="http_cache/cache_invalidation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-343" href="http_cache/cache_vary.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-344" href="http_cache/esi.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-345" href="http_cache/expiration.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-346" href="http_cache/ssi.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-347" href="http_cache/validation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-348" href="http_cache/varnish.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-349" href="introduction/from_flat_php_to_symfony.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-350" href="introduction/http_fundamentals.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-351" href="logging/channels_handlers.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-352" href="logging/formatter.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-353" href="logging/handlers.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-354" href="logging/monolog_console.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-355" href="logging/monolog_email.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-356" href="logging/monolog_exclude_http_codes.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-357" href="logging/monolog_regex_based_excludes.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-358" href="logging/processors.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-359" href="messenger/custom-transport.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-360" href="messenger/dispatch_after_current_bus.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-361" href="messenger/handler_results.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-362" href="messenger/multiple_buses.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-363" href="profiler/data_collector.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-364" href="quick_tour/flex_recipes.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-365" href="quick_tour/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-366" href="quick_tour/the_architecture.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-367" href="quick_tour/the_big_picture.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-368" href="reference/constraints.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-369" href="reference/dic_tags.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-370" href="reference/events.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-371" href="reference/index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-372" href="reference/twig_reference.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-373" href="reference/configuration/debug.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-374" href="reference/configuration/doctrine.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-375" href="reference/configuration/framework.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-376" href="reference/configuration/kernel.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-377" href="reference/configuration/monolog.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-378" href="reference/configuration/security.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-379" href="reference/configuration/swiftmailer.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-380" href="reference/configuration/twig.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-381" href="reference/configuration/web_profiler.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-382" href="reference/constraints/All.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-383" href="reference/constraints/Bic.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-384" href="reference/constraints/Blank.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-385" href="reference/constraints/Callback.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-386" href="reference/constraints/CardScheme.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-387" href="reference/constraints/Choice.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-388" href="reference/constraints/Collection.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-389" href="reference/constraints/Count.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-390" href="reference/constraints/Country.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-391" href="reference/constraints/Currency.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-392" href="reference/constraints/Date.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-393" href="reference/constraints/DateTime.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-394" href="reference/constraints/DivisibleBy.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-395" href="reference/constraints/Email.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-396" href="reference/constraints/EqualTo.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-397" href="reference/constraints/Expression.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-398" href="reference/constraints/File.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-399" href="reference/constraints/GreaterThan.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-400" href="reference/constraints/GreaterThanOrEqual.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-401" href="reference/constraints/Iban.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-402" href="reference/constraints/IdenticalTo.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-403" href="reference/constraints/Image.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-404" href="reference/constraints/Ip.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-405" href="reference/constraints/IsFalse.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-406" href="reference/constraints/IsNull.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-407" href="reference/constraints/IsTrue.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-408" href="reference/constraints/Isbn.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-409" href="reference/constraints/Issn.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-410" href="reference/constraints/Json.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-411" href="reference/constraints/Language.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-412" href="reference/constraints/Length.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-413" href="reference/constraints/LessThan.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-414" href="reference/constraints/LessThanOrEqual.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-415" href="reference/constraints/Locale.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-416" href="reference/constraints/Luhn.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-417" href="reference/constraints/Negative.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-418" href="reference/constraints/NegativeOrZero.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-419" href="reference/constraints/NotBlank.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-420" href="reference/constraints/NotCompromisedPassword.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-421" href="reference/constraints/NotEqualTo.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-422" href="reference/constraints/NotIdenticalTo.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-423" href="reference/constraints/NotNull.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-424" href="reference/constraints/Positive.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-425" href="reference/constraints/PositiveOrZero.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-426" href="reference/constraints/Range.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-427" href="reference/constraints/Regex.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-428" href="reference/constraints/Time.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-429" href="reference/constraints/Timezone.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-430" href="reference/constraints/Traverse.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-431" href="reference/constraints/Type.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-432" href="reference/constraints/Unique.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-433" href="reference/constraints/UniqueEntity.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-434" href="reference/constraints/Url.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-435" href="reference/constraints/UserPassword.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-436" href="reference/constraints/Uuid.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-437" href="reference/constraints/Valid.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-438" href="reference/forms/types.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-439" href="reference/forms/types/birthday.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-440" href="reference/forms/types/button.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-441" href="reference/forms/types/checkbox.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-442" href="reference/forms/types/choice.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-443" href="reference/forms/types/collection.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-444" href="reference/forms/types/color.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-445" href="reference/forms/types/country.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-446" href="reference/forms/types/currency.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-447" href="reference/forms/types/date.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-448" href="reference/forms/types/dateinterval.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-449" href="reference/forms/types/datetime.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-450" href="reference/forms/types/email.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-451" href="reference/forms/types/entity.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-452" href="reference/forms/types/file.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-453" href="reference/forms/types/form.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-454" href="reference/forms/types/hidden.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-455" href="reference/forms/types/integer.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-456" href="reference/forms/types/language.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-457" href="reference/forms/types/locale.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-458" href="reference/forms/types/money.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-459" href="reference/forms/types/number.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-460" href="reference/forms/types/password.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-461" href="reference/forms/types/percent.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-462" href="reference/forms/types/radio.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-463" href="reference/forms/types/range.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-464" href="reference/forms/types/repeated.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-465" href="reference/forms/types/reset.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-466" href="reference/forms/types/search.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-467" href="reference/forms/types/submit.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-468" href="reference/forms/types/tel.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-469" href="reference/forms/types/text.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-470" href="reference/forms/types/textarea.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-471" href="reference/forms/types/time.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-472" href="reference/forms/types/timezone.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-473" href="reference/forms/types/url.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-474" href="reference/forms/types/week.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-475" href="routing/custom_route_loader.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-476" href="routing/routing_from_database.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-477" href="security/access_control.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-478" href="security/access_denied_handler.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-479" href="security/acl.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-480" href="security/auth_providers.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-481" href="security/csrf.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-482" href="security/custom_authentication_provider.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-483" href="security/expressions.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-484" href="security/firewall_restriction.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-485" href="security/force_https.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-486" href="security/form_login.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-487" href="security/form_login_setup.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-488" href="security/guard_authentication.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-489" href="security/impersonating_user.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-490" href="security/json_login_setup.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-491" href="security/ldap.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-492" href="security/multiple_guard_authenticators.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-493" href="security/named_encoders.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-494" href="security/password_migration.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-495" href="security/remember_me.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-496" href="security/reset_password.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-497" href="security/securing_services.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-498" href="security/user_checkers.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-499" href="security/user_provider.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-500" href="security/voters.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-501" href="serializer/custom_encoders.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-502" href="serializer/custom_normalizer.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-503" href="serializer/normalizers.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-504" href="service_container/alias_private.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-505" href="service_container/autowiring.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-506" href="service_container/calls.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-507" href="service_container/compiler_passes.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-508" href="service_container/configurators.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-509" href="service_container/debug.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-510" href="service_container/definitions.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-511" href="service_container/expression_language.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-512" href="service_container/factories.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-513" href="service_container/import.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-514" href="service_container/injection_types.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-515" href="service_container/lazy_services.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-516" href="service_container/optional_dependencies.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-517" href="service_container/parent_services.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-518" href="service_container/request.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-519" href="service_container/service_decoration.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-520" href="service_container/service_subscribers_locators.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-521" href="service_container/shared.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-522" href="service_container/synthetic_services.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-523" href="service_container/tags.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-524" href="session/database.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-525" href="session/locale_sticky_session.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-526" href="session/php_bridge.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-527" href="session/proxy_examples.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-528" href="setup/built_in_web_server.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-529" href="setup/bundles.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-530" href="setup/file_permissions.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-531" href="setup/flex.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-532" href="setup/homestead.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-533" href="setup/symfony_server.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-534" href="setup/unstable_versions.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-535" href="setup/upgrade_major.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-536" href="setup/upgrade_minor.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-537" href="setup/upgrade_patch.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-538" href="setup/web_server_configuration.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-539" href="templating/PHP.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-540" href="templating/global_variables.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-541" href="templating/hinclude.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-542" href="templating/twig_extension.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-543" href="testing/bootstrap.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-544" href="testing/database.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-545" href="testing/functional_tests_assertions.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-546" href="testing/http_authentication.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-547" href="testing/insulating_clients.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-548" href="testing/profiling.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-549" href="translation/debug.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-550" href="translation/lint.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-551" href="translation/locale.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-552" href="translation/message_format.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-553" href="translation/templates.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-554" href="translation/xliff.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-555" href="validation/custom_constraint.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-556" href="validation/groups.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-557" href="validation/raw_values.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-558" href="validation/sequence_provider.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-559" href="validation/severity.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-560" href="validation/translations.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-561" href="workflow/dumping-workflows.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-562" href="workflow/workflow-and-state-machine.xhtml" media-type="application/xhtml+xml" />
+  </manifest>
+  <spine toc="ncx" page-progression-direction="ltr">
+    <itemref idref="epub-15" />
+    <itemref idref="epub-365" />
+    <itemref idref="epub-367" />
+    <itemref idref="epub-364" />
+    <itemref idref="epub-366" />
+    <itemref idref="epub-341" />
+    <itemref idref="epub-30" />
+    <itemref idref="epub-22" />
+    <itemref idref="epub-25" />
+    <itemref idref="epub-5" />
+    <itemref idref="epub-475" />
+    <itemref idref="epub-476" />
+    <itemref idref="epub-349" />
+    <itemref idref="epub-350" />
+    <itemref idref="epub-532" />
+    <itemref idref="epub-538" />
+    <itemref idref="epub-528" />
+    <itemref idref="epub-529" />
+    <itemref idref="epub-530" />
+    <itemref idref="epub-531" />
+    <itemref idref="epub-533" />
+    <itemref idref="epub-534" />
+    <itemref idref="epub-535" />
+    <itemref idref="epub-536" />
+    <itemref idref="epub-537" />
+    <itemref idref="epub-22" />
+    <itemref idref="epub-25" />
+    <itemref idref="epub-5" />
+    <itemref idref="epub-31" />
+    <itemref idref="epub-256" />
+    <itemref idref="epub-257" />
+    <itemref idref="epub-258" />
+    <itemref idref="epub-259" />
+    <itemref idref="epub-260" />
+    <itemref idref="epub-261" />
+    <itemref idref="epub-475" />
+    <itemref idref="epub-476" />
+    <itemref idref="epub-349" />
+    <itemref idref="epub-350" />
+    <itemref idref="epub-25" />
+    <itemref idref="epub-5" />
+    <itemref idref="epub-31" />
+    <itemref idref="epub-539" />
+    <itemref idref="epub-540" />
+    <itemref idref="epub-541" />
+    <itemref idref="epub-542" />
+    <itemref idref="epub-256" />
+    <itemref idref="epub-257" />
+    <itemref idref="epub-258" />
+    <itemref idref="epub-259" />
+    <itemref idref="epub-260" />
+    <itemref idref="epub-261" />
+    <itemref idref="epub-475" />
+    <itemref idref="epub-476" />
+    <itemref idref="epub-5" />
+    <itemref idref="epub-31" />
+    <itemref idref="epub-539" />
+    <itemref idref="epub-540" />
+    <itemref idref="epub-541" />
+    <itemref idref="epub-542" />
+    <itemref idref="epub-256" />
+    <itemref idref="epub-257" />
+    <itemref idref="epub-258" />
+    <itemref idref="epub-259" />
+    <itemref idref="epub-260" />
+    <itemref idref="epub-261" />
+    <itemref idref="epub-31" />
+    <itemref idref="epub-539" />
+    <itemref idref="epub-540" />
+    <itemref idref="epub-541" />
+    <itemref idref="epub-542" />
+    <itemref idref="epub-3" />
+    <itemref idref="epub-203" />
+    <itemref idref="epub-204" />
+    <itemref idref="epub-205" />
+    <itemref idref="epub-206" />
+    <itemref idref="epub-207" />
+    <itemref idref="epub-208" />
+    <itemref idref="epub-209" />
+    <itemref idref="epub-210" />
+    <itemref idref="epub-0" />
+    <itemref idref="epub-1" />
+    <itemref idref="epub-2" />
+    <itemref idref="epub-4" />
+    <itemref idref="epub-211" />
+    <itemref idref="epub-212" />
+    <itemref idref="epub-213" />
+    <itemref idref="epub-214" />
+    <itemref idref="epub-215" />
+    <itemref idref="epub-216" />
+    <itemref idref="epub-217" />
+    <itemref idref="epub-218" />
+    <itemref idref="epub-219" />
+    <itemref idref="epub-220" />
+    <itemref idref="epub-7" />
+    <itemref idref="epub-280" />
+    <itemref idref="epub-283" />
+    <itemref idref="epub-285" />
+    <itemref idref="epub-281" />
+    <itemref idref="epub-282" />
+    <itemref idref="epub-284" />
+    <itemref idref="epub-286" />
+    <itemref idref="epub-287" />
+    <itemref idref="epub-524" />
+    <itemref idref="epub-544" />
+    <itemref idref="epub-6" />
+    <itemref idref="epub-279" />
+    <itemref idref="epub-8" />
+    <itemref idref="epub-9" />
+    <itemref idref="epub-288" />
+    <itemref idref="epub-289" />
+    <itemref idref="epub-10" />
+    <itemref idref="epub-438" />
+    <itemref idref="epub-469" />
+    <itemref idref="epub-470" />
+    <itemref idref="epub-450" />
+    <itemref idref="epub-455" />
+    <itemref idref="epub-458" />
+    <itemref idref="epub-459" />
+    <itemref idref="epub-460" />
+    <itemref idref="epub-461" />
+    <itemref idref="epub-466" />
+    <itemref idref="epub-473" />
+    <itemref idref="epub-463" />
+    <itemref idref="epub-468" />
+    <itemref idref="epub-444" />
+    <itemref idref="epub-442" />
+    <itemref idref="epub-451" />
+    <itemref idref="epub-445" />
+    <itemref idref="epub-456" />
+    <itemref idref="epub-457" />
+    <itemref idref="epub-472" />
+    <itemref idref="epub-446" />
+    <itemref idref="epub-447" />
+    <itemref idref="epub-448" />
+    <itemref idref="epub-449" />
+    <itemref idref="epub-471" />
+    <itemref idref="epub-439" />
+    <itemref idref="epub-474" />
+    <itemref idref="epub-441" />
+    <itemref idref="epub-452" />
+    <itemref idref="epub-462" />
+    <itemref idref="epub-443" />
+    <itemref idref="epub-464" />
+    <itemref idref="epub-454" />
+    <itemref idref="epub-440" />
+    <itemref idref="epub-465" />
+    <itemref idref="epub-467" />
+    <itemref idref="epub-453" />
+    <itemref idref="epub-261" />
+    <itemref idref="epub-481" />
+    <itemref idref="epub-304" />
+    <itemref idref="epub-292" />
+    <itemref idref="epub-296" />
+    <itemref idref="epub-295" />
+    <itemref idref="epub-293" />
+    <itemref idref="epub-308" />
+    <itemref idref="epub-290" />
+    <itemref idref="epub-303" />
+    <itemref idref="epub-305" />
+    <itemref idref="epub-301" />
+    <itemref idref="epub-299" />
+    <itemref idref="epub-312" />
+    <itemref idref="epub-311" />
+    <itemref idref="epub-291" />
+    <itemref idref="epub-298" />
+    <itemref idref="epub-297" />
+    <itemref idref="epub-300" />
+    <itemref idref="epub-302" />
+    <itemref idref="epub-306" />
+    <itemref idref="epub-307" />
+    <itemref idref="epub-309" />
+    <itemref idref="epub-310" />
+    <itemref idref="epub-313" />
+    <itemref idref="epub-11" />
+    <itemref idref="epub-315" />
+    <itemref idref="epub-326" />
+    <itemref idref="epub-333" />
+    <itemref idref="epub-316" />
+    <itemref idref="epub-317" />
+    <itemref idref="epub-318" />
+    <itemref idref="epub-319" />
+    <itemref idref="epub-320" />
+    <itemref idref="epub-321" />
+    <itemref idref="epub-322" />
+    <itemref idref="epub-323" />
+    <itemref idref="epub-324" />
+    <itemref idref="epub-325" />
+    <itemref idref="epub-327" />
+    <itemref idref="epub-328" />
+    <itemref idref="epub-329" />
+    <itemref idref="epub-330" />
+    <itemref idref="epub-331" />
+    <itemref idref="epub-332" />
+    <itemref idref="epub-334" />
+    <itemref idref="epub-335" />
+    <itemref idref="epub-336" />
+    <itemref idref="epub-337" />
+    <itemref idref="epub-338" />
+    <itemref idref="epub-339" />
+    <itemref idref="epub-340" />
+    <itemref idref="epub-314" />
+    <itemref idref="epub-13" />
+    <itemref idref="epub-342" />
+    <itemref idref="epub-343" />
+    <itemref idref="epub-344" />
+    <itemref idref="epub-345" />
+    <itemref idref="epub-346" />
+    <itemref idref="epub-347" />
+    <itemref idref="epub-348" />
+    <itemref idref="epub-14" />
+    <itemref idref="epub-16" />
+    <itemref idref="epub-17" />
+    <itemref idref="epub-355" />
+    <itemref idref="epub-351" />
+    <itemref idref="epub-352" />
+    <itemref idref="epub-358" />
+    <itemref idref="epub-353" />
+    <itemref idref="epub-356" />
+    <itemref idref="epub-354" />
+    <itemref idref="epub-357" />
+    <itemref idref="epub-18" />
+    <itemref idref="epub-19" />
+    <itemref idref="epub-20" />
+    <itemref idref="epub-359" />
+    <itemref idref="epub-360" />
+    <itemref idref="epub-361" />
+    <itemref idref="epub-362" />
+    <itemref idref="epub-21" />
+    <itemref idref="epub-23" />
+    <itemref idref="epub-24" />
+    <itemref idref="epub-363" />
+    <itemref idref="epub-25" />
+    <itemref idref="epub-5" />
+    <itemref idref="epub-31" />
+    <itemref idref="epub-539" />
+    <itemref idref="epub-540" />
+    <itemref idref="epub-541" />
+    <itemref idref="epub-542" />
+    <itemref idref="epub-256" />
+    <itemref idref="epub-257" />
+    <itemref idref="epub-258" />
+    <itemref idref="epub-259" />
+    <itemref idref="epub-260" />
+    <itemref idref="epub-261" />
+    <itemref idref="epub-475" />
+    <itemref idref="epub-476" />
+    <itemref idref="epub-26" />
+    <itemref idref="epub-487" />
+    <itemref idref="epub-496" />
+    <itemref idref="epub-490" />
+    <itemref idref="epub-488" />
+    <itemref idref="epub-494" />
+    <itemref idref="epub-480" />
+    <itemref idref="epub-486" />
+    <itemref idref="epub-490" />
+    <itemref idref="epub-499" />
+    <itemref idref="epub-491" />
+    <itemref idref="epub-495" />
+    <itemref idref="epub-489" />
+    <itemref idref="epub-498" />
+    <itemref idref="epub-493" />
+    <itemref idref="epub-492" />
+    <itemref idref="epub-484" />
+    <itemref idref="epub-481" />
+    <itemref idref="epub-482" />
+    <itemref idref="epub-500" />
+    <itemref idref="epub-497" />
+    <itemref idref="epub-477" />
+    <itemref idref="epub-478" />
+    <itemref idref="epub-479" />
+    <itemref idref="epub-485" />
+    <itemref idref="epub-29" />
+    <itemref idref="epub-524" />
+    <itemref idref="epub-525" />
+    <itemref idref="epub-526" />
+    <itemref idref="epub-527" />
+    <itemref idref="epub-30" />
+    <itemref idref="epub-22" />
+    <itemref idref="epub-25" />
+    <itemref idref="epub-5" />
+    <itemref idref="epub-475" />
+    <itemref idref="epub-476" />
+    <itemref idref="epub-349" />
+    <itemref idref="epub-350" />
+    <itemref idref="epub-532" />
+    <itemref idref="epub-538" />
+    <itemref idref="epub-528" />
+    <itemref idref="epub-529" />
+    <itemref idref="epub-530" />
+    <itemref idref="epub-531" />
+    <itemref idref="epub-533" />
+    <itemref idref="epub-534" />
+    <itemref idref="epub-535" />
+    <itemref idref="epub-536" />
+    <itemref idref="epub-537" />
+    <itemref idref="epub-27" />
+    <itemref idref="epub-503" />
+    <itemref idref="epub-501" />
+    <itemref idref="epub-502" />
+    <itemref idref="epub-28" />
+    <itemref idref="epub-504" />
+    <itemref idref="epub-505" />
+    <itemref idref="epub-506" />
+    <itemref idref="epub-507" />
+    <itemref idref="epub-508" />
+    <itemref idref="epub-509" />
+    <itemref idref="epub-510" />
+    <itemref idref="epub-511" />
+    <itemref idref="epub-512" />
+    <itemref idref="epub-513" />
+    <itemref idref="epub-514" />
+    <itemref idref="epub-515" />
+    <itemref idref="epub-516" />
+    <itemref idref="epub-517" />
+    <itemref idref="epub-518" />
+    <itemref idref="epub-519" />
+    <itemref idref="epub-520" />
+    <itemref idref="epub-521" />
+    <itemref idref="epub-522" />
+    <itemref idref="epub-523" />
+    <itemref idref="epub-32" />
+    <itemref idref="epub-543" />
+    <itemref idref="epub-544" />
+    <itemref idref="epub-545" />
+    <itemref idref="epub-546" />
+    <itemref idref="epub-547" />
+    <itemref idref="epub-548" />
+    <itemref idref="epub-120" />
+    <itemref idref="epub-118" />
+    <itemref idref="epub-33" />
+    <itemref idref="epub-552" />
+    <itemref idref="epub-553" />
+    <itemref idref="epub-551" />
+    <itemref idref="epub-549" />
+    <itemref idref="epub-550" />
+    <itemref idref="epub-554" />
+    <itemref idref="epub-34" />
+    <itemref idref="epub-555" />
+    <itemref idref="epub-556" />
+    <itemref idref="epub-557" />
+    <itemref idref="epub-558" />
+    <itemref idref="epub-559" />
+    <itemref idref="epub-560" />
+    <itemref idref="epub-35" />
+    <itemref idref="epub-36" />
+    <itemref idref="epub-562" />
+    <itemref idref="epub-561" />
+    <itemref idref="epub-128" />
+    <itemref idref="epub-143" />
+    <itemref idref="epub-112" />
+    <itemref idref="epub-113" />
+    <itemref idref="epub-114" />
+    <itemref idref="epub-153" />
+    <itemref idref="epub-154" />
+    <itemref idref="epub-155" />
+    <itemref idref="epub-156" />
+    <itemref idref="epub-157" />
+    <itemref idref="epub-158" />
+    <itemref idref="epub-159" />
+    <itemref idref="epub-160" />
+    <itemref idref="epub-161" />
+    <itemref idref="epub-162" />
+    <itemref idref="epub-163" />
+    <itemref idref="epub-149" />
+    <itemref idref="epub-150" />
+    <itemref idref="epub-151" />
+    <itemref idref="epub-153" />
+    <itemref idref="epub-154" />
+    <itemref idref="epub-155" />
+    <itemref idref="epub-156" />
+    <itemref idref="epub-157" />
+    <itemref idref="epub-158" />
+    <itemref idref="epub-159" />
+    <itemref idref="epub-160" />
+    <itemref idref="epub-161" />
+    <itemref idref="epub-162" />
+    <itemref idref="epub-163" />
+    <itemref idref="epub-152" />
+    <itemref idref="epub-115" />
+    <itemref idref="epub-164" />
+    <itemref idref="epub-165" />
+    <itemref idref="epub-166" />
+    <itemref idref="epub-107" />
+    <itemref idref="epub-108" />
+    <itemref idref="epub-111" />
+    <itemref idref="epub-116" />
+    <itemref idref="epub-4" />
+    <itemref idref="epub-211" />
+    <itemref idref="epub-212" />
+    <itemref idref="epub-213" />
+    <itemref idref="epub-214" />
+    <itemref idref="epub-215" />
+    <itemref idref="epub-216" />
+    <itemref idref="epub-217" />
+    <itemref idref="epub-218" />
+    <itemref idref="epub-219" />
+    <itemref idref="epub-220" />
+    <itemref idref="epub-167" />
+    <itemref idref="epub-168" />
+    <itemref idref="epub-169" />
+    <itemref idref="epub-170" />
+    <itemref idref="epub-171" />
+    <itemref idref="epub-172" />
+    <itemref idref="epub-175" />
+    <itemref idref="epub-174" />
+    <itemref idref="epub-176" />
+    <itemref idref="epub-177" />
+    <itemref idref="epub-178" />
+    <itemref idref="epub-179" />
+    <itemref idref="epub-173" />
+    <itemref idref="epub-211" />
+    <itemref idref="epub-212" />
+    <itemref idref="epub-213" />
+    <itemref idref="epub-214" />
+    <itemref idref="epub-215" />
+    <itemref idref="epub-216" />
+    <itemref idref="epub-217" />
+    <itemref idref="epub-218" />
+    <itemref idref="epub-219" />
+    <itemref idref="epub-220" />
+    <itemref idref="epub-117" />
+    <itemref idref="epub-118" />
+    <itemref idref="epub-119" />
+    <itemref idref="epub-180" />
+    <itemref idref="epub-181" />
+    <itemref idref="epub-504" />
+    <itemref idref="epub-505" />
+    <itemref idref="epub-506" />
+    <itemref idref="epub-507" />
+    <itemref idref="epub-508" />
+    <itemref idref="epub-509" />
+    <itemref idref="epub-510" />
+    <itemref idref="epub-511" />
+    <itemref idref="epub-512" />
+    <itemref idref="epub-513" />
+    <itemref idref="epub-514" />
+    <itemref idref="epub-515" />
+    <itemref idref="epub-516" />
+    <itemref idref="epub-517" />
+    <itemref idref="epub-518" />
+    <itemref idref="epub-519" />
+    <itemref idref="epub-520" />
+    <itemref idref="epub-521" />
+    <itemref idref="epub-522" />
+    <itemref idref="epub-523" />
+    <itemref idref="epub-120" />
+    <itemref idref="epub-121" />
+    <itemref idref="epub-182" />
+    <itemref idref="epub-183" />
+    <itemref idref="epub-184" />
+    <itemref idref="epub-185" />
+    <itemref idref="epub-288" />
+    <itemref idref="epub-289" />
+    <itemref idref="epub-122" />
+    <itemref idref="epub-186" />
+    <itemref idref="epub-187" />
+    <itemref idref="epub-188" />
+    <itemref idref="epub-189" />
+    <itemref idref="epub-511" />
+    <itemref idref="epub-397" />
+    <itemref idref="epub-123" />
+    <itemref idref="epub-124" />
+    <itemref idref="epub-125" />
+    <itemref idref="epub-290" />
+    <itemref idref="epub-291" />
+    <itemref idref="epub-292" />
+    <itemref idref="epub-293" />
+    <itemref idref="epub-294" />
+    <itemref idref="epub-295" />
+    <itemref idref="epub-296" />
+    <itemref idref="epub-297" />
+    <itemref idref="epub-298" />
+    <itemref idref="epub-299" />
+    <itemref idref="epub-300" />
+    <itemref idref="epub-301" />
+    <itemref idref="epub-302" />
+    <itemref idref="epub-303" />
+    <itemref idref="epub-304" />
+    <itemref idref="epub-305" />
+    <itemref idref="epub-306" />
+    <itemref idref="epub-307" />
+    <itemref idref="epub-308" />
+    <itemref idref="epub-309" />
+    <itemref idref="epub-310" />
+    <itemref idref="epub-311" />
+    <itemref idref="epub-312" />
+    <itemref idref="epub-313" />
+    <itemref idref="epub-126" />
+    <itemref idref="epub-191" />
+    <itemref idref="epub-192" />
+    <itemref idref="epub-193" />
+    <itemref idref="epub-194" />
+    <itemref idref="epub-5" />
+    <itemref idref="epub-31" />
+    <itemref idref="epub-539" />
+    <itemref idref="epub-540" />
+    <itemref idref="epub-541" />
+    <itemref idref="epub-542" />
+    <itemref idref="epub-256" />
+    <itemref idref="epub-257" />
+    <itemref idref="epub-258" />
+    <itemref idref="epub-259" />
+    <itemref idref="epub-260" />
+    <itemref idref="epub-261" />
+    <itemref idref="epub-256" />
+    <itemref idref="epub-257" />
+    <itemref idref="epub-258" />
+    <itemref idref="epub-259" />
+    <itemref idref="epub-260" />
+    <itemref idref="epub-261" />
+    <itemref idref="epub-524" />
+    <itemref idref="epub-525" />
+    <itemref idref="epub-526" />
+    <itemref idref="epub-527" />
+    <itemref idref="epub-342" />
+    <itemref idref="epub-343" />
+    <itemref idref="epub-344" />
+    <itemref idref="epub-345" />
+    <itemref idref="epub-346" />
+    <itemref idref="epub-347" />
+    <itemref idref="epub-348" />
+    <itemref idref="epub-127" />
+    <itemref idref="epub-370" />
+    <itemref idref="epub-129" />
+    <itemref idref="epub-130" />
+    <itemref idref="epub-445" />
+    <itemref idref="epub-446" />
+    <itemref idref="epub-456" />
+    <itemref idref="epub-457" />
+    <itemref idref="epub-472" />
+    <itemref idref="epub-131" />
+    <itemref idref="epub-132" />
+    <itemref idref="epub-133" />
+    <itemref idref="epub-20" />
+    <itemref idref="epub-359" />
+    <itemref idref="epub-360" />
+    <itemref idref="epub-361" />
+    <itemref idref="epub-362" />
+    <itemref idref="epub-359" />
+    <itemref idref="epub-360" />
+    <itemref idref="epub-361" />
+    <itemref idref="epub-362" />
+    <itemref idref="epub-134" />
+    <itemref idref="epub-135" />
+    <itemref idref="epub-136" />
+    <itemref idref="epub-137" />
+    <itemref idref="epub-138" />
+    <itemref idref="epub-139" />
+    <itemref idref="epub-140" />
+    <itemref idref="epub-141" />
+    <itemref idref="epub-195" />
+    <itemref idref="epub-196" />
+    <itemref idref="epub-197" />
+    <itemref idref="epub-198" />
+    <itemref idref="epub-26" />
+    <itemref idref="epub-487" />
+    <itemref idref="epub-496" />
+    <itemref idref="epub-490" />
+    <itemref idref="epub-488" />
+    <itemref idref="epub-494" />
+    <itemref idref="epub-480" />
+    <itemref idref="epub-486" />
+    <itemref idref="epub-490" />
+    <itemref idref="epub-499" />
+    <itemref idref="epub-491" />
+    <itemref idref="epub-495" />
+    <itemref idref="epub-489" />
+    <itemref idref="epub-498" />
+    <itemref idref="epub-493" />
+    <itemref idref="epub-492" />
+    <itemref idref="epub-484" />
+    <itemref idref="epub-481" />
+    <itemref idref="epub-482" />
+    <itemref idref="epub-500" />
+    <itemref idref="epub-497" />
+    <itemref idref="epub-477" />
+    <itemref idref="epub-478" />
+    <itemref idref="epub-479" />
+    <itemref idref="epub-485" />
+    <itemref idref="epub-477" />
+    <itemref idref="epub-478" />
+    <itemref idref="epub-479" />
+    <itemref idref="epub-480" />
+    <itemref idref="epub-486" />
+    <itemref idref="epub-490" />
+    <itemref idref="epub-481" />
+    <itemref idref="epub-482" />
+    <itemref idref="epub-483" />
+    <itemref idref="epub-484" />
+    <itemref idref="epub-485" />
+    <itemref idref="epub-486" />
+    <itemref idref="epub-487" />
+    <itemref idref="epub-488" />
+    <itemref idref="epub-489" />
+    <itemref idref="epub-490" />
+    <itemref idref="epub-491" />
+    <itemref idref="epub-492" />
+    <itemref idref="epub-493" />
+    <itemref idref="epub-494" />
+    <itemref idref="epub-495" />
+    <itemref idref="epub-496" />
+    <itemref idref="epub-497" />
+    <itemref idref="epub-498" />
+    <itemref idref="epub-499" />
+    <itemref idref="epub-500" />
+    <itemref idref="epub-378" />
+    <itemref idref="epub-435" />
+    <itemref idref="epub-142" />
+    <itemref idref="epub-27" />
+    <itemref idref="epub-503" />
+    <itemref idref="epub-501" />
+    <itemref idref="epub-502" />
+    <itemref idref="epub-144" />
+    <itemref idref="epub-199" />
+    <itemref idref="epub-200" />
+    <itemref idref="epub-34" />
+    <itemref idref="epub-555" />
+    <itemref idref="epub-556" />
+    <itemref idref="epub-557" />
+    <itemref idref="epub-558" />
+    <itemref idref="epub-559" />
+    <itemref idref="epub-560" />
+    <itemref idref="epub-555" />
+    <itemref idref="epub-556" />
+    <itemref idref="epub-557" />
+    <itemref idref="epub-558" />
+    <itemref idref="epub-559" />
+    <itemref idref="epub-560" />
+    <itemref idref="epub-145" />
+    <itemref idref="epub-201" />
+    <itemref idref="epub-146" />
+    <itemref idref="epub-147" />
+    <itemref idref="epub-561" />
+    <itemref idref="epub-562" />
+    <itemref idref="epub-148" />
+    <itemref idref="epub-202" />
+    <itemref idref="epub-371" />
+    <itemref idref="epub-375" />
+    <itemref idref="epub-374" />
+    <itemref idref="epub-378" />
+    <itemref idref="epub-379" />
+    <itemref idref="epub-380" />
+    <itemref idref="epub-377" />
+    <itemref idref="epub-381" />
+    <itemref idref="epub-373" />
+    <itemref idref="epub-376" />
+    <itemref idref="epub-438" />
+    <itemref idref="epub-469" />
+    <itemref idref="epub-470" />
+    <itemref idref="epub-450" />
+    <itemref idref="epub-455" />
+    <itemref idref="epub-458" />
+    <itemref idref="epub-459" />
+    <itemref idref="epub-460" />
+    <itemref idref="epub-461" />
+    <itemref idref="epub-466" />
+    <itemref idref="epub-473" />
+    <itemref idref="epub-463" />
+    <itemref idref="epub-468" />
+    <itemref idref="epub-444" />
+    <itemref idref="epub-442" />
+    <itemref idref="epub-451" />
+    <itemref idref="epub-445" />
+    <itemref idref="epub-456" />
+    <itemref idref="epub-457" />
+    <itemref idref="epub-472" />
+    <itemref idref="epub-446" />
+    <itemref idref="epub-447" />
+    <itemref idref="epub-448" />
+    <itemref idref="epub-449" />
+    <itemref idref="epub-471" />
+    <itemref idref="epub-439" />
+    <itemref idref="epub-474" />
+    <itemref idref="epub-441" />
+    <itemref idref="epub-452" />
+    <itemref idref="epub-462" />
+    <itemref idref="epub-443" />
+    <itemref idref="epub-464" />
+    <itemref idref="epub-454" />
+    <itemref idref="epub-440" />
+    <itemref idref="epub-465" />
+    <itemref idref="epub-467" />
+    <itemref idref="epub-453" />
+    <itemref idref="epub-368" />
+    <itemref idref="epub-419" />
+    <itemref idref="epub-384" />
+    <itemref idref="epub-423" />
+    <itemref idref="epub-406" />
+    <itemref idref="epub-407" />
+    <itemref idref="epub-405" />
+    <itemref idref="epub-431" />
+    <itemref idref="epub-395" />
+    <itemref idref="epub-412" />
+    <itemref idref="epub-434" />
+    <itemref idref="epub-427" />
+    <itemref idref="epub-404" />
+    <itemref idref="epub-436" />
+    <itemref idref="epub-410" />
+    <itemref idref="epub-396" />
+    <itemref idref="epub-421" />
+    <itemref idref="epub-402" />
+    <itemref idref="epub-422" />
+    <itemref idref="epub-413" />
+    <itemref idref="epub-414" />
+    <itemref idref="epub-399" />
+    <itemref idref="epub-400" />
+    <itemref idref="epub-426" />
+    <itemref idref="epub-394" />
+    <itemref idref="epub-432" />
+    <itemref idref="epub-424" />
+    <itemref idref="epub-425" />
+    <itemref idref="epub-417" />
+    <itemref idref="epub-418" />
+    <itemref idref="epub-392" />
+    <itemref idref="epub-393" />
+    <itemref idref="epub-428" />
+    <itemref idref="epub-429" />
+    <itemref idref="epub-387" />
+    <itemref idref="epub-388" />
+    <itemref idref="epub-389" />
+    <itemref idref="epub-433" />
+    <itemref idref="epub-411" />
+    <itemref idref="epub-415" />
+    <itemref idref="epub-390" />
+    <itemref idref="epub-398" />
+    <itemref idref="epub-403" />
+    <itemref idref="epub-386" />
+    <itemref idref="epub-391" />
+    <itemref idref="epub-416" />
+    <itemref idref="epub-401" />
+    <itemref idref="epub-383" />
+    <itemref idref="epub-408" />
+    <itemref idref="epub-409" />
+    <itemref idref="epub-385" />
+    <itemref idref="epub-397" />
+    <itemref idref="epub-382" />
+    <itemref idref="epub-435" />
+    <itemref idref="epub-420" />
+    <itemref idref="epub-437" />
+    <itemref idref="epub-430" />
+    <itemref idref="epub-372" />
+    <itemref idref="epub-369" />
+    <itemref idref="epub-370" />
+    <itemref idref="epub-221" />
+    <itemref idref="epub-240" />
+    <itemref idref="epub-238" />
+    <itemref idref="epub-241" />
+    <itemref idref="epub-237" />
+    <itemref idref="epub-239" />
+    <itemref idref="epub-241" />
+    <itemref idref="epub-237" />
+    <itemref idref="epub-239" />
+    <itemref idref="epub-228" />
+    <itemref idref="epub-223" />
+    <itemref idref="epub-234" />
+    <itemref idref="epub-232" />
+    <itemref idref="epub-231" />
+    <itemref idref="epub-230" />
+    <itemref idref="epub-225" />
+    <itemref idref="epub-233" />
+    <itemref idref="epub-236" />
+    <itemref idref="epub-222" />
+    <itemref idref="epub-226" />
+    <itemref idref="epub-235" />
+    <itemref idref="epub-224" />
+    <itemref idref="epub-227" />
+    <itemref idref="epub-229" />
+    <itemref idref="epub-251" />
+    <itemref idref="epub-250" />
+    <itemref idref="epub-252" />
+    <itemref idref="epub-253" />
+    <itemref idref="epub-254" />
+    <itemref idref="epub-255" />
+    <itemref idref="epub-242" />
+    <itemref idref="epub-244" />
+    <itemref idref="epub-245" />
+    <itemref idref="epub-246" />
+    <itemref idref="epub-243" />
+    <itemref idref="epub-247" />
+    <itemref idref="epub-249" />
+    <itemref idref="epub-248" />
+    <itemref idref="epub-269" />
+    <itemref idref="epub-270" />
+    <itemref idref="epub-265" />
+    <itemref idref="epub-264" />
+    <itemref idref="epub-271" />
+    <itemref idref="epub-273" />
+    <itemref idref="epub-266" />
+    <itemref idref="epub-272" />
+    <itemref idref="epub-274" />
+    <itemref idref="epub-263" />
+    <itemref idref="epub-268" />
+    <itemref idref="epub-267" />
+    <itemref idref="epub-262" />
+    <itemref idref="epub-12" />
+    <itemref idref="epub-106" linear="no" />
+    <itemref idref="epub-109" linear="no" />
+    <itemref idref="epub-110" linear="no" />
+    <itemref idref="epub-190" linear="no" />
+    <itemref idref="epub-275" linear="no" />
+    <itemref idref="epub-276" linear="no" />
+    <itemref idref="epub-277" linear="no" />
+    <itemref idref="epub-278" linear="no" />
+  </spine>
+  <guide>
+    <reference type="toc" title="Table of Contents" href="index.xhtml" />
+  </guide>
+</package>

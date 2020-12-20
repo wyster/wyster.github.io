@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Big Picture</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-big-picture">
+<h1>The Big Picture</h1>
+<p>Start using Symfony in 10 minutes! Really! That’s all you need to understand the
+most important concepts and start building a real project!</p>
+<p>If you’ve used a web framework before, you should feel right at home with
+Symfony. If not, welcome to a whole new way of developing web applications. Symfony
+<em>embraces</em> best practices, keeps backwards compatibility (Yes! Upgrading is always
+safe &amp; easy!) and offers long-term support.</p>
+<div class="section" id="downloading-symfony">
+<span id="installing-symfony2"></span><h2>Downloading Symfony</h2>
+<p>First, make sure you’ve installed <a class="reference external" href="https://getcomposer.org/">Composer</a><span class="link-target"> [https://getcomposer.org/]</span> and have PHP 7.1.3 or higher.</p>
+<p>Ready? In a terminal, run:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer create-project symfony/skeleton quick_tour
+</pre></div>
+</td></tr></table></div>
+<p>This creates a new <code class="docutils literal notranslate"><span class="pre">quick_tour/</span></code> directory with a small, but powerful new
+Symfony application:</p>
+<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span>quick_tour/
+├─ .env
+├─ bin/console
+├─ composer.json
+├─ composer.lock
+├─ config/
+├─ public/index.php
+├─ src/
+├─ symfony.lock
+├─ var/
+└─ vendor/
+</pre></div>
+</td></tr></table></div>
+<p>Can we already load the project in a browser? Yes! You can setup
+<a class="reference internal" href="../setup/web_server_configuration.xhtml"><span class="doc">Nginx or Apache</span></a> and configure their
+document root to be the <code class="docutils literal notranslate"><span class="pre">public/</span></code> directory. But, for development, it’s better
+to <a class="reference internal" href="../setup/symfony_server.xhtml"><span class="doc">install the Symfony local web server</span></a> and run
+it as follows:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> symfony server:start
+</pre></div>
+</td></tr></table></div>
+<p>Try your new app by going to <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code> in a browser!</p>
+<img alt="../_images/no_routes_page.png" class="with-browser align-center" src="../_images/no_routes_page.png" />
+</div>
+<div class="section" id="fundamentals-route-controller-response">
+<h2>Fundamentals: Route, Controller, Response</h2>
+<p>Our project only has about 15 files, but it’s ready to become a sleek API, a robust
+web app, or a microservice. Symfony starts small, but scales with you.</p>
+<p>But before we go too far, let’s dig into the fundamentals by building our first page.</p>
+<p>Start in <code class="docutils literal notranslate"><span class="pre">config/routes.yaml</span></code>: this is where <em>we</em> can define the URL to our new
+page. Uncomment the example that already lives in the file:</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/routes.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">index</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/</span>
+    <span class="l l-Scalar l-Scalar-Plain">controller</span><span class="p p-Indicator">:</span> <span class="s">&#39;App\Controller\DefaultController::index&#39;</span>
+</pre></div>
+</td></tr></table></div>
+<p>This is called a <em>route</em>: it defines the URL to your page (<code class="docutils literal notranslate"><span class="pre">/</span></code>) and the “controller”:
+the <em>function</em> that will be called whenever anyone goes to this URL. That function
+doesn’t exist yet, so let’s create it!</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">src/Controller</span></code>, create a new <code class="docutils literal notranslate"><span class="pre">DefaultController</span></code> class and an <code class="docutils literal notranslate"><span class="pre">index</span></code>
+method inside:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="c1">// src/Controller/DefaultController.php</span>
+<span class="k">namespace</span> <span class="nx">App\Controller</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">DefaultController</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="s1">&#39;Hello!&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>That’s it! Try going to the homepage: <code class="docutils literal notranslate"><span class="pre">http://localhost:8000/</span></code>. Symfony sees
+that the URL matches our route and then executes the new <code class="docutils literal notranslate"><span class="pre">index()</span></code> method.</p>
+<p>A controller is just a normal function with <em>one</em> rule: it must return a Symfony
+<code class="docutils literal notranslate"><span class="pre">Response</span></code> object. But that response can contain anything: simple text, JSON or
+a full HTML page.</p>
+<p>But the routing system is <em>much</em> more powerful. So let’s make the route more interesting:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span># config/routes.yaml
+<span class="gh">index:</span>
+<span class="gd">-     path: /</span>
+<span class="gi">+     path: /hello/{name}</span>
+    controller: &#39;App\Controller\DefaultController::index&#39;
+</pre></div>
+</td></tr></table></div>
+<p>The URL to this page has changed: it is <em>now</em> <code class="docutils literal notranslate"><span class="pre">/hello/*</span></code>: the <code class="docutils literal notranslate"><span class="pre">{name}</span></code> acts
+like a wildcard that matches anything. And it gets better! Update the controller too:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span>&lt;?php
+// src/Controller/DefaultController.php
+namespace App\Controller;
+
+use Symfony\Component\HttpFoundation\Response;
+
+class DefaultController
+{
+<span class="gd">-     public function index()</span>
+<span class="gi">+     public function index($name)</span>
+    {
+<span class="gd">-         return new Response(&#39;Hello!&#39;);</span>
+<span class="gi">+         return new Response(&quot;Hello $name!&quot;);</span>
+    }
+}
+</pre></div>
+</td></tr></table></div>
+<p>Try the page out by going to <code class="docutils literal notranslate"><span class="pre">http://localhost:8000/hello/Symfony</span></code>. You should
+see: Hello Symfony! The value of the <code class="docutils literal notranslate"><span class="pre">{name}</span></code> in the URL is available as a <code class="docutils literal notranslate"><span class="pre">$name</span></code>
+argument in your controller.</p>
+<p>But this can be even simpler! So let’s install annotations support:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require annotations
+</pre></div>
+</td></tr></table></div>
+<p>Now, comment-out the YAML route by adding the <code class="docutils literal notranslate"><span class="pre">#</span></code> character:</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/routes.yaml</span>
+<span class="c1"># index:</span>
+<span class="c1">#     path: /hello/{name}</span>
+<span class="c1">#     controller: &#39;App\Controller\DefaultController::index&#39;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Instead, add the route <em>right above</em> the controller method:</p>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span>&lt;?php
+// src/Controller/DefaultController.php
+namespace App\Controller;
+
+use Symfony\Component\HttpFoundation\Response;
+<span class="gi">+ use Symfony\Component\Routing\Annotation\Route;</span>
+
+class DefaultController
+{
+<span class="gi">+    /**</span>
+<span class="gi">+     * @Route(&quot;/hello/{name}&quot;)</span>
+<span class="gi">+     */</span>
+     public function index($name) {
+         // ...
+     }
+}
+</pre></div>
+</td></tr></table></div>
+<p>This works just like before! But by using annotations, the route and controller
+live right next to each other. Need another page? Add another route and method
+in <code class="docutils literal notranslate"><span class="pre">DefaultController</span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="c1">// src/Controller/DefaultController.php</span>
+<span class="k">namespace</span> <span class="nx">App\Controller</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Routing\Annotation\Route</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">DefaultController</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @Route(&quot;/simplicity&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">simple</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="s1">&#39;Simple! Easy! Great!&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Routing can do <em>even</em> more, but we’ll save that for another time! Right now, our
+app needs more features! Like a template engine, logging, debugging tools and more.</p>
+<p>Keep reading with <a class="reference internal" href="flex_recipes.xhtml"><span class="doc">Flex: Compose your Application</span></a>.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

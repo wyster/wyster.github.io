@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Creating a custom Type Guesser</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="creating-a-custom-type-guesser">
+<span id="index-0"></span><h1>Creating a custom Type Guesser</h1>
+<p>The Form component can guess the type and some options of a form field by
+using type guessers. The component already includes a type guesser using the
+assertions of the Validation component, but you can also add your own custom
+type guessers.</p>
+<div class="sidebar">
+<p class="sidebar-title">Form Type Guessers in the Bridges</p>
+<p>Symfony also provides some form type guessers in the bridges:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Doctrine/Form/DoctrineOrmTypeGuesser.php" title="Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser"><span class="pre">DoctrineOrmTypeGuesser</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Doctrine/Form/DoctrineOrmTypeGuesser.php]</span></span></code>
+provided by the Doctrine bridge.</p></li>
+</ul>
+</div>
+<div class="section" id="create-a-phpdoc-type-guesser">
+<h2>Create a PHPDoc Type Guesser</h2>
+<p>In this section, you are going to build a guesser that reads information about
+fields from the PHPDoc of the properties. At first, you need to create a class
+which implements <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php" title="Symfony\Component\Form\FormTypeGuesserInterface"><span class="pre">FormTypeGuesserInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php]</span></span></code>.
+This interface requires four methods:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php" title="Symfony\Component\Form\FormTypeGuesserInterface::guessType()"><span class="pre">guessType()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php]</span></span></code></dt>
+<dd><p>Tries to guess the type of a field;</p>
+</dd>
+<dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php" title="Symfony\Component\Form\FormTypeGuesserInterface::guessRequired()"><span class="pre">guessRequired()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php]</span></span></code></dt>
+<dd><p>Tries to guess the value of the <a class="reference internal" href="../reference/forms/types/form.xhtml#reference-form-option-required"><span class="std std-ref">required</span></a>
+option;</p>
+</dd>
+<dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php" title="Symfony\Component\Form\FormTypeGuesserInterface::guessMaxLength()"><span class="pre">guessMaxLength()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php]</span></span></code></dt>
+<dd><p>Tries to guess the value of the <code class="docutils literal notranslate"><span class="pre">maxlength</span></code> input attribute;</p>
+</dd>
+<dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php" title="Symfony\Component\Form\FormTypeGuesserInterface::guessPattern()"><span class="pre">guessPattern()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormTypeGuesserInterface.php]</span></span></code></dt>
+<dd><p>Tries to guess the value of the <code class="docutils literal notranslate"><span class="pre">pattern</span></code> input attribute.</p>
+</dd>
+</dl>
+<p>Start by creating the class and these methods. Next, you’ll learn how to fill each in:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/TypeGuesser/PHPDocTypeGuesser.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form\TypeGuesser</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\FormTypeGuesserInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Guess\TypeGuess</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Guess\ValueGuess</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">PHPDocTypeGuesser</span> <span class="k">implements</span> <span class="nx">FormTypeGuesserInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessRequired</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessMaxLength</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessPattern</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="guessing-the-type">
+<h3>Guessing the Type</h3>
+<p>When guessing a type, the method returns either an instance of
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Guess/TypeGuess.php" title="Symfony\Component\Form\Guess\TypeGuess"><span class="pre">TypeGuess</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Guess/TypeGuess.php]</span></span></code> or nothing, to determine
+that the type guesser cannot guess the type.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">TypeGuess</span></code> constructor requires three options:</p>
+<ul class="simple">
+<li><p>The type name (one of the <a class="reference internal" href="../reference/forms/types.xhtml"><span class="doc">form types</span></a>);</p></li>
+<li><p>Additional options (for instance, when the type is <code class="docutils literal notranslate"><span class="pre">entity</span></code>, you also
+want to set the <code class="docutils literal notranslate"><span class="pre">class</span></code> option). If no types are guessed, this should be
+set to an empty array;</p></li>
+<li><p>The confidence that the guessed type is correct. This can be one of the
+constants of the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Guess/Guess.php" title="Symfony\Component\Form\Guess\Guess"><span class="pre">Guess</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Guess/Guess.php]</span></span></code> class:
+<code class="docutils literal notranslate"><span class="pre">LOW_CONFIDENCE</span></code>, <code class="docutils literal notranslate"><span class="pre">MEDIUM_CONFIDENCE</span></code>, <code class="docutils literal notranslate"><span class="pre">HIGH_CONFIDENCE</span></code>,
+<code class="docutils literal notranslate"><span class="pre">VERY_HIGH_CONFIDENCE</span></code>. After all type guessers have been executed, the
+type with the highest confidence is used.</p></li>
+</ul>
+<p>With this knowledge, you can implement the <code class="docutils literal notranslate"><span class="pre">guessType()</span></code> method of the
+<code class="docutils literal notranslate"><span class="pre">PHPDocTypeGuesser</span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Form/TypeGuesser/PHPDocTypeGuesser.php</span>
+<span class="k">namespace</span> <span class="nx">App\Form\TypeGuesser</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\CheckboxType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\IntegerType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\NumberType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Extension\Core\Type\TextType</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Guess\Guess</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Guess\TypeGuess</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">PHPDocTypeGuesser</span> <span class="k">implements</span> <span class="nx">FormTypeGuesserInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
+    <span class="p">{</span>
+        <span class="nv">$annotations</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">readPhpDocAnnotations</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$annotations</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">]))</span> <span class="p">{</span>
+            <span class="k">return</span><span class="p">;</span> <span class="c1">// guess nothing if the @var annotation is not available</span>
+        <span class="p">}</span>
+
+        <span class="c1">// otherwise, base the type on the @var annotation</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="nv">$annotations</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="s1">&#39;string&#39;</span><span class="o">:</span>
+                <span class="c1">// there is a high confidence that the type is text when</span>
+                <span class="c1">// @var string is used</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nx">TypeGuess</span><span class="p">(</span><span class="nx">TextType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[],</span> <span class="nx">Guess</span><span class="o">::</span><span class="na">HIGH_CONFIDENCE</span><span class="p">);</span>
+
+            <span class="k">case</span> <span class="s1">&#39;int&#39;</span><span class="o">:</span>
+            <span class="k">case</span> <span class="s1">&#39;integer&#39;</span><span class="o">:</span>
+                <span class="c1">// integers can also be the id of an entity or a checkbox (0 or 1)</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nx">TypeGuess</span><span class="p">(</span><span class="nx">IntegerType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[],</span> <span class="nx">Guess</span><span class="o">::</span><span class="na">MEDIUM_CONFIDENCE</span><span class="p">);</span>
+
+            <span class="k">case</span> <span class="s1">&#39;float&#39;</span><span class="o">:</span>
+            <span class="k">case</span> <span class="s1">&#39;double&#39;</span><span class="o">:</span>
+            <span class="k">case</span> <span class="s1">&#39;real&#39;</span><span class="o">:</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nx">TypeGuess</span><span class="p">(</span><span class="nx">NumberType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[],</span> <span class="nx">Guess</span><span class="o">::</span><span class="na">MEDIUM_CONFIDENCE</span><span class="p">);</span>
+
+            <span class="k">case</span> <span class="s1">&#39;boolean&#39;</span><span class="o">:</span>
+            <span class="k">case</span> <span class="s1">&#39;bool&#39;</span><span class="o">:</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nx">TypeGuess</span><span class="p">(</span><span class="nx">CheckboxType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[],</span> <span class="nx">Guess</span><span class="o">::</span><span class="na">HIGH_CONFIDENCE</span><span class="p">);</span>
+
+            <span class="k">default</span><span class="o">:</span>
+                <span class="c1">// there is a very low confidence that this one is correct</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nx">TypeGuess</span><span class="p">(</span><span class="nx">TextType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[],</span> <span class="nx">Guess</span><span class="o">::</span><span class="na">LOW_CONFIDENCE</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">readPhpDocAnnotations</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="nv">$reflectionProperty</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\ReflectionProperty</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">);</span>
+        <span class="nv">$phpdoc</span> <span class="o">=</span> <span class="nv">$reflectionProperty</span><span class="o">-&gt;</span><span class="na">getDocComment</span><span class="p">();</span>
+
+        <span class="c1">// parse the $phpdoc into an array like:</span>
+        <span class="c1">// [&#39;var&#39; =&gt; &#39;string&#39;, &#39;since&#39; =&gt; &#39;1.0&#39;]</span>
+        <span class="nv">$phpdocTags</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$phpdocTags</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This type guesser can now guess the field type for a property if it has
+PHPDoc!</p>
+</div>
+<div class="section" id="guessing-field-options">
+<h3>Guessing Field Options</h3>
+<p>The other three methods (<code class="docutils literal notranslate"><span class="pre">guessMaxLength()</span></code>, <code class="docutils literal notranslate"><span class="pre">guessRequired()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">guessPattern()</span></code>) return a <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Guess/ValueGuess.php" title="Symfony\Component\Form\Guess\ValueGuess"><span class="pre">ValueGuess</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Guess/ValueGuess.php]</span></span></code>
+instance with the value of the option. This constructor has 2 arguments:</p>
+<ul class="simple">
+<li><p>The value of the option;</p></li>
+<li><p>The confidence that the guessed value is correct (using the constants of the
+<code class="docutils literal notranslate"><span class="pre">Guess</span></code> class).</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">null</span></code> is guessed when you believe the value of the option should not be
+set.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should be very careful using the <code class="docutils literal notranslate"><span class="pre">guessPattern()</span></code> method. When the
+type is a float, you cannot use it to determine a min or max value of the
+float (e.g. you want a float to be greater than <code class="docutils literal notranslate"><span class="pre">5</span></code>, <code class="docutils literal notranslate"><span class="pre">4.512313</span></code> is not valid
+but <code class="docutils literal notranslate"><span class="pre">length(4.512314)</span> <span class="pre">&gt;</span> <span class="pre">length(5)</span></code> is, so the pattern will succeed). In
+this case, the value should be set to <code class="docutils literal notranslate"><span class="pre">null</span></code> with a <code class="docutils literal notranslate"><span class="pre">MEDIUM_CONFIDENCE</span></code>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="registering-a-type-guesser">
+<h2>Registering a Type Guesser</h2>
+<p>If you’re using <a class="reference internal" href="../service_container.xhtml#services-autowire"><span class="std std-ref">autowire</span></a> and
+<a class="reference internal" href="../service_container.xhtml#services-autoconfigure"><span class="std std-ref">autoconfigure</span></a>, you’re done! Symfony already knows
+and is using your form type guesser.</p>
+<p>If you’re <strong>not</strong> using autowire and autoconfigure, register your service manually
+and tag it with <code class="docutils literal notranslate"><span class="pre">form.type_guesser</span></code>:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">App\Form\TypeGuesser\PHPDocTypeGuesser</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">form.type_guesser</span><span class="p p-Indicator">]</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\Form\TypeGuesser\PHPDocTypeGuesser&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;tag</span> <span class="na">name=</span><span class="s">&quot;form.type_guesser&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">use</span> <span class="nx">App\Form\TypeGuesser\PHPDocTypeGuesser</span><span class="p">;</span>
+
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">register</span><span class="p">(</span><span class="nx">PHPDocTypeGuesser</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">addTag</span><span class="p">(</span><span class="s1">&#39;form.type_guesser&#39;</span><span class="p">)</span>
+<span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<div class="sidebar">
+<p class="sidebar-title">Registering a Type Guesser in the Component</p>
+<p>If you’re using the Form component standalone in your PHP project, use
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormFactoryBuilder.php" title="Symfony\Component\Form\FormFactoryBuilder::addTypeGuesser()"><span class="pre">addTypeGuesser()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormFactoryBuilder.php]</span></span></code> or
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormFactoryBuilder.php" title="Symfony\Component\Form\FormFactoryBuilder::addTypeGuessers()"><span class="pre">addTypeGuessers()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormFactoryBuilder.php]</span></span></code> of
+the <code class="docutils literal notranslate"><span class="pre">FormFactoryBuilder</span></code> to register new type guessers:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Form\TypeGuesser\PHPDocTypeGuesser</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\Forms</span><span class="p">;</span>
+
+<span class="nv">$formFactory</span> <span class="o">=</span> <span class="nx">Forms</span><span class="o">::</span><span class="na">createFormFactoryBuilder</span><span class="p">()</span>
+    <span class="c1">// ...</span>
+    <span class="o">-&gt;</span><span class="na">addTypeGuesser</span><span class="p">(</span><span class="k">new</span> <span class="nx">PHPDocTypeGuesser</span><span class="p">())</span>
+    <span class="o">-&gt;</span><span class="na">getFormFactory</span><span class="p">();</span>
+
+<span class="c1">// ...</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Run the following command to verify that the form type guesser was
+successfully registered in the application:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:form
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

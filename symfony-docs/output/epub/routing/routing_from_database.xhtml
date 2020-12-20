@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Looking up Routes from a Database: Symfony CMF DynamicRouter</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="looking-up-routes-from-a-database-symfony-cmf-dynamicrouter">
+<span id="index-0"></span><h1>Looking up Routes from a Database: Symfony CMF DynamicRouter</h1>
+<p>The core Symfony Routing System is excellent at handling complex sets
+of routes. A highly optimized routing cache is dumped during
+deployments.</p>
+<p>However, when working with large amounts of data that each need a nice
+readable URL (e.g. for search engine optimization purposes), the routing
+can get slowed down. Additionally, if routes need to be edited by users,
+the route cache would need to be rebuilt frequently.</p>
+<p>For these cases, the <code class="docutils literal notranslate"><span class="pre">DynamicRouter</span></code> offers an alternative approach:</p>
+<ul class="simple">
+<li><p>Routes are stored in a database;</p></li>
+<li><p>There is a database index on the path field, the lookup scales to huge
+numbers of different routes;</p></li>
+<li><p>Writes only affect the index of the database, which is very efficient.</p></li>
+</ul>
+<p>When all routes are known during deploy time and the number is not too
+high, using a <a class="reference internal" href="custom_route_loader.xhtml"><span class="doc">custom route loader</span></a> is the
+preferred way to add more routes. When working with only one type of
+objects, a slug parameter on the object and the <code class="docutils literal notranslate"><span class="pre">&#64;ParamConverter</span></code>
+annotation work fine (see <a class="reference external" href="https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html">FrameworkExtraBundle</a><span class="link-target"> [https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html]</span>) .</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">DynamicRouter</span></code> is useful when you need <code class="docutils literal notranslate"><span class="pre">Route</span></code> objects with
+the full feature set of Symfony. Each route can define a specific
+controller so you can decouple the URL structure from your application
+logic.</p>
+<p>The DynamicRouter comes with built-in support for Doctrine ORM and Doctrine
+PHPCR-ODM but offers the <code class="docutils literal notranslate"><span class="pre">ContentRepositoryInterface</span></code> to write a custom
+loader, e.g. for another database type or a REST API or anything else.</p>
+<p>The DynamicRouter is explained in the <a class="reference external" href="https://symfony.com/doc/current/cmf/bundles/routing/dynamic.html">Symfony CMF documentation</a><span class="link-target"> [https://symfony.com/doc/current/cmf/bundles/routing/dynamic.html]</span>.</p>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>
