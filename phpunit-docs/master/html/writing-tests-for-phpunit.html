@@ -1,0 +1,1537 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. Writing Tests for PHPUnit &mdash; PHPUnit master
+ Manual</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="3. The Command-Line Test Runner" href="textui.html" />
+    <link rel="prev" title="1. Installing PHPUnit" href="installation.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PHPUnit
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installing PHPUnit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#php-archive-phar">PHP Archive (PHAR)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#verifying-phpunit-phar-releases">Verifying PHPUnit PHAR Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#composer">Composer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#global-installation">Global Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#webserver">Webserver</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Writing Tests for PHPUnit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#test-dependencies">Test Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-providers">Data Providers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-exceptions">Testing Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-php-errors-warnings-and-notices">Testing PHP Errors, Warnings, and Notices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-output">Testing Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-output">Error output</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#edge-cases">Edge Cases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="textui.html">3. The Command-Line Test Runner</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="textui.html#command-line-options">Command-Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="textui.html#testdox">TestDox</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fixtures.html">4. Fixtures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fixtures.html#more-setup-than-teardown">More setUp() than tearDown()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixtures.html#variations">Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixtures.html#sharing-fixture">Sharing Fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixtures.html#global-state">Global State</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="organizing-tests.html">5. Organizing Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="organizing-tests.html#composing-a-test-suite-using-the-filesystem">Composing a Test Suite Using the Filesystem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="organizing-tests.html#composing-a-test-suite-using-xml-configuration">Composing a Test Suite Using XML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="risky-tests.html">6. Risky Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#useless-tests">Useless Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#unintentionally-covered-code">Unintentionally Covered Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#output-during-test-execution">Output During Test Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#test-execution-timeout">Test Execution Timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#global-state-manipulation">Global State Manipulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="incomplete-and-skipped-tests.html">7. Incomplete and Skipped Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="incomplete-and-skipped-tests.html#incomplete-tests">Incomplete Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="incomplete-and-skipped-tests.html#skipping-tests">Skipping Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="incomplete-and-skipped-tests.html#skipping-tests-using-requires">Skipping Tests using &#64;requires</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="test-doubles.html">8. Test Doubles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="test-doubles.html#stubs">Stubs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test-doubles.html#mock-objects">Mock Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test-doubles.html#mocking-traits-and-abstract-classes">Mocking Traits and Abstract Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test-doubles.html#stubbing-and-mocking-web-services">Stubbing and Mocking Web Services</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code-coverage-analysis.html">9. Code Coverage Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#software-metrics-for-code-coverage">Software Metrics for Code Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#including-files">Including Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#ignoring-code-blocks">Ignoring Code Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#specifying-covered-code-parts">Specifying Covered Code Parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#edge-cases">Edge Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending-phpunit.html">10. Extending PHPUnit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extending-phpunit.html#subclass-phpunit-framework-testcase">Subclass PHPUnit\Framework\TestCase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-phpunit.html#write-custom-assertions">Write custom assertions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-phpunit.html#extending-the-testrunner">Extending the TestRunner</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending-phpunit.html#configuring-extensions">Configuring extensions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="assertions.html">1. Assertions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#static-vs-non-static-usage-of-assertion-methods">Static vs. Non-Static Usage of Assertion Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertarrayhaskey">assertArrayHasKey()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertclasshasattribute">assertClassHasAttribute()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertclasshasstaticattribute">assertClassHasStaticAttribute()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertcontains">assertContains()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringcontainsstring">assertStringContainsString()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringcontainsstringignoringcase">assertStringContainsStringIgnoringCase()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertcontainsonly">assertContainsOnly()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertcontainsonlyinstancesof">assertContainsOnlyInstancesOf()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertcount">assertCount()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertdirectoryexists">assertDirectoryExists()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertdirectoryisreadable">assertDirectoryIsReadable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertdirectoryiswritable">assertDirectoryIsWritable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertempty">assertEmpty()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertequals">assertEquals()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertequalscanonicalizing">assertEqualsCanonicalizing()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertequalsignoringcase">assertEqualsIgnoringCase()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertequalswithdelta">assertEqualsWithDelta()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertobjectequals">assertObjectEquals()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfalse">assertFalse()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfileequals">assertFileEquals()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfileexists">assertFileExists()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfileisreadable">assertFileIsReadable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfileiswritable">assertFileIsWritable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertgreaterthan">assertGreaterThan()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertgreaterthanorequal">assertGreaterThanOrEqual()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertinfinite">assertInfinite()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertinstanceof">assertInstanceOf()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisarray">assertIsArray()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisbool">assertIsBool()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertiscallable">assertIsCallable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisfloat">assertIsFloat()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisint">assertIsInt()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisiterable">assertIsIterable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisnumeric">assertIsNumeric()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisobject">assertIsObject()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisresource">assertIsResource()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisscalar">assertIsScalar()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisstring">assertIsString()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisreadable">assertIsReadable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertiswritable">assertIsWritable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertjsonfileequalsjsonfile">assertJsonFileEqualsJsonFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertjsonstringequalsjsonfile">assertJsonStringEqualsJsonFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertjsonstringequalsjsonstring">assertJsonStringEqualsJsonString()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertlessthan">assertLessThan()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertlessthanorequal">assertLessThanOrEqual()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertnan">assertNan()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertnull">assertNull()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertobjecthasattribute">assertObjectHasAttribute()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertmatchesregularexpression">assertMatchesRegularExpression()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringmatchesformat">assertStringMatchesFormat()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringmatchesformatfile">assertStringMatchesFormatFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertsame">assertSame()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringendswith">assertStringEndsWith()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringequalsfile">assertStringEqualsFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringstartswith">assertStringStartsWith()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertthat">assertThat()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#asserttrue">assertTrue()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertxmlfileequalsxmlfile">assertXmlFileEqualsXmlFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertxmlstringequalsxmlfile">assertXmlStringEqualsXmlFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertxmlstringequalsxmlstring">assertXmlStringEqualsXmlString()</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotations.html">2. Annotations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#author">&#64;author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#after">&#64;after</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#afterclass">&#64;afterClass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#backupglobals">&#64;backupGlobals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#backupstaticattributes">&#64;backupStaticAttributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#before">&#64;before</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#beforeclass">&#64;beforeClass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#codecoverageignore">&#64;codeCoverageIgnore*</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#covers">&#64;covers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#coversdefaultclass">&#64;coversDefaultClass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#coversnothing">&#64;coversNothing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#dataprovider">&#64;dataProvider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#depends">&#64;depends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#doesnotperformassertions">&#64;doesNotPerformAssertions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#group">&#64;group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#large">&#64;large</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#medium">&#64;medium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#preserveglobalstate">&#64;preserveGlobalState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#requires">&#64;requires</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#runtestsinseparateprocesses">&#64;runTestsInSeparateProcesses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#runinseparateprocess">&#64;runInSeparateProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#small">&#64;small</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#test">&#64;test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#testdox">&#64;testdox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#testwith">&#64;testWith</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#ticket">&#64;ticket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#uses">&#64;uses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">3. The XML Configuration File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-phpunit-element">The <code class="docutils literal"><span class="pre">&lt;phpunit&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-backupglobals-attribute">The <code class="docutils literal"><span class="pre">backupGlobals</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-backupstaticattributes-attribute">The <code class="docutils literal"><span class="pre">backupStaticAttributes</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bootstrap-attribute">The <code class="docutils literal"><span class="pre">bootstrap</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-cacheresult-attribute">The <code class="docutils literal"><span class="pre">cacheResult</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-cacheresultfile-attribute">The <code class="docutils literal"><span class="pre">cacheResultFile</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-colors-attribute">The <code class="docutils literal"><span class="pre">colors</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-columns-attribute">The <code class="docutils literal"><span class="pre">columns</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-convertdeprecationstoexceptions-attribute">The <code class="docutils literal"><span class="pre">convertDeprecationsToExceptions</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-converterrorstoexceptions-attribute">The <code class="docutils literal"><span class="pre">convertErrorsToExceptions</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-convertnoticestoexceptions-attribute">The <code class="docutils literal"><span class="pre">convertNoticesToExceptions</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-convertwarningstoexceptions-attribute">The <code class="docutils literal"><span class="pre">convertWarningsToExceptions</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-forcecoversannotation-attribute">The <code class="docutils literal"><span class="pre">forceCoversAnnotation</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-printerclass-attribute">The <code class="docutils literal"><span class="pre">printerClass</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-printerfile-attribute">The <code class="docutils literal"><span class="pre">printerFile</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-processisolation-attribute">The <code class="docutils literal"><span class="pre">processIsolation</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponerror-attribute">The <code class="docutils literal"><span class="pre">stopOnError</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponfailure-attribute">The <code class="docutils literal"><span class="pre">stopOnFailure</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponincomplete-attribute">The <code class="docutils literal"><span class="pre">stopOnIncomplete</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponrisky-attribute">The <code class="docutils literal"><span class="pre">stopOnRisky</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponskipped-attribute">The <code class="docutils literal"><span class="pre">stopOnSkipped</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponwarning-attribute">The <code class="docutils literal"><span class="pre">stopOnWarning</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stopondefect-attribute">The <code class="docutils literal"><span class="pre">stopOnDefect</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-failonrisky-attribute">The <code class="docutils literal"><span class="pre">failOnRisky</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-failonwarning-attribute">The <code class="docutils literal"><span class="pre">failOnWarning</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutchangestoglobalstate-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutChangesToGlobalState</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutoutputduringtests-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutOutputDuringTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutresourceusageduringsmalltests-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutResourceUsageDuringSmallTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutteststhatdonottestanything-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutTestsThatDoNotTestAnything</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictabouttodoannotatedtests-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutTodoAnnotatedTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutcoversannotation-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutCoversAnnotation</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-enforcetimelimit-attribute">The <code class="docutils literal"><span class="pre">enforceTimeLimit</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-defaulttimelimit-attribute">The <code class="docutils literal"><span class="pre">defaultTimeLimit</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-timeoutforsmalltests-attribute">The <code class="docutils literal"><span class="pre">timeoutForSmallTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-timeoutformediumtests-attribute">The <code class="docutils literal"><span class="pre">timeoutForMediumTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-timeoutforlargetests-attribute">The <code class="docutils literal"><span class="pre">timeoutForLargeTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testsuiteloaderclass-attribute">The <code class="docutils literal"><span class="pre">testSuiteLoaderClass</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testsuiteloaderfile-attribute">The <code class="docutils literal"><span class="pre">testSuiteLoaderFile</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-defaulttestsuite-attribute">The <code class="docutils literal"><span class="pre">defaultTestSuite</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-verbose-attribute">The <code class="docutils literal"><span class="pre">verbose</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stderr-attribute">The <code class="docutils literal"><span class="pre">stderr</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-reversedefectlist-attribute">The <code class="docutils literal"><span class="pre">reverseDefectList</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-registermockobjectsfromtestargumentsrecursively-attribute">The <code class="docutils literal"><span class="pre">registerMockObjectsFromTestArgumentsRecursively</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-extensionsdirectory-attribute">The <code class="docutils literal"><span class="pre">extensionsDirectory</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-executionorder-attribute">The <code class="docutils literal"><span class="pre">executionOrder</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-resolvedependencies-attribute">The <code class="docutils literal"><span class="pre">resolveDependencies</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testdox-attribute">The <code class="docutils literal"><span class="pre">testdox</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-nointeraction-attribute">The <code class="docutils literal"><span class="pre">noInteraction</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-testsuites-element">The <code class="docutils literal"><span class="pre">&lt;testsuites&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testsuite-element">The <code class="docutils literal"><span class="pre">&lt;testsuite&gt;</span></code> Element</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-coverage-element">The <code class="docutils literal"><span class="pre">&lt;coverage&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-cachedirectory-attribute">The <code class="docutils literal"><span class="pre">cacheDirectory</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-includeuncoveredfiles-attribute">The <code class="docutils literal"><span class="pre">includeUncoveredFiles</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-processuncoveredfiles-attribute">The <code class="docutils literal"><span class="pre">processUncoveredFiles</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-ignoredeprecatedcodeunits-attribute">The <code class="docutils literal"><span class="pre">ignoreDeprecatedCodeUnits</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-pathcoverage-attribute">The <code class="docutils literal"><span class="pre">pathCoverage</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-disablecodecoverageignore-attribute">The <code class="docutils literal"><span class="pre">disableCodeCoverageIgnore</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-include-element">The <code class="docutils literal"><span class="pre">&lt;include&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-exclude-element">The <code class="docutils literal"><span class="pre">&lt;exclude&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-directory-element">The <code class="docutils literal"><span class="pre">&lt;directory&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-prefix-attribute">The <code class="docutils literal"><span class="pre">prefix</span></code> Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-suffix-attribute">The <code class="docutils literal"><span class="pre">suffix</span></code> Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-phpversion-attribute">The <code class="docutils literal"><span class="pre">phpVersion</span></code> Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-phpversionoperator-attribute">The <code class="docutils literal"><span class="pre">phpVersionOperator</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-file-element">The <code class="docutils literal"><span class="pre">&lt;file&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-report-element">The <code class="docutils literal"><span class="pre">&lt;report&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-clover-element">The <code class="docutils literal"><span class="pre">&lt;clover&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-crap4j-element">The <code class="docutils literal"><span class="pre">&lt;crap4j&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-html-element">The <code class="docutils literal"><span class="pre">&lt;html&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-php-element">The <code class="docutils literal"><span class="pre">&lt;php&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-text-element">The <code class="docutils literal"><span class="pre">&lt;text&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-xml-element">The <code class="docutils literal"><span class="pre">&lt;xml&gt;</span></code> Element</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-logging-element">The <code class="docutils literal"><span class="pre">&lt;logging&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-junit-element">The <code class="docutils literal"><span class="pre">&lt;junit&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id5">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-teamcity-element">The <code class="docutils literal"><span class="pre">&lt;teamcity&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id6">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testdoxhtml-element">The <code class="docutils literal"><span class="pre">&lt;testdoxHtml&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id7">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testdoxtext-element">The <code class="docutils literal"><span class="pre">&lt;testdoxText&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id8">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testdoxxml-element">The <code class="docutils literal"><span class="pre">&lt;testdoxXml&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id9">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#appendixes-configuration-logging-text">The <code class="docutils literal"><span class="pre">&lt;text&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id11">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-groups-element">The <code class="docutils literal"><span class="pre">&lt;groups&gt;</span></code> Element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-testdoxgroups-element">The <code class="docutils literal"><span class="pre">&lt;testdoxGroups&gt;</span></code> Element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-listeners-element">The <code class="docutils literal"><span class="pre">&lt;listeners&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-listener-element">The <code class="docutils literal"><span class="pre">&lt;listener&gt;</span></code> Element</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-extensions-element">The <code class="docutils literal"><span class="pre">&lt;extensions&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-extension-element">The <code class="docutils literal"><span class="pre">&lt;extension&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-arguments-element">The <code class="docutils literal"><span class="pre">&lt;arguments&gt;</span></code> Element</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#appendixes-configuration-php">The <code class="docutils literal"><span class="pre">&lt;php&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-includepath-element">The <code class="docutils literal"><span class="pre">&lt;includePath&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-ini-element">The <code class="docutils literal"><span class="pre">&lt;ini&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-const-element">The <code class="docutils literal"><span class="pre">&lt;const&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-var-element">The <code class="docutils literal"><span class="pre">&lt;var&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-env-element">The <code class="docutils literal"><span class="pre">&lt;env&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-get-element">The <code class="docutils literal"><span class="pre">&lt;get&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-post-element">The <code class="docutils literal"><span class="pre">&lt;post&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-cookie-element">The <code class="docutils literal"><span class="pre">&lt;cookie&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-server-element">The <code class="docutils literal"><span class="pre">&lt;server&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-files-element">The <code class="docutils literal"><span class="pre">&lt;files&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-request-element">The <code class="docutils literal"><span class="pre">&lt;request&gt;</span></code> Element</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">4. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">5. Copyright</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PHPUnit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>2. Writing Tests for PHPUnit</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/sebastianbergmann/phpunit-documentation-english//master/src/writing-tests-for-phpunit.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="writing-tests-for-phpunit">
+<span id="id1"></span><h1>2. Writing Tests for PHPUnit</h1>
+<p><a class="reference internal" href="#writing-tests-for-phpunit-examples-stacktest-php"><span class="std std-numref">Example 2.1</span></a> shows
+how we can write tests using PHPUnit that exercise PHP’s array operations.
+The example introduces the basic conventions and steps for writing tests
+with PHPUnit:</p>
+<ol class="arabic">
+<li><p class="first">The tests for a class <code class="docutils literal"><span class="pre">Class</span></code> go into a class <code class="docutils literal"><span class="pre">ClassTest</span></code>.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">ClassTest</span></code> inherits (most of the time) from <code class="docutils literal"><span class="pre">PHPUnit\Framework\TestCase</span></code>.</p>
+</li>
+<li><p class="first">The tests are public methods that are named <code class="docutils literal"><span class="pre">test*</span></code>.</p>
+<p>Alternatively, you can use the <code class="docutils literal"><span class="pre">&#64;test</span></code> annotation in a method’s docblock to mark it as a test method.</p>
+</li>
+<li><p class="first">Inside the test methods, assertion methods such as <code class="docutils literal"><span class="pre">assertSame()</span></code> (see <a class="reference internal" href="assertions.html#appendixes-assertions"><span class="std std-ref">Assertions</span></a>) are used to assert that an actual value matches an expected value.</p>
+</li>
+</ol>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-examples-stacktest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.1 </span><span class="caption-text">Testing array operations with PHPUnit</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">StackTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testPushAndPop</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$stack</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$stack</span><span class="p">));</span>
+
+        <span class="nb">array_push</span><span class="p">(</span><span class="nv">$stack</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nv">$stack</span><span class="p">[</span><span class="nb">count</span><span class="p">(</span><span class="nv">$stack</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$stack</span><span class="p">));</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nb">array_pop</span><span class="p">(</span><span class="nv">$stack</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$stack</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Martin Fowler</em>:</div>
+</div>
+<blockquote>
+<div>Whenever you are tempted to type something into a
+<code class="docutils literal"><span class="pre">print</span></code> statement or a debugger expression, write it
+as a test instead.</div></blockquote>
+<div class="section" id="test-dependencies">
+<span id="writing-tests-for-phpunit-test-dependencies"></span><h2>Test Dependencies</h2>
+<blockquote>
+<div><p><em>Adrian Kuhn et. al.</em>:</p>
+<p>Unit Tests are primarily written as a good practice to help developers
+identify and fix bugs, to refactor code and to serve as documentation
+for a unit of software under test. To achieve these benefits, unit tests
+ideally should cover all the possible paths in a program. One unit test
+usually covers one specific path in one function or method. However a
+test method is not necessarily an encapsulated, independent entity. Often
+there are implicit dependencies between test methods, hidden in the
+implementation scenario of a test.</p>
+</div></blockquote>
+<p>PHPUnit supports the declaration of explicit dependencies between test
+methods. Such dependencies do not define the order in which the test
+methods are to be executed but they allow the returning of an instance of
+the test fixture by a producer and passing it to the dependent consumers.</p>
+<ul class="simple">
+<li>A producer is a test method that yields its unit under test as return value.</li>
+<li>A consumer is a test method that depends on one or more producers and their return values.</li>
+</ul>
+<p><a class="reference internal" href="#writing-tests-for-phpunit-examples-stacktest2-php"><span class="std std-numref">Example 2.2</span></a> shows
+how to use the <code class="docutils literal"><span class="pre">&#64;depends</span></code> annotation to express
+dependencies between test methods.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-examples-stacktest2-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.2 </span><span class="caption-text">Using the <code class="docutils literal"><span class="pre">&#64;depends</span></code> annotation to express dependencies</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">StackTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testEmpty</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="nv">$stack</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEmpty</span><span class="p">(</span><span class="nv">$stack</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$stack</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @depends testEmpty</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testPush</span><span class="p">(</span><span class="k">array</span> <span class="nv">$stack</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="nb">array_push</span><span class="p">(</span><span class="nv">$stack</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nv">$stack</span><span class="p">[</span><span class="nb">count</span><span class="p">(</span><span class="nv">$stack</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotEmpty</span><span class="p">(</span><span class="nv">$stack</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$stack</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @depends testPush</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testPop</span><span class="p">(</span><span class="k">array</span> <span class="nv">$stack</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nb">array_pop</span><span class="p">(</span><span class="nv">$stack</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEmpty</span><span class="p">(</span><span class="nv">$stack</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>In the example above, the first test, <code class="docutils literal"><span class="pre">testEmpty()</span></code>,
+creates a new array and asserts that it is empty. The test then returns
+the fixture as its result. The second test, <code class="docutils literal"><span class="pre">testPush()</span></code>,
+depends on <code class="docutils literal"><span class="pre">testEmpty()</span></code> and is passed the result of that
+depended-upon test as its argument. Finally, <code class="docutils literal"><span class="pre">testPop()</span></code>
+depends upon <code class="docutils literal"><span class="pre">testPush()</span></code>.</p>
+<div class="admonition-note admonition">
+<p class="first admonition-title">Note</p>
+<p class="last">The return value yielded by a producer is passed “as-is” to its
+consumers by default. This means that when a producer returns an object,
+a reference to that object is passed to the consumers. Instead of
+a reference either (a) a (deep) copy via <code class="docutils literal"><span class="pre">&#64;depends</span> <span class="pre">clone</span></code>, or (b) a
+(normal shallow) clone (based on PHP keyword <code class="docutils literal"><span class="pre">clone</span></code>) via
+<code class="docutils literal"><span class="pre">&#64;depends</span> <span class="pre">shallowClone</span></code> are possible too.</p>
+</div>
+<p>To localize defects, we want our attention to be focussed on
+relevant failing tests. This is why PHPUnit skips the execution of a test
+when a depended-upon test has failed. This improves defect localization by
+exploiting the dependencies between tests as shown in
+<a class="reference internal" href="#writing-tests-for-phpunit-examples-dependencyfailuretest-php"><span class="std std-numref">Example 2.3</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-examples-dependencyfailuretest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.3 </span><span class="caption-text">Exploiting the dependencies between tests</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">DependencyFailureTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testOne</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @depends testOne</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testTwo</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit --verbose DependencyFailureTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+FS
+
+Time: 0 seconds, Memory: 5.00Mb
+
+There was 1 failure:
+
+1) DependencyFailureTest::testOne
+Failed asserting that false is true.
+
+/home/sb/DependencyFailureTest.php:6
+
+There was 1 skipped test:
+
+1) DependencyFailureTest::testTwo
+This test depends on &quot;DependencyFailureTest::testOne&quot; to pass.
+
+FAILURES!
+Tests: 1, Assertions: 1, Failures: 1, Skipped: 1.
+</pre>
+<p>A test may have more than one <code class="docutils literal"><span class="pre">&#64;depends</span></code> annotation.
+PHPUnit does not change the order in which tests are executed, you have to
+ensure that the dependencies of a test can actually be met before the test
+is run.</p>
+<p>A test that has more than one <code class="docutils literal"><span class="pre">&#64;depends</span></code> annotation
+will get a fixture from the first producer as the first argument, a fixture
+from the second producer as the second argument, and so on.
+See <a class="reference internal" href="#writing-tests-for-phpunit-examples-multipledependencies-php"><span class="std std-numref">Example 2.4</span></a></p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-examples-multipledependencies-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.4 </span><span class="caption-text">Test with multiple dependencies</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">MultipleDependenciesTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testProducerFirst</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="s1">&#39;first&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testProducerSecond</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="s1">&#39;second&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @depends testProducerFirst</span>
+<span class="sd">     * @depends testProducerSecond</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testConsumer</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$a</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$b</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="nv">$a</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="nv">$b</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit --verbose MultipleDependenciesTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+...
+
+Time: 0 seconds, Memory: 3.25Mb
+
+OK (3 tests, 4 assertions)
+</pre>
+</div>
+<div class="section" id="data-providers">
+<span id="writing-tests-for-phpunit-data-providers"></span><h2>Data Providers</h2>
+<p>A test method can accept arbitrary arguments. These arguments are to be
+provided by one or more data provider methods (<code class="docutils literal"><span class="pre">additionProvider()</span></code> in
+<a class="reference internal" href="#writing-tests-for-phpunit-data-providers-examples-datatest-php"><span class="std std-numref">Example 2.5</span></a>).
+The data provider method to be used is specified using the
+<code class="docutils literal"><span class="pre">&#64;dataProvider</span></code> annotation.</p>
+<p>A data provider method must be <code class="docutils literal"><span class="pre">public</span></code> and either return
+an array of arrays or an object that implements the <code class="docutils literal"><span class="pre">Iterator</span></code>
+interface and yields an array for each iteration step. For each array that
+is part of the collection the test method will be called with the contents
+of the array as its arguments.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-data-providers-examples-datatest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.5 </span><span class="caption-text">Using a data provider that returns an array of arrays</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">DataTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @dataProvider additionProvider</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testAdd</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$a</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$b</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$expected</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="nv">$expected</span><span class="p">,</span> <span class="nv">$a</span> <span class="o">+</span> <span class="nv">$b</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">additionProvider</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit DataTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+...F
+
+Time: 0 seconds, Memory: 5.75Mb
+
+There was 1 failure:
+
+1) DataTest::testAdd with data set #3 (1, 1, 3)
+Failed asserting that 2 is identical to 3.
+
+/home/sb/DataTest.php:9
+
+FAILURES!
+Tests: 4, Assertions: 4, Failures: 1.
+</pre>
+<p>When using a large number of datasets it’s useful to name each one with string key instead of default numeric.
+Output will be more verbose as it’ll contain that name of a dataset that breaks a test.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-data-providers-examples-datatest1-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.6 </span><span class="caption-text">Using a data provider with named datasets</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">DataTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @dataProvider additionProvider</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testAdd</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$a</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$b</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$expected</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="nv">$expected</span><span class="p">,</span> <span class="nv">$a</span> <span class="o">+</span> <span class="nv">$b</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">additionProvider</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;adding zeros&#39;</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s1">&#39;zero plus one&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s1">&#39;one plus zero&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s1">&#39;one plus one&#39;</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit DataTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+...F
+
+Time: 0 seconds, Memory: 5.75Mb
+
+There was 1 failure:
+
+1) DataTest::testAdd with data set &quot;one plus one&quot; (1, 1, 3)
+Failed asserting that 2 is identical to 3.
+
+/home/sb/DataTest.php:9
+
+FAILURES!
+Tests: 4, Assertions: 4, Failures: 1.
+</pre>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-data-providers-examples-datatest2-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.7 </span><span class="caption-text">Using a data provider that returns an Iterator object</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">DataTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @dataProvider additionProvider</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testAdd</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$a</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$b</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$expected</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="nv">$expected</span><span class="p">,</span> <span class="nv">$a</span> <span class="o">+</span> <span class="nv">$b</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">additionProvider</span><span class="p">()</span><span class="o">:</span> <span class="nx">CsvFileIterator</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">CsvFileIterator</span><span class="p">(</span><span class="s1">&#39;data.csv&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit DataTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+...F
+
+Time: 0 seconds, Memory: 5.75Mb
+
+There was 1 failure:
+
+1) DataTest::testAdd with data set #3 ('1', '1', '3')
+Failed asserting that 2 is identical to 3.
+
+/home/sb/DataTest.php:11
+
+FAILURES!
+Tests: 4, Assertions: 4, Failures: 1.
+</pre>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-data-providers-examples-csvfileiterator-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.8 </span><span class="caption-text">The CsvFileIterator class</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">CsvFileIterator</span> <span class="k">implements</span> <span class="nx">Iterator</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$file</span><span class="p">;</span>
+    <span class="k">private</span> <span class="nv">$key</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">private</span> <span class="nv">$current</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$file</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">file</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="nv">$file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__destruct</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nb">fclose</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">file</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">rewind</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nb">rewind</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">file</span><span class="p">);</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">current</span> <span class="o">=</span> <span class="nb">fgetcsv</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">file</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">key</span>     <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">valid</span><span class="p">()</span><span class="o">:</span> <span class="nx">bool</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="o">!</span><span class="nb">feof</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">file</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">key</span><span class="p">()</span><span class="o">:</span> <span class="nx">int</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">key</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">current</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">current</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">next</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">current</span> <span class="o">=</span> <span class="nb">fgetcsv</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">file</span><span class="p">);</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">key</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>When a test receives input from both a <code class="docutils literal"><span class="pre">&#64;dataProvider</span></code>
+method and from one or more tests it <code class="docutils literal"><span class="pre">&#64;depends</span></code> on, the
+arguments from the data provider will come before the ones from
+depended-upon tests. The arguments from depended-upon tests will be the
+same for each data set.
+See <a class="reference internal" href="#writing-tests-for-phpunit-data-providers-examples-dependencyanddataprovidercombo-php"><span class="std std-numref">Example 2.9</span></a></p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-data-providers-examples-dependencyanddataprovidercombo-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.9 </span><span class="caption-text">Combination of &#64;depends and &#64;dataProvider in same test</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">DependencyAndDataProviderComboTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">provider</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[[</span><span class="s1">&#39;provider1&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;provider2&#39;</span><span class="p">]];</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testProducerFirst</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="s1">&#39;first&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testProducerSecond</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="s1">&#39;second&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @depends testProducerFirst</span>
+<span class="sd">     * @depends testProducerSecond</span>
+<span class="sd">     * @dataProvider provider</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testConsumer</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;provider1&#39;</span><span class="p">,</span> <span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">],</span>
+            <span class="nb">func_get_args</span><span class="p">()</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit --verbose DependencyAndDataProviderComboTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+...F
+
+Time: 0 seconds, Memory: 3.50Mb
+
+There was 1 failure:
+
+1) DependencyAndDataProviderComboTest::testConsumer with data set #1 ('provider2')
+Failed asserting that two arrays are identical.
+--- Expected
++++ Actual
+&#64;&#64; &#64;&#64;
+Array &amp;0 (
+-    0 =&gt; 'provider1'
++    0 =&gt; 'provider2'
+     1 =&gt; 'first'
+     2 =&gt; 'second'
+)
+/home/sb/DependencyAndDataProviderComboTest.php:32
+
+FAILURES!
+Tests: 4, Assertions: 4, Failures: 1.
+</pre>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-data-providers-examples2-datatest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.10 </span><span class="caption-text">Using multiple data providers for a single test</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">DataTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @dataProvider additionWithNonNegativeNumbersProvider</span>
+<span class="sd">     * @dataProvider additionWithNegativeNumbersProvider</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testAdd</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$a</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$b</span><span class="p">,</span> <span class="nx">int</span> <span class="nv">$expected</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="nv">$expected</span><span class="p">,</span> <span class="nv">$a</span> <span class="o">+</span> <span class="nv">$b</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">additionWithNonNegativeNumbersProvider</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">additionWithNegativeNumbersProvider</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit DataTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+..F...                                                              6 / 6 (100%)
+
+Time: 0 seconds, Memory: 5.75Mb
+
+There was 1 failure:
+
+1) DataTest::testAdd with data set #3 (1, 1, 3)
+Failed asserting that 2 is identical to 3.
+
+/home/sb/DataTest.php:12
+
+FAILURES!
+Tests: 6, Assertions: 6, Failures: 1.
+</pre>
+<div class="admonition-note admonition">
+<p class="first admonition-title">Note</p>
+<p class="last">When a test depends on a test that uses data providers, the depending
+test will be executed when the test it depends upon is successful for at
+least one data set. The result of a test that uses data providers cannot
+be injected into a depending test.</p>
+</div>
+<div class="admonition-note admonition">
+<p class="first admonition-title">Note</p>
+<p class="last">All data providers are executed before both the call to the <code class="docutils literal"><span class="pre">setUpBeforeClass()</span></code>
+static method and the first call to the <code class="docutils literal"><span class="pre">setUp()</span></code> method.
+Because of that you can’t access any variables you create there from
+within a data provider. This is required in order for PHPUnit to be able
+to compute the total number of tests.</p>
+</div>
+</div>
+<div class="section" id="testing-exceptions">
+<span id="writing-tests-for-phpunit-exceptions"></span><h2>Testing Exceptions</h2>
+<p><a class="reference internal" href="#writing-tests-for-phpunit-exceptions-examples-exceptiontest-php"><span class="std std-numref">Example 2.11</span></a>
+shows how to use the <code class="docutils literal"><span class="pre">expectException()</span></code> method to test
+whether an exception is thrown by the code under test.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-exceptions-examples-exceptiontest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.11 </span><span class="caption-text">Using the expectException() method</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">ExceptionTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testException</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectException</span><span class="p">(</span><span class="nx">InvalidArgumentException</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit ExceptionTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+F
+
+Time: 0 seconds, Memory: 4.75Mb
+
+There was 1 failure:
+
+1) ExceptionTest::testException
+Failed asserting that exception of type &quot;InvalidArgumentException&quot; is thrown.
+
+FAILURES!
+Tests: 1, Assertions: 1, Failures: 1.
+</pre>
+<p>In addition to the <code class="docutils literal"><span class="pre">expectException()</span></code> method the
+<code class="docutils literal"><span class="pre">expectExceptionCode()</span></code>,
+<code class="docutils literal"><span class="pre">expectExceptionMessage()</span></code>, and
+<code class="docutils literal"><span class="pre">expectExceptionMessageMatches()</span></code> methods exist to set up
+expectations for exceptions raised by the code under test.</p>
+<div class="admonition-note admonition">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that <code class="docutils literal"><span class="pre">expectExceptionMessage()</span></code> asserts that the <code class="docutils literal"><span class="pre">$actual</span></code>
+message contains the <code class="docutils literal"><span class="pre">$expected</span></code> message and does not perform
+an exact string comparison.</p>
+</div>
+</div>
+<div class="section" id="testing-php-errors-warnings-and-notices">
+<span id="writing-tests-for-phpunit-errors"></span><h2>Testing PHP Errors, Warnings, and Notices</h2>
+<p>By default, PHPUnit converts PHP errors, warnings, and notices that are
+triggered during the execution of a test to an exception. Among other benefits,
+this makes it possible to expect that a PHP error, warning, or notice is
+triggered in a test as shown in
+<a class="reference internal" href="#writing-tests-for-phpunit-exceptions-examples-errortest-php"><span class="std std-numref">Example 2.12</span></a>.</p>
+<div class="admonition-note admonition">
+<p class="first admonition-title">Note</p>
+<p class="last">PHP’s <code class="docutils literal"><span class="pre">error_reporting</span></code> runtime configuration can
+limit which errors PHPUnit will convert to exceptions. If you are
+having issues with this feature, be sure PHP is not configured to
+suppress the type of error you are interested in.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-exceptions-examples-errortest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.12 </span><span class="caption-text">Expecting PHP errors, warnings, and notices</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">ErrorTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testDeprecationCanBeExpected</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectDeprecation</span><span class="p">();</span>
+
+        <span class="c1">// Optionally test that the message is equal to a string</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectDeprecationMessage</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+
+        <span class="c1">// Or optionally test that the message matches a regular expression</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectDeprecationMessageMatches</span><span class="p">(</span><span class="s1">&#39;/foo/&#39;</span><span class="p">);</span>
+
+        <span class="nx">\trigger_error</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">\E_USER_DEPRECATED</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testNoticeCanBeExpected</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectNotice</span><span class="p">();</span>
+
+        <span class="c1">// Optionally test that the message is equal to a string</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectNoticeMessage</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+
+        <span class="c1">// Or optionally test that the message matches a regular expression</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectNoticeMessageMatches</span><span class="p">(</span><span class="s1">&#39;/foo/&#39;</span><span class="p">);</span>
+
+        <span class="nx">\trigger_error</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">\E_USER_NOTICE</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testWarningCanBeExpected</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectWarning</span><span class="p">();</span>
+
+        <span class="c1">// Optionally test that the message is equal to a string</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectWarningMessage</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+
+        <span class="c1">// Or optionally test that the message matches a regular expression</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectWarningMessageMatches</span><span class="p">(</span><span class="s1">&#39;/foo/&#39;</span><span class="p">);</span>
+
+        <span class="nx">\trigger_error</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">\E_USER_WARNING</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testErrorCanBeExpected</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectError</span><span class="p">();</span>
+
+        <span class="c1">// Optionally test that the message is equal to a string</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectErrorMessage</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+
+        <span class="c1">// Or optionally test that the message matches a regular expression</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectErrorMessageMatches</span><span class="p">(</span><span class="s1">&#39;/foo/&#39;</span><span class="p">);</span>
+
+        <span class="nx">\trigger_error</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">\E_USER_ERROR</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>When testing code that uses PHP built-in functions such as <code class="docutils literal"><span class="pre">fopen()</span></code> that
+may trigger errors it can sometimes be useful to use error suppression while
+testing. This allows you to check the return values by suppressing notices
+that would lead to an exception raised by PHPUnit’s error handler.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-exceptions-examples-triggererrorreturnvalue-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.13 </span><span class="caption-text">Testing return values of code that uses PHP Errors</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">ErrorSuppressionTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testFileWriting</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$writer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FileWriter</span><span class="p">;</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="o">@</span><span class="nv">$writer</span><span class="o">-&gt;</span><span class="na">write</span><span class="p">(</span><span class="s1">&#39;/is-not-writeable/file&#39;</span><span class="p">,</span> <span class="s1">&#39;stuff&#39;</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">FileWriter</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">write</span><span class="p">(</span><span class="nv">$file</span><span class="p">,</span> <span class="nv">$content</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$file</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="nv">$file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$file</span> <span class="o">===</span> <span class="k">false</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit ErrorSuppressionTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+.
+
+Time: 1 seconds, Memory: 5.25Mb
+
+OK (1 test, 1 assertion)
+</pre>
+<p>Without the error suppression the test would fail reporting
+<code class="docutils literal"><span class="pre">fopen(/is-not-writeable/file):</span> <span class="pre">failed</span> <span class="pre">to</span> <span class="pre">open</span> <span class="pre">stream:</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></code>.</p>
+</div>
+<div class="section" id="testing-output">
+<span id="writing-tests-for-phpunit-output"></span><h2>Testing Output</h2>
+<p>Sometimes you want to assert that the execution of a method, for
+instance, generates an expected output (via <code class="docutils literal"><span class="pre">echo</span></code> or
+<code class="docutils literal"><span class="pre">print</span></code>, for example). The
+<code class="docutils literal"><span class="pre">PHPUnit\Framework\TestCase</span></code> class uses PHP’s
+<a class="reference external" href="http://www.php.net/manual/en/ref.outcontrol.php">Output
+Buffering</a> feature to provide the functionality that is
+necessary for this.</p>
+<p><a class="reference internal" href="#writing-tests-for-phpunit-output-examples-outputtest-php"><span class="std std-numref">Example 2.14</span></a>
+shows how to use the <code class="docutils literal"><span class="pre">expectOutputString()</span></code> method to
+set the expected output. If this expected output is not generated, the
+test will be counted as a failure.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-output-examples-outputtest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.14 </span><span class="caption-text">Testing the output of a function or method</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">OutputTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testExpectFooActualFoo</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectOutputString</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+
+        <span class="k">print</span> <span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testExpectBarActualBaz</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectOutputString</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">);</span>
+
+        <span class="k">print</span> <span class="s1">&#39;baz&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit OutputTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+.F
+
+Time: 0 seconds, Memory: 5.75Mb
+
+There was 1 failure:
+
+1) OutputTest::testExpectBarActualBaz
+Failed asserting that two strings are equal.
+--- Expected
++++ Actual
+&#64;&#64; &#64;&#64;
+-'bar'
++'baz'
+
+FAILURES!
+Tests: 2, Assertions: 2, Failures: 1.
+</pre>
+<p><a class="reference internal" href="#writing-tests-for-phpunit-output-tables-api"><span class="std std-numref">Table 2.1</span></a>
+shows the methods provided for testing output</p>
+<table border="1" class="table docutils" id="writing-tests-for-phpunit-output-tables-api">
+<caption><span class="caption-number">Table 2.1 </span><span class="caption-text">Methods for testing output</span></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Method</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">void</span> <span class="pre">expectOutputRegex(string</span> <span class="pre">$regularExpression)</span></code></td>
+<td>Set up the expectation that the output matches a <code class="docutils literal"><span class="pre">$regularExpression</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">void</span> <span class="pre">expectOutputString(string</span> <span class="pre">$expectedString)</span></code></td>
+<td>Set up the expectation that the output is equal to an <code class="docutils literal"><span class="pre">$expectedString</span></code>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">bool</span> <span class="pre">setOutputCallback(callable</span> <span class="pre">$callback)</span></code></td>
+<td>Sets up a callback that is used to, for instance, normalize the actual output.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">string</span> <span class="pre">getActualOutput()</span></code></td>
+<td>Get the actual output.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-note admonition">
+<p class="first admonition-title">Note</p>
+<p class="last">A test that emits output will fail in strict mode.</p>
+</div>
+</div>
+<div class="section" id="error-output">
+<span id="writing-tests-for-phpunit-error-output"></span><h2>Error output</h2>
+<p>Whenever a test fails PHPUnit tries its best to provide you with as much
+context as possible that can help to identify the problem.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-error-output-examples-arraydifftest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.15 </span><span class="caption-text">Error output generated when an array comparison fails</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">ArrayDiffTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testEquality</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span>
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit ArrayDiffTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+F
+
+Time: 0 seconds, Memory: 5.25Mb
+
+There was 1 failure:
+
+1) ArrayDiffTest::testEquality
+Failed asserting that two arrays are identical.
+--- Expected
++++ Actual
+&#64;&#64; &#64;&#64;
+ Array (
+     0 =&gt; 1
+     1 =&gt; 2
+-    2 =&gt; 3
++    2 =&gt; 33
+     3 =&gt; 4
+     4 =&gt; 5
+     5 =&gt; 6
+ )
+
+/home/sb/ArrayDiffTest.php:7
+
+FAILURES!
+Tests: 1, Assertions: 1, Failures: 1.
+</pre>
+<p>In this example only one of the array values differs and the other values
+are shown to provide context on where the error occurred.</p>
+<p>When the generated output would be long to read PHPUnit will split it up
+and provide a few lines of context around every difference.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-error-output-examples-longarraydifftest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.16 </span><span class="caption-text">Error output when an array comparison of an long array fails</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">LongArrayDiffTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testEquality</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit LongArrayDiffTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+F
+
+Time: 0 seconds, Memory: 5.25Mb
+
+There was 1 failure:
+
+1) LongArrayDiffTest::testEquality
+Failed asserting that two arrays are identical.
+--- Expected
++++ Actual
+&#64;&#64; &#64;&#64;
+     11 =&gt; 0
+     12 =&gt; 1
+     13 =&gt; 2
+-    14 =&gt; 3
++    14 =&gt; 33
+     15 =&gt; 4
+     16 =&gt; 5
+     17 =&gt; 6
+ )
+
+/home/sb/LongArrayDiffTest.php:7
+
+FAILURES!
+Tests: 1, Assertions: 1, Failures: 1.
+</pre>
+<div class="section" id="edge-cases">
+<span id="writing-tests-for-phpunit-error-output-edge-cases"></span><h3>Edge Cases</h3>
+<p>When a comparison fails PHPUnit creates textual representations of the
+input values and compares those. Due to that implementation a diff
+might show more problems than actually exist.</p>
+<p>This only happens when using <code class="docutils literal"><span class="pre">assertEquals()</span></code> or other ‘weak’ comparison
+functions on arrays or objects.</p>
+<div class="literal-block-wrapper docutils container" id="writing-tests-for-phpunit-error-output-edge-cases-examples-arrayweakcomparisontest-php">
+<div class="code-block-caption"><span class="caption-number">Example 2.17 </span><span class="caption-text">Edge case in the diff generation when using weak comparison</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">ArrayWeakComparisonTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testEquality</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span>
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+            <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<pre class="literal-block">
+$ phpunit ArrayWeakComparisonTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+F
+
+Time: 0 seconds, Memory: 5.25Mb
+
+There was 1 failure:
+
+1) ArrayWeakComparisonTest::testEquality
+Failed asserting that two arrays are equal.
+--- Expected
++++ Actual
+&#64;&#64; &#64;&#64;
+ Array (
+-    0 =&gt; 1
++    0 =&gt; '1'
+     1 =&gt; 2
+-    2 =&gt; 3
++    2 =&gt; 33
+     3 =&gt; 4
+     4 =&gt; 5
+     5 =&gt; 6
+ )
+
+/home/sb/ArrayWeakComparisonTest.php:7
+
+FAILURES!
+Tests: 1, Assertions: 1, Failures: 1.
+</pre>
+<p>In this example the difference in the first index between
+<code class="docutils literal"><span class="pre">1</span></code> and <code class="docutils literal"><span class="pre">'1'</span></code> is
+reported even though <code class="docutils literal"><span class="pre">assertEquals()</span></code> considers the values as a match.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="textui.html" class="btn btn-neutral float-right" title="3. The Command-Line Test Runner" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="1. Installing PHPUnit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; <a href="copyright.html">Copyright</a> 2020, Sebastian Bergmann.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'master',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

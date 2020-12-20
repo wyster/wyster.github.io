@@ -1,0 +1,1011 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3. The Command-Line Test Runner &mdash; PHPUnit master
+ Manual</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="4. Fixtures" href="fixtures.html" />
+    <link rel="prev" title="2. Writing Tests for PHPUnit" href="writing-tests-for-phpunit.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PHPUnit
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installing PHPUnit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#php-archive-phar">PHP Archive (PHAR)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#verifying-phpunit-phar-releases">Verifying PHPUnit PHAR Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#composer">Composer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#global-installation">Global Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#webserver">Webserver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="writing-tests-for-phpunit.html">2. Writing Tests for PHPUnit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests-for-phpunit.html#test-dependencies">Test Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests-for-phpunit.html#data-providers">Data Providers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests-for-phpunit.html#testing-exceptions">Testing Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests-for-phpunit.html#testing-php-errors-warnings-and-notices">Testing PHP Errors, Warnings, and Notices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests-for-phpunit.html#testing-output">Testing Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests-for-phpunit.html#error-output">Error output</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="writing-tests-for-phpunit.html#edge-cases">Edge Cases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. The Command-Line Test Runner</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-options">Command-Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testdox">TestDox</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fixtures.html">4. Fixtures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fixtures.html#more-setup-than-teardown">More setUp() than tearDown()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixtures.html#variations">Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixtures.html#sharing-fixture">Sharing Fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixtures.html#global-state">Global State</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="organizing-tests.html">5. Organizing Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="organizing-tests.html#composing-a-test-suite-using-the-filesystem">Composing a Test Suite Using the Filesystem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="organizing-tests.html#composing-a-test-suite-using-xml-configuration">Composing a Test Suite Using XML Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="risky-tests.html">6. Risky Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#useless-tests">Useless Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#unintentionally-covered-code">Unintentionally Covered Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#output-during-test-execution">Output During Test Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#test-execution-timeout">Test Execution Timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="risky-tests.html#global-state-manipulation">Global State Manipulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="incomplete-and-skipped-tests.html">7. Incomplete and Skipped Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="incomplete-and-skipped-tests.html#incomplete-tests">Incomplete Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="incomplete-and-skipped-tests.html#skipping-tests">Skipping Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="incomplete-and-skipped-tests.html#skipping-tests-using-requires">Skipping Tests using &#64;requires</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="test-doubles.html">8. Test Doubles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="test-doubles.html#stubs">Stubs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test-doubles.html#mock-objects">Mock Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test-doubles.html#mocking-traits-and-abstract-classes">Mocking Traits and Abstract Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test-doubles.html#stubbing-and-mocking-web-services">Stubbing and Mocking Web Services</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code-coverage-analysis.html">9. Code Coverage Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#software-metrics-for-code-coverage">Software Metrics for Code Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#including-files">Including Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#ignoring-code-blocks">Ignoring Code Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#specifying-covered-code-parts">Specifying Covered Code Parts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code-coverage-analysis.html#edge-cases">Edge Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending-phpunit.html">10. Extending PHPUnit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extending-phpunit.html#subclass-phpunit-framework-testcase">Subclass PHPUnit\Framework\TestCase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-phpunit.html#write-custom-assertions">Write custom assertions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending-phpunit.html#extending-the-testrunner">Extending the TestRunner</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending-phpunit.html#configuring-extensions">Configuring extensions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="assertions.html">1. Assertions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#static-vs-non-static-usage-of-assertion-methods">Static vs. Non-Static Usage of Assertion Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertarrayhaskey">assertArrayHasKey()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertclasshasattribute">assertClassHasAttribute()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertclasshasstaticattribute">assertClassHasStaticAttribute()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertcontains">assertContains()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringcontainsstring">assertStringContainsString()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringcontainsstringignoringcase">assertStringContainsStringIgnoringCase()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertcontainsonly">assertContainsOnly()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertcontainsonlyinstancesof">assertContainsOnlyInstancesOf()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertcount">assertCount()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertdirectoryexists">assertDirectoryExists()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertdirectoryisreadable">assertDirectoryIsReadable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertdirectoryiswritable">assertDirectoryIsWritable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertempty">assertEmpty()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertequals">assertEquals()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertequalscanonicalizing">assertEqualsCanonicalizing()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertequalsignoringcase">assertEqualsIgnoringCase()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertequalswithdelta">assertEqualsWithDelta()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertobjectequals">assertObjectEquals()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfalse">assertFalse()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfileequals">assertFileEquals()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfileexists">assertFileExists()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfileisreadable">assertFileIsReadable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertfileiswritable">assertFileIsWritable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertgreaterthan">assertGreaterThan()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertgreaterthanorequal">assertGreaterThanOrEqual()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertinfinite">assertInfinite()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertinstanceof">assertInstanceOf()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisarray">assertIsArray()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisbool">assertIsBool()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertiscallable">assertIsCallable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisfloat">assertIsFloat()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisint">assertIsInt()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisiterable">assertIsIterable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisnumeric">assertIsNumeric()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisobject">assertIsObject()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisresource">assertIsResource()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisscalar">assertIsScalar()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisstring">assertIsString()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertisreadable">assertIsReadable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertiswritable">assertIsWritable()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertjsonfileequalsjsonfile">assertJsonFileEqualsJsonFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertjsonstringequalsjsonfile">assertJsonStringEqualsJsonFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertjsonstringequalsjsonstring">assertJsonStringEqualsJsonString()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertlessthan">assertLessThan()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertlessthanorequal">assertLessThanOrEqual()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertnan">assertNan()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertnull">assertNull()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertobjecthasattribute">assertObjectHasAttribute()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertmatchesregularexpression">assertMatchesRegularExpression()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringmatchesformat">assertStringMatchesFormat()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringmatchesformatfile">assertStringMatchesFormatFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertsame">assertSame()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringendswith">assertStringEndsWith()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringequalsfile">assertStringEqualsFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertstringstartswith">assertStringStartsWith()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertthat">assertThat()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#asserttrue">assertTrue()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertxmlfileequalsxmlfile">assertXmlFileEqualsXmlFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertxmlstringequalsxmlfile">assertXmlStringEqualsXmlFile()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assertions.html#assertxmlstringequalsxmlstring">assertXmlStringEqualsXmlString()</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotations.html">2. Annotations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#author">&#64;author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#after">&#64;after</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#afterclass">&#64;afterClass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#backupglobals">&#64;backupGlobals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#backupstaticattributes">&#64;backupStaticAttributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#before">&#64;before</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#beforeclass">&#64;beforeClass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#codecoverageignore">&#64;codeCoverageIgnore*</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#covers">&#64;covers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#coversdefaultclass">&#64;coversDefaultClass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#coversnothing">&#64;coversNothing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#dataprovider">&#64;dataProvider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#depends">&#64;depends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#doesnotperformassertions">&#64;doesNotPerformAssertions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#group">&#64;group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#large">&#64;large</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#medium">&#64;medium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#preserveglobalstate">&#64;preserveGlobalState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#requires">&#64;requires</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#runtestsinseparateprocesses">&#64;runTestsInSeparateProcesses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#runinseparateprocess">&#64;runInSeparateProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#small">&#64;small</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#test">&#64;test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#testdox">&#64;testdox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#testwith">&#64;testWith</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#ticket">&#64;ticket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotations.html#uses">&#64;uses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">3. The XML Configuration File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-phpunit-element">The <code class="docutils literal"><span class="pre">&lt;phpunit&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-backupglobals-attribute">The <code class="docutils literal"><span class="pre">backupGlobals</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-backupstaticattributes-attribute">The <code class="docutils literal"><span class="pre">backupStaticAttributes</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bootstrap-attribute">The <code class="docutils literal"><span class="pre">bootstrap</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-cacheresult-attribute">The <code class="docutils literal"><span class="pre">cacheResult</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-cacheresultfile-attribute">The <code class="docutils literal"><span class="pre">cacheResultFile</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-colors-attribute">The <code class="docutils literal"><span class="pre">colors</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-columns-attribute">The <code class="docutils literal"><span class="pre">columns</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-convertdeprecationstoexceptions-attribute">The <code class="docutils literal"><span class="pre">convertDeprecationsToExceptions</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-converterrorstoexceptions-attribute">The <code class="docutils literal"><span class="pre">convertErrorsToExceptions</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-convertnoticestoexceptions-attribute">The <code class="docutils literal"><span class="pre">convertNoticesToExceptions</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-convertwarningstoexceptions-attribute">The <code class="docutils literal"><span class="pre">convertWarningsToExceptions</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-forcecoversannotation-attribute">The <code class="docutils literal"><span class="pre">forceCoversAnnotation</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-printerclass-attribute">The <code class="docutils literal"><span class="pre">printerClass</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-printerfile-attribute">The <code class="docutils literal"><span class="pre">printerFile</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-processisolation-attribute">The <code class="docutils literal"><span class="pre">processIsolation</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponerror-attribute">The <code class="docutils literal"><span class="pre">stopOnError</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponfailure-attribute">The <code class="docutils literal"><span class="pre">stopOnFailure</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponincomplete-attribute">The <code class="docutils literal"><span class="pre">stopOnIncomplete</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponrisky-attribute">The <code class="docutils literal"><span class="pre">stopOnRisky</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponskipped-attribute">The <code class="docutils literal"><span class="pre">stopOnSkipped</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stoponwarning-attribute">The <code class="docutils literal"><span class="pre">stopOnWarning</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stopondefect-attribute">The <code class="docutils literal"><span class="pre">stopOnDefect</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-failonrisky-attribute">The <code class="docutils literal"><span class="pre">failOnRisky</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-failonwarning-attribute">The <code class="docutils literal"><span class="pre">failOnWarning</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutchangestoglobalstate-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutChangesToGlobalState</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutoutputduringtests-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutOutputDuringTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutresourceusageduringsmalltests-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutResourceUsageDuringSmallTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutteststhatdonottestanything-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutTestsThatDoNotTestAnything</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictabouttodoannotatedtests-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutTodoAnnotatedTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-bestrictaboutcoversannotation-attribute">The <code class="docutils literal"><span class="pre">beStrictAboutCoversAnnotation</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-enforcetimelimit-attribute">The <code class="docutils literal"><span class="pre">enforceTimeLimit</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-defaulttimelimit-attribute">The <code class="docutils literal"><span class="pre">defaultTimeLimit</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-timeoutforsmalltests-attribute">The <code class="docutils literal"><span class="pre">timeoutForSmallTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-timeoutformediumtests-attribute">The <code class="docutils literal"><span class="pre">timeoutForMediumTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-timeoutforlargetests-attribute">The <code class="docutils literal"><span class="pre">timeoutForLargeTests</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testsuiteloaderclass-attribute">The <code class="docutils literal"><span class="pre">testSuiteLoaderClass</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testsuiteloaderfile-attribute">The <code class="docutils literal"><span class="pre">testSuiteLoaderFile</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-defaulttestsuite-attribute">The <code class="docutils literal"><span class="pre">defaultTestSuite</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-verbose-attribute">The <code class="docutils literal"><span class="pre">verbose</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-stderr-attribute">The <code class="docutils literal"><span class="pre">stderr</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-reversedefectlist-attribute">The <code class="docutils literal"><span class="pre">reverseDefectList</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-registermockobjectsfromtestargumentsrecursively-attribute">The <code class="docutils literal"><span class="pre">registerMockObjectsFromTestArgumentsRecursively</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-extensionsdirectory-attribute">The <code class="docutils literal"><span class="pre">extensionsDirectory</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-executionorder-attribute">The <code class="docutils literal"><span class="pre">executionOrder</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-resolvedependencies-attribute">The <code class="docutils literal"><span class="pre">resolveDependencies</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testdox-attribute">The <code class="docutils literal"><span class="pre">testdox</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-nointeraction-attribute">The <code class="docutils literal"><span class="pre">noInteraction</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-testsuites-element">The <code class="docutils literal"><span class="pre">&lt;testsuites&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testsuite-element">The <code class="docutils literal"><span class="pre">&lt;testsuite&gt;</span></code> Element</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-coverage-element">The <code class="docutils literal"><span class="pre">&lt;coverage&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-cachedirectory-attribute">The <code class="docutils literal"><span class="pre">cacheDirectory</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-includeuncoveredfiles-attribute">The <code class="docutils literal"><span class="pre">includeUncoveredFiles</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-processuncoveredfiles-attribute">The <code class="docutils literal"><span class="pre">processUncoveredFiles</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-ignoredeprecatedcodeunits-attribute">The <code class="docutils literal"><span class="pre">ignoreDeprecatedCodeUnits</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-pathcoverage-attribute">The <code class="docutils literal"><span class="pre">pathCoverage</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-disablecodecoverageignore-attribute">The <code class="docutils literal"><span class="pre">disableCodeCoverageIgnore</span></code> Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-include-element">The <code class="docutils literal"><span class="pre">&lt;include&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-exclude-element">The <code class="docutils literal"><span class="pre">&lt;exclude&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-directory-element">The <code class="docutils literal"><span class="pre">&lt;directory&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-prefix-attribute">The <code class="docutils literal"><span class="pre">prefix</span></code> Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-suffix-attribute">The <code class="docutils literal"><span class="pre">suffix</span></code> Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-phpversion-attribute">The <code class="docutils literal"><span class="pre">phpVersion</span></code> Attribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-phpversionoperator-attribute">The <code class="docutils literal"><span class="pre">phpVersionOperator</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-file-element">The <code class="docutils literal"><span class="pre">&lt;file&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-report-element">The <code class="docutils literal"><span class="pre">&lt;report&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-clover-element">The <code class="docutils literal"><span class="pre">&lt;clover&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-crap4j-element">The <code class="docutils literal"><span class="pre">&lt;crap4j&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-html-element">The <code class="docutils literal"><span class="pre">&lt;html&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-php-element">The <code class="docutils literal"><span class="pre">&lt;php&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-text-element">The <code class="docutils literal"><span class="pre">&lt;text&gt;</span></code> Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-xml-element">The <code class="docutils literal"><span class="pre">&lt;xml&gt;</span></code> Element</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-logging-element">The <code class="docutils literal"><span class="pre">&lt;logging&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-junit-element">The <code class="docutils literal"><span class="pre">&lt;junit&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id5">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-teamcity-element">The <code class="docutils literal"><span class="pre">&lt;teamcity&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id6">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testdoxhtml-element">The <code class="docutils literal"><span class="pre">&lt;testdoxHtml&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id7">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testdoxtext-element">The <code class="docutils literal"><span class="pre">&lt;testdoxText&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id8">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-testdoxxml-element">The <code class="docutils literal"><span class="pre">&lt;testdoxXml&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id9">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#appendixes-configuration-logging-text">The <code class="docutils literal"><span class="pre">&lt;text&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#id11">The <code class="docutils literal"><span class="pre">outputFile</span></code> Attribute</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-groups-element">The <code class="docutils literal"><span class="pre">&lt;groups&gt;</span></code> Element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-testdoxgroups-element">The <code class="docutils literal"><span class="pre">&lt;testdoxGroups&gt;</span></code> Element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-listeners-element">The <code class="docutils literal"><span class="pre">&lt;listeners&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-listener-element">The <code class="docutils literal"><span class="pre">&lt;listener&gt;</span></code> Element</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-extensions-element">The <code class="docutils literal"><span class="pre">&lt;extensions&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-extension-element">The <code class="docutils literal"><span class="pre">&lt;extension&gt;</span></code> Element</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="configuration.html#the-arguments-element">The <code class="docutils literal"><span class="pre">&lt;arguments&gt;</span></code> Element</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#appendixes-configuration-php">The <code class="docutils literal"><span class="pre">&lt;php&gt;</span></code> Element</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-includepath-element">The <code class="docutils literal"><span class="pre">&lt;includePath&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-ini-element">The <code class="docutils literal"><span class="pre">&lt;ini&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-const-element">The <code class="docutils literal"><span class="pre">&lt;const&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-var-element">The <code class="docutils literal"><span class="pre">&lt;var&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-env-element">The <code class="docutils literal"><span class="pre">&lt;env&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-get-element">The <code class="docutils literal"><span class="pre">&lt;get&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-post-element">The <code class="docutils literal"><span class="pre">&lt;post&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-cookie-element">The <code class="docutils literal"><span class="pre">&lt;cookie&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-server-element">The <code class="docutils literal"><span class="pre">&lt;server&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-files-element">The <code class="docutils literal"><span class="pre">&lt;files&gt;</span></code> Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#the-request-element">The <code class="docutils literal"><span class="pre">&lt;request&gt;</span></code> Element</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">4. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">5. Copyright</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PHPUnit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>3. The Command-Line Test Runner</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/sebastianbergmann/phpunit-documentation-english//master/src/textui.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-command-line-test-runner">
+<span id="textui"></span><h1>3. The Command-Line Test Runner</h1>
+<p>The PHPUnit command-line test runner can be invoked through the
+<code class="file docutils literal"><span class="pre">phpunit</span></code> command. The following code shows how to run
+tests with the PHPUnit command-line test runner:</p>
+<pre class="literal-block">
+$ phpunit ArrayTest
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+..
+
+Time: 0 seconds
+
+OK (2 tests, 2 assertions)
+</pre>
+<p>When invoked as shown above, the PHPUnit command-line test runner will look
+for a <code class="file docutils literal"><span class="pre">ArrayTest.php</span></code> sourcefile in the current working
+directory, load it, and expect to find a <code class="docutils literal"><span class="pre">ArrayTest</span></code> test
+case class. It will then execute the tests of that class.</p>
+<p>For each test run, the PHPUnit command-line tool prints one character to
+indicate progress:</p>
+<p><code class="docutils literal"><span class="pre">.</span></code></p>
+<blockquote>
+<div>Printed when the test succeeds.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">F</span></code></p>
+<blockquote>
+<div>Printed when an assertion fails while running the test method.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">E</span></code></p>
+<blockquote>
+<div>Printed when an error occurs while running the test method.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">R</span></code></p>
+<blockquote>
+<div>Printed when the test has been marked as risky (see
+<a class="reference internal" href="risky-tests.html#risky-tests"><span class="std std-ref">Risky Tests</span></a>).</div></blockquote>
+<p><code class="docutils literal"><span class="pre">S</span></code></p>
+<blockquote>
+<div>Printed when the test has been skipped (see
+<a class="reference internal" href="incomplete-and-skipped-tests.html#incomplete-and-skipped-tests"><span class="std std-ref">Incomplete and Skipped Tests</span></a>).</div></blockquote>
+<p><code class="docutils literal"><span class="pre">I</span></code></p>
+<blockquote>
+<div>Printed when the test is marked as being incomplete or not yet
+implemented (see <a class="reference internal" href="incomplete-and-skipped-tests.html#incomplete-and-skipped-tests"><span class="std std-ref">Incomplete and Skipped Tests</span></a>).</div></blockquote>
+<p>PHPUnit distinguishes between <em>failures</em> and
+<em>errors</em>. A failure is a violated PHPUnit
+assertion such as a failing <code class="docutils literal"><span class="pre">assertSame()</span></code> call.
+An error is an unexpected exception or a PHP error. Sometimes
+this distinction proves useful since errors tend to be easier to fix
+than failures. If you have a big list of problems, it is best to
+tackle the errors first and see if you have any failures left when
+they are all fixed.</p>
+<div class="section" id="command-line-options">
+<span id="textui-clioptions"></span><h2>Command-Line Options</h2>
+<p>Let’s take a look at the command-line test runner’s options in
+the following code:</p>
+<pre class="literal-block">
+$ phpunit --help
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+Usage:
+  phpunit [options] UnitTest.php
+  phpunit [options] &lt;directory&gt;
+
+Code Coverage Options:
+  --coverage-clover &lt;file&gt;    Generate code coverage report in Clover XML format
+  --coverage-crap4j &lt;file&gt;    Generate code coverage report in Crap4J XML format
+  --coverage-html &lt;dir&gt;       Generate code coverage report in HTML format
+  --coverage-php &lt;file&gt;       Export PHP_CodeCoverage object to file
+  --coverage-text &lt;file&gt;      Generate code coverage report in text format [default: standard output]
+  --coverage-xml &lt;dir&gt;        Generate code coverage report in PHPUnit XML format
+  --coverage-cache &lt;dir&gt;      Cache static analysis results
+  --warm-coverage-cache       Warm static analysis cache
+  --coverage-filter &lt;dir&gt;     Include &lt;dir&gt; in code coverage analysis
+  --path-coverage             Perform path coverage analysis
+  --disable-coverage-ignore   Disable annotations for ignoring code coverage
+  --no-coverage               Ignore code coverage configuration
+
+Logging Options:
+  --log-junit &lt;file&gt;          Log test execution in JUnit XML format to file
+  --log-teamcity &lt;file&gt;       Log test execution in TeamCity format to file
+  --testdox-html &lt;file&gt;       Write agile documentation in HTML format to file
+  --testdox-text &lt;file&gt;       Write agile documentation in Text format to file
+  --testdox-xml &lt;file&gt;        Write agile documentation in XML format to file
+  --reverse-list              Print defects in reverse order
+  --no-logging                Ignore logging configuration
+
+Test Selection Options:
+  --filter &lt;pattern&gt;          Filter which tests to run
+  --testsuite &lt;name&gt;          Filter which testsuite to run
+  --group &lt;name&gt;              Only runs tests from the specified group(s)
+  --exclude-group &lt;name&gt;      Exclude tests from the specified group(s)
+  --list-groups               List available test groups
+  --list-suites               List available test suites
+  --list-tests                List available tests
+  --list-tests-xml &lt;file&gt;     List available tests in XML format
+  --test-suffix &lt;suffixes&gt;    Only search for test in files with specified suffix(es). Default: Test.php,.phpt
+
+Test Execution Options:
+  --dont-report-useless-tests Do not report tests that do not test anything
+  --strict-coverage           Be strict about &#64;covers annotation usage
+  --strict-global-state       Be strict about changes to global state
+  --disallow-test-output      Be strict about output during tests
+  --disallow-resource-usage   Be strict about resource usage during small tests
+  --enforce-time-limit        Enforce time limit based on test size
+  --default-time-limit &lt;sec&gt;  Timeout in seconds for tests without &#64;small, &#64;medium or &#64;large
+  --disallow-todo-tests       Disallow &#64;todo-annotated tests
+
+  --process-isolation         Run each test in a separate PHP process
+  --globals-backup            Backup and restore $GLOBALS for each test
+  --static-backup             Backup and restore static attributes for each test
+
+  --colors &lt;flag&gt;             Use colors in output (&quot;never&quot;, &quot;auto&quot; or &quot;always&quot;)
+  --columns &lt;n&gt;               Number of columns to use for progress output
+  --columns max               Use maximum number of columns for progress output
+  --stderr                    Write to STDERR instead of STDOUT
+  --stop-on-defect            Stop execution upon first not-passed test
+  --stop-on-error             Stop execution upon first error
+  --stop-on-failure           Stop execution upon first error or failure
+  --stop-on-warning           Stop execution upon first warning
+  --stop-on-risky             Stop execution upon first risky test
+  --stop-on-skipped           Stop execution upon first skipped test
+  --stop-on-incomplete        Stop execution upon first incomplete test
+  --fail-on-incomplete        Treat incomplete tests as failures
+  --fail-on-risky             Treat risky tests as failures
+  --fail-on-skipped           Treat skipped tests as failures
+  --fail-on-warning           Treat tests with warnings as failures
+  -v|--verbose                Output more verbose information
+  --debug                     Display debugging information
+
+  --repeat &lt;times&gt;            Runs the test(s) repeatedly
+  --teamcity                  Report test execution progress in TeamCity format
+  --testdox                   Report test execution progress in TestDox format
+  --testdox-group             Only include tests from the specified group(s)
+  --testdox-exclude-group     Exclude tests from the specified group(s)
+  --no-interaction            Disable TestDox progress animation
+  --printer &lt;printer&gt;         TestListener implementation to use
+
+  --order-by &lt;order&gt;          Run tests in order: default|defects|duration|no-depends|random|reverse|size
+  --random-order-seed &lt;N&gt;     Use a specific random seed &lt;N&gt; for random order
+  --cache-result              Write test results to cache file
+  --do-not-cache-result       Do not write test results to cache file
+
+Configuration Options:
+  --prepend &lt;file&gt;            A PHP script that is included as early as possible
+  --bootstrap &lt;file&gt;          A PHP script that is included before the tests run
+  -c|--configuration &lt;file&gt;   Read configuration from XML file
+  --no-configuration          Ignore default configuration file (phpunit.xml)
+  --extensions &lt;extensions&gt;   A comma separated list of PHPUnit extensions to load
+  --no-extensions             Do not load PHPUnit extensions
+  --include-path &lt;path(s)&gt;    Prepend PHP's include_path with given path(s)
+  -d &lt;key[=value]&gt;            Sets a php.ini value
+  --cache-result-file &lt;file&gt;  Specify result cache path and filename
+  --generate-configuration    Generate configuration file with suggested settings
+  --migrate-configuration     Migrate configuration file to current format
+
+Miscellaneous Options:
+  -h|--help                   Prints this usage information
+  --version                   Prints the version and exits
+  --atleast-version &lt;min&gt;     Checks that version is greater than min and exits
+  --check-version             Check whether PHPUnit is the latest version
+</pre>
+<p><code class="docutils literal"><span class="pre">phpunit</span> <span class="pre">UnitTest</span></code></p>
+<blockquote>
+<div><p>Runs the tests that are provided by the class
+<code class="docutils literal"><span class="pre">UnitTest</span></code>. This class is expected to be declared
+in the <code class="file docutils literal"><span class="pre">UnitTest.php</span></code> sourcefile.</p>
+<p><code class="docutils literal"><span class="pre">UnitTest</span></code> must be either a class that inherits
+from <code class="docutils literal"><span class="pre">PHPUnit\Framework\TestCase</span></code> or a class that
+provides a <code class="docutils literal"><span class="pre">public</span> <span class="pre">static</span> <span class="pre">suite()</span></code> method which
+returns a <code class="docutils literal"><span class="pre">PHPUnit\Framework\Test</span></code> object, for
+example an instance of the
+<code class="docutils literal"><span class="pre">PHPUnit\Framework\TestSuite</span></code> class.</p>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">phpunit</span> <span class="pre">UnitTest</span> <span class="pre">UnitTest.php</span></code></p>
+<blockquote>
+<div>Runs the tests that are provided by the class
+<code class="docutils literal"><span class="pre">UnitTest</span></code>. This class is expected to be declared
+in the specified sourcefile.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--coverage-clover</span></code></p>
+<blockquote>
+<div>Generates a logfile in XML format with the code coverage information
+for the tests run. See <a class="reference internal" href="code-coverage-analysis.html#code-coverage-analysis"><span class="std std-ref">Code Coverage Analysis</span></a> for more details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--coverage-crap4j</span></code></p>
+<blockquote>
+<div>Generates a code coverage report in Crap4j format. See
+<a class="reference internal" href="code-coverage-analysis.html#code-coverage-analysis"><span class="std std-ref">Code Coverage Analysis</span></a> for more details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--coverage-html</span></code></p>
+<blockquote>
+<div>Generates a code coverage report in HTML format. See
+<a class="reference internal" href="code-coverage-analysis.html#code-coverage-analysis"><span class="std std-ref">Code Coverage Analysis</span></a> for more details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--coverage-php</span></code></p>
+<blockquote>
+<div>Generates a serialized PHP_CodeCoverage object with the
+code coverage information.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--coverage-text</span></code></p>
+<blockquote>
+<div>Generates a logfile or command-line output in human readable format
+with the code coverage information for the tests run.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--log-junit</span></code></p>
+<blockquote>
+<div>Generates a logfile in JUnit XML format for the tests run.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--testdox-html</span></code> and <code class="docutils literal"><span class="pre">--testdox-text</span></code></p>
+<blockquote>
+<div>Generates agile documentation in HTML or plain text format for the
+tests that are run (see <a class="reference internal" href="#textui-testdox"><span class="std std-ref">TestDox</span></a>).</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--filter</span></code></p>
+<blockquote>
+<div><p>Only runs tests whose name matches the given regular expression
+pattern. If the pattern is not enclosed in delimiters, PHPUnit
+will enclose the pattern in <code class="docutils literal"><span class="pre">/</span></code> delimiters.</p>
+<p>The test names to match will be in one of the following formats:</p>
+<p><code class="docutils literal"><span class="pre">TestNamespace\TestCaseClass::testMethod</span></code></p>
+<blockquote>
+<div>The default test name format is the equivalent of using
+the <code class="docutils literal"><span class="pre">__METHOD__</span></code> magic constant inside
+the test method.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">TestNamespace\TestCaseClass::testMethod</span> <span class="pre">with</span> <span class="pre">data</span> <span class="pre">set</span> <span class="pre">#0</span></code></p>
+<blockquote>
+<div>When a test has a data provider, each iteration of the
+data gets the current index appended to the end of the
+default test name.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">TestNamespace\TestCaseClass::testMethod</span> <span class="pre">with</span> <span class="pre">data</span> <span class="pre">set</span> <span class="pre">&quot;my</span> <span class="pre">named</span> <span class="pre">data&quot;</span></code></p>
+<blockquote>
+<div><p>When a test has a data provider that uses named sets, each
+iteration of the data gets the current name appended to the
+end of the default test name. See
+<a class="reference internal" href="#textui-examples-testcaseclass-php"><span class="std std-numref">Example 3.1</span></a> for an
+example of named data sets.</p>
+<div class="literal-block-wrapper docutils container" id="textui-examples-testcaseclass-php">
+<div class="code-block-caption"><span class="caption-number">Example 3.1 </span><span class="caption-text">Named data sets</span></div>
+<div class="highlight-php"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nx">TestNamespace</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">TestCaseClass</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @dataProvider provider</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testMethod</span><span class="p">(</span><span class="nv">$data</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">provider</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;my named data&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="k">true</span><span class="p">],</span>
+            <span class="s1">&#39;my data&#39;</span>       <span class="o">=&gt;</span> <span class="p">[</span><span class="k">true</span><span class="p">]</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">/path/to/my/test.phpt</span></code></p>
+<blockquote>
+<div>The test name for a PHPT test is the filesystem path.</div></blockquote>
+<p>See <a class="reference internal" href="#textui-examples-filter-patterns"><span class="std std-numref">Example 3.2</span></a> for examples
+of valid filter patterns.</p>
+<div class="literal-block-wrapper docutils container" id="textui-examples-filter-patterns">
+<div class="code-block-caption"><span class="caption-number">Example 3.2 </span><span class="caption-text">Filter pattern examples</span></div>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>--filter <span class="s1">&#39;TestNamespace\\TestCaseClass::testMethod&#39;</span>
+--filter <span class="s1">&#39;TestNamespace\\TestCaseClass&#39;</span>
+--filter TestNamespace
+--filter TestCaseClase
+--filter testMethod
+--filter <span class="s1">&#39;/::testMethod .*&quot;my named data&quot;/&#39;</span>
+--filter <span class="s1">&#39;/::testMethod .*#5$/&#39;</span>
+--filter <span class="s1">&#39;/::testMethod .*#(5|6|7)$/&#39;</span>
+</pre></div>
+</div>
+</div>
+<p>See <a class="reference internal" href="#textui-examples-filter-shortcuts"><span class="std std-numref">Example 3.3</span></a> for some
+additional shortcuts that are available for matching data
+providers.</p>
+<div class="literal-block-wrapper docutils container" id="textui-examples-filter-shortcuts">
+<div class="code-block-caption"><span class="caption-number">Example 3.3 </span><span class="caption-text">Filter shortcuts</span></div>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>--filter <span class="s1">&#39;testMethod#2&#39;</span>
+--filter <span class="s1">&#39;testMethod#2-4&#39;</span>
+--filter <span class="s1">&#39;#2&#39;</span>
+--filter <span class="s1">&#39;#2-4&#39;</span>
+--filter <span class="s1">&#39;testMethod@my named data&#39;</span>
+--filter <span class="s1">&#39;testMethod@my.*data&#39;</span>
+--filter <span class="s1">&#39;@my named data&#39;</span>
+--filter <span class="s1">&#39;@my.*data&#39;</span>
+</pre></div>
+</div>
+</div>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--testsuite</span></code></p>
+<blockquote>
+<div>Only runs the test suite whose name matches the given pattern.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--group</span></code></p>
+<blockquote>
+<div><p>Only runs tests from the specified group(s). A test can be tagged as
+belonging to a group using the <code class="docutils literal"><span class="pre">&#64;group</span></code> annotation.</p>
+<p>The <code class="docutils literal"><span class="pre">&#64;author</span></code> and <code class="docutils literal"><span class="pre">&#64;ticket</span></code> annotations are aliases for
+<code class="docutils literal"><span class="pre">&#64;group</span></code> allowing to filter tests based on their
+authors or their ticket identifiers, respectively.</p>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--exclude-group</span></code></p>
+<blockquote>
+<div>Exclude tests from the specified group(s). A test can be tagged as
+belonging to a group using the <code class="docutils literal"><span class="pre">&#64;group</span></code> annotation.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--list-groups</span></code></p>
+<blockquote>
+<div>List available test groups.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--test-suffix</span></code></p>
+<blockquote>
+<div>Only search for test files with specified suffix(es).</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--dont-report-useless-tests</span></code></p>
+<blockquote>
+<div>Do not report tests that do not test anything. See <a class="reference internal" href="risky-tests.html#risky-tests"><span class="std std-ref">Risky Tests</span></a> for details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--strict-coverage</span></code></p>
+<blockquote>
+<div>Be strict about unintentionally covered code. See <a class="reference internal" href="risky-tests.html#risky-tests"><span class="std std-ref">Risky Tests</span></a> for details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--strict-global-state</span></code></p>
+<blockquote>
+<div>Be strict about global state manipulation. See <a class="reference internal" href="risky-tests.html#risky-tests"><span class="std std-ref">Risky Tests</span></a> for details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--disallow-test-output</span></code></p>
+<blockquote>
+<div>Be strict about output during tests. See <a class="reference internal" href="risky-tests.html#risky-tests"><span class="std std-ref">Risky Tests</span></a> for details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--disallow-todo-tests</span></code></p>
+<blockquote>
+<div>Does not execute tests which have the <code class="docutils literal"><span class="pre">&#64;todo</span></code> annotation in its docblock.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--enforce-time-limit</span></code></p>
+<blockquote>
+<div>Enforce time limit based on test size. See <a class="reference internal" href="risky-tests.html#risky-tests"><span class="std std-ref">Risky Tests</span></a> for details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--process-isolation</span></code></p>
+<blockquote>
+<div>Run each test in a separate PHP process.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--no-globals-backup</span></code></p>
+<blockquote>
+<div>Do not backup and restore $GLOBALS. See <a class="reference internal" href="fixtures.html#fixtures-global-state"><span class="std std-ref">Global State</span></a>
+for more details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--static-backup</span></code></p>
+<blockquote>
+<div>Backup and restore static attributes of user-defined classes.
+See <a class="reference internal" href="fixtures.html#fixtures-global-state"><span class="std std-ref">Global State</span></a> for more details.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--colors</span></code></p>
+<blockquote>
+<div><p>Use colors in output.
+On Windows, use <a class="reference external" href="https://github.com/adoxa/ansicon">ANSICON</a> or <a class="reference external" href="https://github.com/Maximus5/ConEmu">ConEmu</a>.</p>
+<p>There are three possible values for this option:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">never</span></code>: never displays colors in the output. This is the default value when <code class="docutils literal"><span class="pre">--colors</span></code> option is not used.</li>
+<li><code class="docutils literal"><span class="pre">auto</span></code>: displays colors in the output unless the current terminal doesn’t supports colors,
+or if the output is piped to a command or redirected to a file.</li>
+<li><code class="docutils literal"><span class="pre">always</span></code>: always displays colors in the output even when the current terminal doesn’t supports colors,
+or when the output is piped to a command or redirected to a file.</li>
+</ul>
+<p>When <code class="docutils literal"><span class="pre">--colors</span></code> is used without any value, <code class="docutils literal"><span class="pre">auto</span></code> is the chosen value.</p>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--columns</span></code></p>
+<blockquote>
+<div>Defines the number of columns to use for progress output.
+If <code class="docutils literal"><span class="pre">max</span></code> is defined as value, the number of columns will be maximum of the current terminal.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--stderr</span></code></p>
+<blockquote>
+<div>Optionally print to <code class="docutils literal"><span class="pre">STDERR</span></code> instead of
+<code class="docutils literal"><span class="pre">STDOUT</span></code>.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--stop-on-error</span></code></p>
+<blockquote>
+<div>Stop execution upon first error.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--stop-on-failure</span></code></p>
+<blockquote>
+<div>Stop execution upon first error or failure.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--stop-on-risky</span></code></p>
+<blockquote>
+<div>Stop execution upon first risky test.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--stop-on-skipped</span></code></p>
+<blockquote>
+<div>Stop execution upon first skipped test.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--stop-on-incomplete</span></code></p>
+<blockquote>
+<div>Stop execution upon first incomplete test.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--verbose</span></code></p>
+<blockquote>
+<div>Output more verbose information, for instance the names of tests
+that were incomplete or have been skipped.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--debug</span></code></p>
+<blockquote>
+<div>Output debug information such as the name of a test when its
+execution starts.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--loader</span></code></p>
+<blockquote>
+<div><p>Specifies the <code class="docutils literal"><span class="pre">PHPUnit\Runner\TestSuiteLoader</span></code>
+implementation to use.</p>
+<p>The standard test suite loader will look for the sourcefile in the
+current working directory and in each directory that is specified in
+PHP’s <code class="docutils literal"><span class="pre">include_path</span></code> configuration directive.
+A class name such as <code class="docutils literal"><span class="pre">Project_Package_Class</span></code> is
+mapped to the source filename
+<code class="file docutils literal"><span class="pre">Project/Package/Class.php</span></code>.</p>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--repeat</span></code></p>
+<blockquote>
+<div>Repeatedly runs the test(s) the specified number of times.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--testdox</span></code></p>
+<blockquote>
+<div>Reports the test progress in TestDox format (see <a class="reference internal" href="#textui-testdox"><span class="std std-ref">TestDox</span></a>).</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--printer</span></code></p>
+<blockquote>
+<div>Specifies the result printer to use. The printer class must extend
+<code class="docutils literal"><span class="pre">PHPUnit\Util\Printer</span></code> and implement the
+<code class="docutils literal"><span class="pre">PHPUnit\Framework\TestListener</span></code> interface.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--bootstrap</span></code></p>
+<blockquote>
+<div>A “bootstrap” PHP file that is run before the tests.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--configuration</span></code>, <code class="docutils literal"><span class="pre">-c</span></code></p>
+<blockquote>
+<div><p>Read configuration from XML file.
+See <a class="reference internal" href="configuration.html#appendixes-configuration"><span class="std std-ref">The XML Configuration File</span></a> for more details.</p>
+<p>If <code class="file docutils literal"><span class="pre">phpunit.xml</span></code> or
+<code class="file docutils literal"><span class="pre">phpunit.xml.dist</span></code> (in that order) exist in the
+current working directory and <code class="docutils literal"><span class="pre">--configuration</span></code> is
+<em>not</em> used, the configuration will be automatically
+read from that file.</p>
+<p>If a directory is specified and if
+<code class="file docutils literal"><span class="pre">phpunit.xml</span></code> or <code class="file docutils literal"><span class="pre">phpunit.xml.dist</span></code> (in that order)
+exists in this directory, the configuration will be
+automatically read from that file.</p>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--no-configuration</span></code></p>
+<blockquote>
+<div>Ignore <code class="file docutils literal"><span class="pre">phpunit.xml</span></code> and
+<code class="file docutils literal"><span class="pre">phpunit.xml.dist</span></code> from the current working
+directory.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">--include-path</span></code></p>
+<blockquote>
+<div>Prepend PHP’s <code class="docutils literal"><span class="pre">include_path</span></code> with given path(s).</div></blockquote>
+<p><code class="docutils literal"><span class="pre">-d</span></code></p>
+<blockquote>
+<div>Sets the value of the given PHP configuration option.</div></blockquote>
+<div class="admonition-note admonition">
+<p class="first admonition-title">Note</p>
+<p class="last">Please note that options can be put after the argument(s).</p>
+</div>
+</div>
+<div class="section" id="testdox">
+<span id="textui-testdox"></span><h2>TestDox</h2>
+<p>PHPUnit’s TestDox functionality looks at a test class and all the test
+method names and converts them from camel case (or snake_case) PHP names to sentences:
+<code class="docutils literal"><span class="pre">testBalanceIsInitiallyZero()</span></code> (or <code class="docutils literal"><span class="pre">test_balance_is_initially_zero()</span></code> becomes “Balance is
+initially zero”. If there are several test methods whose names only
+differ in a suffix of one or more digits, such as
+<code class="docutils literal"><span class="pre">testBalanceCannotBecomeNegative()</span></code> and
+<code class="docutils literal"><span class="pre">testBalanceCannotBecomeNegative2()</span></code>, the sentence
+“Balance cannot become negative” will appear only once, assuming that
+all of these tests succeed.</p>
+<p>Let us take a look at the agile documentation generated for a
+<code class="docutils literal"><span class="pre">BankAccount</span></code> class:</p>
+<pre class="literal-block">
+$ phpunit --testdox BankAccountTest.php
+PHPUnit master.0 by Sebastian Bergmann and contributors.
+
+BankAccount
+ ✔ Balance is initially zero
+ ✔ Balance cannot become negative
+</pre>
+<p>Alternatively, the agile documentation can be generated in HTML or plain
+text format and written to a file using the <code class="docutils literal"><span class="pre">--testdox-html</span></code>
+and <code class="docutils literal"><span class="pre">--testdox-text</span></code> arguments.</p>
+<p>Agile Documentation can be used to document the assumptions you make
+about the external packages that you use in your project. When you use
+an external package, you are exposed to the risks that the package will
+not behave as you expect, and that future versions of the package will
+change in subtle ways that will break your code, without you knowing it.
+You can address these risks by writing a test every time you make an
+assumption. If your test succeeds, your assumption is valid. If you
+document all your assumptions with tests, future releases of the
+external package will be no cause for concern: if the tests succeed,
+your system should continue working.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fixtures.html" class="btn btn-neutral float-right" title="4. Fixtures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="writing-tests-for-phpunit.html" class="btn btn-neutral" title="2. Writing Tests for PHPUnit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; <a href="copyright.html">Copyright</a> 2020, Sebastian Bergmann.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'master',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>
