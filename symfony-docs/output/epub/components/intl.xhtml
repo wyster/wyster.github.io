@@ -132,12 +132,6 @@ to catching the exception, you can also check if a given language code is valid:
 <span class="nv">$alpha2Code</span> <span class="o">=</span> <span class="nx">Languages</span><span class="o">::</span><span class="na">getAlpha2Code</span><span class="p">(</span><span class="nv">$alpha3Code</span><span class="p">);</span>
 </pre></div>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">Languages</span></code> class was introduced in Symfony 4.3.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The full support for alpha3 codes was introduced in Symfony 4.4.</p>
-</div>
 <p>The <code class="docutils literal notranslate"><span class="pre">Scripts</span></code> class provides access to the optional four-letter script code
 that can follow the language code according to the <a class="reference external" href="https://www.unicode.org/iso15924/iso15924-codes.html">Unicode ISO 15924 Registry</a><span class="link-target"> [https://www.unicode.org/iso15924/iso15924-codes.html]</span>
 (e.g. <code class="docutils literal notranslate"><span class="pre">HANS</span></code> in <code class="docutils literal notranslate"><span class="pre">zh_HANS</span></code> for simplified Chinese and <code class="docutils literal notranslate"><span class="pre">HANT</span></code> in <code class="docutils literal notranslate"><span class="pre">zh_HANT</span></code>
@@ -168,9 +162,6 @@ which defaults to the current default locale:</p>
 to catching the exception, you can also check if a given script code is valid:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$isValidScript</span> <span class="o">=</span> <span class="nx">Scripts</span><span class="o">::</span><span class="na">exists</span><span class="p">(</span><span class="nv">$scriptCode</span><span class="p">);</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">Scripts</span></code> class was introduced in Symfony 4.3.</p>
 </div>
 </div>
 <div class="section" id="country-names">
@@ -228,12 +219,6 @@ to catching the exception, you can also check if a given country code is valid:<
 <span class="nv">$alpha2Code</span> <span class="o">=</span> <span class="nx">Countries</span><span class="o">::</span><span class="na">getAlpha2Code</span><span class="p">(</span><span class="nv">$alpha3Code</span><span class="p">);</span>
 </pre></div>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">Countries</span></code> class was introduced in Symfony 4.3.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The support for alpha3 codes was introduced in Symfony 4.4.</p>
-</div>
 </div>
 <div class="section" id="locales">
 <h3>Locales</h3>
@@ -268,9 +253,6 @@ which defaults to the current default locale:</p>
 to catching the exception, you can also check if a given locale code is valid:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$isValidLocale</span> <span class="o">=</span> <span class="nx">Locales</span><span class="o">::</span><span class="na">exists</span><span class="p">(</span><span class="nv">$localeCode</span><span class="p">);</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">Locales</span></code> class was introduced in Symfony 4.3.</p>
 </div>
 </div>
 <div class="section" id="currencies">
@@ -313,9 +295,6 @@ the current default locale:</p>
 to catching the exception, you can also check if a given currency code is valid:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$isValidCurrency</span> <span class="o">=</span> <span class="nx">Currencies</span><span class="o">::</span><span class="na">exists</span><span class="p">(</span><span class="nv">$currencyCode</span><span class="p">);</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">Currencies</span></code> class was introduced in Symfony 4.3.</p>
 </div>
 </div>
 <div class="section" id="timezones">
@@ -392,9 +371,6 @@ you can pass the locale as the third optional argument:</p>
 to catching the exception, you can also check if a given timezone ID is valid:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$isValidTimezone</span> <span class="o">=</span> <span class="nx">Timezones</span><span class="o">::</span><span class="na">exists</span><span class="p">(</span><span class="nv">$timezoneId</span><span class="p">);</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">Timezones</span></code> class was introduced in Symfony 4.3.</p>
 </div>
 </div>
 </div>

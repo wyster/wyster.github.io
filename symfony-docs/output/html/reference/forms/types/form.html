@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../session.html">Sessions</a></li>
@@ -274,8 +276,8 @@
 on all types for which <code class="docutils literal notranslate"><span class="pre">FormType</span></code> is the parent.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="14%" />
-<col width="86%" />
+<col width="28%" />
+<col width="72%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>Options</td>
@@ -310,8 +312,7 @@ on all types for which <code class="docutils literal notranslate"><span class="p
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td>Inherited
-options</td>
+<tr class="row-even"><td>Inherited options</td>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="#attr">attr</a></li>
 <li><a class="reference internal" href="#auto-initialize">auto_initialize</a></li>
@@ -319,12 +320,19 @@ options</td>
 <li><a class="reference internal" href="#block-prefix">block_prefix</a></li>
 <li><a class="reference internal" href="#disabled">disabled</a></li>
 <li><a class="reference internal" href="#label">label</a></li>
+<li><a class="reference internal" href="#label-html">label_html</a></li>
 <li><a class="reference internal" href="#row-attr">row_attr</a></li>
 <li><a class="reference internal" href="#translation-domain">translation_domain</a></li>
 <li><a class="reference internal" href="#label-translation-parameters">label_translation_parameters</a></li>
 <li><a class="reference internal" href="#attr-translation-parameters">attr_translation_parameters</a></li>
 </ul>
 </td>
+</tr>
+<tr class="row-odd"><td>Default invalid message</td>
+<td>This value is not valid.</td>
+</tr>
+<tr class="row-even"><td>Legacy invalid message</td>
+<td>This value is not valid.</td>
 </tr>
 <tr class="row-odd"><td>Parent</td>
 <td>none</td>
@@ -563,11 +571,17 @@ errors to the <code class="docutils literal notranslate"><span class="pre">city<
 </div>
 <div class="section" id="extra-fields-message">
 <h3><code class="docutils literal notranslate"><span class="pre">extra_fields_message</span></code><a class="headerlink" href="#extra-fields-message" title="Permalink to this headline">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>Pluralization support was introduced in Symfony 5.1.</p>
+</div>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">form</span> <span class="pre">should</span> <span class="pre">not</span> <span class="pre">contain</span> <span class="pre">extra</span> <span class="pre">fields.</span></code></p>
 <p>This is the validation error message that’s used if the submitted form data
 contains one or more fields that are not part of the form definition. The
 placeholder <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">extra_fields</span> <span class="pre">}}</span></code> can be used to display a comma separated
 list of the submitted extra field names.</p>
+<p>This message can be pluralized, see
+<a class="reference internal" href="../../../translation/message_format.html#component-translation-pluralization"><span class="std std-ref">formatting pluralized messages</span></a> for
+details.</p>
 </div>
 <div class="section" id="help">
 <h3>help<a class="headerlink" href="#help" title="Permalink to this headline">¶</a></h3>
@@ -604,9 +618,6 @@ useful when the help contains HTML elements.</p>
 <div class="section" id="help-translation-parameters">
 <h3>help_translation_parameters<a class="headerlink" href="#help-translation-parameters" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">help_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The content of the <a class="reference internal" href="#help">help</a> option is translated before displaying it, so it
 can contain <a class="reference internal" href="../../../translation/message_format.html#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>.
 This option defines the values used to replace those placeholders.</p>
@@ -948,9 +959,6 @@ the block used to render the widget of the field: <code class="docutils literal 
 <h3>block_prefix<a class="headerlink" href="#block-prefix" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> or <code class="docutils literal notranslate"><span class="pre">null</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code> (see <a class="reference internal" href="../../../form/form_themes.html#form-customization-sidebar"><span class="std std-ref">Knowing which
 block to customize</span></a>)</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">block_prefix</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>Allows you to add a custom block prefix and override the block name
 used to render the form type. Useful for example if you have multiple
 instances of the same form and you need to personalize the rendering
@@ -986,6 +994,16 @@ will suppress the label. The label can also be directly set inside the template:
 </ul>
 </div>
 </div>
+<div class="section" id="label-html">
+<h3><code class="docutils literal notranslate"><span class="pre">label_html</span></code><a class="headerlink" href="#label-html" title="Permalink to this headline">¶</a></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">label_html</span></code> option was introduced in Symfony 5.1.</p>
+</div>
+<p>By default, the contents of the <code class="docutils literal notranslate"><span class="pre">label</span></code> option are escaped before rendering
+them in the template. Set this option to <code class="docutils literal notranslate"><span class="pre">true</span></code> to not escape them, which is
+useful when the label contains HTML elements.</p>
+</div>
 <div class="section" id="row-attr">
 <h3>row_attr<a class="headerlink" href="#row-attr" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
@@ -1001,9 +1019,6 @@ to render the <a class="reference internal" href="../../../form/form_customizati
 <p class="last">Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
 the <a class="reference internal" href="../../../form/form_customization.html#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 </div>
 <div class="section" id="translation-domain">
 <h3><code class="docutils literal notranslate"><span class="pre">translation_domain</span></code><a class="headerlink" href="#translation-domain" title="Permalink to this headline">¶</a></h3>
@@ -1016,9 +1031,6 @@ form). Use <code class="docutils literal notranslate"><span class="pre">false</s
 <div class="section" id="label-translation-parameters">
 <h3>label_translation_parameters<a class="headerlink" href="#label-translation-parameters" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">label_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The content of the <a class="reference internal" href="#label">label</a> option is translated before displaying it, so it
 can contain <a class="reference internal" href="../../../translation/message_format.html#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>.
 This option defines the values used to replace those placeholders.</p>
@@ -1044,9 +1056,6 @@ the parent placeholders.</p>
 <div class="section" id="attr-translation-parameters">
 <h3>attr_translation_parameters<a class="headerlink" href="#attr-translation-parameters" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">attr_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The content of the <code class="docutils literal notranslate"><span class="pre">title</span></code> and <code class="docutils literal notranslate"><span class="pre">placeholder</span></code> values defined in the <a class="reference internal" href="#attr">attr</a>
 option is translated before displaying it, so it can contain
 <a class="reference internal" href="../../../translation/message_format.html#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>. This

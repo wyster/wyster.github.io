@@ -19,21 +19,21 @@
 running those tests. For example, if you’re running a functional test and
 have introduced a new translation resource, then you will need to clear your
 cache before running those tests.</p>
-<p>To do this, first add a file that executes your bootstrap work:</p>
+<p>Symfony already created the following <code class="docutils literal notranslate"><span class="pre">tests/bootstrap.php</span></code> file when installing
+the package to work with tests. If you don’t have this file, create it:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// tests/bootstrap.php</span>
-<span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_ENV</span><span class="p">[</span><span class="s1">&#39;BOOTSTRAP_CLEAR_CACHE_ENV&#39;</span><span class="p">]))</span> <span class="p">{</span>
-    <span class="c1">// executes the &quot;php bin/console cache:clear&quot; command</span>
-    <span class="nb">passthru</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span>
-        <span class="s1">&#39;APP_ENV=%s php &quot;%s/../bin/console&quot; cache:clear --no-warmup&#39;</span><span class="p">,</span>
-        <span class="nv">$_ENV</span><span class="p">[</span><span class="s1">&#39;BOOTSTRAP_CLEAR_CACHE_ENV&#39;</span><span class="p">],</span>
-        <span class="no">__DIR__</span>
-    <span class="p">));</span>
-<span class="p">}</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Dotenv\Dotenv</span><span class="p">;</span>
 
-<span class="k">require</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../config/bootstrap.php&#39;</span><span class="p">;</span>
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">)</span><span class="o">.</span><span class="s1">&#39;/vendor/autoload.php&#39;</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nb">file_exists</span><span class="p">(</span><span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">)</span><span class="o">.</span><span class="s1">&#39;/config/bootstrap.php&#39;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">)</span><span class="o">.</span><span class="s1">&#39;/config/bootstrap.php&#39;</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">elseif</span> <span class="p">(</span><span class="nb">method_exists</span><span class="p">(</span><span class="nx">Dotenv</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="s1">&#39;bootEnv&#39;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="p">(</span><span class="k">new</span> <span class="nx">Dotenv</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">bootEnv</span><span class="p">(</span><span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">)</span><span class="o">.</span><span class="s1">&#39;/.env&#39;</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<p>Then, configure <code class="docutils literal notranslate"><span class="pre">phpunit.xml.dist</span></code> to execute this <code class="docutils literal notranslate"><span class="pre">bootstrap.php</span></code> file
+<p>Then, check that your <code class="docutils literal notranslate"><span class="pre">phpunit.xml.dist</span></code> file runs this <code class="docutils literal notranslate"><span class="pre">bootstrap.php</span></code> file
 before running the tests:</p>
 <div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2

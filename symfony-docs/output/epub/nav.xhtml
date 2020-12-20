@@ -107,6 +107,9 @@
                   <a href="routing.xhtml#localized-routes-i18n">Localized Routes (i18n)</a>
                 </li>
                 <li>
+                  <a href="routing.xhtml#stateless-routes">Stateless Routes</a>
+                </li>
+                <li>
                   <a href="routing.xhtml#generating-urls">Generating URLs</a>
                 </li>
                 <li>
@@ -267,7 +270,7 @@
                   <a href="best_practices.xhtml#make-your-controller-extend-the-abstractcontroller-base-controller">Make your Controller Extend the AbstractController Base Controller</a>
                 </li>
                 <li>
-                  <a href="best_practices.xhtml#use-annotations-to-configure-routing-caching-and-security">Use Annotations to Configure Routing, Caching and Security</a>
+                  <a href="best_practices.xhtml#use-attributes-or-annotations-to-configure-routing-caching-and-security">Use Attributes or Annotations to Configure Routing, Caching and Security</a>
                 </li>
                 <li>
                   <a href="best_practices.xhtml#don-t-use-annotations-to-configure-the-controller-template">Don’t Use Annotations to Configure the Controller Template</a>
@@ -388,6 +391,9 @@
             </li>
             <li>
               <a href="cache.xhtml#clearing-the-cache">Clearing the Cache</a>
+            </li>
+            <li>
+              <a href="cache.xhtml#encrypting-the-cache">Encrypting the Cache</a>
             </li>
           </ol>
         </li>
@@ -754,6 +760,11 @@
             </li>
             <li>
               <a href="forms.xhtml#validating-forms">Validating Forms</a>
+              <ol>
+                <li>
+                  <a href="forms.xhtml#form-validation-messages">Form Validation Messages</a>
+                </li>
+              </ol>
             </li>
             <li>
               <a href="forms.xhtml#other-common-form-features">Other Common Form Features</a>
@@ -1015,6 +1026,9 @@
                   <a href="http_client.xhtml#redirects">Redirects</a>
                 </li>
                 <li>
+                  <a href="http_client.xhtml#retry-failed-requests">Retry Failed Requests</a>
+                </li>
+                <li>
                   <a href="http_client.xhtml#http-proxies">HTTP Proxies</a>
                 </li>
                 <li>
@@ -1027,6 +1041,9 @@
               <ol>
                 <li>
                   <a href="http_client.xhtml#enabling-curl-support">Enabling cURL Support</a>
+                </li>
+                <li>
+                  <a href="http_client.xhtml#configuring-curlhttpclient-options">Configuring CurlHttpClient Options</a>
                 </li>
                 <li>
                   <a href="http_client.xhtml#http-2-support">HTTP/2 Support</a>
@@ -1063,6 +1080,9 @@
             </li>
             <li>
               <a href="http_client.xhtml#caching-requests-and-responses">Caching Requests and Responses</a>
+            </li>
+            <li>
+              <a href="http_client.xhtml#consuming-server-sent-events">Consuming Server-Sent Events</a>
             </li>
             <li>
               <a href="http_client.xhtml#interoperability">Interoperability</a>
@@ -1190,6 +1210,9 @@
                 <li>
                   <a href="mailer.xhtml#load-balancing">Load Balancing</a>
                 </li>
+                <li>
+                  <a href="mailer.xhtml#tls-peer-verification">TLS Peer Verification</a>
+                </li>
               </ol>
             </li>
             <li>
@@ -1257,6 +1280,9 @@
             </li>
             <li>
               <a href="mailer.xhtml#sending-messages-async">Sending Messages Async</a>
+            </li>
+            <li>
+              <a href="mailer.xhtml#adding-tags-and-metadata-to-emails">Adding Tags and Metadata to Emails</a>
             </li>
             <li>
               <a href="mailer.xhtml#development-debugging">Development &amp; Debugging</a>
@@ -1372,6 +1398,9 @@
                   <a href="messenger.xhtml#avoiding-retrying">Avoiding Retrying</a>
                 </li>
                 <li>
+                  <a href="messenger.xhtml#forcing-retrying">Forcing Retrying</a>
+                </li>
+                <li>
                   <a href="messenger.xhtml#saving-retrying-failed-messages">Saving &amp; Retrying Failed Messages</a>
                 </li>
               </ol>
@@ -1386,10 +1415,16 @@
                   <a href="messenger.xhtml#doctrine-transport">Doctrine Transport</a>
                 </li>
                 <li>
+                  <a href="messenger.xhtml#beanstalkd-transport">Beanstalkd Transport</a>
+                </li>
+                <li>
                   <a href="messenger.xhtml#redis-transport">Redis Transport</a>
                 </li>
                 <li>
                   <a href="messenger.xhtml#in-memory-transport">In Memory Transport</a>
+                </li>
+                <li>
+                  <a href="messenger.xhtml#amazon-sqs">Amazon SQS</a>
                 </li>
                 <li>
                   <a href="messenger.xhtml#serializing-messages">Serializing Messages</a>
@@ -1489,6 +1524,61 @@
           </ol>
         </li>
         <li>
+          <a href="notifier.xhtml">Creating and Sending Notifications</a>
+          <ol>
+            <li>
+              <a href="notifier.xhtml#installation">Installation</a>
+            </li>
+            <li>
+              <a href="notifier.xhtml#channels-chatters-texters-email-and-browser">Channels: Chatters, Texters, Email and Browser</a>
+              <ol>
+                <li>
+                  <a href="notifier.xhtml#sms-channel">SMS Channel</a>
+                </li>
+                <li>
+                  <a href="notifier.xhtml#chat-channel">Chat Channel</a>
+                </li>
+                <li>
+                  <a href="notifier.xhtml#email-channel">Email Channel</a>
+                </li>
+                <li>
+                  <a href="notifier.xhtml#configure-to-use-failover-or-round-robin-transports">Configure to use Failover or Round-Robin Transports</a>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <a href="notifier.xhtml#creating-sending-notifications">Creating &amp; Sending Notifications</a>
+              <ol>
+                <li>
+                  <a href="notifier.xhtml#configuring-channel-policies">Configuring Channel Policies</a>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <a href="notifier.xhtml#customize-notifications">Customize Notifications</a>
+              <ol>
+                <li>
+                  <a href="notifier.xhtml#customize-notification-messages">Customize Notification Messages</a>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <a href="notifier.xhtml#disabling-delivery">Disabling Delivery</a>
+            </li>
+            <li>
+              <a href="notifier.xhtml#learn-more">Learn more</a>
+              <ol>
+                <li>
+                  <a href="notifier/chatters.xhtml">How to send Chat Messages</a>
+                </li>
+                <li>
+                  <a href="notifier/texters.xhtml">How to send SMS Messages</a>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </li>
+        <li>
           <a href="performance.xhtml">Performance</a>
           <ol>
             <li>
@@ -1496,6 +1586,9 @@
               <ol>
                 <li>
                   <a href="performance.xhtml#install-apcu-polyfill-if-your-server-uses-apc">Install APCu Polyfill if your Server Uses APC</a>
+                </li>
+                <li>
+                  <a href="performance.xhtml#restrict-the-number-of-locales-enabled-in-the-application">Restrict the Number of Locales Enabled in the Application</a>
                 </li>
                 <li>
                   <a href="performance.xhtml#dump-the-service-container-into-a-single-file">Dump the Service Container into a Single File</a>
@@ -1560,13 +1653,52 @@
           </ol>
         </li>
         <li>
+          <a href="rate_limiter.xhtml">Rate Limiter</a>
+          <ol>
+            <li>
+              <a href="rate_limiter.xhtml#rate-limiting-policies">Rate Limiting Policies</a>
+              <ol>
+                <li>
+                  <a href="rate_limiter.xhtml#fixed-window-rate-limiter">Fixed Window Rate Limiter</a>
+                </li>
+                <li>
+                  <a href="rate_limiter.xhtml#sliding-window-rate-limiter">Sliding Window Rate Limiter</a>
+                </li>
+                <li>
+                  <a href="rate_limiter.xhtml#token-bucket-rate-limiter">Token Bucket Rate Limiter</a>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <a href="rate_limiter.xhtml#installation">Installation</a>
+            </li>
+            <li>
+              <a href="rate_limiter.xhtml#configuration">Configuration</a>
+            </li>
+            <li>
+              <a href="rate_limiter.xhtml#rate-limiting-in-action">Rate Limiting in Action</a>
+              <ol>
+                <li>
+                  <a href="rate_limiter.xhtml#wait-until-a-token-is-available">Wait until a Token is Available</a>
+                </li>
+                <li>
+                  <a href="rate_limiter.xhtml#exposing-the-rate-limiter-status">Exposing the Rate Limiter Status</a>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <a href="rate_limiter.xhtml#rate-limiter-storage-and-locking">Rate Limiter Storage and Locking</a>
+            </li>
+          </ol>
+        </li>
+        <li>
           <a href="routing.xhtml">Routing</a>
           <ol>
             <li>
               <a href="routing.xhtml#creating-routes">Creating Routes</a>
               <ol>
                 <li>
-                  <a href="routing.xhtml#creating-routes-as-annotations">Creating Routes as Annotations</a>
+                  <a href="routing.xhtml#creating-routes-as-attributes-or-annotations">Creating Routes as Attributes or Annotations</a>
                 </li>
                 <li>
                   <a href="routing.xhtml#creating-routes-in-yaml-xml-or-php-files">Creating Routes in YAML, XML or PHP Files</a>
@@ -1590,6 +1722,9 @@
                 </li>
                 <li>
                   <a href="routing.xhtml#optional-parameters">Optional Parameters</a>
+                </li>
+                <li>
+                  <a href="routing.xhtml#priority-parameter">Priority Parameter</a>
                 </li>
                 <li>
                   <a href="routing.xhtml#parameter-conversion">Parameter Conversion</a>
@@ -1627,6 +1762,9 @@
             </li>
             <li>
               <a href="routing.xhtml#localized-routes-i18n">Localized Routes (i18n)</a>
+            </li>
+            <li>
+              <a href="routing.xhtml#stateless-routes">Stateless Routes</a>
             </li>
             <li>
               <a href="routing.xhtml#generating-urls">Generating URLs</a>
@@ -1726,6 +1864,11 @@
             </li>
             <li>
               <a href="security.xhtml#logging-out">Logging Out</a>
+              <ol>
+                <li>
+                  <a href="security.xhtml#customizing-logout">Customizing Logout</a>
+                </li>
+              </ol>
             </li>
             <li>
               <a href="security.xhtml#hierarchical-roles">Hierarchical Roles</a>
@@ -1822,9 +1965,6 @@
                   <a href="setup/web_server_configuration.xhtml">Configuring a Web Server</a>
                 </li>
                 <li>
-                  <a href="setup/built_in_web_server.xhtml">How to Use PHP’s built-in Web Server</a>
-                </li>
-                <li>
                   <a href="setup/bundles.xhtml">Upgrading a Third-Party Bundle for a Major Symfony Version</a>
                 </li>
                 <li>
@@ -1846,7 +1986,7 @@
                   <a href="setup/upgrade_minor.xhtml">Upgrading a Minor Version (e.g. 4.0.0 to 4.1.0)</a>
                 </li>
                 <li>
-                  <a href="setup/upgrade_patch.xhtml">Upgrading a Patch Version (e.g. 4.1.0 to 4.1.1)</a>
+                  <a href="setup/upgrade_patch.xhtml">Upgrading a Patch Version (e.g. 5.0.0 to 5.0.1)</a>
                 </li>
               </ol>
             </li>
@@ -2044,6 +2184,9 @@
                   <a href="testing.xhtml#accessing-the-container">Accessing the Container</a>
                 </li>
                 <li>
+                  <a href="testing.xhtml#logging-in-users-authentication">Logging in Users (Authentication)</a>
+                </li>
+                <li>
                   <a href="testing.xhtml#accessing-the-profiler-data">Accessing the Profiler Data</a>
                 </li>
                 <li>
@@ -2138,6 +2281,9 @@
             </li>
             <li>
               <a href="translation.xhtml#message-format">Message Format</a>
+            </li>
+            <li>
+              <a href="translation.xhtml#translatable-objects">Translatable Objects</a>
             </li>
             <li>
               <a href="translation.xhtml#translations-in-templates">Translations in Templates</a>
@@ -2264,6 +2410,9 @@
               </ol>
             </li>
             <li>
+              <a href="validation.xhtml#debugging-the-constraints">Debugging the Constraints</a>
+            </li>
+            <li>
               <a href="validation.xhtml#final-thoughts">Final Thoughts</a>
             </li>
             <li>
@@ -2327,6 +2476,9 @@
               <ol>
                 <li>
                   <a href="workflow.xhtml#guard-events">Guard Events</a>
+                </li>
+                <li>
+                  <a href="workflow.xhtml#choosing-which-events-to-dispatch">Choosing which Events to Dispatch</a>
                 </li>
                 <li>
                   <a href="workflow.xhtml#event-methods">Event Methods</a>

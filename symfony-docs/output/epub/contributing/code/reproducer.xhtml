@@ -76,8 +76,9 @@ to a route definition. Then, after creating your project:</p>
 of controllers, actions, etc. as in your original application.</p></li>
 <li><p>Create a small controller and add your routing definition that shows the bug.</p></li>
 <li><p>Don’t create or modify any other file.</p></li>
-<li><p>Execute <code class="docutils literal notranslate"><span class="pre">composer</span> <span class="pre">require</span> <span class="pre">symfony/web-server-bundle</span></code> and use the <code class="docutils literal notranslate"><span class="pre">server:run</span></code>
-command to browse to the new route and see if the bug appears or not.</p></li>
+<li><p>Install the <a class="reference internal" href="../../setup/symfony_server.xhtml"><span class="doc">local web server</span></a> provided by Symfony
+and use the <code class="docutils literal notranslate"><span class="pre">symfony</span> <span class="pre">server:start</span></code> command to browse to the new route and
+see if the bug appears or not.</p></li>
 <li><p>If you can see the bug, you’re done and you can already share the code with us.</p></li>
 <li><p>If you can’t see the bug, you must keep making small changes. For example, if
 your original route was defined using XML, forget about the previous route

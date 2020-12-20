@@ -37,7 +37,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Security Configuration Reference (SecurityBundle)" href="../reference/configuration/security.html" />
+    <link rel="next" title="How to use Passwordless Login Link Authentication" href="login_link.html" />
     <link rel="prev" title="Securely Generating Random Values" href="../components/security/secure_tools.html" /> 
 </head>
 
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -174,6 +176,7 @@
 <li class="toctree-l4"><a class="reference internal" href="auth_providers.html">Built-in Authentication Providers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="csrf.html">How to Implement CSRF Protection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="custom_authentication_provider.html">How to Create a custom Authentication Provider</a></li>
+<li class="toctree-l4"><a class="reference internal" href="experimental_authenticators.html">Using the new Authenticator-based Security</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Security: Complex Access Controls with Expressions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="firewall_restriction.html">How to Restrict Firewalls to a Request</a></li>
 <li class="toctree-l4"><a class="reference internal" href="force_https.html">How to Force HTTPS or HTTP for different URLs</a></li>
@@ -183,6 +186,7 @@
 <li class="toctree-l4"><a class="reference internal" href="impersonating_user.html">How to Impersonate a User</a></li>
 <li class="toctree-l4"><a class="reference internal" href="json_login_setup.html">How to Build a JSON Authentication Endpoint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ldap.html">Authenticating against an LDAP server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="login_link.html">How to use Passwordless Login Link Authentication</a></li>
 <li class="toctree-l4"><a class="reference internal" href="multiple_guard_authenticators.html">How to Use Multiple Guard Authenticators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="named_encoders.html">How to Use A Different Password Encoder Algorithm Per User</a></li>
 <li class="toctree-l4"><a class="reference internal" href="password_migration.html">How to Migrate a Password Hash</a></li>
@@ -198,7 +202,10 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../components/semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../components/serializer.html">The Serializer Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../components/string.html">The String Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../components/uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../components/validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../components/var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../components/var_exporter.html">The VarExporter Component</a></li>
@@ -299,7 +306,7 @@ accepts an <code class="docutils literal notranslate"><a class="reference extern
 <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">denyAccessUnlessGranted</span><span class="p">(</span><span class="k">new</span> <span class="nx">Expression</span><span class="p">(</span>
-        <span class="s1">&#39;&quot;ROLE_ADMIN&quot; in roles or (not is_anonymous() and user.isSuperAdmin())&#39;</span>
+        <span class="s1">&#39;&quot;ROLE_ADMIN&quot; in role_names or (not is_anonymous() and user.isSuperAdmin())&#39;</span>
     <span class="p">));</span>
 
     <span class="c1">// ...</span>

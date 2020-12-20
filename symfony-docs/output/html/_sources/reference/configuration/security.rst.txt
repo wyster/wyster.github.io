@@ -71,10 +71,6 @@ When set to ``lazy``, Symfony loads the user (and starts the session) only if
 the application actually accesses the ``User`` object (e.g. via a ``is_granted()``
 call in a template or ``isGranted()`` in a controller or service).
 
-.. versionadded:: 4.4
-
-    The ``lazy`` value of the ``anonymous`` option was introduced in Symfony 4.4.
-
 erase_credentials
 ~~~~~~~~~~~~~~~~~
 
@@ -159,7 +155,6 @@ encoding algorithm. Also, each algorithm defines different config options:
                     algorithm:   'sodium'
                     memory_cost:  16384 # Amount in KiB. (16384 = 16 MiB)
                     time_cost:    2     # Number of iterations
-                    threads:      4     # Number of parallel threads
 
                 # MessageDigestPasswordEncoder encoder using SHA512 hashing with default options
                 App\Entity\User: 'sha512'
@@ -172,7 +167,9 @@ encoding algorithm. Also, each algorithm defines different config options:
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd">
 
             <config>
                 <!-- ... -->
@@ -197,14 +194,12 @@ encoding algorithm. Also, each algorithm defines different config options:
 
                 <!-- Sodium encoder with custom options -->
                 <!-- memory_cost: amount in KiB. (16384 = 16 MiB)
-                     time_cost: number of iterations
-                     threads: number of parallel threads -->
+                     time_cost: number of iterations -->
                 <encoder
                     class="App\Entity\User"
                     algorithm="sodium"
                     memory_cost="16384"
                     time_cost="2"
-                    threads="4"
                 />
 
                 <!-- MessageDigestPasswordEncoder encoder using SHA512 hashing with default options -->
@@ -244,7 +239,6 @@ encoding algorithm. Also, each algorithm defines different config options:
                     'algorithm' => 'sodium',
                     'memory_cost' => 16384, // Amount in KiB. (16384 = 16 MiB)
                     'time_cost' => 2,       // Number of iterations
-                    'threads' => 4,         // Number of parallel threads
                 ],
 
                 // MessageDigestPasswordEncoder encoder using SHA512 hashing with default options
@@ -253,17 +247,6 @@ encoding algorithm. Also, each algorithm defines different config options:
                 ],
             ],
         ]);
-
-.. deprecated:: 4.3
-
-    The ``threads`` configuration option was deprecated in Symfony 4.3. No
-    alternative is provided because starting from Symfony 5.0 this value will be
-    hardcoded to ``1`` (one thread).
-
-.. versionadded:: 4.3
-
-    The ``sodium`` algorithm was introduced in Symfony 4.3. In previous Symfony
-    versions it was called ``argon2i``.
 
 .. tip::
 
@@ -276,11 +259,6 @@ encoding algorithm. Also, each algorithm defines different config options:
 
 Using the Sodium Password Encoder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionadded:: 4.3
-
-    The ``SodiumPasswordEncoder`` was introduced in Symfony 4.3. In previous
-    Symfony versions it was called ``Argon2iPasswordEncoder``.
 
 It uses the `Argon2 key derivation function`_ and it's the encoder recommended
 by Symfony. Argon2 support was introduced in PHP 7.2, but if you use an earlier
@@ -363,7 +341,9 @@ application:
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd">
 
             <config>
                 <!-- ... -->
@@ -415,8 +395,6 @@ depend on the authentication mechanism, which can be any of these:
                         # ...
                     remote_user:
                         # ...
-                    simple_preauth:
-                        # ...
                     guard:
                         # ...
                     form_login:
@@ -424,8 +402,6 @@ depend on the authentication mechanism, which can be any of these:
                     form_login_ldap:
                         # ...
                     json_login:
-                        # ...
-                    simple_form:
                         # ...
                     http_basic:
                         # ...
@@ -566,24 +542,7 @@ The ``invalidate_session`` option allows to redefine this behavior. Set this
 option to ``false`` in every firewall and the user will only be logged out from
 the current firewall and not the other ones.
 
-logout_on_user_change
-~~~~~~~~~~~~~~~~~~~~~
-
-**type**: ``boolean`` **default**: ``true``
-
-.. deprecated:: 4.1
-
-    The ``logout_on_user_change`` option was deprecated in Symfony 4.1.
-
-If ``false`` this option makes Symfony to not trigger a logout when the user has
-changed. Doing that is deprecated, so this option should be set to ``true`` or
-unset to avoid getting deprecation messages.
-
-The user is considered to have changed when the user class implements
-:class:`Symfony\\Component\\Security\\Core\\User\\EquatableInterface` and the
-``isEqualTo()`` method returns ``false``. Also, when any of the properties
-required by the :class:`Symfony\\Component\\Security\\Core\\User\\UserInterface`
-(like the username, password or salt) changes.
+.. _reference-security-logout-success-handler:
 
 ``path``
 ~~~~~~~~
@@ -595,6 +554,13 @@ you need to set up a route with a matching path.
 
 success_handler
 ~~~~~~~~~~~~~~~
+
+.. deprecated:: 5.1
+
+    This option is deprecated since Symfony 5.1. Register an
+    :doc:`event listener </event_dispatcher>` on the
+    :class:`Symfony\\Component\\Security\\Http\\Event\\LogoutEvent`
+    instead.
 
 **type**: ``string`` **default**: ``'security.logout.success_handler'``
 
@@ -721,7 +687,9 @@ multiple firewalls, the "context" could actually be shared:
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd">
 
             <config>
                 <firewall name="somename" context="my_context">

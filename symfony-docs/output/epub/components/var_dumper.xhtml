@@ -78,7 +78,7 @@ mechanism;</p></li>
 <p class="admonition-title">Tip</p>
 <p>You can also select the output format explicitly defining the
 <code class="docutils literal notranslate"><span class="pre">VAR_DUMPER_FORMAT</span></code> environment variable and setting its value to either
-<code class="docutils literal notranslate"><span class="pre">html</span></code> or <code class="docutils literal notranslate"><span class="pre">cli</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">html</span></code>, <code class="docutils literal notranslate"><span class="pre">cli</span></code> or <a class="reference internal" href="#var-dumper-dump-server-format"><span class="std std-ref">server</span></a>.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -214,6 +214,31 @@ data was dumped. The built-in context providers are: <code class="docutils liter
 <span class="go">  [OK] Server listening on tcp://127.0.0.1:9912</span>
 </pre></div>
 </td></tr></table></div>
+<div class="section" id="configuring-the-dump-server-with-environment-variables">
+<span id="var-dumper-dump-server-format"></span><h3>Configuring the Dump Server with Environment Variables</h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">VAR_DUMPER_FORMAT=server</span></code> feature was introduced in Symfony 5.2.</p>
+</div>
+<p>If you prefer to not modify the application configuration (e.g. to quickly debug
+a project given to you) use the <code class="docutils literal notranslate"><span class="pre">VAR_DUMPER_FORMAT</span></code> env var.</p>
+<p>First, start the server as usual:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> ./vendor/bin/var-dump-server
+</pre></div>
+</td></tr></table></div>
+<p>Then, run your code with the <code class="docutils literal notranslate"><span class="pre">VAR_DUMPER_FORMAT=server</span></code> env var by configuring
+this value in the <a class="reference internal" href="../configuration.xhtml#config-env-vars"><span class="std std-ref">.env file of your application</span></a>. For
+console commands, you can also define this env var as follows:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nv">VAR_DUMPER_FORMAT</span><span class="o">=</span>server <span class="o">[</span>your-cli-command<span class="o">]</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The host used by the <code class="docutils literal notranslate"><span class="pre">server</span></code> format is the one configured in the
+<code class="docutils literal notranslate"><span class="pre">VAR_DUMPER_SERVER</span></code> env var or <code class="docutils literal notranslate"><span class="pre">127.0.0.1:9912</span></code> if none is defined.
+If you prefer, you can also configure the host in the <code class="docutils literal notranslate"><span class="pre">VAR_DUMPER_FORMAT</span></code>
+env var like this: <code class="docutils literal notranslate"><span class="pre">VAR_DUMPER_FORMAT=tcp://127.0.0.1:1234</span></code>.</p>
+</div>
+</div>
 </div>
 <div class="section" id="debugbundle-and-twig-integration">
 <h2>DebugBundle and Twig Integration</h2>
@@ -249,9 +274,6 @@ are supported (<code class="docutils literal notranslate"><span class="pre">Ctrl
 finished, press <code class="docutils literal notranslate"><span class="pre">Esc.</span></code> to hide the box again.</p>
 <p>If you want to use your browser search input, press <code class="docutils literal notranslate"><span class="pre">Ctrl.</span> <span class="pre">+</span> <span class="pre">F</span></code> or
 <code class="docutils literal notranslate"><span class="pre">Cmd.</span> <span class="pre">+</span> <span class="pre">F</span></code> again while having focus on VarDumper’s search input.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The feature to use the browser search input was introduced in Symfony 4.4.</p>
-</div>
 </div>
 </div>
 <div class="section" id="using-the-vardumper-component-in-your-phpunit-test-suite">
@@ -281,10 +303,6 @@ to only control the fields you’re expecting and allows writing concise tests.<
 made in <code class="docutils literal notranslate"><span class="pre">setUpVarDumper()</span></code>.</p>
 </dd>
 </dl>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">setUpVarDumper()</span></code> and <code class="docutils literal notranslate"><span class="pre">tearDownVarDumper()</span></code> methods were introduced
-in Symfony 4.4.</p>
-</div>
 <p>Example:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\VarDumper\Test\VarDumperTestTrait</span><span class="p">;</span>

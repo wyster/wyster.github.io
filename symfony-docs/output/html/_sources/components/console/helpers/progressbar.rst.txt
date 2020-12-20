@@ -56,11 +56,6 @@ you can also set the current progress by calling the
     to redraw every N iterations. By default, redraw frequency is
     **100ms** or **10%** of your ``max``.
 
-    .. versionadded:: 4.4
-
-        The ``minSecondsBetweenRedraws()`` and ``maxSecondsBetweenRedraws()``
-        methods were introduced in Symfony 4.4.
-
 If you don't know the exact number of steps in advance, set it to a reasonable
 value and then call the ``setMaxSteps()`` method to update it as needed::
 
@@ -129,10 +124,6 @@ The previous code will output:
      0/2 [>---------------------------]   0%
      1/2 [==============>-------------]  50%
      2/2 [============================] 100%
-
-.. versionadded:: 4.3
-
-    The ``iterate()`` method was introduced in Symfony 4.3.
 
 Customizing the Progress Bar
 ----------------------------
@@ -321,11 +312,6 @@ to display it can be customized::
 
             $progressBar->advance();
         }
-
-    .. versionadded:: 4.4
-
-        The ``minSecondsBetweenRedraws`` and ``maxSecondsBetweenRedraws()`` methods
-        were introduced in Symfony 4.4.
 
 Custom Placeholders
 ~~~~~~~~~~~~~~~~~~~

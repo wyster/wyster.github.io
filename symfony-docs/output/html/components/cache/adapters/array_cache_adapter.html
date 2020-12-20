@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../session.html">Sessions</a></li>
@@ -178,7 +180,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../security.html">The Security Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../serializer.html">The Serializer Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../string.html">The String Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../var_exporter.html">The VarExporter Component</a></li>
@@ -269,9 +274,7 @@
 <p>Generally, this adapter is useful for testing purposes, as its contents are stored in memory
 and not persisted outside the running PHP process in any way. It can also be useful while
 warming up caches, due to the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Cache/Adapter/ArrayAdapter.php" title="Symfony\Component\Cache\Adapter\ArrayAdapter::getValues()"><span class="pre">getValues()</span></a></code>
-method.</p>
-<p>This adapter can be passed a default cache lifetime as its first parameter, and a boolean that
-toggles serialization as its second parameter:</p>
+method:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Cache\Adapter\ArrayAdapter</span><span class="p">;</span>
 
 <span class="nv">$cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ArrayAdapter</span><span class="p">(</span>
@@ -282,9 +285,20 @@ toggles serialization as its second parameter:</p>
     <span class="nv">$defaultLifetime</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 
     <span class="c1">// if ``true``, the values saved in the cache are serialized before storing them</span>
-    <span class="nv">$storeSerialized</span> <span class="o">=</span> <span class="k">true</span>
+    <span class="nv">$storeSerialized</span> <span class="o">=</span> <span class="k">true</span><span class="p">,</span>
+
+    <span class="c1">// the maximum lifetime (in seconds) of the entire cache (after this time, the</span>
+    <span class="c1">// entire cache is deleted to avoid stale data from consuming memory)</span>
+    <span class="nv">$maxLifetime</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+
+    <span class="c1">// the maximum number of items that can be stored in the cache. When the limit</span>
+    <span class="c1">// is reached, cache follows the LRU model (least recently used items are deleted)</span>
+    <span class="nv">$maxItems</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">);</span>
 </pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">maxLifetime</span></code> and <code class="docutils literal notranslate"><span class="pre">maxItems</span></code> options were introduced in Symfony 5.1.</p>
 </div>
 </div>
 

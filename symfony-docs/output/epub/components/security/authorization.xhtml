@@ -29,7 +29,7 @@ by an instance of <code class="docutils literal notranslate"><a class="reference
 <ul class="simple">
 <li><dl class="simple">
 <dt>The current token</dt>
-<dd><p>For instance, the token’s <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php" title="Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getRoles()"><span class="pre">getRoles()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php]</span></span></code>
+<dd><p>For instance, the token’s <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php" title="Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getRoleNames()"><span class="pre">getRoleNames()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php]</span></span></code>
 method may be used to retrieve the roles of the current user (e.g.
 <code class="docutils literal notranslate"><span class="pre">ROLE_SUPER_ADMIN</span></code>), or a decision may be based on the class of the token.</p>
 </dd>
@@ -57,7 +57,7 @@ action can be a complicated process, the standard <code class="docutils literal 
 itself depends on multiple voters, and makes a final verdict based on all
 the votes (either positive, negative or neutral) it has received. It
 recognizes several strategies:</p>
-<dl class="simple">
+<dl>
 <dt><code class="docutils literal notranslate"><span class="pre">affirmative</span></code> (default)</dt>
 <dd><p>grant access as soon as there is one voter granting access;</p>
 </dd>
@@ -69,6 +69,12 @@ recognizes several strategies:</p>
 abstained from voting, the decision is based on the <code class="docutils literal notranslate"><span class="pre">allow_if_all_abstain</span></code>
 config option (which defaults to <code class="docutils literal notranslate"><span class="pre">false</span></code>).</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">priority</span></code></dt>
+<dd><p>grants or denies access by the first voter that does not abstain;</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">priority</span></code> version strategy was introduced in Symfony 5.1.</p>
+</div>
+</dd>
 </dl>
 <p>Usage of the available options in detail:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authorization\AccessDecisionManager</span><span class="p">;</span>
@@ -76,7 +82,7 @@ config option (which defaults to <code class="docutils literal notranslate"><spa
 <span class="c1">// instances of Symfony\Component\Security\Core\Authorization\Voter\VoterInterface</span>
 <span class="nv">$voters</span> <span class="o">=</span> <span class="p">[</span><span class="o">...</span><span class="p">];</span>
 
-<span class="c1">// one of &quot;affirmative&quot;, &quot;consensus&quot;, &quot;unanimous&quot;</span>
+<span class="c1">// one of &quot;affirmative&quot;, &quot;consensus&quot;, &quot;unanimous&quot;, &quot;priority&quot;</span>
 <span class="nv">$strategy</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
 
 <span class="c1">// whether or not to grant access when all voters abstain</span>
@@ -118,10 +124,18 @@ cases:</p>
 <div class="section" id="authenticatedvoter">
 <h3>AuthenticatedVoter</h3>
 <p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/AuthenticatedVoter.php" title="Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter"><span class="pre">AuthenticatedVoter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/AuthenticatedVoter.php]</span></span></code>
-voter supports the attributes <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_FULLY</span></code>, <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_REMEMBERED</span></code>,
-and <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_ANONYMOUSLY</span></code> and grants access based on the current
-level of authentication, i.e. is the user fully authenticated, or only based
-on a “remember-me” cookie, or even authenticated anonymously?:</p>
+voter supports the attributes <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_FULLY</span></code>,
+<code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_REMEMBERED</span></code>, <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_ANONYMOUSLY</span></code>,
+to grant access based on the current level of authentication, i.e. is the
+user fully authenticated, or only based on a “remember-me” cookie, or even
+authenticated anonymously?</p>
+<p>It also supports the attributes <code class="docutils literal notranslate"><span class="pre">IS_ANONYMOUS</span></code>, <code class="docutils literal notranslate"><span class="pre">IS_REMEMBERED</span></code>,
+<code class="docutils literal notranslate"><span class="pre">IS_IMPERSONATOR</span></code> to grant access based on a specific state of
+authentication.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">IS_ANONYMOUS</span></code>, <code class="docutils literal notranslate"><span class="pre">IS_REMEMBERED</span></code> and <code class="docutils literal notranslate"><span class="pre">IS_IMPERSONATOR</span></code>
+attributes were introduced in Symfony 5.1.</p>
+</div>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolver</span><span class="p">;</span>
 
 <span class="nv">$trustResolver</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AuthenticationTrustResolver</span><span class="p">();</span>
@@ -143,7 +157,7 @@ on a “remember-me” cookie, or even authenticated anonymously?:</p>
 <p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/RoleVoter.php" title="Symfony\Component\Security\Core\Authorization\Voter\RoleVoter"><span class="pre">RoleVoter</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authorization/Voter/RoleVoter.php]</span></span></code>
 supports attributes starting with <code class="docutils literal notranslate"><span class="pre">ROLE_</span></code> and grants access to the user
 when at least one required <code class="docutils literal notranslate"><span class="pre">ROLE_*</span></code> attribute can be found in the array of
-roles returned by the token’s <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php" title="Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getRoles()"><span class="pre">getRoles()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php]</span></span></code>
+roles returned by the token’s <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php" title="Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getRoleNames()"><span class="pre">getRoleNames()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Authentication/Token/TokenInterface.php]</span></span></code>
 method:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authorization\Voter\RoleVoter</span><span class="p">;</span>
 
@@ -204,7 +218,7 @@ expressions have access to a number of
 <span class="nv">$object</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
 
 <span class="nv">$expression</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Expression</span><span class="p">(</span>
-    <span class="s1">&#39;&quot;ROLE_ADMIN&quot; in roles or (not is_anonymous() and user.isSuperAdmin())&#39;</span>
+    <span class="s1">&#39;&quot;ROLE_ADMIN&quot; in role_names or (not is_anonymous() and user.isSuperAdmin())&#39;</span>
 <span class="p">)</span>
 
 <span class="nv">$vote</span> <span class="o">=</span> <span class="nv">$expressionVoter</span><span class="o">-&gt;</span><span class="na">vote</span><span class="p">(</span><span class="nv">$token</span><span class="p">,</span> <span class="nv">$object</span><span class="p">,</span> <span class="p">[</span><span class="nv">$expression</span><span class="p">]);</span>

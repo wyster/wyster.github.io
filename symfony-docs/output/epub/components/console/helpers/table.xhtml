@@ -321,6 +321,38 @@ a <code class="docutils literal notranslate"><span class="pre">13</span></code> 
 </div>
 <p>This method can also be used to override a built-in style.</p>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The option to style table cells was introduced in Symfony 5.2.</p>
+</div>
+<p>In addition to the built-in table styles, you can also apply different styles
+to each table cell via <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/TableCellStyle.php" title="Symfony\Component\Console\Helper\TableCellStyle"><span class="pre">TableCellStyle</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/TableCellStyle.php]</span></span></code>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Console\Helper\Table</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Helper\TableCellStyle</span><span class="p">;</span>
+
+<span class="nv">$table</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Table</span><span class="p">(</span><span class="nv">$output</span><span class="p">);</span>
+
+<span class="nv">$table</span><span class="o">-&gt;</span><span class="na">setRows</span><span class="p">([</span>
+    <span class="p">[</span>
+        <span class="s1">&#39;978-0804169127&#39;</span><span class="p">,</span>
+        <span class="k">new</span> <span class="nx">TableCell</span><span class="p">(</span>
+            <span class="s1">&#39;Divine Comedy&#39;</span><span class="p">,</span>
+            <span class="p">[</span>
+                <span class="s1">&#39;style&#39;</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nx">TableCellStyle</span><span class="p">([</span>
+                    <span class="s1">&#39;align&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;fg&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;bg&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span>
+
+                    <span class="c1">// or</span>
+                    <span class="s1">&#39;cellFormat&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;&lt;info&gt;%s&lt;/info&gt;&#39;</span><span class="p">,</span>
+                <span class="p">])</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+
+<span class="nv">$table</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">();</span>
+</pre></div>
+</div>
 <div class="section" id="spanning-multiple-columns-and-rows">
 <h2>Spanning Multiple Columns and Rows</h2>
 <p>To make a table cell that spans multiple columns you can use a <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/TableCell.php" title="Symfony\Component\Console\Helper\TableCell"><span class="pre">TableCell</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/TableCell.php]</span></span></code>:</p>

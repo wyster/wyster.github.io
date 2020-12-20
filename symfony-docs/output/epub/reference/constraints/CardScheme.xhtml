@@ -209,8 +209,14 @@ about <a class="reference internal" href="../../validation/groups.xhtml"><span c
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></p></td>
 <td><p>The current (invalid) value</p></td>
 </tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code></p></td>
+<td><p>Corresponding form field label</p></td>
+</tr>
 </tbody>
 </table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code> parameter was introduced in Symfony 5.2.</p>
+</div>
 </div>
 <div class="section" id="payload">
 <h3><code class="docutils literal notranslate"><span class="pre">payload</span></code></h3>
@@ -243,9 +249,6 @@ Valid values are:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">UATP</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">VISA</span></code></p></li>
 </ul>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">UATP</span></code> and <code class="docutils literal notranslate"><span class="pre">MIR</span></code> number schemes were introduced in Symfony 4.3.</p>
-</div>
 <p>For more information about the used schemes, see
 <a class="reference external" href="https://en.wikipedia.org/wiki/Bank_card_number#Issuer_identification_number_.28IIN.29">Wikipedia: Issuer identification number (IIN)</a><span class="link-target"> [https://en.wikipedia.org/wiki/Bank_card_number#Issuer_identification_number_.28IIN.29]</span>.</p>
 </div>

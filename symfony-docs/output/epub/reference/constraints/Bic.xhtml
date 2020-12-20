@@ -166,25 +166,16 @@ about <a class="reference internal" href="../../validation/groups.xhtml"><span c
 <div class="section" id="iban">
 <h3>iban</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">iban</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>An IBAN value to validate that its country code is the same as the BIC’s one.</p>
 </div>
 <div class="section" id="ibanmessage">
 <h3>ibanMessage</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">Business</span> <span class="pre">Identifier</span> <span class="pre">Code</span> <span class="pre">(BIC)</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">associated</span> <span class="pre">with</span> <span class="pre">IBAN</span> <span class="pre">{{</span> <span class="pre">iban</span> <span class="pre">}}.</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">ibanMessage</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The default message supplied when the value does not pass the combined BIC/IBAN check.</p>
 </div>
 <div class="section" id="ibanpropertypath">
 <h3>ibanPropertyPath</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">ibanPropertyPath</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>It defines the object property whose value stores the IBAN used to check the BIC with.</p>
 <p>For example, if you want to compare the <code class="docutils literal notranslate"><span class="pre">$bic</span></code> property of some object
 with regard to the <code class="docutils literal notranslate"><span class="pre">$iban</span></code> property of the same object, use

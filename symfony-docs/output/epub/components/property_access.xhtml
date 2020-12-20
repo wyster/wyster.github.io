@@ -180,10 +180,6 @@ getters, this means that you can do something like this:</p>
 </div>
 <div class="section" id="accessing-a-non-existing-property-path">
 <h3>Accessing a non Existing Property Path</h3>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">disableExceptionOnInvalidPropertyPath()</span></code> method was introduced in
-Symfony 4.3.</p>
-</div>
 <p>By default a <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/PropertyAccess/Exception/NoSuchPropertyException.php" title="Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException"><span class="pre">NoSuchPropertyException</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/PropertyAccess/Exception/NoSuchPropertyException.php]</span></span></code>
 is thrown if the property path passed to <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/PropertyAccess/PropertyAccessor.php" title="Symfony\Component\PropertyAccess\PropertyAccessor::getValue()"><span class="pre">getValue()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/PropertyAccess/PropertyAccessor.php]</span></span></code>
 does not exist. You can change this behavior using the
@@ -207,7 +203,7 @@ method:</p>
 </div>
 </div>
 <div class="section" id="magic-get-method">
-<h3>Magic <code class="docutils literal notranslate"><span class="pre">__get()</span></code> Method</h3>
+<span id="components-property-access-magic-get"></span><h3>Magic <code class="docutils literal notranslate"><span class="pre">__get()</span></code> Method</h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">getValue()</span></code> method can also use the magic <code class="docutils literal notranslate"><span class="pre">__get()</span></code> method:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
 <span class="k">class</span> <span class="nc">Person</span>
@@ -226,6 +222,10 @@ method:</p>
 
 <span class="nb">var_dump</span><span class="p">(</span><span class="nv">$propertyAccessor</span><span class="o">-&gt;</span><span class="na">getValue</span><span class="p">(</span><span class="nv">$person</span><span class="p">,</span> <span class="s1">&#39;Wouter&#39;</span><span class="p">));</span> <span class="c1">// [...]</span>
 </pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The magic <code class="docutils literal notranslate"><span class="pre">__get()</span></code> method can be disabled since in Symfony 5.2.
+see <a class="reference internal" href="#enable-other-features">Enable other Features</a>.</p>
 </div>
 </div>
 <div class="section" id="magic-call-method">
@@ -288,7 +288,7 @@ also write to an array. This can be achieved using the
 </div>
 </div>
 <div class="section" id="writing-to-objects">
-<h2>Writing to Objects</h2>
+<span id="components-property-access-writing-to-objects"></span><h2>Writing to Objects</h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">setValue()</span></code> method has the same features as the <code class="docutils literal notranslate"><span class="pre">getValue()</span></code> method. You
 can use setters, the magic <code class="docutils literal notranslate"><span class="pre">__set()</span></code> method or properties to set values:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
@@ -364,6 +364,10 @@ see <a class="reference internal" href="#enable-other-features">Enable other Fea
 <span class="nb">var_dump</span><span class="p">(</span><span class="nv">$person</span><span class="o">-&gt;</span><span class="na">getWouter</span><span class="p">());</span> <span class="c1">// [...]</span>
 </pre></div>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The magic <code class="docutils literal notranslate"><span class="pre">__set()</span></code> method can be disabled since in Symfony 5.2.
+see <a class="reference internal" href="#enable-other-features">Enable other Features</a>.</p>
+</div>
 <div class="section" id="writing-to-array-properties">
 <h3>Writing to Array Properties</h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">PropertyAccessor</span></code> class allows to update the content of arrays stored in
@@ -404,6 +408,44 @@ For instance, in the previous example, the component looks for the <code class="
 and <code class="docutils literal notranslate"><span class="pre">removeChild()</span></code> methods to access to the <code class="docutils literal notranslate"><span class="pre">children</span></code> property.
 <a class="reference external" href="https://github.com/symfony/inflector">The Inflector component</a><span class="link-target"> [https://github.com/symfony/inflector]</span> is used to find the singular of a property name.</p>
 <p>If available, <em>adder</em> and <em>remover</em> methods have priority over a <em>setter</em> method.</p>
+</div>
+<div class="section" id="using-non-standard-adder-remover-methods">
+<h3>Using non-standard adder/remover methods</h3>
+<p>Sometimes, adder and remover methods don’t use the standard <code class="docutils literal notranslate"><span class="pre">add</span></code> or <code class="docutils literal notranslate"><span class="pre">remove</span></code> prefix, like in this example:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">PeopleList</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">joinPeople</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$people</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">peoples</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$people</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">leavePeople</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$people</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">peoples</span> <span class="k">as</span> <span class="nv">$id</span> <span class="o">=&gt;</span> <span class="nv">$item</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$people</span> <span class="o">===</span> <span class="nv">$item</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nb">unset</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">peoples</span><span class="p">[</span><span class="nv">$id</span><span class="p">]);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\PropertyAccess\PropertyAccessor</span><span class="p">;</span>
+
+<span class="nv">$list</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PeopleList</span><span class="p">();</span>
+<span class="nv">$reflectionExtractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ReflectionExtractor</span><span class="p">(</span><span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;join&#39;</span><span class="p">,</span> <span class="s1">&#39;leave&#39;</span><span class="p">]);</span>
+<span class="nv">$propertyAccessor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PropertyAccessor</span><span class="p">(</span><span class="k">false</span><span class="p">,</span> <span class="k">false</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">true</span><span class="p">,</span> <span class="nv">$reflectionExtractor</span><span class="p">,</span> <span class="nv">$reflectionExtractor</span><span class="p">);</span>
+<span class="nv">$propertyAccessor</span><span class="o">-&gt;</span><span class="na">setValue</span><span class="p">(</span><span class="nv">$person</span><span class="p">,</span> <span class="s1">&#39;peoples&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;kevin&#39;</span><span class="p">,</span> <span class="s1">&#39;wouter&#39;</span><span class="p">]);</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$person</span><span class="o">-&gt;</span><span class="na">getPeoples</span><span class="p">());</span> <span class="c1">// [&#39;kevin&#39;, &#39;wouter&#39;]</span>
+</pre></div>
+</div>
+<p>Instead of calling <code class="docutils literal notranslate"><span class="pre">add&lt;SingularOfThePropertyName&gt;()</span></code> and <code class="docutils literal notranslate"><span class="pre">remove&lt;SingularOfThePropertyName&gt;()</span></code>, the PropertyAccess
+component will call <code class="docutils literal notranslate"><span class="pre">join&lt;SingularOfThePropertyName&gt;()</span></code> and <code class="docutils literal notranslate"><span class="pre">leave&lt;SingularOfThePropertyName&gt;()</span></code> methods.</p>
 </div>
 </div>
 <div class="section" id="checking-property-paths">
@@ -470,14 +512,20 @@ configured to enable extra features. To do that you could use the
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
 <span class="nv">$propertyAccessorBuilder</span> <span class="o">=</span> <span class="nx">PropertyAccess</span><span class="o">::</span><span class="na">createPropertyAccessorBuilder</span><span class="p">();</span>
 
-<span class="c1">// enables magic __call</span>
-<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">enableMagicCall</span><span class="p">();</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">enableMagicCall</span><span class="p">();</span> <span class="c1">// enables magic __call</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">enableMagicGet</span><span class="p">();</span> <span class="c1">// enables magic __get</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">enableMagicSet</span><span class="p">();</span> <span class="c1">// enables magic __set</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">enableMagicMethods</span><span class="p">();</span> <span class="c1">// enables magic __get, __set and __call</span>
 
-<span class="c1">// disables magic __call</span>
-<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">disableMagicCall</span><span class="p">();</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">disableMagicCall</span><span class="p">();</span> <span class="c1">// disables magic __call</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">disableMagicGet</span><span class="p">();</span> <span class="c1">// disables magic __get</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">disableMagicSet</span><span class="p">();</span> <span class="c1">// disables magic __set</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">disableMagicMethods</span><span class="p">();</span> <span class="c1">// disables magic __get, __set and __call</span>
 
-<span class="c1">// checks if magic __call handling is enabled</span>
+<span class="c1">// checks if magic __call, __get or __set handling are enabled</span>
 <span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">isMagicCallEnabled</span><span class="p">();</span> <span class="c1">// true or false</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">isMagicGetEnabled</span><span class="p">();</span> <span class="c1">// true or false</span>
+<span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">isMagicSetEnabled</span><span class="p">();</span> <span class="c1">// true or false</span>
 
 <span class="c1">// At the end get the configured property accessor</span>
 <span class="nv">$propertyAccessor</span> <span class="o">=</span> <span class="nv">$propertyAccessorBuilder</span><span class="o">-&gt;</span><span class="na">getPropertyAccessor</span><span class="p">();</span>
@@ -489,8 +537,8 @@ configured to enable extra features. To do that you could use the
 </pre></div>
 </div>
 <p>Or you can pass parameters directly to the constructor (not the recommended way):</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
-<span class="nv">$propertyAccessor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PropertyAccessor</span><span class="p">(</span><span class="k">true</span><span class="p">);</span> <span class="c1">// this enables handling of magic __call</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// enable handling of magic __call, __set but not __get:</span>
+<span class="nv">$propertyAccessor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PropertyAccessor</span><span class="p">(</span><span class="nx">PropertyAccessor</span><span class="o">::</span><span class="na">MAGIC_CALL</span> <span class="o">|</span> <span class="nx">PropertyAccessor</span><span class="o">::</span><span class="na">MAGIC_SET</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -182,7 +184,10 @@
 <li class="toctree-l2"><a class="reference internal" href="property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="security.html">The Security Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="serializer.html">The Serializer Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="string.html">The String Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_exporter.html">The VarExporter Component</a></li>
@@ -334,14 +339,9 @@ middleware stack. The component comes with a set of middleware that you can use.
 <p>When using the message bus with Symfony’s FrameworkBundle, the following middleware
 are configured for you:</p>
 <ol class="arabic simple">
-<li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Messenger/Middleware/LoggingMiddleware.php" title="Symfony\Component\Messenger\Middleware\LoggingMiddleware"><span class="pre">LoggingMiddleware</span></a></code> (logs the processing of your messages)</li>
-<li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Messenger/Middleware/SendMessageMiddleware.php" title="Symfony\Component\Messenger\Middleware\SendMessageMiddleware"><span class="pre">SendMessageMiddleware</span></a></code> (enables asynchronous processing)</li>
+<li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Messenger/Middleware/SendMessageMiddleware.php" title="Symfony\Component\Messenger\Middleware\SendMessageMiddleware"><span class="pre">SendMessageMiddleware</span></a></code> (enables asynchronous processing, logs the processing of your messages if you pass a logger)</li>
 <li><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Messenger/Middleware/HandleMessageMiddleware.php" title="Symfony\Component\Messenger\Middleware\HandleMessageMiddleware"><span class="pre">HandleMessageMiddleware</span></a></code> (calls the registered handler(s))</li>
 </ol>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">LoggingMiddleware</span></code> is deprecated since Symfony 4.3 and will be
-removed in 5.0. Pass a logger to <code class="docutils literal notranslate"><span class="pre">SendMessageMiddleware</span></code> instead.</p>
-</div>
 <p>Example:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Message\MyMessage</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">App\MessageHandler\MyMessageHandler</span><span class="p">;</span>
@@ -578,11 +578,6 @@ do is to write your own CSV receiver:</p>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>In Symfony 4.3, the <code class="docutils literal notranslate"><span class="pre">ReceiverInterface</span></code> has changed its methods as shown
-in the example above. You may need to update your code if you used this
-interface in previous Symfony versions.</p>
 </div>
 </div>
 <div class="section" id="receiver-and-sender-on-the-same-bus">

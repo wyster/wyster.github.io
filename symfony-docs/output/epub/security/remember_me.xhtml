@@ -78,13 +78,17 @@ the session lasts using a cookie with the <code class="docutils literal notransl
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+25
+26
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -149,7 +153,7 @@ the session lasts using a cookie with the <code class="docutils literal notransl
 </ul>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">remember_me</span></code> firewall defines the following configuration options:</p>
-<dl class="simple">
+<dl>
 <dt><code class="docutils literal notranslate"><span class="pre">secret</span></code> (<strong>required</strong>)</dt>
 <dd><p>The value used to encrypt the cookie’s content. It’s common to use the
 <code class="docutils literal notranslate"><span class="pre">secret</span></code> value defined in the <code class="docutils literal notranslate"><span class="pre">APP_SECRET</span></code> environment variable.</p>
@@ -200,6 +204,13 @@ end user.</p>
 <dd><p>Defines the service id of a token provider to use. If you want to store tokens
 in the database, see <a class="reference internal" href="#remember-me-token-in-database"><span class="std std-ref">Storing Remember Me Tokens in the Database</span></a>.</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">service</span></code> (default value: <code class="docutils literal notranslate"><span class="pre">null</span></code>)</dt>
+<dd><p>Defines the ID of the service used to handle the Remember Me feature. It’s
+useful if you need to overwrite the current behavior entirely.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">service</span></code> option was introduced in Symfony 5.1.</p>
+</div>
+</dd>
 </dl>
 <div class="section" id="forcing-the-user-to-opt-out-of-the-remember-me-feature">
 <h2>Forcing the User to Opt-Out of the Remember Me Feature</h2>
@@ -240,7 +251,8 @@ to access protected resources as if the user had actually authenticated upon
 visiting the site.</p>
 <p>In some cases, however, you may want to force the user to actually re-authenticate
 before accessing certain resources. For example, you might not allow “remember me”
-users to change their password. You can do this by leveraging a few special “roles”:</p>
+users to change their password. You can do this by leveraging a few special
+“attributes”:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Controller/AccountController.php</span>
 <span class="c1">// ...</span>
 
@@ -263,6 +275,14 @@ users to change their password. You can do this by leveraging a few special “r
     <span class="c1">// ...</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>There is also a <code class="docutils literal notranslate"><span class="pre">IS_REMEMBERED</span></code> attribute that grants <em>only</em> when the
+user is authenticated via the remember me mechanism.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">IS_REMEMBERED</span></code> attribute was introduced in Symfony 5.1.</p>
 </div>
 </div>
 <div class="section" id="storing-remember-me-tokens-in-the-database">
@@ -425,13 +445,17 @@ service you created before:</p>
 17
 18
 19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>

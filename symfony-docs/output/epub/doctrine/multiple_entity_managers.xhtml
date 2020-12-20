@@ -343,8 +343,8 @@ for each entity manager, but you are free to define the same connection for both
 explicit about which configuration you want. If you <em>do</em> omit the name of
 the connection or entity manager, the default (i.e. <code class="docutils literal notranslate"><span class="pre">default</span></code>) is used.</p>
 <p>If you use a different name than <code class="docutils literal notranslate"><span class="pre">default</span></code> for the default entity manager,
-you will need to redefine the default entity manager in <code class="docutils literal notranslate"><span class="pre">prod</span></code> environment
-configuration too:</p>
+you will need to redefine the default entity manager in the <code class="docutils literal notranslate"><span class="pre">prod</span></code> environment
+configuration and in the Doctrine migrations configuration (if you use that):</p>
 <div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -356,6 +356,15 @@ configuration too:</p>
         <span class="l l-Scalar l-Scalar-Plain">default_entity_manager</span><span class="p p-Indicator">:</span> <span class="s">&#39;your</span><span class="nv"> </span><span class="s">default</span><span class="nv"> </span><span class="s">entity</span><span class="nv"> </span><span class="s">manager</span><span class="nv"> </span><span class="s">name&#39;</span>
 
 <span class="c1"># ...</span>
+</pre></div>
+</td></tr></table></div>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/doctrine_migrations.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">doctrine_migrations</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+    <span class="l l-Scalar l-Scalar-Plain">em</span><span class="p p-Indicator">:</span> <span class="s">&#39;your</span><span class="nv"> </span><span class="s">default</span><span class="nv"> </span><span class="s">entity</span><span class="nv"> </span><span class="s">manager</span><span class="nv"> </span><span class="s">name&#39;</span>
 </pre></div>
 </td></tr></table></div>
 </div>

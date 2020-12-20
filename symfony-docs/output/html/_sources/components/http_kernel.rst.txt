@@ -65,8 +65,8 @@ that system::
          */
         public function handle(
             Request $request,
-            $type = self::MASTER_REQUEST,
-            $catch = true
+            int $type = self::MASTER_REQUEST,
+            bool $catch = true
         );
     }
 
@@ -530,22 +530,10 @@ object, which you can use to access the original exception via the
 method. A typical listener on this event will check for a certain type of
 exception and create an appropriate error ``Response``.
 
-.. versionadded:: 4.4
-
-    The :method:`Symfony\\Component\\HttpKernel\\Event\\ExceptionEvent::getThrowable` and
-    :method:`Symfony\\Component\\HttpKernel\\Event\\ExceptionEvent::setThrowable` methods
-    were introduced in Symfony 4.4.
-
-.. deprecated:: 4.4
-
-    The :method:`Symfony\\Component\\HttpKernel\\Event\\ExceptionEvent::getException` and
-    :method:`Symfony\\Component\\HttpKernel\\Event\\ExceptionEvent::setException` methods
-    are deprecated since Symfony 4.4.
-
 For example, to generate a 404 page, you might throw a special type of exception
 and then add a listener on this event that looks for this exception and
 creates and returns a 404 ``Response``. In fact, the HttpKernel component
-comes with an :class:`Symfony\\Component\\HttpKernel\\EventListener\\ExceptionListener`,
+comes with an :class:`Symfony\\Component\\HttpKernel\\EventListener\\ErrorListener`,
 which if you choose to use, will do this and more by default (see the sidebar
 below for more details).
 
@@ -559,10 +547,10 @@ below for more details).
     There are two main listeners to ``kernel.exception`` when using the
     Symfony Framework.
 
-    **ExceptionListener in the HttpKernel Component**
+    **ErrorListener in the HttpKernel Component**
 
     The first comes core to the HttpKernel component
-    and is called :class:`Symfony\\Component\\HttpKernel\\EventListener\\ExceptionListener`.
+    and is called :class:`Symfony\\Component\\HttpKernel\\EventListener\\ErrorListener`.
     The listener has several goals:
 
     1) The thrown exception is converted into a
@@ -626,19 +614,6 @@ kernel.finish_request        ``KernelEvents::FINISH_REQUEST``        :class:`Sym
 kernel.terminate             ``KernelEvents::TERMINATE``             :class:`Symfony\\Component\\HttpKernel\\Event\\TerminateEvent`
 kernel.exception             ``KernelEvents::EXCEPTION``             :class:`Symfony\\Component\\HttpKernel\\Event\\ExceptionEvent`
 ===========================  ======================================  ========================================================================
-
-.. deprecated:: 4.3
-
-    Since Symfony 4.3, most of the event classes were renamed.
-    The following old classes were deprecated:
-
-    * `GetResponseEvent` renamed to :class:`Symfony\\Component\\HttpKernel\\Event\\RequestEvent`
-    * `FilterControllerEvent` renamed to :class:`Symfony\\Component\\HttpKernel\\Event\\ControllerEvent`
-    * `FilterControllerArgumentsEvent` renamed to :class:`Symfony\\Component\\HttpKernel\\Event\\ControllerArgumentsEvent`
-    * `GetResponseForControllerResultEvent` renamed to :class:`Symfony\\Component\\HttpKernel\\Event\\ViewEvent`
-    * `FilterResponseEvent` renamed to :class:`Symfony\\Component\\HttpKernel\\Event\\ResponseEvent`
-    * `PostResponseEvent` renamed to :class:`Symfony\\Component\\HttpKernel\\Event\\TerminateEvent`
-    * `GetResponseForExceptionEvent` renamed to :class:`Symfony\\Component\\HttpKernel\\Event\\ExceptionEvent`
 
 .. _http-kernel-working-example:
 

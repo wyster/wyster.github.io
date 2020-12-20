@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -141,8 +141,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -259,7 +261,7 @@ that adds two convenient methods to lock and release commands:</p>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">lock</span><span class="p">())</span> <span class="p">{</span>
             <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;The command is already running in another process.&#39;</span><span class="p">);</span>
 
-            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
         <span class="p">}</span>
 
         <span class="c1">// If you prefer to wait until the lock is released, use this:</span>
@@ -271,10 +273,13 @@ that adds two convenient methods to lock and release commands:</p>
         <span class="c1">// automatically when the execution of the command ends</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">release</span><span class="p">();</span>
 
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">Command</span><span class="o">:</span><span class="nx">SUCCESS</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">Command::SUCCESS</span></code> constant was introduced in Symfony 5.1.</p>
 </div>
 </div>
 

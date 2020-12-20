@@ -58,7 +58,7 @@ Most of the time, that's exactly what you want to do. But sometimes,
 you might want to decorate the old one instead (i.e. apply the `Decorator pattern`_).
 In this case, the old service should be kept around to be able to reference
 it in the new one. This configuration replaces ``App\Mailer`` with a new one,
-but keeps a reference of the old one as ``App\DecoratingMailer.inner``:
+but keeps a reference of the old one as ``.inner``:
 
 .. configuration-block::
 
@@ -70,7 +70,7 @@ but keeps a reference of the old one as ``App\DecoratingMailer.inner``:
 
             App\DecoratingMailer:
                 # overrides the App\Mailer service
-                # but that service is still available as App\DecoratingMailer.inner
+                # but that service is still available as ".inner"
                 decorates: App\Mailer
 
     .. code-block:: xml
@@ -84,6 +84,8 @@ but keeps a reference of the old one as ``App\DecoratingMailer.inner``:
             <services>
                 <service id="App\Mailer"/>
 
+                <!-- overrides the App\Mailer service
+                     but that service is still available as ".inner" -->
                 <service id="App\DecoratingMailer"
                     decorates="App\Mailer"
                 />
@@ -106,7 +108,7 @@ but keeps a reference of the old one as ``App\DecoratingMailer.inner``:
 
             $services->set(DecoratingMailer::class)
                 // overrides the App\Mailer service
-                // but that service is still available as App\DecoratingMailer.inner
+                // but that service is still available as ".inner"
                 ->decorate(Mailer::class);
         };
 
@@ -119,7 +121,7 @@ decorating service has one argument type-hinted with the decorated service class
 If you are not using autowiring or the decorating service has more than one
 constructor argument type-hinted with the decorated service class, you must
 inject the decorated service explicitly (the ID of the decorated service is
-automatically changed to ``decorating_service_id + '.inner'``):
+automatically changed to ``'.inner'``):
 
 .. configuration-block::
 
@@ -132,7 +134,7 @@ automatically changed to ``decorating_service_id + '.inner'``):
             App\DecoratingMailer:
                 decorates: App\Mailer
                 # pass the old service as an argument
-                arguments: ['@App\DecoratingMailer.inner']
+                arguments: ['@.inner']
 
     .. code-block:: xml
 
@@ -149,7 +151,7 @@ automatically changed to ``decorating_service_id + '.inner'``):
                     decorates="App\Mailer"
                 >
                     <!-- pass the old service as an argument -->
-                    <argument type="service" id="App\DecoratingMailer.inner"/>
+                    <argument type="service" id=".inner"/>
                 </service>
             </services>
         </container>
@@ -170,8 +172,14 @@ automatically changed to ``decorating_service_id + '.inner'``):
             $services->set(DecoratingMailer::class)
                 ->decorate(Mailer::class)
                 // pass the old service as an argument
-                ->args([ref(DecoratingMailer::class.'.inner')]);
+                // In versions earlier to Symfony 5.1 the service() function was called ref()
+                ->args([service('.inner')]);
         };
+
+.. versionadded:: 5.1
+
+    The special ``.inner`` value was introduced in Symfony 5.1. In previous
+    versions you needed to use: ``decorating_service_id + '.inner'``.
 
 .. tip::
 
@@ -235,7 +243,7 @@ automatically changed to ``decorating_service_id + '.inner'``):
 
                 $services->set(DecoratingMailer::class)
                     ->decorate(Mailer::class, DecoratingMailer::class.'.wooz')
-                    ->args([ref(DecoratingMailer::class.'.wooz')]);
+                    ->args([service(DecoratingMailer::class.'.wooz')]);
             };
 
 Decoration Priority
@@ -255,12 +263,12 @@ the ``decoration_priority`` option. Its value is an integer that defaults to
         Bar:
             decorates: Foo
             decoration_priority: 5
-            arguments: ['@Bar.inner']
+            arguments: ['@.inner']
 
         Baz:
             decorates: Foo
             decoration_priority: 1
-            arguments: ['@Baz.inner']
+            arguments: ['@.inner']
 
     .. code-block:: xml
 
@@ -275,11 +283,11 @@ the ``decoration_priority`` option. Its value is an integer that defaults to
                 <service id="Foo"/>
 
                 <service id="Bar" decorates="Foo" decoration-priority="5">
-                    <argument type="service" id="Bar.inner"/>
+                    <argument type="service" id=".inner"/>
                 </service>
 
                 <service id="Baz" decorates="Foo" decoration-priority="1">
-                    <argument type="service" id="Baz.inner"/>
+                    <argument type="service" id=".inner"/>
                 </service>
             </services>
         </container>
@@ -296,11 +304,11 @@ the ``decoration_priority`` option. Its value is an integer that defaults to
 
             $services->set(Bar::class)
                 ->decorate(Foo::class, null, 5)
-                ->args([ref(Bar::class.'.inner')]);
+                ->args([service('.inner')]);
 
             $services->set(Baz::class)
                 ->decorate(Foo::class, null, 1)
-                ->args([ref(Baz::class.'.inner')]);
+                ->args([service('.inner')]);
         };
 
 
@@ -310,11 +318,6 @@ The generated code will be the following::
 
 Control the Behavior When the Decorated Service Does Not Exist
 --------------------------------------------------------------
-
-.. versionadded:: 4.4
-
-    The ``decoration_on_invalid`` option has been introduced in Symfony 4.4.
-    In previous versions, a ``ServiceNotFoundException`` was always thrown.
 
 When you decorate a service that doesn't exist, the ``decoration_on_invalid``
 option allows you to choose the behavior to adopt.
@@ -335,7 +338,7 @@ Three different behaviors are available:
         Bar:
             decorates: Foo
             decoration_on_invalid: ignore
-            arguments: ['@Bar.inner']
+            arguments: ['@.inner']
 
     .. code-block:: xml
 
@@ -350,7 +353,7 @@ Three different behaviors are available:
                 <service id="Foo"/>
 
                 <service id="Bar" decorates="Foo" decoration-on-invalid="ignore">
-                    <argument type="service" id="Bar.inner"/>
+                    <argument type="service" id=".inner"/>
                 </service>
             </services>
         </container>
@@ -369,7 +372,7 @@ Three different behaviors are available:
 
             $services->set(Bar::class)
                 ->decorate(Foo::class, null, 0, ContainerInterface::IGNORE_ON_INVALID_REFERENCE)
-                ->args([ref(Bar::class.'.inner')])
+                ->args([service('.inner')])
             ;
         };
 

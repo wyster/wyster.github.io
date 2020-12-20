@@ -447,9 +447,6 @@ in parent classes use <code class="docutils literal notranslate"><a class="refer
 This way, the <code class="docutils literal notranslate"><span class="pre">$value</span></code> argument will receive the previously normalized
 value, otherwise you can prepend the new normalizer by passing <code class="docutils literal notranslate"><span class="pre">true</span></code> as
 third argument.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">addNormalizer()</span></code> method was introduced in Symfony 4.3.</p>
-</div>
 </div>
 <div class="section" id="default-values-that-depend-on-another-option">
 <h3>Default Values that Depend on another Option</h3>
@@ -728,17 +725,29 @@ an array of values to resolve it at runtime.</p>
 </div>
 <div class="section" id="deprecating-the-option">
 <h3>Deprecating the Option</h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The signature of the <code class="docutils literal notranslate"><span class="pre">setDeprecated()</span></code> method changed from
+<code class="docutils literal notranslate"><span class="pre">setDeprecated(string</span> <span class="pre">$option,</span> <span class="pre">?string</span> <span class="pre">$message)</span></code> to
+<code class="docutils literal notranslate"><span class="pre">setDeprecated(string</span> <span class="pre">$option,</span> <span class="pre">string</span> <span class="pre">$package,</span> <span class="pre">string</span> <span class="pre">$version,</span> <span class="pre">$message)</span></code>
+in Symfony 5.1.</p>
+</div>
 <p>Once an option is outdated or you decided not to maintain it anymore, you can
 deprecate it using the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/OptionsResolver/OptionsResolver.php" title="Symfony\Component\OptionsResolver\OptionsResolver::setDeprecated()"><span class="pre">setDeprecated()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/OptionsResolver/OptionsResolver.php]</span></span></code>
 method:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$resolver</span>
     <span class="o">-&gt;</span><span class="na">setDefined</span><span class="p">([</span><span class="s1">&#39;hostname&#39;</span><span class="p">,</span> <span class="s1">&#39;host&#39;</span><span class="p">])</span>
-    <span class="c1">// this outputs the following generic deprecation message:</span>
-    <span class="c1">// The option &quot;hostname&quot; is deprecated.</span>
-    <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span><span class="s1">&#39;hostname&#39;</span><span class="p">)</span>
 
-    <span class="c1">// you can also pass a custom deprecation message</span>
-    <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span><span class="s1">&#39;hostname&#39;</span><span class="p">,</span> <span class="s1">&#39;The option &quot;hostname&quot; is deprecated, use &quot;host&quot; instead.&#39;</span><span class="p">)</span>
+    <span class="c1">// this outputs the following generic deprecation message:</span>
+    <span class="c1">// Since acme/package 1.2: The option &quot;hostname&quot; is deprecated.</span>
+    <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span><span class="s1">&#39;hostname&#39;</span><span class="p">,</span> <span class="s1">&#39;acme/package&#39;</span><span class="p">,</span> <span class="s1">&#39;1.2&#39;</span><span class="p">)</span>
+
+    <span class="c1">// you can also pass a custom deprecation message (%name% placeholder is available)</span>
+    <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span>
+        <span class="s1">&#39;hostname&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;acme/package&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;1.2&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;The option &quot;hostname&quot; is deprecated, use &quot;host&quot; instead.&#39;</span>
+    <span class="p">)</span>
 <span class="p">;</span>
 </pre></div>
 </div>
@@ -763,7 +772,7 @@ the option:</p>
     <span class="o">-&gt;</span><span class="na">setDefault</span><span class="p">(</span><span class="s1">&#39;encryption&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">)</span>
     <span class="o">-&gt;</span><span class="na">setDefault</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">)</span>
     <span class="o">-&gt;</span><span class="na">setAllowedTypes</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;null&#39;</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">])</span>
-    <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nx">Options</span> <span class="nv">$options</span><span class="p">,</span> <span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="s1">&#39;acme/package&#39;</span><span class="p">,</span> <span class="s1">&#39;1.2&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nx">Options</span> <span class="nv">$options</span><span class="p">,</span> <span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="k">null</span> <span class="o">===</span> <span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">return</span> <span class="s1">&#39;Passing &quot;null&quot; to option &quot;port&quot; is deprecated, pass an integer instead.&#39;</span><span class="p">;</span>
         <span class="p">}</span>
@@ -785,6 +794,39 @@ by the user.</p>
 </div>
 <p>This closure receives as argument the value of the option after validating it
 and before normalizing it when the option is being resolved.</p>
+</div>
+<div class="section" id="chaining-option-configurations">
+<h3>Chaining Option Configurations</h3>
+<p>In many cases you may need to define multiple configurations for each option.
+For example, suppose the <code class="docutils literal notranslate"><span class="pre">InvoiceMailer</span></code> class has an <code class="docutils literal notranslate"><span class="pre">host</span></code> option that is required
+and a <code class="docutils literal notranslate"><span class="pre">transport</span></code> option which can be one of <code class="docutils literal notranslate"><span class="pre">sendmail</span></code>, <code class="docutils literal notranslate"><span class="pre">mail</span></code> and <code class="docutils literal notranslate"><span class="pre">smtp</span></code>.
+You can improve the readability of the code avoiding to duplicate option name for
+each configuration using the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/OptionsResolver/OptionsResolver.php" title="Symfony\Component\OptionsResolver\OptionsResolver::define()"><span class="pre">define()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/OptionsResolver/OptionsResolver.php]</span></span></code>
+method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">InvoiceMailer</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">configureOptions</span><span class="p">(</span><span class="nx">OptionsResolver</span> <span class="nv">$resolver</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">define</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">required</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">default</span><span class="p">(</span><span class="s1">&#39;smtp.example.org&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">allowedTypes</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">info</span><span class="p">(</span><span class="s1">&#39;The IP address or hostname&#39;</span><span class="p">);</span>
+
+        <span class="nv">$resolver</span><span class="o">-&gt;</span><span class="na">define</span><span class="p">(</span><span class="s1">&#39;transport&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">required</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">default</span><span class="p">(</span><span class="s1">&#39;transport&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">allowedValues</span><span class="p">([</span><span class="s1">&#39;sendmail&#39;</span><span class="p">,</span> <span class="s1">&#39;mail&#39;</span><span class="p">,</span> <span class="s1">&#39;smtp&#39;</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">define()</span></code> and <code class="docutils literal notranslate"><span class="pre">info()</span></code> methods were introduced in Symfony 5.1.</p>
+</div>
 </div>
 <div class="section" id="performance-tweaks">
 <h3>Performance Tweaks</h3>

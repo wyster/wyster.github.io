@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -161,7 +163,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../security.html">The Security Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../serializer.html">The Serializer Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../string.html">The String Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../var_exporter.html">The VarExporter Component</a></li>
@@ -380,9 +385,14 @@ won’t appear in the resulting PHP strings.</p>
 </td></tr></table></div>
 <div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># an octal</span>
-<span class="l l-Scalar l-Scalar-Plain">014</span>
+<span class="l l-Scalar l-Scalar-Plain">0o14</span>
 </pre></div>
 </td></tr></table></div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 5.1: </span>In YAML 1.1, octal numbers use the notation <code class="docutils literal notranslate"><span class="pre">0...</span></code>, whereas in YAML 1.2
+the notation changes to <code class="docutils literal notranslate"><span class="pre">0o...</span></code>. Symfony 5.1 added support for YAML 1.2
+notation and deprecated support for YAML 1.1 notation.</p>
+</div>
 <div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># an hexadecimal</span>
 <span class="l l-Scalar l-Scalar-Plain">0xC</span>

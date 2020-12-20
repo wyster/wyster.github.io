@@ -28,6 +28,25 @@ allowing for hot module reloading.</p>
 <code class="docutils literal notranslate"><span class="pre">encore_entry_script_tags()</span></code> and <code class="docutils literal notranslate"><span class="pre">encore_entry_link_tags()</span></code> Twig shortcuts (or are
 <a class="reference internal" href="versioning.xhtml#load-manifest-files"><span class="std std-ref">processing your assets through entrypoints.json</span></a> in some other way),
 you’re done: the paths in your templates will automatically point to the dev server.</p>
+<div class="section" id="enabling-https-using-the-symfony-web-server">
+<h2>Enabling HTTPS using the Symfony Web Server</h2>
+<p>If you’re using the <a class="reference internal" href="../../setup/symfony_server.xhtml"><span class="doc">Symfony web server</span></a> locally with HTTPS,
+you’ll need to also tell the dev-server to use HTTPS. To do this, you can reuse the Symfony web
+server SSL certificate:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Unix-based systems</span>
+<span class="gp">$</span> yarn dev-server --https --pfx<span class="o">=</span><span class="nv">$HOME</span>/.symfony/certs/default.p12
+
+<span class="c1"># Windows</span>
+<span class="gp">$</span> encore dev-server --https --pfx<span class="o">=</span>%UserProfile%<span class="se">\.</span>symfony<span class="se">\c</span>erts<span class="se">\d</span>efault.p12
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="dev-server-options">
+<h2>dev-server Options</h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">dev-server</span></code> command supports all the options defined by <a class="reference external" href="https://webpack.js.org/configuration/dev-server/">webpack-dev-server</a><span class="link-target"> [https://webpack.js.org/configuration/dev-server/]</span>.
 You can set these options via command line options:</p>
 <div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> yarn encore dev-server --https --port <span class="m">9000</span>
@@ -64,6 +83,7 @@ method in your <code class="docutils literal notranslate"><span class="pre">webp
 </td></tr></table></div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.28.4: </span>The <code class="docutils literal notranslate"><span class="pre">Encore.configureDevServerOptions()</span></code> method was introduced in Encore 0.28.4.</p>
+</div>
 </div>
 <div class="section" id="hot-module-replacement-hmr">
 <h2>Hot Module Replacement HMR</h2>

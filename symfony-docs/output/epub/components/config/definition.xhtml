@@ -88,9 +88,6 @@ implements the <code class="docutils literal notranslate"><a class="reference ex
 <span class="p">}</span>
 </pre></div>
 </div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>Not passing the root node name to <code class="docutils literal notranslate"><span class="pre">TreeBuilder</span></code> was deprecated in Symfony 4.2.</p>
-</div>
 </div>
 <div class="section" id="adding-node-definitions-to-the-tree">
 <h2>Adding Node Definitions to the Tree</h2>
@@ -466,6 +463,12 @@ the value is <code class="docutils literal notranslate"><span class="pre">*.</sp
 </div>
 <div class="section" id="deprecating-the-option">
 <h2>Deprecating the Option</h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The signature of the <code class="docutils literal notranslate"><span class="pre">setDeprecated()</span></code> method changed from
+<code class="docutils literal notranslate"><span class="pre">setDeprecated(?string</span> <span class="pre">$message)</span></code> to
+<code class="docutils literal notranslate"><span class="pre">setDeprecated(string</span> <span class="pre">$package,</span> <span class="pre">string</span> <span class="pre">$version,</span> <span class="pre">?string</span> <span class="pre">$message)</span></code>
+in Symfony 5.1.</p>
+</div>
 <p>You can deprecate options using the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Config/Definition/Builder/NodeDefinition.php" title="Symfony\Component\Config\Definition\Builder\NodeDefinition::setDeprecated()"><span class="pre">setDeprecated()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Config/Definition/Builder/NodeDefinition.php]</span></span></code>
 method:</p>
@@ -473,11 +476,15 @@ method:</p>
     <span class="o">-&gt;</span><span class="na">children</span><span class="p">()</span>
         <span class="o">-&gt;</span><span class="na">integerNode</span><span class="p">(</span><span class="s1">&#39;old_option&#39;</span><span class="p">)</span>
             <span class="c1">// this outputs the following generic deprecation message:</span>
-            <span class="c1">// The child node &quot;old_option&quot; at path &quot;...&quot; is deprecated.</span>
-            <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">()</span>
+            <span class="c1">// Since acme/package 1.2: The child node &quot;old_option&quot; at path &quot;...&quot; is deprecated.</span>
+            <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span><span class="s1">&#39;acme/package&#39;</span><span class="p">,</span> <span class="s1">&#39;1.2&#39;</span><span class="p">)</span>
 
             <span class="c1">// you can also pass a custom deprecation message (%node% and %path% placeholders are available):</span>
-            <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span><span class="s1">&#39;The &quot;%node%&quot; option is deprecated. Use &quot;new_config_option&quot; instead.&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span>
+                <span class="s1">&#39;acme/package&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;1.2&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;The &quot;%node%&quot; option is deprecated. Use &quot;new_config_option&quot; instead.&#39;</span>
+            <span class="p">)</span>
         <span class="o">-&gt;</span><span class="na">end</span><span class="p">()</span>
     <span class="o">-&gt;</span><span class="na">end</span><span class="p">()</span>
 <span class="p">;</span>

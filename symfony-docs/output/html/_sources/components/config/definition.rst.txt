@@ -68,10 +68,6 @@ implements the :class:`Symfony\\Component\\Config\\Definition\\ConfigurationInte
         }
     }
 
-.. deprecated:: 4.2
-
-    Not passing the root node name to ``TreeBuilder`` was deprecated in Symfony 4.2.
-
 Adding Node Definitions to the Tree
 -----------------------------------
 
@@ -439,6 +435,13 @@ The following example shows these methods in practice::
 Deprecating the Option
 ----------------------
 
+.. versionadded:: 5.1
+
+    The signature of the ``setDeprecated()`` method changed from
+    ``setDeprecated(?string $message)`` to
+    ``setDeprecated(string $package, string $version, ?string $message)``
+    in Symfony 5.1.
+
 You can deprecate options using the
 :method:`Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::setDeprecated`
 method::
@@ -447,11 +450,15 @@ method::
         ->children()
             ->integerNode('old_option')
                 // this outputs the following generic deprecation message:
-                // The child node "old_option" at path "..." is deprecated.
-                ->setDeprecated()
+                // Since acme/package 1.2: The child node "old_option" at path "..." is deprecated.
+                ->setDeprecated('acme/package', '1.2')
 
                 // you can also pass a custom deprecation message (%node% and %path% placeholders are available):
-                ->setDeprecated('The "%node%" option is deprecated. Use "new_config_option" instead.')
+                ->setDeprecated(
+                    'acme/package',
+                    '1.2',
+                    'The "%node%" option is deprecated. Use "new_config_option" instead.'
+                )
             ->end()
         ->end()
     ;

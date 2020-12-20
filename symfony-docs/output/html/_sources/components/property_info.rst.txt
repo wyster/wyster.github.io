@@ -293,10 +293,6 @@ string values: ``array``, ``bool``, ``callable``, ``float``, ``int``,
 Constants inside the :class:`Symfony\\Component\\PropertyInfo\\Type`
 class, in the form ``Type::BUILTIN_TYPE_*``, are provided for convenience.
 
-.. versionadded:: 4.4
-
-    Support for typed properties (added in PHP 7.4) was introduced in Symfony 4.4.
-
 ``Type::isNullable()``
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -326,10 +322,6 @@ this returns ``true`` if:
 * The `phpDocumentor`_ annotation is of type "collection" (e.g.
   ``@var SomeClass<DateTime>``, ``@var SomeClass<integer,string>``,
   ``@var Doctrine\Common\Collections\Collection<App\Entity\SomeEntity>``, etc.)
-
-.. versionadded:: 4.2
-
-    The support of phpDocumentor collection types was introduced in Symfony 4.2.
 
 ``Type::getCollectionKeyType()`` & ``Type::getCollectionValueType()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -383,11 +375,6 @@ return and scalar types for PHP 7::
 
     // Initializable information
     $reflectionExtractor->isInitializable($class, $property);
-
-.. versionadded:: 4.1
-
-    The feature to extract the property types from constructor arguments was
-    introduced in Symfony 4.1.
 
 .. note::
 
@@ -447,8 +434,16 @@ with the ``property_info`` service in the Symfony Framework::
     );
     $serializerExtractor = new SerializerExtractor($serializerClassMetadataFactory);
 
-    // List information.
-    $serializerExtractor->getProperties($class);
+    // the `serializer_groups` option must be configured (may be set to null)
+    $serializerExtractor->getProperties($class, ['serializer_groups' => ['mygroup']]);
+   
+If ``serializer_groups`` is set to ``null``, serializer groups metadata won't be
+checked but you will get only the properties considered by the Serializer
+Component (notably the ``@Ignore`` annotation is taken into account).
+
+.. versionadded:: 5.2
+
+    Support for the ``null`` value in ``serializer_groups`` was introduced in Symfony 5.2. 
 
 DoctrineExtractor
 ~~~~~~~~~~~~~~~~~
@@ -503,10 +498,6 @@ service by defining it as a service with one or more of the following
 * ``property_info.access_extractor`` if it provides access information.
 * ``property_info.initializable_extractor`` if it provides initializable information
   (it checks if a property can be initialized through the constructor).
-
-.. versionadded:: 4.2
-
-    The ``property_info.initializable_extractor`` was introduced in Symfony 4.2.
 
 .. _`phpDocumentor Reflection`: https://github.com/phpDocumentor/ReflectionDocBlock
 .. _`phpdocumentor/reflection-docblock`: https://packagist.org/packages/phpdocumentor/reflection-docblock

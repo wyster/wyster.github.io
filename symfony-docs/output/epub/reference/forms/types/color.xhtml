@@ -25,15 +25,26 @@ That’s why it’s not possible to select semi-transparent colors with this
 element.</p>
 <table class="docutils">
 <colgroup>
-<col style="width: 16%" />
-<col style="width: 84%" />
+<col style="width: 28%" />
+<col style="width: 72%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p>Rendered as</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">input</span></code> <code class="docutils literal notranslate"><span class="pre">color</span></code> field (a text box)</p></td>
 </tr>
-<tr class="row-even"><td><p>Inherited
-options</p></td>
+<tr class="row-even"><td><p>Options</p></td>
+<td><ul class="simple">
+<li><p><a class="reference internal" href="#html5">html5</a></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Overridden options</p></td>
+<td><ul class="simple">
+<li><p><a class="reference internal" href="#invalid-message">invalid_message</a></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Inherited options</p></td>
 <td><ul class="simple">
 <li><p><a class="reference internal" href="#attr">attr</a></p></li>
 <li><p><a class="reference internal" href="#data">data</a></p></li>
@@ -54,6 +65,12 @@ options</p></td>
 </ul>
 </td>
 </tr>
+<tr class="row-odd"><td><p>Default invalid message</p></td>
+<td><p>Please select a valid color.</p></td>
+</tr>
+<tr class="row-even"><td><p>Legacy invalid message</p></td>
+<td><p>The value {{ value }} is not valid.</p></td>
+</tr>
 <tr class="row-odd"><td><p>Parent type</p></td>
 <td><p><a class="reference internal" href="text.xhtml"><span class="doc">TextType</span></a></p></td>
 </tr>
@@ -71,6 +88,35 @@ available running this command in your app:</p>
 <span class="gp">$</span> php bin/console debug:form FooType
 </pre></div>
 </td></tr></table></div>
+</div>
+<div class="section" id="field-options">
+<h2>Field Options</h2>
+<div class="section" id="html5">
+<h3>html5</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>This option was introduced in Symfony 5.1.</p>
+</div>
+<p>When this option is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, the form type checks that its value matches
+the <a class="reference external" href="https://www.w3.org/TR/html52/sec-forms.html#color-state-typecolor">HTML5 color format</a><span class="link-target"> [https://www.w3.org/TR/html52/sec-forms.html#color-state-typecolor]</span> (<code class="docutils literal notranslate"><span class="pre">/^#[0-9a-f]{6}$/i</span></code>). If it doesn’t match it,
+you’ll see the following error message: <em>“This value is not a valid HTML5 color”</em>.</p>
+</div>
+</div>
+<div class="section" id="overridden-options">
+<h2>Overridden Options</h2>
+<div class="section" id="invalid-message">
+<h3><code class="docutils literal notranslate"><span class="pre">invalid_message</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">valid</span></code></p>
+<p>This is the validation error message that’s used if the data entered into
+this field doesn’t make sense (i.e. fails validation).</p>
+<p>This might happen, for example, if the user enters a nonsense string into
+a <a class="reference internal" href="time.xhtml"><span class="doc">TimeType</span></a> field that cannot be converted
+into a real time or if the user enters a string (e.g. <code class="docutils literal notranslate"><span class="pre">apple</span></code>) into a
+number field.</p>
+<p>Normal (business logic) validation (such as when setting a minimum length
+for a field) should be set using validation messages with your validation
+rules (<a class="reference internal" href="../../../validation.xhtml#validation-constraint-configuration"><span class="std std-ref">reference</span></a>).</p>
+</div>
 </div>
 <div class="section" id="inherited-options">
 <h2>Inherited Options</h2>
@@ -371,9 +417,6 @@ to render the <a class="reference internal" href="../../../form/form_customizati
 <p class="admonition-title">See also</p>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
 the <a class="reference internal" href="../../../form/form_customization.xhtml#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
 </div>
 </div>
 <div class="section" id="trim">

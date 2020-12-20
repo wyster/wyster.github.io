@@ -45,19 +45,19 @@ Start by creating the class and these methods. Next, you'll learn how to fill ea
 
     class PHPDocTypeGuesser implements FormTypeGuesserInterface
     {
-        public function guessType($class, $property): ?TypeGuess
+        public function guessType(string $class, string $property): ?TypeGuess
         {
         }
 
-        public function guessRequired($class, $property): ?ValueGuess
+        public function guessRequired(string $class, string $property): ?ValueGuess
         {
         }
 
-        public function guessMaxLength($class, $property): ?ValueGuess
+        public function guessMaxLength(string $class, string $property): ?ValueGuess
         {
         }
 
-        public function guessPattern($class, $property): ?ValueGuess
+        public function guessPattern(string $class, string $property): ?ValueGuess
         {
         }
     }
@@ -96,7 +96,7 @@ With this knowledge, you can implement the ``guessType()`` method of the
 
     class PHPDocTypeGuesser implements FormTypeGuesserInterface
     {
-        public function guessType($class, $property): ?TypeGuess
+        public function guessType(string $class, string $property): ?TypeGuess
         {
             $annotations = $this->readPhpDocAnnotations($class, $property);
 

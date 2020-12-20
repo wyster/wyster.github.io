@@ -37,8 +37,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="The Validator Component" href="validator.html" />
-    <link rel="prev" title="UserPassword" href="../reference/constraints/UserPassword.html" /> 
+    <link rel="next" title="The String Component" href="string.html" />
+    <link rel="prev" title="The Semaphore Component" href="semaphore.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -161,6 +163,7 @@
 <li class="toctree-l2"><a class="reference internal" href="property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="security.html">The Security Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">The Serializer Component</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
@@ -171,7 +174,11 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#attributes-groups">Attributes Groups</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#selecting-specific-attributes">Selecting Specific Attributes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ignoring-attributes">Ignoring Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ignoring-attributes">Ignoring Attributes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#option-1-using-ignore-annotation">Option 1: Using <code class="docutils literal notranslate"><span class="pre">&#64;Ignore</span></code> Annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#option-2-using-the-context">Option 2: Using the Context</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#converting-property-names-when-serializing-and-deserializing">Converting Property Names when Serializing and Deserializing</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#camelcase-to-snake-case">CamelCase to snake_case</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#configure-name-conversion-using-metadata">Configure name conversion using metadata</a></li>
@@ -202,6 +209,8 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="string.html">The String Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_exporter.html">The VarExporter Component</a></li>
@@ -498,10 +507,6 @@ normalized data, instead of the denormalizer re-creating them. Note that
 <code class="docutils literal notranslate"><span class="pre">DEEP_OBJECT_TO_POPULATE</span></code> only works for single child objects, but not for
 arrays of objects. Those will still be replaced when present in the normalized
 data.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">AbstractObjectNormalizer::DEEP_OBJECT_TO_POPULATE</span></code> option was
-introduced in Symfony 4.3.</p>
-</div>
 </div>
 </div>
 <div class="section" id="attributes-groups">
@@ -725,9 +730,100 @@ If some serialization groups are set, only attributes allowed by those groups ca
 </div>
 <div class="section" id="ignoring-attributes">
 <h2>Ignoring Attributes<a class="headerlink" href="#ignoring-attributes" title="Permalink to this headline">¶</a></h2>
-<p>As an option, there’s a way to ignore attributes from the origin object.
-To remove those attributes provide an array via the <code class="docutils literal notranslate"><span class="pre">AbstractNormalizer::IGNORED_ATTRIBUTES</span></code>
-key in the <code class="docutils literal notranslate"><span class="pre">context</span></code> parameter of the desired serializer method:</p>
+<p>All attributes are included by default when serializing objects. There are two
+options to ignore some of those attributes.</p>
+<div class="section" id="option-1-using-ignore-annotation">
+<h3>Option 1: Using <code class="docutils literal notranslate"><span class="pre">&#64;Ignore</span></code> Annotation<a class="headerlink" href="#option-1-using-ignore-annotation" title="Permalink to this headline">¶</a></h3>
+<div class="configuration-block">
+<ul class="simple">
+<li><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="nx">App\Model</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Annotation\Ignore</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">MyClass</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$foo</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @Ignore()</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="nv">$bar</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">App\Model\MyClass</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">attributes</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">bar</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">ignore</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+<span class="nt">&lt;serializer</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/serializer-mapping&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/serializer-mapping</span>
+<span class="s">        https://symfony.com/schema/dic/serializer-mapping/serializer-mapping-1.0.xsd&quot;</span>
+<span class="nt">&gt;</span>
+    <span class="nt">&lt;class</span> <span class="na">name=</span><span class="s">&quot;App\Model\MyClass&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">&quot;bar&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;ignore&gt;</span>true<span class="nt">&lt;/ignore&gt;</span>
+        <span class="nt">&lt;/attribute&gt;</span>
+    <span class="nt">&lt;/class&gt;</span>
+<span class="nt">&lt;/serializer&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+</ul>
+</div>
+<p>You can now ignore specific attributes during serialization:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Model\MyClass</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Normalizer\ObjectNormalizer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Serializer</span><span class="p">;</span>
+
+<span class="nv">$obj</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyClass</span><span class="p">();</span>
+<span class="nv">$obj</span><span class="o">-&gt;</span><span class="na">foo</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+<span class="nv">$obj</span><span class="o">-&gt;</span><span class="na">bar</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span><span class="p">;</span>
+
+<span class="nv">$normalizer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ObjectNormalizer</span><span class="p">(</span><span class="nv">$classMetadataFactory</span><span class="p">);</span>
+<span class="nv">$serializer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Serializer</span><span class="p">([</span><span class="nv">$normalizer</span><span class="p">]);</span>
+
+<span class="nv">$data</span> <span class="o">=</span> <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">normalize</span><span class="p">(</span><span class="nv">$obj</span><span class="p">);</span>
+<span class="c1">// $data = [&#39;foo&#39; =&gt; &#39;foo&#39;];</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="option-2-using-the-context">
+<h3>Option 2: Using the Context<a class="headerlink" href="#option-2-using-the-context" title="Permalink to this headline">¶</a></h3>
+<p>Pass an array with the names of the attributes to ignore using the
+<code class="docutils literal notranslate"><span class="pre">AbstractNormalizer::IGNORED_ATTRIBUTES</span></code> key in the <code class="docutils literal notranslate"><span class="pre">context</span></code> of the
+serializer method:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Acme\Person</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Encoder\JsonEncoder</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Normalizer\AbstractNormalizer</span><span class="p">;</span>
@@ -745,10 +841,6 @@ key in the <code class="docutils literal notranslate"><span class="pre">context<
 <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$person</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="p">[</span><span class="nx">AbstractNormalizer</span><span class="o">::</span><span class="na">IGNORED_ATTRIBUTES</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]]);</span> <span class="c1">// Output: {&quot;name&quot;:&quot;foo&quot;}</span>
 </pre></div>
 </div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/AbstractNormalizer.php" title="Symfony\Component\Serializer\Normalizer\AbstractNormalizer::setIgnoredAttributes()"><span class="pre">setIgnoredAttributes()</span></a></code>
-method that was used as an alternative to the <code class="docutils literal notranslate"><span class="pre">AbstractNormalizer::IGNORED_ATTRIBUTES</span></code> option
-was deprecated in Symfony 4.2.</p>
 </div>
 </div>
 <div class="section" id="converting-property-names-when-serializing-and-deserializing">
@@ -775,12 +867,12 @@ the following:</p>
 
 <span class="k">class</span> <span class="nc">OrgPrefixNameConverter</span> <span class="k">implements</span> <span class="nx">NameConverterInterface</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">normalize</span><span class="p">(</span><span class="nv">$propertyName</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">normalize</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$propertyName</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="s1">&#39;org_&#39;</span><span class="o">.</span><span class="nv">$propertyName</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">denormalize</span><span class="p">(</span><span class="nv">$propertyName</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">denormalize</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$propertyName</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="c1">// removes &#39;org_&#39; prefix</span>
         <span class="k">return</span> <span class="s1">&#39;org_&#39;</span> <span class="o">===</span> <span class="nb">substr</span><span class="p">(</span><span class="nv">$propertyName</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">?</span> <span class="nb">substr</span><span class="p">(</span><span class="nv">$propertyName</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">:</span> <span class="nv">$propertyName</span><span class="p">;</span>
@@ -970,11 +1062,6 @@ and <code class="docutils literal notranslate"><span class="pre">remove</span></
 </div>
 <div class="section" id="using-callbacks-to-serialize-properties-with-object-instances">
 <h2>Using Callbacks to Serialize Properties with Object Instances<a class="headerlink" href="#using-callbacks-to-serialize-properties-with-object-instances" title="Permalink to this headline">¶</a></h2>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/AbstractNormalizer.php" title="Symfony\Component\Serializer\Normalizer\AbstractNormalizer::setCallbacks()"><span class="pre">setCallbacks()</span></a></code>
-method is deprecated since Symfony 4.2. Use the <code class="docutils literal notranslate"><span class="pre">callbacks</span></code>
-key of the context instead.</p>
-</div>
 <p>When serializing, you can set a callback to format a specific object property:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Model\Person</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Serializer\Encoder\JsonEncoder</span><span class="p">;</span>
@@ -1006,10 +1093,6 @@ key of the context instead.</p>
 <span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$person</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">);</span>
 <span class="c1">// Output: {&quot;name&quot;:&quot;cordoval&quot;, &quot;age&quot;: 34, &quot;createdAt&quot;: &quot;2014-03-22T09:43:12-0500&quot;}</span>
 </pre></div>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/AbstractNormalizer.php" title="Symfony\Component\Serializer\Normalizer\AbstractNormalizer::setCallbacks()"><span class="pre">setCallbacks()</span></a></code> is deprecated since
-Symfony 4.2, use the “callbacks” key of the context instead.</p>
 </div>
 </div>
 <div class="section" id="normalizers">
@@ -1057,25 +1140,34 @@ Serializer by allowing you to mix which normalizers are used for which classes.<
 <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.datetime.php" title="DateTime"><span class="pre">DateTime</span></a></code> and <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.datetimeimmutable.php" title="DateTimeImmutable"><span class="pre">DateTimeImmutable</span></a></code>) into strings.
 By default, it uses the <a class="reference external" href="https://tools.ietf.org/html/rfc3339#section-5.8">RFC3339</a> format.</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DateTimeZoneNormalizer.php" title="Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer"><span class="pre">DateTimeZoneNormalizer</span></a></code></dt>
-<dd><p class="first">This normalizer converts <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.datetimezone.php" title="DateTimeZone"><span class="pre">DateTimeZone</span></a></code> objects into strings that
-represent the name of the timezone according to the <a class="reference external" href="https://www.php.net/manual/en/timezones.php">list of PHP timezones</a>.</p>
-<div class="last versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">DateTimeZoneNormalizer</span></code> was introduced in Symfony 4.3.</p>
-</div>
-</dd>
+<dd>This normalizer converts <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.datetimezone.php" title="DateTimeZone"><span class="pre">DateTimeZone</span></a></code> objects into strings that
+represent the name of the timezone according to the <a class="reference external" href="https://www.php.net/manual/en/timezones.php">list of PHP timezones</a>.</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DataUriNormalizer.php" title="Symfony\Component\Serializer\Normalizer\DataUriNormalizer"><span class="pre">DataUriNormalizer</span></a></code></dt>
 <dd>This normalizer converts <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.splfileinfo.php" title="SplFileInfo"><span class="pre">SplFileInfo</span></a></code> objects into a data URI
 string (<code class="docutils literal notranslate"><span class="pre">data:...</span></code>) such that files can be embedded into serialized data.</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/DateIntervalNormalizer.php" title="Symfony\Component\Serializer\Normalizer\DateIntervalNormalizer"><span class="pre">DateIntervalNormalizer</span></a></code></dt>
 <dd>This normalizer converts <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.dateinterval.php" title="DateInterval"><span class="pre">DateInterval</span></a></code> objects into strings.
 By default, it uses the <code class="docutils literal notranslate"><span class="pre">P%yY%mM%dDT%hH%iM%sS</span></code> format.</dd>
+<dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/FormErrorNormalizer.php" title="Symfony\Component\Serializer\Normalizer\FormErrorNormalizer"><span class="pre">FormErrorNormalizer</span></a></code></dt>
+<dd><p class="first">This normalizer works with classes that implement
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/FormInterface.php" title="Symfony\Component\Form\FormInterface"><span class="pre">FormInterface</span></a></code>.</p>
+<p class="last">It will get errors from the form and normalize them into an normalized array.</p>
+</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ConstraintViolationListNormalizer.php" title="Symfony\Component\Serializer\Normalizer\ConstraintViolationListNormalizer"><span class="pre">ConstraintViolationListNormalizer</span></a></code></dt>
 <dd>This normalizer converts objects that implement
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/ConstraintViolationListInterface.php" title="Symfony\Component\Validator\ConstraintViolationListInterface"><span class="pre">ConstraintViolationListInterface</span></a></code>
 into a list of errors according to the <a class="reference external" href="https://tools.ietf.org/html/rfc7807">RFC 7807</a> standard.</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/ProblemNormalizer.php" title="Symfony\Component\Serializer\Normalizer\ProblemNormalizer"><span class="pre">ProblemNormalizer</span></a></code></dt>
 <dd>Normalizes errors according to the API Problem spec <a class="reference external" href="https://tools.ietf.org/html/rfc7807">RFC 7807</a>.</dd>
+<dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/UidNormalizer.php" title="Symfony\Component\Serializer\Normalizer\UidNormalizer"><span class="pre">UidNormalizer</span></a></code></dt>
+<dd>This normalizer converts objects that implement
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Uid/AbstractUid.php" title="Symfony\Component\Uid\AbstractUid"><span class="pre">AbstractUid</span></a></code> into strings. Also it can
+denormalize <code class="docutils literal notranslate"><span class="pre">uuid</span></code> or <code class="docutils literal notranslate"><span class="pre">ulid</span></code> strings to <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Uid/Uuid.php" title="Symfony\Component\Uid\Uuid"><span class="pre">Uuid</span></a></code>
+or <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Uid/Ulid.php" title="Symfony\Component\Uid\Ulid"><span class="pre">Ulid</span></a></code>.</dd>
 </dl>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">UidNormalizer</span></code> was introduced in Symfony 5.2.</p>
+</div>
 </div>
 <div class="section" id="encoders">
 <span id="component-serializer-encoders"></span><h2>Encoders<a class="headerlink" href="#encoders" title="Permalink to this headline">¶</a></h2>
@@ -1188,9 +1280,6 @@ one line is decoded.</td>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">output_utf8_bom</span></code> option was introduced in Symfony 4.4.</p>
-</div>
 </div>
 </div>
 <div class="section" id="the-xmlencoder">
@@ -1241,8 +1330,7 @@ always as a collection.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p>XML comments are ignored by default when decoding contents, but this
-behavior can be changed with the optional <code class="docutils literal notranslate"><span class="pre">$decoderIgnoredNodeTypes</span></code> argument of
-the <code class="docutils literal notranslate"><span class="pre">XmlEncoder</span></code> class constructor.</p>
+behavior can be changed with the optional context key <code class="docutils literal notranslate"><span class="pre">XmlEncoder::DECODER_IGNORED_NODE_TYPES</span></code>.</p>
 <p class="last">Data with <code class="docutils literal notranslate"><span class="pre">#comment</span></code> keys are encoded to XML comments by default. This can be
 changed with the optional <code class="docutils literal notranslate"><span class="pre">$encoderIgnoredNodeTypes</span></code> argument of the
 <code class="docutils literal notranslate"><span class="pre">XmlEncoder</span></code> class constructor.</p>
@@ -1410,11 +1498,6 @@ having unique identifiers:</p>
 <span class="nb">var_dump</span><span class="p">(</span><span class="nv">$serializer</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$org</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">));</span>
 <span class="c1">// {&quot;name&quot;:&quot;Les-Tilleuls.coop&quot;,&quot;members&quot;:[{&quot;name&quot;:&quot;K\u00e9vin&quot;, organization: &quot;Les-Tilleuls.coop&quot;}]}</span>
 </pre></div>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/AbstractNormalizer.php" title="Symfony\Component\Serializer\Normalizer\AbstractNormalizer::setCircularReferenceHandler()"><span class="pre">setCircularReferenceHandler()</span></a></code>
-method is deprecated since Symfony 4.2. Use the <code class="docutils literal notranslate"><span class="pre">AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER</span></code>
-key of the context instead.</p>
 </div>
 </div>
 <div class="section" id="handling-serialization-depth">
@@ -1591,11 +1674,6 @@ having unique identifiers:</p>
 <span class="cm">];</span>
 <span class="cm">*/</span>
 </pre></div>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Serializer/Normalizer/AbstractNormalizer.php" title="Symfony\Component\Serializer\Normalizer\AbstractNormalizer::setMaxDepthHandler()"><span class="pre">setMaxDepthHandler()</span></a></code>
-method is deprecated since Symfony 4.2. Use the <code class="docutils literal notranslate"><span class="pre">max_depth_handler</span></code>
-key of the context instead.</p>
 </div>
 </div>
 <div class="section" id="handling-arrays">

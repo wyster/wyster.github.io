@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -541,17 +543,8 @@ Keep in mind that you can’t use both syntaxes at the same time.</p>
 </div>
 <div class="section" id="caching-drivers">
 <h3>Caching Drivers<a class="headerlink" href="#caching-drivers" title="Permalink to this headline">¶</a></h3>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.4: </span>All the Doctrine caching types are deprecated since Symfony 4.4 and won’t
-be available in Symfony 5.0 and higher. Replace them with either <code class="docutils literal notranslate"><span class="pre">type:</span> <span class="pre">service</span></code>
-or <code class="docutils literal notranslate"><span class="pre">type:</span> <span class="pre">pool</span></code> and use any of the cache pools/services defined with
-<a class="reference internal" href="../../cache.html"><span class="doc">Symfony Cache</span></a>.</p>
-</div>
-<p>The built-in types of caching drivers are: <code class="docutils literal notranslate"><span class="pre">array</span></code>, <code class="docutils literal notranslate"><span class="pre">apc</span></code>, <code class="docutils literal notranslate"><span class="pre">apcu</span></code>,
-<code class="docutils literal notranslate"><span class="pre">memcache</span></code>, <code class="docutils literal notranslate"><span class="pre">memcached</span></code>, <code class="docutils literal notranslate"><span class="pre">redis</span></code>, <code class="docutils literal notranslate"><span class="pre">wincache</span></code>, <code class="docutils literal notranslate"><span class="pre">zenddata</span></code> and <code class="docutils literal notranslate"><span class="pre">xcache</span></code>.
-There is a special type called <code class="docutils literal notranslate"><span class="pre">service</span></code> which lets you define the ID of your
-own caching service.</p>
-<p>The following example shows an overview of the caching configurations:</p>
+<p>Use any of the existing <a class="reference internal" href="../../cache.html"><span class="doc">Symfony Cache</span></a> pools or define new pools
+to cache each of Doctrine ORM elements (queries, results, etc.):</p>
 <div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -565,17 +558,43 @@ own caching service.</p>
 11
 12
 13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">doctrine</span><span class="p p-Indicator">:</span>
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/prod/doctrine.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">framework</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">cache</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">pools</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">doctrine.result_cache_pool</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">adapter</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cache.app</span>
+            <span class="l l-Scalar l-Scalar-Plain">doctrine.system_cache_pool</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">adapter</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cache.system</span>
+
+<span class="l l-Scalar l-Scalar-Plain">doctrine</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">orm</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">auto_mapping</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-        <span class="c1"># each caching driver type defines its own config options</span>
-        <span class="l l-Scalar l-Scalar-Plain">metadata_cache_driver</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">apc</span>
+        <span class="c1"># ...</span>
+        <span class="l l-Scalar l-Scalar-Plain">metadata_cache_driver</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pool</span>
+            <span class="l l-Scalar l-Scalar-Plain">pool</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">doctrine.system_cache_pool</span>
+        <span class="l l-Scalar l-Scalar-Plain">query_cache_driver</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pool</span>
+            <span class="l l-Scalar l-Scalar-Plain">pool</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">doctrine.system_cache_pool</span>
         <span class="l l-Scalar l-Scalar-Plain">result_cache_driver</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">memcache</span>
-            <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
-            <span class="l l-Scalar l-Scalar-Plain">port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">11211</span>
-            <span class="l l-Scalar l-Scalar-Plain">instance_class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Memcache</span>
-        <span class="c1"># the &#39;service&#39; type requires to define the &#39;id&#39; option too</span>
+            <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pool</span>
+            <span class="l l-Scalar l-Scalar-Plain">pool</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">doctrine.result_cache_pool</span>
+
+        <span class="c1"># in addition to Symfony Cache pools, you can also use the</span>
+        <span class="c1"># &#39;type: service&#39; option to use any service as the cache</span>
         <span class="l l-Scalar l-Scalar-Plain">query_cache_driver</span><span class="p p-Indicator">:</span>
             <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
             <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\ORM\MyCacheService</span>

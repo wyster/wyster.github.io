@@ -50,14 +50,22 @@ established by the last opened tag.</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Console\Formatter\OutputFormatterStyle</span><span class="p">;</span>
 
 <span class="c1">// ...</span>
-<span class="nv">$outputStyle</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OutputFormatterStyle</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="s1">&#39;blink&#39;</span><span class="p">]);</span>
+<span class="nv">$outputStyle</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OutputFormatterStyle</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;#ff0&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="s1">&#39;blink&#39;</span><span class="p">]);</span>
 <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">getFormatter</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">setStyle</span><span class="p">(</span><span class="s1">&#39;fire&#39;</span><span class="p">,</span> <span class="nv">$outputStyle</span><span class="p">);</span>
 
 <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;&lt;fire&gt;foo&lt;/&gt;&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Available foreground and background colors are: <code class="docutils literal notranslate"><span class="pre">black</span></code>, <code class="docutils literal notranslate"><span class="pre">red</span></code>, <code class="docutils literal notranslate"><span class="pre">green</span></code>,
-<code class="docutils literal notranslate"><span class="pre">yellow</span></code>, <code class="docutils literal notranslate"><span class="pre">blue</span></code>, <code class="docutils literal notranslate"><span class="pre">magenta</span></code>, <code class="docutils literal notranslate"><span class="pre">cyan</span></code> and <code class="docutils literal notranslate"><span class="pre">white</span></code>.</p>
+<p>Any hex color is supported for foreground and background colors. Besides that, these named colors are supported:
+<code class="docutils literal notranslate"><span class="pre">black</span></code>, <code class="docutils literal notranslate"><span class="pre">red</span></code>, <code class="docutils literal notranslate"><span class="pre">green</span></code>, <code class="docutils literal notranslate"><span class="pre">yellow</span></code>, <code class="docutils literal notranslate"><span class="pre">blue</span></code>, <code class="docutils literal notranslate"><span class="pre">magenta</span></code>, <code class="docutils literal notranslate"><span class="pre">cyan</span></code> and <code class="docutils literal notranslate"><span class="pre">white</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>True (hex) color support was introduced in Symfony 5.2</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the terminal doesn’t support true colors, the nearest named color is used.
+E.g. <code class="docutils literal notranslate"><span class="pre">#c0392b</span></code> is degraded to <code class="docutils literal notranslate"><span class="pre">red</span></code> or <code class="docutils literal notranslate"><span class="pre">#f1c40f</span></code> is degraded to <code class="docutils literal notranslate"><span class="pre">yellow</span></code>.</p>
+</div>
 <p>And available options are: <code class="docutils literal notranslate"><span class="pre">bold</span></code>, <code class="docutils literal notranslate"><span class="pre">underscore</span></code>, <code class="docutils literal notranslate"><span class="pre">blink</span></code>, <code class="docutils literal notranslate"><span class="pre">reverse</span></code>
 (enables the “reverse video” mode where the background and foreground colors
 are swapped) and <code class="docutils literal notranslate"><span class="pre">conceal</span></code> (sets the foreground color to transparent, making
@@ -66,6 +74,9 @@ commonly used when asking the user to type sensitive information).</p>
 <p>You can also set these colors and options directly inside the tag name:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// green text</span>
 <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;&lt;fg=green&gt;foo&lt;/&gt;&#39;</span><span class="p">);</span>
+
+<span class="c1">// red text</span>
+<span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;&lt;fg=#c0392b&gt;foo&lt;/&gt;&#39;</span><span class="p">);</span>
 
 <span class="c1">// black text on a cyan background</span>
 <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;&lt;fg=black;bg=cyan&gt;foo&lt;/&gt;&#39;</span><span class="p">);</span>
@@ -85,9 +96,6 @@ method to escape all the tags included in the given string.</p>
 </div>
 <div class="section" id="displaying-clickable-links">
 <h3>Displaying Clickable Links</h3>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The feature to display clickable links was introduced in Symfony 4.3.</p>
-</div>
 <p>Commands can use the special <code class="docutils literal notranslate"><span class="pre">&lt;href&gt;</span></code> tag to display links similar to the
 <code class="docutils literal notranslate"><span class="pre">&lt;a&gt;</span></code> elements of web pages:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;&lt;href=https://symfony.com&gt;Symfony Homepage&lt;/&gt;&#39;</span><span class="p">);</span>

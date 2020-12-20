@@ -77,14 +77,8 @@ middleware stack. The component comes with a set of middleware that you can use.
 When using the message bus with Symfony's FrameworkBundle, the following middleware
 are configured for you:
 
-#. :class:`Symfony\\Component\\Messenger\\Middleware\\LoggingMiddleware` (logs the processing of your messages)
-#. :class:`Symfony\\Component\\Messenger\\Middleware\\SendMessageMiddleware` (enables asynchronous processing)
+#. :class:`Symfony\\Component\\Messenger\\Middleware\\SendMessageMiddleware` (enables asynchronous processing, logs the processing of your messages if you pass a logger)
 #. :class:`Symfony\\Component\\Messenger\\Middleware\\HandleMessageMiddleware` (calls the registered handler(s))
-
-.. deprecated:: 4.3
-
-    The ``LoggingMiddleware`` is deprecated since Symfony 4.3 and will be
-    removed in 5.0. Pass a logger to ``SendMessageMiddleware`` instead.
 
 Example::
 
@@ -331,12 +325,6 @@ do is to write your own CSV receiver::
             $this->connection->reject($this->findCustomStamp($envelope)->getId());
         }
     }
-
-.. versionadded:: 4.3
-
-    In Symfony 4.3, the ``ReceiverInterface`` has changed its methods as shown
-    in the example above. You may need to update your code if you used this
-    interface in previous Symfony versions.
 
 Receiver and Sender on the same Bus
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

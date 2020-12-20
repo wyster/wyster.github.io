@@ -202,9 +202,6 @@ configuration files, even if they use a different format:</p>
 </p></li>
 </ul>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">not_found</span></code> option value for <code class="docutils literal notranslate"><span class="pre">ignore_errors</span></code> was introduced in Symfony 4.4.</p>
-</div>
 </div>
 </div>
 <div class="section" id="configuration-parameters">
@@ -843,9 +840,6 @@ instead of the value defined in this file.</p>
 <span class="nv">DB_PASS</span><span class="o">=</span><span class="si">${</span><span class="nv">DB_USER</span><span class="k">:-</span><span class="nv">root</span><span class="si">}</span>pass <span class="c1"># results in DB_PASS=rootpass</span>
 </pre></div>
 </td></tr></table></div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The support for default values has been introduced in Symfony 4.4.</p>
-</div>
 <p>Embed commands via <code class="docutils literal notranslate"><span class="pre">$()</span></code> (not supported on Windows):</p>
 <div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nv">START_TIME</span><span class="o">=</span><span class="k">$(</span>date<span class="k">)</span>
 </pre></div>
@@ -963,9 +957,6 @@ their values by running:</p>
 <span class="gp">$</span> php bin/console debug:container --env-var<span class="o">=</span>FOO
 </pre></div>
 </td></tr></table></div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The option to debug environment variables was introduced in Symfony 4.3.</p>
-</div>
 </div>
 </div>
 <div class="section" id="accessing-configuration-parameters">

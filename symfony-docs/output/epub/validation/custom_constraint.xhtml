@@ -101,10 +101,6 @@ when actually performing the validation.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The feature to allow passing an object as the <code class="docutils literal notranslate"><span class="pre">buildViolation()</span></code> argument
-was introduced in Symfony 4.4.</p>
-</div>
 <p>Inside <code class="docutils literal notranslate"><span class="pre">validate</span></code>, you don’t need to return a value. Instead, you add violations
 to the validator’s <code class="docutils literal notranslate"><span class="pre">context</span></code> property and a value will be considered valid
 if it causes no violations. The <code class="docutils literal notranslate"><span class="pre">buildViolation()</span></code> method takes the error
@@ -244,6 +240,14 @@ configured like options on core Symfony constraints.</p>
 then your validator is already registered as a service and <a class="reference internal" href="../service_container/tags.xhtml"><span class="doc">tagged</span></a>
 with the necessary <code class="docutils literal notranslate"><span class="pre">validator.constraint_validator</span></code>. This means you can
 <a class="reference internal" href="../service_container.xhtml#services-constructor-injection"><span class="std std-ref">inject services or configuration</span></a> like any other service.</p>
+</div>
+<div class="section" id="create-a-reusable-set-of-constraints">
+<h3>Create a Reusable Set of Constraints</h3>
+<p>In case you need to apply some common set of constraints in different places
+consistently across your application, you can extend the <a class="reference internal" href="../reference/constraints/Compound.xhtml"><span class="doc">Compound constraint</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">Compound</span></code> constraint was introduced in Symfony 5.1.</p>
+</div>
 </div>
 <div class="section" id="class-constraint-validator">
 <h3>Class Constraint Validator</h3>

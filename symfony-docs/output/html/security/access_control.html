@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../security.html">Security</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../security.html#installation">1) Installation</a></li>
@@ -254,7 +256,7 @@ access control should be used on this request. The following <code class="docuti
 options are used for matching:</p>
 <ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">path</span></code>: a regular expression (without delimiters)</li>
-<li><code class="docutils literal notranslate"><span class="pre">ip</span></code> or <code class="docutils literal notranslate"><span class="pre">ips</span></code>: netmasks are also supported</li>
+<li><code class="docutils literal notranslate"><span class="pre">ip</span></code> or <code class="docutils literal notranslate"><span class="pre">ips</span></code>: netmasks are also supported (can be a comma-separated string)</li>
 <li><code class="docutils literal notranslate"><span class="pre">port</span></code>: an integer</li>
 <li><code class="docutils literal notranslate"><span class="pre">host</span></code>: a regular expression</li>
 <li><code class="docutils literal notranslate"><span class="pre">methods</span></code>: one or many methods</li>
@@ -271,7 +273,15 @@ options are used for matching:</p>
  7
  8
  9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">parameters</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">env(TRUSTED_IPS)</span><span class="p p-Indicator">:</span> <span class="s">&#39;10.0.0.1,</span><span class="nv"> </span><span class="s">10.0.0.2&#39;</span>
+
 <span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
     <span class="c1"># ...</span>
     <span class="l l-Scalar l-Scalar-Plain">access_control</span><span class="p p-Indicator">:</span>
@@ -279,8 +289,10 @@ options are used for matching:</p>
         <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span> <span class="nv">path</span><span class="p p-Indicator">:</span> <span class="s">&#39;^/admin&#39;</span><span class="p p-Indicator">,</span> <span class="nv">roles</span><span class="p p-Indicator">:</span> <span class="nv">ROLE_USER_PORT</span><span class="p p-Indicator">,</span> <span class="nv">ip</span><span class="p p-Indicator">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span> <span class="nv">port</span><span class="p p-Indicator">:</span> <span class="nv">8080</span> <span class="p p-Indicator">}</span>
         <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span> <span class="nv">path</span><span class="p p-Indicator">:</span> <span class="s">&#39;^/admin&#39;</span><span class="p p-Indicator">,</span> <span class="nv">roles</span><span class="p p-Indicator">:</span> <span class="nv">ROLE_USER_HOST</span><span class="p p-Indicator">,</span> <span class="nv">host</span><span class="p p-Indicator">:</span> <span class="nv">symfony\.com$</span> <span class="p p-Indicator">}</span>
         <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span> <span class="nv">path</span><span class="p p-Indicator">:</span> <span class="s">&#39;^/admin&#39;</span><span class="p p-Indicator">,</span> <span class="nv">roles</span><span class="p p-Indicator">:</span> <span class="nv">ROLE_USER_METHOD</span><span class="p p-Indicator">,</span> <span class="nv">methods</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">POST</span><span class="p p-Indicator">,</span> <span class="nv">PUT</span><span class="p p-Indicator">]</span> <span class="p p-Indicator">}</span>
-        <span class="c1"># when defining multiple roles, users must have at least one of them (it&#39;s like an OR condition)</span>
-        <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span> <span class="nv">path</span><span class="p p-Indicator">:</span> <span class="s">&#39;^/admin&#39;</span><span class="p p-Indicator">,</span> <span class="nv">roles</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">ROLE_MANAGER</span><span class="p p-Indicator">,</span> <span class="nv">ROLE_ADMIN</span><span class="p p-Indicator">]</span> <span class="p p-Indicator">}</span>
+
+        <span class="c1"># ips can be comma-separated, which is especially useful when using env variables</span>
+        <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span> <span class="nv">path</span><span class="p p-Indicator">:</span> <span class="s">&#39;^/admin&#39;</span><span class="p p-Indicator">,</span> <span class="nv">roles</span><span class="p p-Indicator">:</span> <span class="nv">ROLE_USER_IP</span><span class="p p-Indicator">,</span> <span class="nv">ips</span><span class="p p-Indicator">:</span> <span class="s">&#39;%env(TRUSTED_IPS)%&#39;</span> <span class="p p-Indicator">}</span>
+        <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span> <span class="nv">path</span><span class="p p-Indicator">:</span> <span class="s">&#39;^/admin&#39;</span><span class="p p-Indicator">,</span> <span class="nv">roles</span><span class="p p-Indicator">:</span> <span class="nv">ROLE_USER_IP</span><span class="p p-Indicator">,</span> <span class="nv">ips</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span> <span class="p p-Indicator">::</span><span class="nv">1</span><span class="p p-Indicator">,</span> <span class="s">&#39;%env(TRUSTED_IPS)%&#39;</span><span class="p p-Indicator">]</span> <span class="p p-Indicator">}</span>
 </pre></div>
 </td></tr></table></div>
 </li>
@@ -301,13 +313,31 @@ options are used for matching:</p>
 15
 16
 17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;srv:parameters&gt;</span>
+        <span class="nt">&lt;srv:parameter</span> <span class="na">key=</span><span class="s">&quot;env(TRUSTED_IPS)&quot;</span><span class="nt">&gt;</span>10.0.0.1, 10.0.0.2<span class="nt">&lt;/parameter&gt;</span>
+    <span class="nt">&lt;/srv:parameters&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -315,8 +345,14 @@ options are used for matching:</p>
         <span class="nt">&lt;rule</span> <span class="na">path=</span><span class="s">&quot;^/admin&quot;</span> <span class="na">role=</span><span class="s">&quot;ROLE_USER_PORT&quot;</span> <span class="na">ip=</span><span class="s">&quot;127.0.0.1&quot;</span> <span class="na">port=</span><span class="s">&quot;8080&quot;</span><span class="nt">/&gt;</span>
         <span class="nt">&lt;rule</span> <span class="na">path=</span><span class="s">&quot;^/admin&quot;</span> <span class="na">role=</span><span class="s">&quot;ROLE_USER_HOST&quot;</span> <span class="na">host=</span><span class="s">&quot;symfony\.com$&quot;</span><span class="nt">/&gt;</span>
         <span class="nt">&lt;rule</span> <span class="na">path=</span><span class="s">&quot;^/admin&quot;</span> <span class="na">role=</span><span class="s">&quot;ROLE_USER_METHOD&quot;</span> <span class="na">methods=</span><span class="s">&quot;POST, PUT&quot;</span><span class="nt">/&gt;</span>
-        <span class="c">&lt;!-- when defining multiple roles, users must have at least one of them (it&#39;s like an OR condition) --&gt;</span>
-        <span class="nt">&lt;rule</span> <span class="na">path=</span><span class="s">&quot;^/admin&quot;</span> <span class="na">roles=</span><span class="s">&quot;ROLE_ADMIN, ROLE_MANAGER&quot;</span><span class="nt">/&gt;</span>
+
+        <span class="c">&lt;!-- ips can be comma-separated, which is especially useful when using env variables --&gt;</span>
+        <span class="nt">&lt;rule</span> <span class="na">path=</span><span class="s">&quot;^/admin&quot;</span> <span class="na">role=</span><span class="s">&quot;ROLE_USER_IP&quot;</span> <span class="na">ip=</span><span class="s">&quot;%env(TRUSTED_IPS)%&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;rule</span> <span class="na">path=</span><span class="s">&quot;^/admin&quot;</span> <span class="na">role=</span><span class="s">&quot;ROLE_USER_IP&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;ip&gt;</span>127.0.0.1<span class="nt">&lt;/ip&gt;</span>
+            <span class="nt">&lt;ip&gt;</span>::1<span class="nt">&lt;/ip&gt;</span>
+            <span class="nt">&lt;ip&gt;</span>%env(TRUSTED_IPS)%<span class="nt">&lt;/ip&gt;</span>
+        <span class="nt">&lt;/rule&gt;</span>
     <span class="nt">&lt;/config&gt;</span>
 <span class="nt">&lt;/srv:container&gt;</span>
 </pre></div>
@@ -353,7 +389,20 @@ options are used for matching:</p>
 29
 30
 31
-32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">setParameter</span><span class="p">(</span><span class="s1">&#39;env(TRUSTED_IPS)&#39;</span><span class="p">,</span> <span class="s1">&#39;10.0.0.1, 10.0.0.2&#39;</span><span class="p">);</span>
 <span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[</span>
     <span class="c1">// ...</span>
     <span class="s1">&#39;access_control&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
@@ -378,10 +427,21 @@ options are used for matching:</p>
             <span class="s1">&#39;roles&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;ROLE_USER_METHOD&#39;</span><span class="p">,</span>
             <span class="s1">&#39;methods&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;POST, PUT&#39;</span><span class="p">,</span>
         <span class="p">],</span>
+
+        <span class="c1">// ips can be comma-separated, which is especially useful when using env variables</span>
         <span class="p">[</span>
             <span class="s1">&#39;path&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;^/admin&#39;</span><span class="p">,</span>
-            <span class="c1">// when defining multiple roles, users must have at least one of them (it&#39;s like an OR condition)</span>
-            <span class="s1">&#39;roles&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;ROLE_MANAGER&#39;</span><span class="p">,</span> <span class="s1">&#39;ROLE_ADMIN&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;roles&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;ROLE_USER_IP&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ips&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;%env(TRUSTED_IPS)%&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="p">[</span>
+            <span class="s1">&#39;path&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;^/admin&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;roles&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;ROLE_USER_IP&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ips&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;::1&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;%env(TRUSTED_IPS)%&#39;</span><span class="p">,</span>
+            <span class="p">],</span>
         <span class="p">],</span>
     <span class="p">],</span>
 <span class="p">]);</span>
@@ -389,6 +449,9 @@ options are used for matching:</p>
 </td></tr></table></div>
 </li>
 </ul>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>Support for comma-separated IP addresses was introduced in Symfony 5.2.</p>
 </div>
 <p>For each incoming request, Symfony will decide which <code class="docutils literal notranslate"><span class="pre">access_control</span></code>
 to use based on the URI, the client’s IP address, the incoming host name,
@@ -470,18 +533,7 @@ matched <code class="docutils literal notranslate"><span class="pre">access_cont
 <td>The <code class="docutils literal notranslate"><span class="pre">ip</span></code> and <code class="docutils literal notranslate"><span class="pre">host</span></code> don’t match the first two entries,
 but the third - <code class="docutils literal notranslate"><span class="pre">ROLE_USER_METHOD</span></code> - matches and is used.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">/admin/user</span></code></td>
-<td>168.0.0.1</td>
-<td>80</td>
-<td>example.com</td>
-<td>GET</td>
-<td>rule #4 (<code class="docutils literal notranslate"><span class="pre">ROLE_MANAGER</span></code>)</td>
-<td>The <code class="docutils literal notranslate"><span class="pre">ip</span></code>, <code class="docutils literal notranslate"><span class="pre">host</span></code> and <code class="docutils literal notranslate"><span class="pre">method</span></code> prevent the first
-three entries from matching. But since the URI matches the
-<code class="docutils literal notranslate"><span class="pre">path</span></code> pattern, then the <code class="docutils literal notranslate"><span class="pre">ROLE_MANAGER</span></code> (or the
-<code class="docutils literal notranslate"><span class="pre">ROLE_ADMIN</span></code>) is used.</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">/foo</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">/foo</span></code></td>
 <td>127.0.0.1</td>
 <td>80</td>
 <td>symfony.com</td>
@@ -592,13 +644,17 @@ pattern so that it is only accessible by requests from the local server itself:<
 17
 18
 19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -715,13 +771,17 @@ key:</p>
 14
 15
 16
-17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -821,13 +881,17 @@ access those URLs via a specific port. This could be useful for example for
 13
 14
 15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -902,13 +966,17 @@ the user will be redirected to <code class="docutils literal notranslate"><span 
 13
 14
 15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>

@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Nov 2018 Changes to .env &amp; How to Update" href="configuration/dot-env-changes.html" />
-    <link rel="prev" title="Upgrading a Patch Version (e.g. 4.1.0 to 4.1.1)" href="setup/upgrade_patch.html" /> 
+    <link rel="prev" title="Upgrading a Patch Version (e.g. 5.0.0 to 5.0.1)" href="setup/upgrade_patch.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -156,8 +156,10 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -436,9 +438,6 @@ configuration files, even if they use a different format:</p>
 </td></tr></table></div>
 </li>
 </ul>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">not_found</span></code> option value for <code class="docutils literal notranslate"><span class="pre">ignore_errors</span></code> was introduced in Symfony 4.4.</p>
 </div>
 </div>
 </div>
@@ -1078,9 +1077,6 @@ instead of the value defined in this file.</p>
 <span class="nv">DB_PASS</span><span class="o">=</span><span class="si">${</span><span class="nv">DB_USER</span><span class="k">:-</span><span class="nv">root</span><span class="si">}</span>pass <span class="c1"># results in DB_PASS=rootpass</span>
 </pre></div>
 </td></tr></table></div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The support for default values has been introduced in Symfony 4.4.</p>
-</div>
 <p>Embed commands via <code class="docutils literal notranslate"><span class="pre">$()</span></code> (not supported on Windows):</p>
 <div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nv">START_TIME</span><span class="o">=</span><span class="k">$(</span>date<span class="k">)</span>
 </pre></div>
@@ -1198,9 +1194,6 @@ their values by running:</p>
 <span class="gp">$</span> php bin/console debug:container --env-var<span class="o">=</span>FOO
 </pre></div>
 </td></tr></table></div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The option to debug environment variables was introduced in Symfony 4.3.</p>
-</div>
 </div>
 </div>
 <div class="section" id="accessing-configuration-parameters">

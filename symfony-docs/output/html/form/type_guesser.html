@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -157,8 +157,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -290,19 +292,19 @@ option;</dd>
 
 <span class="k">class</span> <span class="nc">PHPDocTypeGuesser</span> <span class="k">implements</span> <span class="nx">FormTypeGuesserInterface</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
     <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessRequired</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessRequired</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
     <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessMaxLength</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessMaxLength</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
     <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessPattern</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessPattern</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
     <span class="p">{</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -339,7 +341,7 @@ type with the highest confidence is used.</li>
 
 <span class="k">class</span> <span class="nc">PHPDocTypeGuesser</span> <span class="k">implements</span> <span class="nx">FormTypeGuesserInterface</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
     <span class="p">{</span>
         <span class="nv">$annotations</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">readPhpDocAnnotations</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">);</span>
 

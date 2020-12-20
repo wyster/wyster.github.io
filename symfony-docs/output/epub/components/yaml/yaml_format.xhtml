@@ -135,9 +135,14 @@ won’t appear in the resulting PHP strings.</p>
 </td></tr></table></div>
 <div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># an octal</span>
-<span class="l l-Scalar l-Scalar-Plain">014</span>
+<span class="l l-Scalar l-Scalar-Plain">0o14</span>
 </pre></div>
 </td></tr></table></div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 5.1: </span>In YAML 1.1, octal numbers use the notation <code class="docutils literal notranslate"><span class="pre">0...</span></code>, whereas in YAML 1.2
+the notation changes to <code class="docutils literal notranslate"><span class="pre">0o...</span></code>. Symfony 5.1 added support for YAML 1.2
+notation and deprecated support for YAML 1.1 notation.</p>
+</div>
 <div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># an hexadecimal</span>
 <span class="l l-Scalar l-Scalar-Plain">0xC</span>

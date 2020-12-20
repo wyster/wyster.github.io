@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -131,8 +131,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -252,15 +254,27 @@ and what headers your reverse proxy uses to send information:</p>
     <span class="p">[</span><span class="s1">&#39;192.0.0.1&#39;</span><span class="p">,</span> <span class="s1">&#39;10.0.0.0/8&#39;</span><span class="p">],</span>
 
     <span class="c1">// trust *all* &quot;X-Forwarded-*&quot; headers</span>
-    <span class="nx">Request</span><span class="o">::</span><span class="na">HEADER_X_FORWARDED_ALL</span>
+    <span class="nx">Request</span><span class="o">::</span><span class="na">HEADER_X_FORWARDED_FOR</span> <span class="o">|</span> <span class="nx">Request</span><span class="o">::</span><span class="na">HEADER_X_FORWARDED_HOST</span> <span class="o">|</span> <span class="nx">Request</span><span class="o">::</span><span class="na">HEADER_X_FORWARDED_PORT</span> <span class="o">|</span> <span class="nx">Request</span><span class="o">::</span><span class="na">HEADER_X_FORWARDED_PROTO</span>
 
     <span class="c1">// or, if your proxy instead uses the &quot;Forwarded&quot; header</span>
     <span class="c1">// Request::HEADER_FORWARDED</span>
 
-    <span class="c1">// or, if you&#39;re using AWS ELB</span>
+    <span class="c1">// or, if you&#39;re using a well-known proxy</span>
     <span class="c1">// Request::HEADER_X_FORWARDED_AWS_ELB</span>
+    <span class="c1">// Request::HEADER_X_FORWARDED_TRAEFIK</span>
 <span class="p">);</span>
 </pre></div>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 5.2: </span>In previous Symfony versions, the above example used <code class="docutils literal notranslate"><span class="pre">HEADER_X_FORWARDED_ALL</span></code>
+to trust all “X-Forwarded-” headers, but that constant is deprecated since
+Symfony 5.2 in favor of the individual <code class="docutils literal notranslate"><span class="pre">HEADER_X_FORWARDED_*</span></code> constants.</p>
+</div>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">Enabling the <code class="docutils literal notranslate"><span class="pre">Request::HEADER_X_FORWARDED_HOST</span></code> option exposes the
+application to <a class="reference external" href="https://www.skeletonscribe.net/2013/05/practical-http-host-header-attacks.html">HTTP Host header attacks</a>. Make sure the proxy really
+sends an <code class="docutils literal notranslate"><span class="pre">x-forwarded-host</span></code> header.</p>
 </div>
 <p>The Request object has several <code class="docutils literal notranslate"><span class="pre">Request::HEADER_*</span></code> constants that control exactly
 <em>which</em> headers from your reverse proxy are trusted. The argument is a bit field,
@@ -292,9 +306,6 @@ proxies, configure Symfony to <em>always</em> trust incoming request:</p>
 </div>
 </li>
 </ol>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The support for the <code class="docutils literal notranslate"><span class="pre">REMOTE_ADDR</span></code> option was introduced in Symfony 4.4.</p>
-</div>
 <p>That’s it! It’s critical that you prevent traffic from all non-trusted sources.
 If you allow outside traffic, they could “spoof” their true IP address and
 other information.</p>

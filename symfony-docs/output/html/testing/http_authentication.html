@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -135,11 +137,7 @@
 <li class="toctree-l3"><a class="reference internal" href="bootstrap.html">How to Customize the Bootstrap Process before Running Tests</a></li>
 <li class="toctree-l3"><a class="reference internal" href="database.html">How to Test Code that Interacts with the Database</a></li>
 <li class="toctree-l3"><a class="reference internal" href="functional_tests_assertions.html">Functional Test specific Assertions</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">How to Simulate HTTP Authentication in a Functional Test</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#using-a-faster-authentication-mechanism-only-for-tests">Using a Faster Authentication Mechanism Only for Tests</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#creating-the-authentication-token">Creating the Authentication Token</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">How to Simulate HTTP Authentication in a Functional Test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="insulating_clients.html">How to Test the Interaction of several Clients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="profiling.html">How to Use the Profiler in a Functional Test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../components/dom_crawler.html">The DomCrawler Component</a></li>
@@ -233,149 +231,14 @@
             
   <div class="section" id="how-to-simulate-http-authentication-in-a-functional-test">
 <span id="index-0"></span><h1>How to Simulate HTTP Authentication in a Functional Test<a class="headerlink" href="#how-to-simulate-http-authentication-in-a-functional-test" title="Permalink to this headline">¶</a></h1>
-<p>Authenticating requests in functional tests can slow down the entire test suite.
-This could become an issue especially when the tests reproduce the same steps
-that users follow to authenticate, such as submitting a login form or using
-OAuth authentication services.</p>
-<p>This article explains the two most popular techniques to avoid these issues and
-create fast tests when using authentication.</p>
-<div class="section" id="using-a-faster-authentication-mechanism-only-for-tests">
-<h2>Using a Faster Authentication Mechanism Only for Tests<a class="headerlink" href="#using-a-faster-authentication-mechanism-only-for-tests" title="Permalink to this headline">¶</a></h2>
-<p>When your application is using a <code class="docutils literal notranslate"><span class="pre">form_login</span></code> authentication, you can make
-your tests faster by allowing them to use HTTP authentication. This way your
-tests authenticate with the simple and fast HTTP Basic method whilst your real
-users still log in via the normal login form.</p>
-<p>The trick is to use the <code class="docutils literal notranslate"><span class="pre">http_basic</span></code> authentication in your application
-firewall, but only in the configuration file used by tests:</p>
-<div class="configuration-block">
-<ul class="simple">
-<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/test/security.yaml</span>
-<span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">firewalls</span><span class="p p-Indicator">:</span>
-        <span class="c1"># replace &#39;main&#39; by the name of your own firewall</span>
-        <span class="l l-Scalar l-Scalar-Plain">main</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">http_basic</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/test/security.xml --&gt;</span>
-<span class="nt">&lt;security:config&gt;</span>
-    <span class="c">&lt;!-- replace &#39;main&#39; by the name of your own firewall --&gt;</span>
-    <span class="nt">&lt;security:firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;security:http-basic/&gt;</span>
-    <span class="nt">&lt;/security:firewall&gt;</span>
-<span class="nt">&lt;/security:config&gt;</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/test/security.php</span>
-<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[</span>
-    <span class="s1">&#39;firewalls&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-        <span class="c1">// replace &#39;main&#39; by the name of your own firewall</span>
-        <span class="s1">&#39;main&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-            <span class="s1">&#39;http_basic&#39;</span> <span class="o">=&gt;</span> <span class="p">[],</span>
-        <span class="p">],</span>
-    <span class="p">],</span>
-<span class="p">]);</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-</ul>
-</div>
-<p>Tests can now authenticate via HTTP passing the username and password as server
-variables using the second argument of <code class="docutils literal notranslate"><span class="pre">createClient()</span></code>:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$client</span> <span class="o">=</span> <span class="k">static</span><span class="o">::</span><span class="na">createClient</span><span class="p">([],</span> <span class="p">[</span>
-    <span class="s1">&#39;PHP_AUTH_USER&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;PHP_AUTH_PW&#39;</span>   <span class="o">=&gt;</span> <span class="s1">&#39;pa$$word&#39;</span><span class="p">,</span>
-<span class="p">]);</span>
-</pre></div>
-</div>
-<p>The username and password can also be passed on a per request basis:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$client</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">(</span><span class="s1">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s1">&#39;/post/12&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[</span>
-    <span class="s1">&#39;PHP_AUTH_USER&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;PHP_AUTH_PW&#39;</span>   <span class="o">=&gt;</span> <span class="s1">&#39;pa$$word&#39;</span><span class="p">,</span>
-<span class="p">]);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="creating-the-authentication-token">
-<h2>Creating the Authentication Token<a class="headerlink" href="#creating-the-authentication-token" title="Permalink to this headline">¶</a></h2>
-<p>If your application uses a more advanced authentication mechanism, you can’t
-use the previous trick, but it’s still possible to make tests faster. The trick
-now is to bypass the authentication process, create the <em>authentication token</em>
-yourself and store it in the session.</p>
-<p>This technique requires some knowledge of the Security component internals,
-but the following example shows a complete example that you can adapt to your
-needs:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// tests/Controller/DefaultControllerTest.php</span>
-<span class="k">namespace</span> <span class="nx">App\Tests\Controller</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\Test\WebTestCase</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\BrowserKit\Cookie</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">DefaultControllerTest</span> <span class="k">extends</span> <span class="nx">WebTestCase</span>
-<span class="p">{</span>
-    <span class="k">private</span> <span class="nv">$client</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">setUp</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span> <span class="o">=</span> <span class="k">static</span><span class="o">::</span><span class="na">createClient</span><span class="p">();</span>
-    <span class="p">}</span>
-
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">testSecuredHello</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logIn</span><span class="p">();</span>
-        <span class="nv">$crawler</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;/admin&#39;</span><span class="p">);</span>
-
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="nx">Response</span><span class="o">::</span><span class="na">HTTP_OK</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">getResponse</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getStatusCode</span><span class="p">());</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;Admin Dashboard&#39;</span><span class="p">,</span> <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">filter</span><span class="p">(</span><span class="s1">&#39;h1&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">());</span>
-    <span class="p">}</span>
-
-    <span class="k">private</span> <span class="k">function</span> <span class="nf">logIn</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="nv">$session</span> <span class="o">=</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;session&#39;</span><span class="p">);</span>
-
-        <span class="c1">// somehow fetch the user (e.g. using the user repository)</span>
-        <span class="nv">$user</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
-
-        <span class="nv">$firewallName</span> <span class="o">=</span> <span class="s1">&#39;secure_area&#39;</span><span class="p">;</span>
-        <span class="c1">// if you don&#39;t define multiple connected firewalls, the context defaults to the firewall name</span>
-        <span class="c1">// See https://symfony.com/doc/current/reference/configuration/security.html#firewall-context</span>
-        <span class="nv">$firewallContext</span> <span class="o">=</span> <span class="s1">&#39;secured_area&#39;</span><span class="p">;</span>
-
-        <span class="c1">// you may need to use a different token class depending on your application.</span>
-        <span class="c1">// for example, when using Guard authentication you must instantiate PostAuthenticationGuardToken</span>
-        <span class="nv">$token</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">UsernamePasswordToken</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$firewallName</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getRoles</span><span class="p">());</span>
-        <span class="nv">$session</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;_security_&#39;</span><span class="o">.</span><span class="nv">$firewallContext</span><span class="p">,</span> <span class="nb">serialize</span><span class="p">(</span><span class="nv">$token</span><span class="p">));</span>
-        <span class="nv">$session</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
-
-        <span class="nv">$cookie</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Cookie</span><span class="p">(</span><span class="nv">$session</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">(),</span> <span class="nv">$session</span><span class="o">-&gt;</span><span class="na">getId</span><span class="p">());</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">getCookieJar</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nv">$cookie</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>Starting from Symfony 5.1, a <code class="docutils literal notranslate"><span class="pre">loginUser()</span></code> method was introduced to
+ease testing secured applications. See <a class="reference internal" href="../testing.html#testing-logging-in-users"><span class="std std-ref">Logging in Users (Authentication)</span></a>
+for more information about this.</p>
+<p class="last">If you are still using an older version of Symfony, view
+<a class="reference external" href="https://symfony.com/doc/5.0/testing/http_authentication.html">previous versions of this article</a> for information on how to simulate
+HTTP authentication.</p>
 </div>
 </div>
 

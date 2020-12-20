@@ -305,6 +305,20 @@ of the choice views in the template and is used as part of the field name
 attribute.</p>
 <p>This can be a callable or a property path. See <a class="reference internal" href="#choice-label">choice_label</a> for similar usage.
 By default, the choice key or an incrementing integer may be used (starting at <code class="docutils literal notranslate"><span class="pre">0</span></code>).</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When defining a custom type, you should use the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/ChoiceList/ChoiceList.php" title="Symfony\Component\Form\ChoiceList\ChoiceList"><span class="pre">ChoiceList</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/ChoiceList/ChoiceList.php]</span></span></code> class helper:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Form\ChoiceList\ChoiceList</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;choices&#39;</span><span class="p">,</span> <span class="nx">ChoiceType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;choice_name&#39;</span> <span class="o">=&gt;</span> <span class="nx">ChoiceList</span><span class="o">::</span><span class="na">fieldName</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
+<span class="p">]);</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="choice.xhtml#reference-form-choice-loader"><span class="std std-ref">“choice_loader” option documentation</span></a>.</p>
+</div>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>The configured value must be a valid form name. Make sure to only return
@@ -331,6 +345,20 @@ for each choice or <code class="docutils literal notranslate"><span class="pre">
     <span class="k">return</span> <span class="nv">$entity</span> <span class="o">?</span> <span class="nv">$entity</span><span class="o">-&gt;</span><span class="na">getId</span><span class="p">()</span> <span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
 <span class="p">},</span>
 </pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When defining a custom type, you should use the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/ChoiceList/ChoiceList.php" title="Symfony\Component\Form\ChoiceList\ChoiceList"><span class="pre">ChoiceList</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/ChoiceList/ChoiceList.php]</span></span></code> class helper:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Form\ChoiceList\ChoiceList</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;choices&#39;</span><span class="p">,</span> <span class="nx">ChoiceType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;choice_value&#39;</span> <span class="o">=&gt;</span> <span class="nx">ChoiceList</span><span class="o">::</span><span class="na">value</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="s1">&#39;uuid&#39;</span><span class="p">),</span>
+<span class="p">]);</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="choice.xhtml#reference-form-choice-loader"><span class="std std-ref">“choice_loader” option documentation</span></a>.</p>
 </div>
 <p>In the <code class="docutils literal notranslate"><span class="pre">EntityType</span></code>, this is overridden to use the <code class="docutils literal notranslate"><span class="pre">id</span></code> by default. When the
 <code class="docutils literal notranslate"><span class="pre">id</span></code> is used, Doctrine only queries for the objects for the ids that were actually
@@ -391,6 +419,23 @@ are the attributes for each choice, a callable or a property path
 <span class="p">]);</span>
 </pre></div>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When defining a custom type, you should use the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/ChoiceList/ChoiceList.php" title="Symfony\Component\Form\ChoiceList\ChoiceList"><span class="pre">ChoiceList</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/ChoiceList/ChoiceList.php]</span></span></code> class helper:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Entity\Category</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Form\ChoiceList\ChoiceList</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;choices&#39;</span><span class="p">,</span> <span class="nx">ChoiceType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;choice_attr&#39;</span> <span class="o">=&gt;</span> <span class="nx">ChoiceList</span><span class="o">::</span><span class="na">attr</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="o">?</span><span class="nx">Category</span> <span class="nv">$category</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$category</span> <span class="o">?</span> <span class="p">[</span><span class="s1">&#39;data-uuid&#39;</span> <span class="o">=&gt;</span> <span class="nv">$category</span><span class="o">-&gt;</span><span class="na">getUuid</span><span class="p">()]</span> <span class="o">:</span> <span class="p">[];</span>
+    <span class="p">}),</span>
+<span class="p">]);</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="choice.xhtml#reference-form-choice-loader"><span class="std std-ref">“choice_loader” option documentation</span></a>.</p>
+</div>
 </div>
 <div class="section" id="choice-translation-domain">
 <h3><code class="docutils literal notranslate"><span class="pre">choice_translation_domain</span></code></h3>
@@ -443,6 +488,20 @@ a “Later” <code class="docutils literal notranslate"><span class="pre">&lt;o
 <p>If you return <code class="docutils literal notranslate"><span class="pre">null</span></code>, the option won’t be grouped. You can also pass a string
 “property path” that will be called to get the group. See the <a class="reference internal" href="#choice-label">choice_label</a> for
 details about using a property path.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When defining a custom type, you should use the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/ChoiceList/ChoiceList.php" title="Symfony\Component\Form\ChoiceList\ChoiceList"><span class="pre">ChoiceList</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/ChoiceList/ChoiceList.php]</span></span></code> class helper:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Form\ChoiceList\ChoiceList</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+<span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;choices&#39;</span><span class="p">,</span> <span class="nx">ChoiceType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;group_by&#39;</span> <span class="o">=&gt;</span> <span class="nx">ChoiceList</span><span class="o">::</span><span class="na">groupBy</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">),</span>
+<span class="p">]);</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="choice.xhtml#reference-form-choice-loader"><span class="std std-ref">“choice_loader” option documentation</span></a>.</p>
+</div>
 </div>
 <div class="section" id="multiple">
 <h3><code class="docutils literal notranslate"><span class="pre">multiple</span></code></h3>
@@ -842,16 +901,10 @@ to render the <a class="reference internal" href="../../../form/form_customizati
 <p>Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
 the <a class="reference internal" href="../../../form/form_customization.xhtml#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 </div>
 <div class="section" id="label-translation-parameters">
 <h3>label_translation_parameters</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">label_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The content of the <a class="reference internal" href="#label">label</a> option is translated before displaying it, so it
 can contain <a class="reference internal" href="../../../translation/message_format.xhtml#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>.
 This option defines the values used to replace those placeholders.</p>
@@ -877,9 +930,6 @@ the parent placeholders.</p>
 <div class="section" id="attr-translation-parameters">
 <h3>attr_translation_parameters</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">attr_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The content of the <code class="docutils literal notranslate"><span class="pre">title</span></code> and <code class="docutils literal notranslate"><span class="pre">placeholder</span></code> values defined in the <a class="reference internal" href="#attr">attr</a>
 option is translated before displaying it, so it can contain
 <a class="reference internal" href="../../../translation/message_format.xhtml#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>. This
@@ -911,9 +961,6 @@ parent placeholders.</p>
 <div class="section" id="help-translation-parameters">
 <h3>help_translation_parameters</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">help_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The content of the <a class="reference internal" href="#help">help</a> option is translated before displaying it, so it
 can contain <a class="reference internal" href="../../../translation/message_format.xhtml#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>.
 This option defines the values used to replace those placeholders.</p>

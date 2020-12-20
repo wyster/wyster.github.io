@@ -411,6 +411,7 @@ from it.</p>
 <span class="k">use</span> <span class="nx">Lcobucci\JWT\Signer\Hmac\Sha256</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Lcobucci\JWT\Signer\Key</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\Controller\AbstractController</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Cookie</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Request</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\WebLink\Link</span><span class="p">;</span>
@@ -431,10 +432,14 @@ from it.</p>
             <span class="o">-&gt;</span><span class="na">toString</span><span class="p">();</span>
 
         <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">json</span><span class="p">([</span><span class="s1">&#39;@id&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;/demo/books/1&#39;</span><span class="p">,</span> <span class="s1">&#39;availability&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;https://schema.org/InStock&#39;</span><span class="p">]);</span>
-        <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">headers</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span>
-            <span class="s1">&#39;set-cookie&#39;</span><span class="p">,</span>
-            <span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;mercureAuthorization=%s; path=/.well-known/mercure; secure; httponly; SameSite=strict&#39;</span><span class="p">,</span> <span class="nv">$token</span><span class="p">)</span>
-        <span class="p">);</span>
+        <span class="nv">$cookie</span> <span class="o">=</span> <span class="nx">Cookie</span><span class="o">::</span><span class="na">create</span><span class="p">(</span><span class="s1">&#39;mercureAuthorization&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">withValue</span><span class="p">(</span><span class="nv">$token</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">withPath</span><span class="p">(</span><span class="s1">&#39;/.well-known/mercure&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">withSecure</span><span class="p">(</span><span class="k">true</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">withHttpOnly</span><span class="p">(</span><span class="k">true</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">withSameSite</span><span class="p">(</span><span class="s1">&#39;strict&#39;</span><span class="p">)</span>
+        <span class="p">;</span>
+        <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">headers</span><span class="o">-&gt;</span><span class="na">setCookie</span><span class="p">(</span><span class="nv">$cookie</span><span class="p">);</span>
 
         <span class="k">return</span> <span class="nv">$response</span><span class="p">;</span>
     <span class="p">}</span>

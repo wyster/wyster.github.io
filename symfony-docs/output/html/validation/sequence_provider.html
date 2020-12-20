@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -132,6 +134,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../validation.html#constraints">Constraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../validation.html#constraints-in-form-classes">Constraints in Form Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../validation.html#constraint-targets">Constraint Targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../validation.html#debugging-the-constraints">Debugging the Constraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../validation.html#final-thoughts">Final Thoughts</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../validation.html#learn-more">Learn more</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="custom_constraint.html">How to Create a Custom Validation Constraint</a></li>
@@ -139,6 +142,7 @@
 <li class="toctree-l3"><a class="reference internal" href="raw_values.html">How to Validate Raw Values (Scalar Values and Arrays)</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">How to Sequentially Apply Validation Groups</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#group-sequence-providers">Group Sequence Providers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-sequentially-apply-constraints-on-a-single-property">How to Sequentially Apply Constraints on a Single Property</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="severity.html">How to Handle Different Error Levels</a></li>
@@ -786,6 +790,15 @@ provides a sequence of groups to be validated:</p>
 </td></tr></table></div>
 </li>
 </ul>
+</div>
+</div>
+<div class="section" id="how-to-sequentially-apply-constraints-on-a-single-property">
+<h2>How to Sequentially Apply Constraints on a Single Property<a class="headerlink" href="#how-to-sequentially-apply-constraints-on-a-single-property" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes, you may want to apply constraints sequentially on a single
+property. The <a class="reference internal" href="../reference/constraints/Sequentially.html"><span class="doc">Sequentially constraint</span></a>
+can solve this for you in a more straightforward way than using a <code class="docutils literal notranslate"><span class="pre">GroupSequence</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">Sequentially</span></code> constraint was introduced in Symfony 5.1.</p>
 </div>
 </div>
 </div>

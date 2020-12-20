@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -192,7 +194,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="security.html">The Security Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="serializer.html">The Serializer Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="string.html">The String Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_exporter.html">The VarExporter Component</a></li>
@@ -540,9 +545,6 @@ string values: <code class="docutils literal notranslate"><span class="pre">arra
 <code class="docutils literal notranslate"><span class="pre">iterable</span></code>, <code class="docutils literal notranslate"><span class="pre">null</span></code>, <code class="docutils literal notranslate"><span class="pre">object</span></code>, <code class="docutils literal notranslate"><span class="pre">resource</span></code> or <code class="docutils literal notranslate"><span class="pre">string</span></code>.</p>
 <p>Constants inside the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/PropertyInfo/Type.php" title="Symfony\Component\PropertyInfo\Type"><span class="pre">Type</span></a></code>
 class, in the form <code class="docutils literal notranslate"><span class="pre">Type::BUILTIN_TYPE_*</span></code>, are provided for convenience.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>Support for typed properties (added in PHP 7.4) was introduced in Symfony 4.4.</p>
-</div>
 </div>
 <div class="section" id="type-isnullable">
 <h3><code class="docutils literal notranslate"><span class="pre">Type::isNullable()</span></code><a class="headerlink" href="#type-isnullable" title="Permalink to this headline">¶</a></h3>
@@ -571,9 +573,6 @@ or <code class="docutils literal notranslate"><span class="pre">remove</span></c
 <code class="docutils literal notranslate"><span class="pre">&#64;var</span> <span class="pre">SomeClass&lt;DateTime&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;var</span> <span class="pre">SomeClass&lt;integer,string&gt;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&#64;var</span> <span class="pre">Doctrine\Common\Collections\Collection&lt;App\Entity\SomeEntity&gt;</span></code>, etc.)</li>
 </ul>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.2: </span>The support of phpDocumentor collection types was introduced in Symfony 4.2.</p>
-</div>
 </div>
 <div class="section" id="type-getcollectionkeytype-type-getcollectionvaluetype">
 <h3><code class="docutils literal notranslate"><span class="pre">Type::getCollectionKeyType()</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">Type::getCollectionValueType()</span></code><a class="headerlink" href="#type-getcollectionkeytype-type-getcollectionvaluetype" title="Permalink to this headline">¶</a></h3>
@@ -618,10 +617,6 @@ return and scalar types for PHP 7:</p>
 <span class="c1">// Initializable information</span>
 <span class="nv">$reflectionExtractor</span><span class="o">-&gt;</span><span class="na">isInitializable</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">);</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.1: </span>The feature to extract the property types from constructor arguments was
-introduced in Symfony 4.1.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -682,9 +677,15 @@ with the <code class="docutils literal notranslate"><span class="pre">property_i
 <span class="p">);</span>
 <span class="nv">$serializerExtractor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SerializerExtractor</span><span class="p">(</span><span class="nv">$serializerClassMetadataFactory</span><span class="p">);</span>
 
-<span class="c1">// List information.</span>
-<span class="nv">$serializerExtractor</span><span class="o">-&gt;</span><span class="na">getProperties</span><span class="p">(</span><span class="nv">$class</span><span class="p">);</span>
+<span class="c1">// the `serializer_groups` option must be configured (may be set to null)</span>
+<span class="nv">$serializerExtractor</span><span class="o">-&gt;</span><span class="na">getProperties</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;serializer_groups&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;mygroup&#39;</span><span class="p">]]);</span>
 </pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">serializer_groups</span></code> is set to <code class="docutils literal notranslate"><span class="pre">null</span></code>, serializer groups metadata won’t be
+checked but you will get only the properties considered by the Serializer
+Component (notably the <code class="docutils literal notranslate"><span class="pre">&#64;Ignore</span></code> annotation is taken into account).</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>Support for the <code class="docutils literal notranslate"><span class="pre">null</span></code> value in <code class="docutils literal notranslate"><span class="pre">serializer_groups</span></code> was introduced in Symfony 5.2.</p>
 </div>
 </div>
 <div class="section" id="doctrineextractor">
@@ -738,9 +739,6 @@ service by defining it as a service with one or more of the following
 <li><code class="docutils literal notranslate"><span class="pre">property_info.initializable_extractor</span></code> if it provides initializable information
 (it checks if a property can be initialized through the constructor).</li>
 </ul>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">property_info.initializable_extractor</span></code> was introduced in Symfony 4.2.</p>
-</div>
 </div>
 </div>
 

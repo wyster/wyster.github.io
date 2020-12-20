@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -129,6 +131,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#basic-translation">Basic Translation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#message-format">Message Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation.html#translatable-objects">Translatable Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#translations-in-templates">Translations in Templates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#forcing-the-translator-locale">Forcing the Translator Locale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../translation.html#extracting-translation-contents-and-updating-catalogs-automatically">Extracting Translation Contents and Updating Catalogs Automatically</a></li>
@@ -267,6 +270,17 @@ translation file using the <code class="docutils literal notranslate"><span clas
 <span class="gp">$</span> php bin/console lint:xliff translations/ --format<span class="o">=</span>json
 </pre></div>
 </td></tr></table></div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>The Yaml component provides a stand-alone <code class="docutils literal notranslate"><span class="pre">yaml-lint</span></code> binary allowing
+you to lint YAML files without having to create a console application:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php vendor/bin/yaml-lint translations/
+</pre></div>
+</td></tr></table></div>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">yaml-lint</span></code> binary was introduced in Symfony 5.1.</p>
+</div>
+</div>
 </div>
 
 

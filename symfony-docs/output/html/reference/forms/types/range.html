@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../session.html">Sessions</a></li>
@@ -156,6 +158,7 @@
 <li class="toctree-l3"><a class="reference internal" href="url.html">UrlType Field</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">RangeType Field</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overridden-options">Overridden Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#inherited-options">Inherited Options</a></li>
 </ul>
 </li>
@@ -274,15 +277,20 @@
 <code class="docutils literal notranslate"><span class="pre">&lt;input</span> <span class="pre">type=&quot;range&quot;/&gt;</span></code> tag.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="84%" />
+<col width="28%" />
+<col width="72%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>Rendered as</td>
 <td><code class="docutils literal notranslate"><span class="pre">input</span></code> <code class="docutils literal notranslate"><span class="pre">range</span></code> field (slider in HTML5 supported browser)</td>
 </tr>
-<tr class="row-even"><td>Inherited
-options</td>
+<tr class="row-even"><td>Overridden options</td>
+<td><ul class="first last simple">
+<li><a class="reference internal" href="#invalid-message">invalid_message</a></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>Inherited options</td>
 <td><ul class="first last simple">
 <li><a class="reference internal" href="#attr">attr</a></li>
 <li><a class="reference internal" href="#data">data</a></li>
@@ -302,10 +310,16 @@ options</td>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>Parent type</td>
+<tr class="row-even"><td>Default invalid message</td>
+<td>Please choose a valid range.</td>
+</tr>
+<tr class="row-odd"><td>Legacy invalid message</td>
+<td>The value {{ value }} is not valid.</td>
+</tr>
+<tr class="row-even"><td>Parent type</td>
 <td><a class="reference internal" href="text.html"><span class="doc">TextType</span></a></td>
 </tr>
-<tr class="row-even"><td>Class</td>
+<tr class="row-odd"><td>Class</td>
 <td><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Form/Extension/Core/Type/RangeType.php" title="Symfony\Component\Form\Extension\Core\Type\RangeType"><span class="pre">RangeType</span></a></code></td>
 </tr>
 </tbody>
@@ -341,6 +355,22 @@ available running this command in your app:</p>
 <span class="p">]);</span>
 </pre></div>
 </td></tr></table></div>
+</div>
+<div class="section" id="overridden-options">
+<h2>Overridden Options<a class="headerlink" href="#overridden-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="invalid-message">
+<h3><code class="docutils literal notranslate"><span class="pre">invalid_message</span></code><a class="headerlink" href="#invalid-message" title="Permalink to this headline">¶</a></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">valid</span></code></p>
+<p>This is the validation error message that’s used if the data entered into
+this field doesn’t make sense (i.e. fails validation).</p>
+<p>This might happen, for example, if the user enters a nonsense string into
+a <a class="reference internal" href="time.html"><span class="doc">TimeType</span></a> field that cannot be converted
+into a real time or if the user enters a string (e.g. <code class="docutils literal notranslate"><span class="pre">apple</span></code>) into a
+number field.</p>
+<p>Normal (business logic) validation (such as when setting a minimum length
+for a field) should be set using validation messages with your validation
+rules (<a class="reference internal" href="../../../validation.html#validation-constraint-configuration"><span class="std std-ref">reference</span></a>).</p>
+</div>
 </div>
 <div class="section" id="inherited-options">
 <h2>Inherited Options<a class="headerlink" href="#inherited-options" title="Permalink to this headline">¶</a></h2>
@@ -598,9 +628,6 @@ to render the <a class="reference internal" href="../../../form/form_customizati
 <p class="first admonition-title">See also</p>
 <p class="last">Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
 the <a class="reference internal" href="../../../form/form_customization.html#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
 </div>
 </div>
 <div class="section" id="trim">

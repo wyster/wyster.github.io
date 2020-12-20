@@ -399,12 +399,15 @@ the value of properties or the return value of methods on your object.</p>
 <h3>String Constraints</h3>
 <ul class="simple">
 <li><p><a class="reference internal" href="reference/constraints/Email.xhtml"><span class="doc">Email</span></a></p></li>
+<li><p><a class="reference internal" href="reference/constraints/ExpressionLanguageSyntax.xhtml"><span class="doc">ExpressionLanguageSyntax</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Length.xhtml"><span class="doc">Length</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Url.xhtml"><span class="doc">Url</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Regex.xhtml"><span class="doc">Regex</span></a></p></li>
+<li><p><a class="reference internal" href="reference/constraints/Hostname.xhtml"><span class="doc">Hostname</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Ip.xhtml"><span class="doc">Ip</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Json.xhtml"><span class="doc">Json</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Uuid.xhtml"><span class="doc">Uuid</span></a></p></li>
+<li><p><a class="reference internal" href="reference/constraints/Ulid.xhtml"><span class="doc">Ulid</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/UserPassword.xhtml"><span class="doc">UserPassword</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/NotCompromisedPassword.xhtml"><span class="doc">NotCompromisedPassword</span></a></p></li>
 </ul>
@@ -469,11 +472,15 @@ the value of properties or the return value of methods on your object.</p>
 <li><p><a class="reference internal" href="reference/constraints/Iban.xhtml"><span class="doc">Iban</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Isbn.xhtml"><span class="doc">Isbn</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Issn.xhtml"><span class="doc">Issn</span></a></p></li>
+<li><p><a class="reference internal" href="reference/constraints/Isin.xhtml"><span class="doc">Isin</span></a></p></li>
 </ul>
 </div>
 <div class="section" id="other-constraints">
 <h3>Other Constraints</h3>
 <ul class="simple">
+<li><p><a class="reference internal" href="reference/constraints/AtLeastOneOf.xhtml"><span class="doc">AtLeastOneOf</span></a></p></li>
+<li><p><a class="reference internal" href="reference/constraints/Sequentially.xhtml"><span class="doc">Sequentially</span></a></p></li>
+<li><p><a class="reference internal" href="reference/constraints/Compound.xhtml"><span class="doc">Compound</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Callback.xhtml"><span class="doc">Callback</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/Expression.xhtml"><span class="doc">Expression</span></a></p></li>
 <li><p><a class="reference internal" href="reference/constraints/All.xhtml"><span class="doc">All</span></a></p></li>
@@ -1089,6 +1096,61 @@ constraint that’s applied to the class itself. When that class is validated,
 methods specified by that constraint are simply executed so that each can
 provide more custom validation.</p>
 </div>
+</div>
+<div class="section" id="debugging-the-constraints">
+<h2>Debugging the Constraints</h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">debug:validator</span></code> command was introduced in Symfony 5.2.</p>
+</div>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">debug:validator</span></code> command to list the validation constraints of a
+given class:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:validator <span class="s1">&#39;App\Entity\SomeClass&#39;</span>
+
+<span class="go">    App\Entity\SomeClass</span>
+<span class="go">    -----------------------------------------------------</span>
+
+<span class="go">    +---------------+--------------------------------------------------+---------+------------------------------------------------------------+</span>
+<span class="go">    | Property      | Name                                             | Groups  | Options                                                    |</span>
+<span class="go">    +---------------+--------------------------------------------------+---------+------------------------------------------------------------+</span>
+<span class="go">    | firstArgument | Symfony\Component\Validator\Constraints\NotBlank | Default | [                                                          |</span>
+<span class="go">    |               |                                                  |         |   &quot;message&quot; =&gt; &quot;This value should not be blank.&quot;,          |</span>
+<span class="go">    |               |                                                  |         |   &quot;allowNull&quot; =&gt; false,                                    |</span>
+<span class="go">    |               |                                                  |         |   &quot;normalizer&quot; =&gt; null,                                    |</span>
+<span class="go">    |               |                                                  |         |   &quot;payload&quot; =&gt; null                                        |</span>
+<span class="go">    |               |                                                  |         | ]                                                          |</span>
+<span class="go">    | firstArgument | Symfony\Component\Validator\Constraints\Email    | Default | [                                                          |</span>
+<span class="go">    |               |                                                  |         |   &quot;message&quot; =&gt; &quot;This value is not a valid email address.&quot;, |</span>
+<span class="go">    |               |                                                  |         |   &quot;mode&quot; =&gt; null,                                          |</span>
+<span class="go">    |               |                                                  |         |   &quot;normalizer&quot; =&gt; null,                                    |</span>
+<span class="go">    |               |                                                  |         |   &quot;payload&quot; =&gt; null                                        |</span>
+<span class="go">    |               |                                                  |         | ]                                                          |</span>
+<span class="go">    +---------------+--------------------------------------------------+---------+------------------------------------------------------------+</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can also validate all the classes stored in a given directory:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:validator src/Entity
+</pre></div>
+</td></tr></table></div>
 </div>
 <div class="section" id="final-thoughts">
 <h2>Final Thoughts</h2>

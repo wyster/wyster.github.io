@@ -228,7 +228,7 @@ so, get the entity manager via the service container as follows:</p>
 <span class="sd">     */</span>
     <span class="k">private</span> <span class="nv">$entityManager</span><span class="p">;</span>
 
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">setUp</span><span class="p">()</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">setUp</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
         <span class="nv">$kernel</span> <span class="o">=</span> <span class="nx">self</span><span class="o">::</span><span class="na">bootKernel</span><span class="p">();</span>
 
@@ -247,7 +247,7 @@ so, get the entity manager via the service container as follows:</p>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="mf">14.50</span><span class="p">,</span> <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">getPrice</span><span class="p">());</span>
     <span class="p">}</span>
 
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">tearDown</span><span class="p">()</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">tearDown</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
         <span class="k">parent</span><span class="o">::</span><span class="na">tearDown</span><span class="p">();</span>
 

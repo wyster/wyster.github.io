@@ -48,10 +48,6 @@ which in turn requires another class to manage the storage of locks:</p>
 <span class="nv">$factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">LockFactory</span><span class="p">(</span><span class="nv">$store</span><span class="p">);</span>
 </pre></div>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">Symfony\Component\Lock\LockFactory</span></code> class was introduced in Symfony
-4.4. In previous versions it was called <code class="docutils literal notranslate"><span class="pre">Symfony\Component\Lock\Factory</span></code>.</p>
-</div>
 <p>The lock is created by calling the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/LockFactory.php" title="Symfony\Component\Lock\LockFactory::createLock()"><span class="pre">createLock()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/LockFactory.php]</span></span></code>
 method. Its first argument is an arbitrary string that represents the locked
 resource. Then, a call to the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/LockInterface.php" title="Symfony\Component\Lock\LockInterface::acquire()"><span class="pre">acquire()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/LockInterface.php]</span></span></code>
@@ -130,6 +126,16 @@ they can be decorated with the <code class="docutils literal notranslate"><span 
 <span class="nv">$lock</span><span class="o">-&gt;</span><span class="na">acquire</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>When the provided store does not implement the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/BlockingStoreInterface.php" title="Symfony\Component\Lock\BlockingStoreInterface"><span class="pre">BlockingStoreInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/BlockingStoreInterface.php]</span></span></code> interface, the
+<code class="docutils literal notranslate"><span class="pre">Lock</span></code> class will retry to acquire the lock in a non-blocking way until the
+lock is acquired.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 5.2: </span>As of Symfony 5.2, you don’t need to use the <code class="docutils literal notranslate"><span class="pre">RetryTillSaveStore</span></code> class
+anymore. The <code class="docutils literal notranslate"><span class="pre">Lock</span></code> class now provides the default logic to acquire locks
+in blocking mode when the store does not implement the
+<code class="docutils literal notranslate"><span class="pre">BlockingStoreInterface</span></code> interface.</p>
+</div>
 </div>
 <div class="section" id="expiring-locks">
 <h2>Expiring Locks</h2>
@@ -204,6 +210,59 @@ an argument of the <code class="docutils literal notranslate"><span class="pre">
 <code class="docutils literal notranslate"><span class="pre">getRemainingLifetime()</span></code> (which returns <code class="docutils literal notranslate"><span class="pre">null</span></code> or a <code class="docutils literal notranslate"><span class="pre">float</span></code>
 as seconds) and <code class="docutils literal notranslate"><span class="pre">isExpired()</span></code> (which returns a boolean).</p>
 </div>
+<div class="section" id="shared-locks">
+<h2>Shared Locks</h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>Shared locks (and the associated <code class="docutils literal notranslate"><span class="pre">acquireRead()</span></code> method and
+<code class="docutils literal notranslate"><span class="pre">SharedLockStoreInterface</span></code>) were introduced in Symfony 5.2.</p>
+</div>
+<p>A shared or <a class="reference external" href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock">readers–writer lock</a><span class="link-target"> [https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock]</span> is a synchronization primitive that allows
+concurrent access for read-only operations, while write operations require
+exclusive access. This means that multiple threads can read the data in parallel
+but an exclusive lock is needed for writing or modifying data. They are used for
+example for data structures that cannot be updated atomically and are invalid
+until the update is complete.</p>
+<p>Use the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/SharedLockInterface.php" title="Symfony\Component\Lock\SharedLockInterface::acquireRead()"><span class="pre">acquireRead()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/SharedLockInterface.php]</span></span></code> method
+to acquire a read-only lock, and the existing
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/LockInterface.php" title="Symfony\Component\Lock\LockInterface::acquire()"><span class="pre">acquire()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/LockInterface.php]</span></span></code> method to acquire a
+write lock:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$lock</span> <span class="o">=</span> <span class="nv">$factory</span><span class="o">-&gt;</span><span class="na">createLock</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="o">.</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$lock</span><span class="o">-&gt;</span><span class="na">acquireRead</span><span class="p">())</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Similar to the <code class="docutils literal notranslate"><span class="pre">acquire()</span></code> method, pass <code class="docutils literal notranslate"><span class="pre">true</span></code> as the argument of <code class="docutils literal notranslate"><span class="pre">acquireRead()</span></code>
+to acquire the lock in a blocking mode:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$lock</span> <span class="o">=</span> <span class="nv">$factory</span><span class="o">-&gt;</span><span class="na">createLock</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="o">.</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">);</span>
+<span class="nv">$lock</span><span class="o">-&gt;</span><span class="na">acquireRead</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock#Priority_policies">priority policy</a><span class="link-target"> [https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock#Priority_policies]</span> of Symfony’s shared locks depends on the underlying
+store (e.g. Redis store prioritizes readers vs writers).</p>
+</div>
+<p>When a read-only lock is acquired with the method <code class="docutils literal notranslate"><span class="pre">acquireRead()</span></code>, it’s
+possible to <strong>promote</strong> the lock, and change it to write lock, by calling the
+<code class="docutils literal notranslate"><span class="pre">acquire()</span></code> method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$lock</span> <span class="o">=</span> <span class="nv">$factory</span><span class="o">-&gt;</span><span class="na">createLock</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="o">.</span><span class="nv">$userId</span><span class="p">);</span>
+<span class="nv">$lock</span><span class="o">-&gt;</span><span class="na">acquireRead</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">shouldUpdate</span><span class="p">(</span><span class="nv">$userId</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$lock</span><span class="o">-&gt;</span><span class="na">acquire</span><span class="p">(</span><span class="k">true</span><span class="p">);</span> <span class="c1">// Promote the lock to write lock</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span><span class="nv">$userId</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>In the same way, it’s possible to <strong>demote</strong> a write lock, and change it to a
+read-only lock by calling the <code class="docutils literal notranslate"><span class="pre">acquireRead()</span></code> method.</p>
+<p>When the provided store does not implement the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/SharedLockStoreInterface.php" title="Symfony\Component\Lock\SharedLockStoreInterface"><span class="pre">SharedLockStoreInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/SharedLockStoreInterface.php]</span></span></code> interface, the
+<code class="docutils literal notranslate"><span class="pre">Lock</span></code> class will fallback to a write lock by calling the <code class="docutils literal notranslate"><span class="pre">acquire()</span></code> method.</p>
+</div>
 <div class="section" id="the-owner-of-the-lock">
 <h2>The Owner of The Lock</h2>
 <p>Locks that are acquired for the first time are owned <a class="footnote-reference brackets" href="#id2" id="id1">1</a> by the <code class="docutils literal notranslate"><span class="pre">Lock</span></code> instance that acquired
@@ -260,16 +319,18 @@ is the owner of the lock.</p>
 <p>The component includes the following built-in store types:</p>
 <table class="docutils">
 <colgroup>
-<col style="width: 67%" />
-<col style="width: 9%" />
-<col style="width: 12%" />
-<col style="width: 12%" />
+<col style="width: 60%" />
+<col style="width: 8%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 10%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Store</p></th>
 <th class="head"><p>Scope</p></th>
 <th class="head"><p>Blocking</p></th>
 <th class="head"><p>Expiring</p></th>
+<th class="head"><p>Sharing</p></th>
 </tr>
 </thead>
 <tbody>
@@ -277,39 +338,52 @@ is the owner of the lock.</p>
 <td><p>local</p></td>
 <td><p>yes</p></td>
 <td><p>no</p></td>
+<td><p>yes</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#lock-store-memcached"><span class="std std-ref">MemcachedStore</span></a></p></td>
 <td><p>remote</p></td>
 <td><p>no</p></td>
 <td><p>yes</p></td>
+<td><p>no</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#lock-store-pdo"><span class="std std-ref">PdoStore</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#lock-store-mongodb"><span class="std std-ref">MongoDbStore</span></a></p></td>
 <td><p>remote</p></td>
 <td><p>no</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lock-store-pdo"><span class="std std-ref">PdoStore</span></a></p></td>
+<td><p>remote</p></td>
+<td><p>no</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lock-store-pgsql"><span class="std std-ref">PostgreSqlStore</span></a></p></td>
+<td><p>remote</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
 <td><p>yes</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#lock-store-redis"><span class="std std-ref">RedisStore</span></a></p></td>
 <td><p>remote</p></td>
 <td><p>no</p></td>
 <td><p>yes</p></td>
+<td><p>yes</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#lock-store-semaphore"><span class="std std-ref">SemaphoreStore</span></a></p></td>
 <td><p>local</p></td>
 <td><p>yes</p></td>
+<td><p>no</p></td>
 <td><p>no</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#lock-store-zookeeper"><span class="std std-ref">ZookeeperStore</span></a></p></td>
 <td><p>remote</p></td>
 <td><p>no</p></td>
 <td><p>no</p></td>
+<td><p>no</p></td>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">PersistingStoreInterface</span></code> and <code class="docutils literal notranslate"><span class="pre">BlockingStoreInterface</span></code> interfaces were
-introduced in Symfony 4.4. In previous versions there was only one interface
-called <code class="docutils literal notranslate"><span class="pre">Symfony\Component\Lock\StoreInterface</span></code>.</p>
-</div>
 <div class="section" id="flockstore">
 <span id="lock-store-flock"></span><h3>FlockStore</h3>
 <p>The FlockStore uses the file system on the local computer to create the locks.
@@ -348,15 +422,89 @@ support blocking, and expects a TTL to avoid stalled locks:</p>
 <p>Memcached does not support TTL lower than 1 second.</p>
 </div>
 </div>
+<div class="section" id="mongodbstore">
+<span id="lock-store-mongodb"></span><h3>MongoDbStore</h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">MongoDbStore</span></code> was introduced in Symfony 5.1.</p>
+</div>
+<p>The MongoDbStore saves locks on a MongoDB server <code class="docutils literal notranslate"><span class="pre">&gt;=2.2</span></code>, it requires a
+<code class="docutils literal notranslate"><span class="pre">\MongoDB\Collection</span></code> or <code class="docutils literal notranslate"><span class="pre">\MongoDB\Client</span></code> from <a class="reference external" href="https://packagist.org/packages/mongodb/mongodb">mongodb/mongodb</a><span class="link-target"> [https://packagist.org/packages/mongodb/mongodb]</span> or a
+<a class="reference external" href="https://docs.mongodb.com/manual/reference/connection-string/">MongoDB Connection String</a><span class="link-target"> [https://docs.mongodb.com/manual/reference/connection-string/]</span>.
+This store does not support blocking and expects a TTL to
+avoid stalled locks:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Lock\Store\MongoDbStore</span><span class="p">;</span>
+
+<span class="nv">$mongo</span> <span class="o">=</span> <span class="s1">&#39;mongodb://localhost/database?collection=lock&#39;</span><span class="p">;</span>
+<span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;gcProbablity&#39;</span> <span class="o">=&gt;</span> <span class="mf">0.001</span><span class="p">,</span>
+    <span class="s1">&#39;database&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;myapp&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;collection&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;lock&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;uriOptions&#39;</span> <span class="o">=&gt;</span> <span class="p">[],</span>
+    <span class="s1">&#39;driverOptions&#39;</span> <span class="o">=&gt;</span> <span class="p">[],</span>
+<span class="p">];</span>
+<span class="nv">$store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MongoDbStore</span><span class="p">(</span><span class="nv">$mongo</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">MongoDbStore</span></code> takes the following <code class="docutils literal notranslate"><span class="pre">$options</span></code> (depending on the first parameter type):</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 88%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>gcProbablity</p></td>
+<td><p>Should a TTL Index be created expressed as a probability from 0.0 to 1.0 (Defaults to <code class="docutils literal notranslate"><span class="pre">0.001</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>database</p></td>
+<td><p>The name of the database</p></td>
+</tr>
+<tr class="row-even"><td><p>collection</p></td>
+<td><p>The name of the collection</p></td>
+</tr>
+<tr class="row-odd"><td><p>uriOptions</p></td>
+<td><p>Array of uri options for <a class="reference external" href="https://docs.mongodb.com/php-library/current/reference/method/MongoDBClient__construct/">MongoDBClient::__construct</a><span class="link-target"> [https://docs.mongodb.com/php-library/current/reference/method/MongoDBClient__construct/]</span></p></td>
+</tr>
+<tr class="row-even"><td><p>driverOptions</p></td>
+<td><p>Array of driver options for <a class="reference external" href="https://docs.mongodb.com/php-library/current/reference/method/MongoDBClient__construct/">MongoDBClient::__construct</a><span class="link-target"> [https://docs.mongodb.com/php-library/current/reference/method/MongoDBClient__construct/]</span></p></td>
+</tr>
+</tbody>
+</table>
+<p>When the first parameter is a:</p>
+<p><code class="docutils literal notranslate"><span class="pre">MongoDB\Collection</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">$options['database']</span></code> is ignored</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$options['collection']</span></code> is ignored</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">MongoDB\Client</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">$options['database']</span></code> is mandatory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$options['collection']</span></code> is mandatory</p></li>
+</ul>
+<p>MongoDB Connection String:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">$options['database']</span></code> is used otherwise <code class="docutils literal notranslate"><span class="pre">/path</span></code> from the DSN, at least one is mandatory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$options['collection']</span></code> is used otherwise <code class="docutils literal notranslate"><span class="pre">?collection=</span></code> from the DSN, at least one is mandatory</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">collection</span></code> querystring parameter is not part of the <a class="reference external" href="https://docs.mongodb.com/manual/reference/connection-string/">MongoDB Connection String</a><span class="link-target"> [https://docs.mongodb.com/manual/reference/connection-string/]</span> definition.
+It is used to allow constructing a <code class="docutils literal notranslate"><span class="pre">MongoDbStore</span></code> using a <a class="reference external" href="https://en.wikipedia.org/wiki/Data_source_name">Data Source Name (DSN)</a><span class="link-target"> [https://en.wikipedia.org/wiki/Data_source_name]</span> without <code class="docutils literal notranslate"><span class="pre">$options</span></code>.</p>
+</div>
+</div>
 <div class="section" id="pdostore">
 <span id="lock-store-pdo"></span><h3>PdoStore</h3>
 <p>The PdoStore saves locks in an SQL database. It requires a <a class="reference external" href="https://www.php.net/pdo">PDO</a><span class="link-target"> [https://www.php.net/pdo]</span> connection, a
-<a class="reference external" href="https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Connection.php">Doctrine DBAL Connection</a><span class="link-target"> [https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Connection.php]</span>, or a <a class="reference external" href="https://en.wikipedia.org/wiki/Data_source_name">Data Source Name (DSN)</a><span class="link-target"> [https://en.wikipedia.org/wiki/Data_source_name]</span>. This store does not
+<a class="reference external" href="https://github.com/doctrine/dbal/blob/master/src/Connection.php">Doctrine DBAL Connection</a><span class="link-target"> [https://github.com/doctrine/dbal/blob/master/src/Connection.php]</span>, or a <a class="reference external" href="https://en.wikipedia.org/wiki/Data_source_name">Data Source Name (DSN)</a><span class="link-target"> [https://en.wikipedia.org/wiki/Data_source_name]</span>. This store does not
 support blocking, and expects a TTL to avoid stalled locks:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Lock\Store\PdoStore</span><span class="p">;</span>
 
 <span class="c1">// a PDO, a Doctrine DBAL connection or DSN for lazy connecting through PDO</span>
-<span class="nv">$databaseConnectionOrDSN</span> <span class="o">=</span> <span class="s1">&#39;mysql:host=127.0.0.1;dbname=lock&#39;</span><span class="p">;</span>
+<span class="nv">$databaseConnectionOrDSN</span> <span class="o">=</span> <span class="s1">&#39;mysql:host=127.0.0.1;dbname=app&#39;</span><span class="p">;</span>
 <span class="nv">$store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PdoStore</span><span class="p">(</span><span class="nv">$databaseConnectionOrDSN</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;db_username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;myuser&#39;</span><span class="p">,</span> <span class="s1">&#39;db_password&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;mypassword&#39;</span><span class="p">]);</span>
 </pre></div>
 </div>
@@ -364,25 +512,28 @@ support blocking, and expects a TTL to avoid stalled locks:</p>
 <p class="admonition-title">Note</p>
 <p>This store does not support TTL lower than 1 second.</p>
 </div>
-<p>Before storing locks in the database, you must create the table that stores
-the information. The store provides a method called
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/Store/PdoStore.php" title="Symfony\Component\Lock\Store\PdoStore::createTable()"><span class="pre">createTable()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/Store/PdoStore.php]</span></span></code>
-to set up this table for you according to the database engine used:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">try</span> <span class="p">{</span>
-    <span class="nv">$store</span><span class="o">-&gt;</span><span class="na">createTable</span><span class="p">();</span>
-<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">\PDOException</span> <span class="nv">$exception</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// the table could not be created for some reason</span>
-<span class="p">}</span>
-</pre></div>
+<p>The table where values are stored is created automatically on the first call to
+the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/Store/PdoStore.php" title="Symfony\Component\Lock\Store\PdoStore::save()"><span class="pre">save()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/Store/PdoStore.php]</span></span></code> method.
+You can also create this table explicitly by calling the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/Store/PdoStore.php" title="Symfony\Component\Lock\Store\PdoStore::createTable()"><span class="pre">createTable()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Lock/Store/PdoStore.php]</span></span></code> method in
+your code.</p>
 </div>
-<p>A great way to set up the table in production is to call the <code class="docutils literal notranslate"><span class="pre">createTable()</span></code>
-method in your local computer and then generate a
-<a class="reference internal" href="../doctrine.xhtml#doctrine-creating-the-database-tables-schema"><span class="std std-ref">database migration</span></a>:</p>
-<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console doctrine:migrations:diff
-<span class="gp">$</span> php bin/console doctrine:migrations:migrate
-</pre></div>
-</td></tr></table></div>
+<div class="section" id="postgresqlstore">
+<span id="lock-store-pgsql"></span><h3>PostgreSqlStore</h3>
+<p>The PostgreSqlStore uses <a class="reference external" href="https://www.postgresql.org/docs/current/explicit-locking.html">Advisory Locks</a><span class="link-target"> [https://www.postgresql.org/docs/current/explicit-locking.html]</span> provided by PostgreSQL. It requires a
+<a class="reference external" href="https://www.php.net/pdo">PDO</a><span class="link-target"> [https://www.php.net/pdo]</span> connection, a <a class="reference external" href="https://github.com/doctrine/dbal/blob/master/src/Connection.php">Doctrine DBAL Connection</a><span class="link-target"> [https://github.com/doctrine/dbal/blob/master/src/Connection.php]</span>, or a
+<a class="reference external" href="https://en.wikipedia.org/wiki/Data_source_name">Data Source Name (DSN)</a><span class="link-target"> [https://en.wikipedia.org/wiki/Data_source_name]</span>. It supports native blocking, as well as sharing locks.</p>
+<blockquote>
+<div><p>use SymfonyComponentLockStorePostgreSqlStore;</p>
+<p>// a PDO, a Doctrine DBAL connection or DSN for lazy connecting through PDO
+$databaseConnectionOrDSN = ‘postgresql://myuser:mypassword&#64;localhost:5634/lock’;
+$store = new PostgreSqlStore($databaseConnectionOrDSN);</p>
+</div></blockquote>
+<p>In opposite to the <code class="docutils literal notranslate"><span class="pre">PdoStore</span></code>, the <code class="docutils literal notranslate"><span class="pre">PostgreSqlStore</span></code> does not need a table to
+store locks and does not expire.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">PostgreSqlStore</span></code> was introduced in Symfony 5.2.</p>
+</div>
 </div>
 <div class="section" id="redisstore">
 <span id="lock-store-redis"></span><h3>RedisStore</h3>
@@ -470,7 +621,9 @@ the component is used in the following way.</p>
 <div class="section" id="remote-stores">
 <h3>Remote Stores</h3>
 <p>Remote stores (<a class="reference internal" href="#lock-store-memcached"><span class="std std-ref">MemcachedStore</span></a>,
+<a class="reference internal" href="#lock-store-mongodb"><span class="std std-ref">MongoDbStore</span></a>,
 <a class="reference internal" href="#lock-store-pdo"><span class="std std-ref">PdoStore</span></a>,
+<a class="reference internal" href="#lock-store-pgsql"><span class="std std-ref">PostgreSqlStore</span></a>,
 <a class="reference internal" href="#lock-store-redis"><span class="std std-ref">RedisStore</span></a> and
 <a class="reference internal" href="#lock-store-zookeeper"><span class="std std-ref">ZookeeperStore</span></a>) use a unique token to recognize
 the true owner of the lock. This token is stored in the
@@ -493,6 +646,7 @@ is down, the calls must not be forwarded to a backup or failover server.</p>
 <div class="section" id="expiring-stores">
 <h3>Expiring Stores</h3>
 <p>Expiring stores (<a class="reference internal" href="#lock-store-memcached"><span class="std std-ref">MemcachedStore</span></a>,
+<a class="reference internal" href="#lock-store-mongodb"><span class="std std-ref">MongoDbStore</span></a>,
 <a class="reference internal" href="#lock-store-pdo"><span class="std std-ref">PdoStore</span></a> and
 <a class="reference internal" href="#lock-store-redis"><span class="std std-ref">RedisStore</span></a>)
 guarantee that the lock is acquired only for the defined duration of time. If
@@ -602,6 +756,45 @@ dedicated Memcached service away from Cache.</p>
 </div>
 </div>
 <div class="section" id="id5">
+<h3>MongoDbStore</h3>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>The locked resource name is indexed in the <code class="docutils literal notranslate"><span class="pre">_id</span></code> field of the lock
+collection. Beware that in MongoDB an indexed field’s value can be
+<a class="reference external" href="https://docs.mongodb.com/manual/reference/limits/#Index-Key-Limit">a maximum of 1024 bytes in length</a><span class="link-target"> [https://docs.mongodb.com/manual/reference/limits/#Index-Key-Limit]</span> inclusive of structural overhead.</p>
+</div>
+<p>A TTL index must be used to automatically clean up expired locks.
+Such an index can be created manually:</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">db</span><span class="p">.</span><span class="nx">lock</span><span class="p">.</span><span class="nx">ensureIndex</span><span class="p">(</span>
+    <span class="p">{</span> <span class="s2">&quot;expires_at&quot;</span><span class="o">:</span> <span class="mi">1</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="s2">&quot;expireAfterSeconds&quot;</span><span class="o">:</span> <span class="mi">0</span> <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Alternatively, the method <code class="docutils literal notranslate"><span class="pre">MongoDbStore::createTtlIndex(int</span> <span class="pre">$expireAfterSeconds</span> <span class="pre">=</span> <span class="pre">0)</span></code>
+can be called once to create the TTL index during database setup. Read more
+about <a class="reference external" href="https://docs.mongodb.com/manual/tutorial/expire-data/">Expire Data from Collections by Setting TTL</a><span class="link-target"> [https://docs.mongodb.com/manual/tutorial/expire-data/]</span> in MongoDB.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><code class="docutils literal notranslate"><span class="pre">MongoDbStore</span></code> will attempt to automatically create a TTL index.
+It’s recommended to set constructor option <code class="docutils literal notranslate"><span class="pre">gcProbablity</span> <span class="pre">=</span> <span class="pre">0.0</span></code> to
+disable this behavior if you have manually dealt with TTL index creation.</p>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>This store relies on all PHP application and database nodes to have
+synchronized clocks for lock expiry to occur at the correct time. To ensure
+locks don’t expire prematurely; the lock TTL should be set with enough extra
+time in <code class="docutils literal notranslate"><span class="pre">expireAfterSeconds</span></code> to account for any clock drift between nodes.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">writeConcern</span></code>, <code class="docutils literal notranslate"><span class="pre">readConcern</span></code> and <code class="docutils literal notranslate"><span class="pre">readPreference</span></code> are not specified by
+MongoDbStore meaning the collection’s settings will take effect. Read more
+about <a class="reference external" href="https://docs.mongodb.com/manual/applications/replication/">Replica Set Read and Write Semantics</a><span class="link-target"> [https://docs.mongodb.com/manual/applications/replication/]</span> in MongoDB.</p>
+</div>
+<div class="section" id="id6">
 <h3>PdoStore</h3>
 <p>The PdoStore relies on the <a class="reference external" href="https://en.wikipedia.org/wiki/ACID">ACID</a><span class="link-target"> [https://en.wikipedia.org/wiki/ACID]</span> properties of the SQL engine.</p>
 <div class="admonition caution">
@@ -623,7 +816,18 @@ have synchronized clocks.</p>
 enough extra time to account for any clock drift between nodes.</p>
 </div>
 </div>
-<div class="section" id="id6">
+<div class="section" id="id7">
+<h3>PostgreSqlStore</h3>
+<p>The PdoStore relies on the <a class="reference external" href="https://www.postgresql.org/docs/current/explicit-locking.html">Advisory Locks</a><span class="link-target"> [https://www.postgresql.org/docs/current/explicit-locking.html]</span> properties of the PostgreSQL
+database. That means that by using <a class="reference internal" href="#lock-store-pgsql"><span class="std std-ref">PostgreSqlStore</span></a>
+the locks will be automatically released at the end of the session in case the
+client cannot unlock for any reason.</p>
+<p>If the PostgreSQL service or the machine hosting it restarts, every lock would
+be lost without notifying the running processes.</p>
+<p>If the TCP connection is lost, the PostgreSQL may release locks without
+notifying the application.</p>
+</div>
+<div class="section" id="id8">
 <h3>RedisStore</h3>
 <p>The way Redis works is to store items in memory. That means that by using
 the <a class="reference internal" href="#lock-store-redis"><span class="std std-ref">RedisStore</span></a> the locks are not persisted
@@ -649,7 +853,7 @@ removed by mistake.</p>
 dedicated Redis service away from Cache.</p>
 </div>
 </div>
-<div class="section" id="id7">
+<div class="section" id="id9">
 <h3>CombinedStore</h3>
 <p>Combined stores allow to store locks across several backends. It’s a common
 mistake to think that the lock mechanism will be more reliable. This is wrong.
@@ -667,7 +871,7 @@ amount of managed stored and the same endpoint.</p>
 a <code class="docutils literal notranslate"><span class="pre">CombinedStore</span></code> with a single server per managed store.</p>
 </div>
 </div>
-<div class="section" id="id8">
+<div class="section" id="id10">
 <h3>SemaphoreStore</h3>
 <p>Semaphores are handled by the Kernel level. In order to be reliable, processes
 must run on the same machine, virtual machine or container. Be careful when
@@ -688,7 +892,7 @@ Check that process is run with a system user (UID &lt;= SYS_UID_MAX) with
 <code class="docutils literal notranslate"><span class="pre">RemoveIPC=off</span></code> in <code class="docutils literal notranslate"><span class="pre">/etc/systemd/logind.conf</span></code>.</p>
 </div>
 </div>
-<div class="section" id="id9">
+<div class="section" id="id11">
 <h3>ZookeeperStore</h3>
 <p>The way ZookeeperStore works is by maintaining locks as ephemeral nodes on the
 server. That means that by using <a class="reference internal" href="#lock-store-zookeeper"><span class="std std-ref">ZookeeperStore</span></a>

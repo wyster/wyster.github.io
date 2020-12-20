@@ -32,6 +32,7 @@ options</p></td>
 <li><p><a class="reference internal" href="#attr-translation-parameters">attr_translation_parameters</a></p></li>
 <li><p><a class="reference internal" href="#disabled">disabled</a></p></li>
 <li><p><a class="reference internal" href="#label">label</a></p></li>
+<li><p><a class="reference internal" href="#label-html">label_html</a></p></li>
 <li><p><a class="reference internal" href="#label-translation-parameters">label_translation_parameters</a></p></li>
 <li><p><a class="reference internal" href="#row-attr">row_attr</a></p></li>
 <li><p><a class="reference internal" href="#translation-domain">translation_domain</a></p></li>
@@ -104,6 +105,16 @@ be directly set inside the template:</p>
 </ul>
 </div>
 </div>
+<div class="section" id="label-html">
+<h3><code class="docutils literal notranslate"><span class="pre">label_html</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">label_html</span></code> option was introduced in Symfony 5.1.</p>
+</div>
+<p>By default, the contents of the <code class="docutils literal notranslate"><span class="pre">label</span></code> option are escaped before rendering
+them in the template. Set this option to <code class="docutils literal notranslate"><span class="pre">true</span></code> to not escape them, which is
+useful when the label contains HTML elements.</p>
+</div>
 <div class="section" id="translation-domain">
 <h3><code class="docutils literal notranslate"><span class="pre">translation_domain</span></code></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">messages</span></code></p>
@@ -113,9 +124,6 @@ that are rendered for this button.</p>
 <div class="section" id="label-translation-parameters">
 <h3>label_translation_parameters</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">label_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The content of the <a class="reference internal" href="#label">label</a> option is translated before displaying it, so it
 can contain <a class="reference internal" href="../../../translation/message_format.xhtml#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>.
 This option defines the values used to replace those placeholders.</p>
@@ -144,9 +152,6 @@ placeholders.</p>
 <div class="section" id="attr-translation-parameters">
 <h3>attr_translation_parameters</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">attr_translation_parameters</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The content of the <code class="docutils literal notranslate"><span class="pre">title</span></code> and <code class="docutils literal notranslate"><span class="pre">placeholder</span></code> values defined in the <a class="reference internal" href="#attr">attr</a>
 option is translated before displaying it, so it can contain
 <a class="reference internal" href="../../../translation/message_format.xhtml#component-translation-placeholders"><span class="std std-ref">translation placeholders</span></a>. This
@@ -189,9 +194,6 @@ to render the <a class="reference internal" href="../../../form/form_customizati
 <p class="admonition-title">See also</p>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
 the <a class="reference internal" href="../../../form/form_customization.xhtml#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
 </div>
 </div>
 </div>

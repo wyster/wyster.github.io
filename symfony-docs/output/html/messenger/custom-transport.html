@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -139,8 +139,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -264,12 +266,12 @@ DSN. You will need a transport factory:</p>
 (which combines the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Messenger/Transport/Sender/SenderInterface.php" title="Symfony\Component\Messenger\Transport\Sender\SenderInterface"><span class="pre">SenderInterface</span></a></code>
 and <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Messenger/Transport/Receiver/ReceiverInterface.php" title="Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface"><span class="pre">ReceiverInterface</span></a></code>).
 Here is a simplified example of a database transport:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Ramsey\Uuid\Uuid</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Messenger\Envelope</span><span class="p">;</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Messenger\Envelope</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Messenger\Stamp\TransportMessageIdStamp</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Messenger\Transport\Serialization\PhpSerializer</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Messenger\Transport\Serialization\SerializerInterface</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Messenger\Transport\TransportInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Uid\Uuid</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">YourTransport</span> <span class="k">implements</span> <span class="nx">TransportInterface</span>
 <span class="p">{</span>
@@ -337,8 +339,7 @@ Here is a simplified example of a database transport:</p>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">send</span><span class="p">(</span><span class="nx">Envelope</span> <span class="nv">$envelope</span><span class="p">)</span><span class="o">:</span> <span class="nx">Envelope</span>
     <span class="p">{</span>
         <span class="nv">$encodedMessage</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">serializer</span><span class="o">-&gt;</span><span class="na">encode</span><span class="p">(</span><span class="nv">$envelope</span><span class="p">);</span>
-        <span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">uuid4</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">toString</span><span class="p">();</span>
-
+        <span class="nv">$uuid</span> <span class="o">=</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v4</span><span class="p">();</span>
         <span class="c1">// Add a message to the &quot;my_queue&quot; table</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="o">-&gt;</span><span class="na">createQuery</span><span class="p">(</span>
                 <span class="s1">&#39;INSERT INTO my_queue (id, envelope, delivered_at, handled)</span>

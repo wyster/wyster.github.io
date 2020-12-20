@@ -113,10 +113,20 @@ with a non-zero code):</p>
 <p>You can get the last output time in seconds by using the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Process/Process.php" title="Symfony\Component\Process\Process::getLastOutputTime()"><span class="pre">getLastOutputTime()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Process/Process.php]</span></span></code> method.
 This method returns <code class="docutils literal notranslate"><span class="pre">null</span></code> if the process wasn’t started!</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Process/Process.php" title="Symfony\Component\Process\Process::getLastOutputTime()"><span class="pre">getLastOutputTime()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Process/Process.php]</span></span></code>
-method was introduced in Symfony 4.4.</p>
 </div>
+</div>
+<div class="section" id="configuring-process-options">
+<h2>Configuring Process Options</h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The feature to configure process options was introduced in Symfony 5.2.</p>
+</div>
+<p>Symfony uses the PHP <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.proc-open.php" title="proc_open"><span class="pre">proc_open</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.proc-open.php]</span></span></code> function to run the processes.
+You can configure the options passed to the <code class="docutils literal notranslate"><span class="pre">other_options</span></code> argument of
+<code class="docutils literal notranslate"><span class="pre">proc_open()</span></code> using the <code class="docutils literal notranslate"><span class="pre">setOptions()</span></code> method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$process</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Process</span><span class="p">([</span><span class="s1">&#39;...&#39;</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]);</span>
+<span class="c1">// this option allows a subprocess to continue running after the main script exited</span>
+<span class="nv">$process</span><span class="o">-&gt;</span><span class="na">setOptions</span><span class="p">([</span><span class="s1">&#39;create_new_console&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">]);</span>
+</pre></div>
 </div>
 </div>
 <div class="section" id="using-features-from-the-os-shell">
@@ -158,9 +168,6 @@ operating system, you can write the above command as follows:</p>
 enclosing a variable name into <code class="docutils literal notranslate"><span class="pre">&quot;${:</span></code> and <code class="docutils literal notranslate"><span class="pre">}&quot;</span></code> exactly, the process object
 will replace it with its escaped value, or will fail if the variable is not
 found in the list of environment variables attached to the command.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>Portable command lines were introduced in Symfony 4.4.</p>
-</div>
 </div>
 <div class="section" id="setting-environment-variables-for-processes">
 <h2>Setting Environment Variables for Processes</h2>
@@ -388,6 +395,22 @@ instead:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="using-a-prepared-command-line">
+<h2>Using a Prepared Command Line</h2>
+<p>You can run a process by using a prepared command line with double quote
+variable notation. This allows you to use placeholders so that only the
+parameterized values can be changed, but not the rest of the script:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Process\Process</span><span class="p">;</span>
+
+<span class="nv">$process</span> <span class="o">=</span> <span class="nx">Process</span><span class="o">::</span><span class="na">fromShellCommandline</span><span class="p">(</span><span class="s1">&#39;echo &quot;$name&quot;&#39;</span><span class="p">);</span>
+<span class="nv">$process</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="k">null</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Elsa&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>A prepared command line will not be escaped automatically!</p>
+</div>
+</div>
 <div class="section" id="process-timeout">
 <h2>Process Timeout</h2>
 <p>By default processes have a timeout of 60 seconds, but you can change it passing
@@ -415,6 +438,13 @@ check regularly:</p>
     <span class="nb">usleep</span><span class="p">(</span><span class="mi">200000</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can get the process start time using the <code class="docutils literal notranslate"><span class="pre">getStartTime()</span></code> method.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">getStartTime()</span></code> method was introduced in Symfony 5.1.</p>
+</div>
 </div>
 </div>
 <div class="section" id="process-idle-timeout">

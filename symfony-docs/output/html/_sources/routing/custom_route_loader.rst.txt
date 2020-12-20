@@ -206,10 +206,6 @@ implement the :class:`Symfony\\Bundle\\FrameworkBundle\\Routing\\RouteLoaderInte
 interface to be tagged automatically. If you're **not using autoconfigure**,
 tag it manually with ``routing.route_loader``.
 
-.. deprecated:: 4.4
-
-    Not tagging or implementing your route loader was deprecated in Symfony 4.4.
-
 .. note::
 
     The routes defined using service route loaders will be automatically
@@ -219,11 +215,6 @@ tag it manually with ``routing.route_loader``.
 .. tip::
 
     If your service is invokable, you don't need to precise the method to use.
-
-.. versionadded:: 4.3
-
-    The support of the ``__invoke()`` method to create invokable service route
-    loaders was introduced in Symfony 4.3.
 
 Creating a custom Loader
 ------------------------
@@ -252,7 +243,7 @@ you do. The resource name itself is not actually used in the example::
     {
         private $isLoaded = false;
 
-        public function load($resource, $type = null)
+        public function load($resource, string $type = null)
         {
             if (true === $this->isLoaded) {
                 throw new \RuntimeException('Do not add the "extra" loader twice');
@@ -279,7 +270,7 @@ you do. The resource name itself is not actually used in the example::
             return $routes;
         }
 
-        public function supports($resource, $type = null)
+        public function supports($resource, string $type = null)
         {
             return 'extra' === $type;
         }
@@ -336,11 +327,17 @@ Now define a service for the ``ExtraLoader``:
     .. code-block:: php
 
         // config/services.php
+        namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+
         use App\Routing\ExtraLoader;
 
-        $container->autowire(ExtraLoader::class)
-            ->addTag('routing.loader')
-        ;
+        return static function (ContainerConfigurator $container) {
+            $services = $configurator->services();
+
+            $services->set(ExtraLoader::class)
+                ->tag('routing.loader')
+            ;
+        };
 
 Notice the tag ``routing.loader``. All services with this *tag* will be marked
 as potential route loaders and added as specialized route loaders to the
@@ -418,7 +415,7 @@ configuration file - you can call the
 
     class AdvancedLoader extends Loader
     {
-        public function load($resource, $type = null)
+        public function load($resource, string $type = null)
         {
             $routes = new RouteCollection();
 
@@ -432,7 +429,7 @@ configuration file - you can call the
             return $routes;
         }
 
-        public function supports($resource, $type = null)
+        public function supports($resource, string $type = null)
         {
             return 'advanced_extra' === $type;
         }

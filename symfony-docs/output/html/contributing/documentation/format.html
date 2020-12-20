@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -361,6 +363,9 @@ directive to show the configuration in all supported configuration formats
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">php-annotations</span></code></td>
 <td>PHP Annotations</td>
 </tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">php-attributes</span></code></td>
+<td>PHP Attributes</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -432,13 +437,13 @@ of the linked resource (<code class="docutils literal notranslate"><span class="
 <p>If you are documenting a brand new feature, a change or a deprecation that’s
 been made in Symfony, you should precede your description of the change with
 the corresponding directive and a short description:</p>
-<p>For a new feature or a behavior change use the <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">versionadded::</span> <span class="pre">4.x</span></code>
+<p>For a new feature or a behavior change use the <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">versionadded::</span> <span class="pre">5.x</span></code>
 directive:</p>
 <div class="highlight-rst notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">versionadded</span><span class="p">::</span> 4.2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">versionadded</span><span class="p">::</span> 5.2
 
-    Named autowiring aliases have been introduced in Symfony 4.2.
+<span class="cp">    ... ... ... was introduced in Symfony 5.2.</span>
 </pre></div>
 </td></tr></table></div>
 <p>If you are documenting a behavior change, it may be helpful to <em>briefly</em>
@@ -446,26 +451,26 @@ describe how the behavior has changed:</p>
 <div class="highlight-rst notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">versionadded</span><span class="p">::</span> 4.2
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">versionadded</span><span class="p">::</span> 5.2
 
-   Support for ICU MessageFormat was introduced in Symfony 4.2. Prior to this,
-   pluralization was managed by the <span class="s">``transChoice``</span> method.
+<span class="cp">   ... ... ... was introduced in Symfony 5.2. Prior to this,</span>
+<span class="cp">   ... ... ... ... ... ... ... ... .</span>
 </pre></div>
 </td></tr></table></div>
-<p>For a deprecation use the <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">deprecated::</span> <span class="pre">4.x</span></code> directive:</p>
+<p>For a deprecation use the <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">deprecated::</span> <span class="pre">5.x</span></code> directive:</p>
 <div class="highlight-rst notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">deprecated</span><span class="p">::</span> 4.2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">deprecated</span><span class="p">::</span> 5.2
 
-    Not passing the root node name to <span class="s">``TreeBuilder``</span> was deprecated in Symfony 4.2.
+<span class="cp">    ... ... ... was deprecated in Symfony 5.2.</span>
 </pre></div>
 </td></tr></table></div>
-<p>Whenever a new major version of Symfony is released (e.g. 5.0, 6.0, etc),
+<p>Whenever a new major version of Symfony is released (e.g. 6.0, 7.0, etc),
 a new branch of the documentation is created from the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.
 At this point, all the <code class="docutils literal notranslate"><span class="pre">versionadded</span></code> and <code class="docutils literal notranslate"><span class="pre">deprecated</span></code> tags for Symfony
 versions that have a lower major version will be removed. For example, if
-Symfony 5.0 were released today, 4.0 to 4.4 <code class="docutils literal notranslate"><span class="pre">versionadded</span></code> and <code class="docutils literal notranslate"><span class="pre">deprecated</span></code>
-tags would be removed from the new <code class="docutils literal notranslate"><span class="pre">5.0</span></code> branch.</p>
+Symfony 6.0 were released today, 5.0 to 5.4 <code class="docutils literal notranslate"><span class="pre">versionadded</span></code> and <code class="docutils literal notranslate"><span class="pre">deprecated</span></code>
+tags would be removed from the new <code class="docutils literal notranslate"><span class="pre">6.0</span></code> branch.</p>
 </div>
 </div>
 </div>

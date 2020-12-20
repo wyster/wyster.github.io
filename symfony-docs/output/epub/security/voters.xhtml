@@ -44,7 +44,7 @@ uses the authorization checker), or by
 <a class="reference internal" href="access_control.xhtml#security-access-control-enforcement-options"><span class="std std-ref">access controls</span></a>.</p>
 <p>Ultimately, Symfony takes the responses from all voters and makes the final
 decision (to allow or deny access to the resource) according to the strategy defined
-in the application, which can be: affirmative, consensus or unanimous.</p>
+in the application, which can be: affirmative, consensus, unanimous or priority.</p>
 <p>For more information take a look at
 <a class="reference internal" href="../components/security/authorization.xhtml#components-security-access-decision-manager"><span class="std std-ref">the section about access decision managers</span></a>.</p>
 <div class="section" id="the-voter-interface">
@@ -58,8 +58,8 @@ which makes creating a voter even easier:</p>
 
 <span class="k">abstract</span> <span class="k">class</span> <span class="nc">Voter</span> <span class="k">implements</span> <span class="nx">VoterInterface</span>
 <span class="p">{</span>
-    <span class="k">abstract</span> <span class="k">protected</span> <span class="k">function</span> <span class="nf">supports</span><span class="p">(</span><span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">);</span>
-    <span class="k">abstract</span> <span class="k">protected</span> <span class="k">function</span> <span class="nf">voteOnAttribute</span><span class="p">(</span><span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">,</span> <span class="nx">TokenInterface</span> <span class="nv">$token</span><span class="p">);</span>
+    <span class="k">abstract</span> <span class="k">protected</span> <span class="k">function</span> <span class="nf">supports</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">);</span>
+    <span class="k">abstract</span> <span class="k">protected</span> <span class="k">function</span> <span class="nf">voteOnAttribute</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">,</span> <span class="nx">TokenInterface</span> <span class="nv">$token</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -129,7 +129,7 @@ would look like this:</p>
     <span class="k">const</span> <span class="no">VIEW</span> <span class="o">=</span> <span class="s1">&#39;view&#39;</span><span class="p">;</span>
     <span class="k">const</span> <span class="no">EDIT</span> <span class="o">=</span> <span class="s1">&#39;edit&#39;</span><span class="p">;</span>
 
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">supports</span><span class="p">(</span><span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">)</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">supports</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="c1">// if the attribute isn&#39;t one we support, return false</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">in_array</span><span class="p">(</span><span class="nv">$attribute</span><span class="p">,</span> <span class="p">[</span><span class="nx">self</span><span class="o">::</span><span class="na">VIEW</span><span class="p">,</span> <span class="nx">self</span><span class="o">::</span><span class="na">EDIT</span><span class="p">]))</span> <span class="p">{</span>
@@ -144,7 +144,7 @@ would look like this:</p>
         <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">voteOnAttribute</span><span class="p">(</span><span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">,</span> <span class="nx">TokenInterface</span> <span class="nv">$token</span><span class="p">)</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">voteOnAttribute</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">,</span> <span class="nx">TokenInterface</span> <span class="nv">$token</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$user</span> <span class="o">=</span> <span class="nv">$token</span><span class="o">-&gt;</span><span class="na">getUser</span><span class="p">();</span>
 
@@ -189,7 +189,7 @@ would look like this:</p>
 <p>That’s it! The voter is done! Next, <a class="reference internal" href="#declaring-the-voter-as-a-service"><span class="std std-ref">configure it</span></a>.</p>
 <p>To recap, here’s what’s expected from the two abstract methods:</p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">Voter::supports($attribute,</span> <span class="pre">$subject)</span></code></dt>
+<dt><code class="docutils literal notranslate"><span class="pre">Voter::supports(string</span> <span class="pre">$attribute,</span> <span class="pre">$subject)</span></code></dt>
 <dd><p>When <code class="docutils literal notranslate"><span class="pre">isGranted()</span></code> (or <code class="docutils literal notranslate"><span class="pre">denyAccessUnlessGranted()</span></code>) is called, the first
 argument is passed here as <code class="docutils literal notranslate"><span class="pre">$attribute</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">ROLE_USER</span></code>, <code class="docutils literal notranslate"><span class="pre">edit</span></code>) and
 the second argument (if any) is passed as <code class="docutils literal notranslate"><span class="pre">$subject</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">null</span></code>, a <code class="docutils literal notranslate"><span class="pre">Post</span></code>
@@ -199,7 +199,7 @@ your voter is done: some other voter should process this. In this example, you
 return <code class="docutils literal notranslate"><span class="pre">true</span></code> if the attribute is <code class="docutils literal notranslate"><span class="pre">view</span></code> or <code class="docutils literal notranslate"><span class="pre">edit</span></code> and if the object is
 a <code class="docutils literal notranslate"><span class="pre">Post</span></code> instance.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">voteOnAttribute($attribute,</span> <span class="pre">$subject,</span> <span class="pre">TokenInterface</span> <span class="pre">$token)</span></code></dt>
+<dt><code class="docutils literal notranslate"><span class="pre">voteOnAttribute(string</span> <span class="pre">$attribute,</span> <span class="pre">$subject,</span> <span class="pre">TokenInterface</span> <span class="pre">$token)</span></code></dt>
 <dd><p>If you return <code class="docutils literal notranslate"><span class="pre">true</span></code> from <code class="docutils literal notranslate"><span class="pre">supports()</span></code>, then this method is called. Your
 job is to return <code class="docutils literal notranslate"><span class="pre">true</span></code> to allow access and <code class="docutils literal notranslate"><span class="pre">false</span></code> to deny access.
 The <code class="docutils literal notranslate"><span class="pre">$token</span></code> can be used to find the current user object (if any). In this
@@ -239,7 +239,7 @@ with <code class="docutils literal notranslate"><span class="pre">ROLE_SUPER_ADM
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">security</span> <span class="o">=</span> <span class="nv">$security</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">voteOnAttribute</span><span class="p">(</span><span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">,</span> <span class="nx">TokenInterface</span> <span class="nv">$token</span><span class="p">)</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">voteOnAttribute</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$attribute</span><span class="p">,</span> <span class="nv">$subject</span><span class="p">,</span> <span class="nx">TokenInterface</span> <span class="nv">$token</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="c1">// ...</span>
 
@@ -266,7 +266,7 @@ checks if the user is a member of the site and a second one that checks if the u
 is older than 18.</p>
 <p>To handle these cases, the access decision manager uses a “strategy” which you can configure.
 There are three strategies available:</p>
-<dl class="simple">
+<dl>
 <dt><code class="docutils literal notranslate"><span class="pre">affirmative</span></code> (default)</dt>
 <dd><p>This grants access as soon as there is <em>one</em> voter granting access;</p>
 </dd>
@@ -276,7 +276,14 @@ There are three strategies available:</p>
 <dt><code class="docutils literal notranslate"><span class="pre">unanimous</span></code></dt>
 <dd><p>This only grants access if there is no voter denying access. If all voters
 abstained from voting, the decision is based on the <code class="docutils literal notranslate"><span class="pre">allow_if_all_abstain</span></code>
-config option (which defaults to <code class="docutils literal notranslate"><span class="pre">false</span></code>).</p>
+config option (which defaults to <code class="docutils literal notranslate"><span class="pre">false</span></code>);</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">priority</span></code></dt>
+<dd><p>This grants or denies access by the first voter that does not abstain,
+based on their service priority;</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">priority</span></code> version strategy was introduced in Symfony 5.1.</p>
+</div>
 </dd>
 </dl>
 <p>In the above scenario, both voters should grant access in order to grant access
@@ -309,13 +316,17 @@ security configuration:</p>
 10
 11
 12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span>
 <span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>

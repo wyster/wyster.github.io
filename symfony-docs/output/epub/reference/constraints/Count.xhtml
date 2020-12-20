@@ -28,6 +28,8 @@ Countable) element count is <em>between</em> some minimum and maximum value.</p>
 </tr>
 <tr class="row-even"><td><p>Options</p></td>
 <td><ul class="simple">
+<li><p><a class="reference internal" href="#divisibleby">divisibleBy</a></p></li>
+<li><p><a class="reference internal" href="#divisiblebymessage">divisibleByMessage</a></p></li>
 <li><p><a class="reference internal" href="#exactmessage">exactMessage</a></p></li>
 <li><p><a class="reference internal" href="#groups">groups</a></p></li>
 <li><p><a class="reference internal" href="#max">max</a></p></li>
@@ -187,6 +189,47 @@ you might add the following:</p>
 </div>
 <div class="section" id="options">
 <h2>Options</h2>
+<div class="section" id="divisibleby">
+<h3>divisibleBy</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code> <strong>default</strong>: null</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">divisibleBy</span></code> option was introduced in Symfony 5.1.</p>
+</div>
+<p>Validates that the number of elements of the given collection is divisible by
+a certain number.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>If you need to validate that other types of data different from collections
+are divisible by a certain number, use the
+<a class="reference internal" href="DivisibleBy.xhtml"><span class="doc">DivisibleBy</span></a> constraint.</p>
+</div>
+</div>
+<div class="section" id="divisiblebymessage">
+<h3>divisibleByMessage</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">elements</span> <span class="pre">in</span> <span class="pre">this</span> <span class="pre">collection</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">multiple</span> <span class="pre">of</span> <span class="pre">{{</span> <span class="pre">compared_value</span> <span class="pre">}}.</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">divisibleByMessage</span></code> option was introduced in Symfony 5.1.</p>
+</div>
+<p>The message that will be shown if the number of elements of the given collection
+is not divisible by the number defined in the <code class="docutils literal notranslate"><span class="pre">divisibleBy</span></code> option.</p>
+<p>You can use the following parameters in this message:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 68%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">compared_value</span> <span class="pre">}}</span></code></p></td>
+<td><p>The number configured in the <code class="docutils literal notranslate"><span class="pre">divisibleBy</span></code> option</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="exactmessage">
 <h3>exactMessage</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">collection</span> <span class="pre">should</span> <span class="pre">contain</span> <span class="pre">exactly</span> <span class="pre">{{</span> <span class="pre">limit</span> <span class="pre">}}</span> <span class="pre">elements.</span></code></p>

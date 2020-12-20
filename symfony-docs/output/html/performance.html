@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Profiler" href="profiler.html" />
-    <link rel="prev" title="Migrating an Existing Application to Symfony" href="migration.html" /> 
+    <link rel="prev" title="How to send SMS Messages" href="notifier/texters.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,9 +115,11 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Performance</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#performance-checklists">Performance Checklists</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#install-apcu-polyfill-if-your-server-uses-apc">Install APCu Polyfill if your Server Uses APC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#restrict-the-number-of-locales-enabled-in-the-application">Restrict the Number of Locales Enabled in the Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dump-the-service-container-into-a-single-file">Dump the Service Container into a Single File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#use-the-opcache-byte-code-cache">Use the OPcache Byte Code Cache</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#use-the-opcache-class-preloading">Use the OPcache class preloading</a></li>
@@ -141,6 +143,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -241,6 +244,7 @@ for maximum performance:</p>
 <ul class="simple">
 <li><strong>Symfony Application Checklist</strong>:<ol class="arabic">
 <li><a class="reference internal" href="#performance-install-apcu-polyfill"><span class="std std-ref">Install APCu Polyfill if your server uses APC</span></a></li>
+<li><a class="reference internal" href="#performance-enabled-locales"><span class="std std-ref">Restrict the number of locales enabled in the application</span></a></li>
 </ol>
 </li>
 <li><strong>Production Server Checklist</strong>:<ol class="arabic">
@@ -260,12 +264,13 @@ OPcache, install the <a class="reference external" href="https://github.com/symf
 compatibility with <a class="reference external" href="https://www.php.net/manual/en/ref.apcu.php">APCu PHP functions</a> and unlock support for advanced Symfony
 features, such as the APCu Cache adapter.</p>
 </div>
+<div class="section" id="restrict-the-number-of-locales-enabled-in-the-application">
+<span id="performance-enabled-locales"></span><h3>Restrict the Number of Locales Enabled in the Application<a class="headerlink" href="#restrict-the-number-of-locales-enabled-in-the-application" title="Permalink to this headline">¶</a></h3>
+<p>Use the <a class="reference internal" href="reference/configuration/framework.html#reference-translator-enabled-locales"><span class="std std-ref">framework.translator.enabled_locales</span></a>
+option to only generate the translation files actually used in your application.</p>
+</div>
 <div class="section" id="dump-the-service-container-into-a-single-file">
 <span id="performance-service-container-single-file"></span><h3>Dump the Service Container into a Single File<a class="headerlink" href="#dump-the-service-container-into-a-single-file" title="Permalink to this headline">¶</a></h3>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">container.dumper.inline_factories</span></code> parameter was introduced in
-Symfony 4.4.</p>
-</div>
 <p>Symfony compiles the <a class="reference internal" href="service_container.html"><span class="doc">service container</span></a> into multiple
 small files by default. Set this parameter to <code class="docutils literal notranslate"><span class="pre">true</span></code> to compile the entire
 container into a single file, which could improve performance when using
@@ -328,9 +333,6 @@ used byte code cache is <a class="reference external" href="https://www.php.net/
 </div>
 <div class="section" id="use-the-opcache-class-preloading">
 <span id="performance-use-preloading"></span><h3>Use the OPcache class preloading<a class="headerlink" href="#use-the-opcache-class-preloading" title="Permalink to this headline">¶</a></h3>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The feature that generates the preloading file was introduced in Symfony 4.4.</p>
-</div>
 <p>Starting from PHP 7.4, OPcache can compile and load classes at start-up and
 make them available to all requests until the server is restarted, improving
 performance significantly.</p>
@@ -345,6 +347,9 @@ can configure PHP to use this preload file:</p>
 <span class="na">opcache.preload</span><span class="o">=</span><span class="s">/path/to/project/config/preload.php</span>
 </pre></div>
 </td></tr></table></div>
+<p>Use the <a class="reference internal" href="reference/dic_tags.html#dic-tags-container-preload"><span class="std std-ref">container.preload</span></a> and
+<a class="reference internal" href="reference/dic_tags.html#dic-tags-container-nopreload"><span class="std std-ref">container.no_preload</span></a> service tags to define
+which classes should or should not be preloaded by PHP.</p>
 </div>
 <div class="section" id="configure-opcache-for-maximum-performance">
 <span id="performance-configure-opcache"></span><h3>Configure OPcache for Maximum Performance<a class="headerlink" href="#configure-opcache-for-maximum-performance" title="Permalink to this headline">¶</a></h3>

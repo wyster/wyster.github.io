@@ -21,8 +21,8 @@ minute, second) or a series of select fields. The underlying data can be
 stored as a <code class="docutils literal notranslate"><span class="pre">DateTime</span></code> object, a string, a timestamp or an array.</p>
 <table class="docutils">
 <colgroup>
-<col style="width: 22%" />
-<col style="width: 78%" />
+<col style="width: 26%" />
+<col style="width: 74%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p>Underlying Data Type</p></td>
@@ -56,11 +56,11 @@ stored as a <code class="docutils literal notranslate"><span class="pre">DateTim
 <li><p><a class="reference internal" href="#compound">compound</a></p></li>
 <li><p><a class="reference internal" href="#data-class">data_class</a></p></li>
 <li><p><a class="reference internal" href="#error-bubbling">error_bubbling</a></p></li>
+<li><p><a class="reference internal" href="#invalid-message">invalid_message</a></p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><p>Inherited
-options</p></td>
+<tr class="row-odd"><td><p>Inherited options</p></td>
 <td><ul class="simple">
 <li><p><a class="reference internal" href="#attr">attr</a></p></li>
 <li><p><a class="reference internal" href="#data">data</a></p></li>
@@ -70,12 +70,17 @@ options</p></td>
 <li><p><a class="reference internal" href="#help-attr">help_attr</a></p></li>
 <li><p><a class="reference internal" href="#help-html">help_html</a></p></li>
 <li><p><a class="reference internal" href="#inherit-data">inherit_data</a></p></li>
-<li><p><a class="reference internal" href="#invalid-message">invalid_message</a></p></li>
 <li><p><a class="reference internal" href="#invalid-message-parameters">invalid_message_parameters</a></p></li>
 <li><p><a class="reference internal" href="#mapped">mapped</a></p></li>
 <li><p><a class="reference internal" href="#row-attr">row_attr</a></p></li>
 </ul>
 </td>
+</tr>
+<tr class="row-even"><td><p>Default invalid message</p></td>
+<td><p>Please enter a valid time.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Legacy invalid message</p></td>
+<td><p>The value {{ value }} is not valid.</p></td>
 </tr>
 <tr class="row-even"><td><p>Parent type</p></td>
 <td><p>FormType</p></td>
@@ -190,9 +195,6 @@ this format.</p>
 <div class="section" id="input-format">
 <h3>input_format</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">H:i:s</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">input_format</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>If the <code class="docutils literal notranslate"><span class="pre">input</span></code> option is set to <code class="docutils literal notranslate"><span class="pre">string</span></code>, this option specifies the format
 of the time. This must be a valid <a class="reference external" href="https://secure.php.net/manual/en/function.date.php">PHP time format</a><span class="link-target"> [https://secure.php.net/manual/en/function.date.php]</span>.</p>
 </div>
@@ -216,9 +218,6 @@ a <a class="reference internal" href="#reference-date">reference_date</a> must b
 <div class="section" id="reference-date">
 <h3>reference_date</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">DateTimeInterface</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">reference_date</span></code> option was introduced in Symfony 4.4.</p>
-</div>
 <p>Configuring a reference date is required when the <a class="reference internal" href="#model-timezone">model_timezone</a> and
 <a class="reference internal" href="#view-timezone">view_timezone</a> are different. Timezone conversions will be calculated
 based on this date.</p>
@@ -235,6 +234,8 @@ relevant when the <code class="docutils literal notranslate"><span class="pre">w
 <p>Timezone for how the data should be shown to the user (and therefore also
 the data that the user submits). This must be one of the
 <a class="reference external" href="https://www.php.net/manual/en/timezones.php">PHP supported timezones</a><span class="link-target"> [https://www.php.net/manual/en/timezones.php]</span>.</p>
+<p>When no <a class="reference internal" href="#reference-date">reference_date</a> is set the <code class="docutils literal notranslate"><span class="pre">view_timezone</span></code> defaults to the
+configured <a class="reference internal" href="#model-timezone">model_timezone</a>.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>When using different values for <a class="reference internal" href="#model-timezone">model_timezone</a> and <code class="docutils literal notranslate"><span class="pre">view_timezone</span></code>,
@@ -299,6 +300,19 @@ the <code class="docutils literal notranslate"><span class="pre">FormType</span>
 <div class="section" id="error-bubbling">
 <h3>error_bubbling</h3>
 <p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</div>
+<div class="section" id="invalid-message">
+<h3><code class="docutils literal notranslate"><span class="pre">invalid_message</span></code></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">valid</span></code></p>
+<p>This is the validation error message that’s used if the data entered into
+this field doesn’t make sense (i.e. fails validation).</p>
+<p>This might happen, for example, if the user enters a nonsense string into
+a <a class="reference internal" href="#"><span class="doc">TimeType</span></a> field that cannot be converted
+into a real time or if the user enters a string (e.g. <code class="docutils literal notranslate"><span class="pre">apple</span></code>) into a
+number field.</p>
+<p>Normal (business logic) validation (such as when setting a minimum length
+for a field) should be set using validation messages with your validation
+rules (<a class="reference internal" href="../../../validation.xhtml#validation-constraint-configuration"><span class="std std-ref">reference</span></a>).</p>
 </div>
 </div>
 <div class="section" id="inherited-options">
@@ -439,19 +453,6 @@ the parent form as is. This means that
 applied to that field.</p>
 </div>
 </div>
-<div class="section" id="invalid-message">
-<h3><code class="docutils literal notranslate"><span class="pre">invalid_message</span></code></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">valid</span></code></p>
-<p>This is the validation error message that’s used if the data entered into
-this field doesn’t make sense (i.e. fails validation).</p>
-<p>This might happen, for example, if the user enters a nonsense string into
-a <a class="reference internal" href="#"><span class="doc">TimeType</span></a> field that cannot be converted
-into a real time or if the user enters a string (e.g. <code class="docutils literal notranslate"><span class="pre">apple</span></code>) into a
-number field.</p>
-<p>Normal (business logic) validation (such as when setting a minimum length
-for a field) should be set using validation messages with your validation
-rules (<a class="reference internal" href="../../../validation.xhtml#validation-constraint-configuration"><span class="std std-ref">reference</span></a>).</p>
-</div>
 <div class="section" id="invalid-message-parameters">
 <h3><code class="docutils literal notranslate"><span class="pre">invalid_message_parameters</span></code></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
@@ -486,9 +487,6 @@ to render the <a class="reference internal" href="../../../form/form_customizati
 <p class="admonition-title">See also</p>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
 the <a class="reference internal" href="../../../form/form_customization.xhtml#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
 </div>
 </div>
 </div>

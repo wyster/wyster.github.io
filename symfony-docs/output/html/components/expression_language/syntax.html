@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -179,7 +181,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../security.html">The Security Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../serializer.html">The Serializer Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../string.html">The String Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../var_exporter.html">The VarExporter Component</a></li>
@@ -273,26 +278,14 @@ syntaxes.</p>
 <div class="section" id="supported-literals">
 <h2>Supported Literals<a class="headerlink" href="#supported-literals" title="Permalink to this headline">¶</a></h2>
 <p>The component supports:</p>
-<ul>
-<li><p class="first"><strong>strings</strong> - single and double quotes (e.g. <code class="docutils literal notranslate"><span class="pre">'hello'</span></code>)</p>
-</li>
-<li><p class="first"><strong>numbers</strong> - e.g. <code class="docutils literal notranslate"><span class="pre">103</span></code></p>
-</li>
-<li><p class="first"><strong>arrays</strong> - using JSON-like notation (e.g. <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2]</span></code>)</p>
-</li>
-<li><p class="first"><strong>hashes</strong> - using JSON-like notation (e.g. <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">foo:</span> <span class="pre">'bar'</span> <span class="pre">}</span></code>)</p>
-</li>
-<li><p class="first"><strong>booleans</strong> - <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-</li>
-<li><p class="first"><strong>null</strong> - <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-</li>
-<li><p class="first"><strong>exponential</strong> - also known as scientific (e.g. <code class="docutils literal notranslate"><span class="pre">1.99E+3</span></code> or <code class="docutils literal notranslate"><span class="pre">1e-2</span></code>)</p>
-<blockquote>
-<div><div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">exponential</span></code> literal was introduced in Symfony 4.4.</p>
-</div>
-</div></blockquote>
-</li>
+<ul class="simple">
+<li><strong>strings</strong> - single and double quotes (e.g. <code class="docutils literal notranslate"><span class="pre">'hello'</span></code>)</li>
+<li><strong>numbers</strong> - e.g. <code class="docutils literal notranslate"><span class="pre">103</span></code></li>
+<li><strong>arrays</strong> - using JSON-like notation (e.g. <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2]</span></code>)</li>
+<li><strong>hashes</strong> - using JSON-like notation (e.g. <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">foo:</span> <span class="pre">'bar'</span> <span class="pre">}</span></code>)</li>
+<li><strong>booleans</strong> - <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code></li>
+<li><strong>null</strong> - <code class="docutils literal notranslate"><span class="pre">null</span></code></li>
+<li><strong>exponential</strong> - also known as scientific (e.g. <code class="docutils literal notranslate"><span class="pre">1.99E+3</span></code> or <code class="docutils literal notranslate"><span class="pre">1e-2</span></code>)</li>
 </ul>
 <div class="admonition caution">
 <p class="first admonition-title">Caution</p>

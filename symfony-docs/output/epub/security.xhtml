@@ -37,6 +37,70 @@ install the security feature before using it:</p>
 <div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/security-bundle
 </pre></div>
 </td></tr></table></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>A <a class="reference internal" href="security/experimental_authenticators.xhtml"><span class="doc">new experimental Security</span></a>
+was introduced in Symfony 5.1, which will eventually replace security in
+Symfony 6.0. This system is almost fully backwards compatible with the
+current Symfony security, add this line to your security configuration to start
+using it:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">enable_authenticator_manager</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;config</span> <span class="na">enable-authenticator-manager=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+    <span class="nt">&lt;/config&gt;</span>
+<span class="nt">&lt;/srv:container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;enable_authenticator_manager&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+    <span class="c1">// ...</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
 </div>
 <div class="section" id="a-create-your-user-class">
 <span id="create-user-class"></span><span id="initial-security-yaml-setup-authentication"></span><span id="initial-security-yml-setup-authentication"></span><h2>2a) Create your User Class</h2>
@@ -248,13 +312,17 @@ command will pre-configure this for you:</p>
 15
 16
 17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -306,7 +374,7 @@ command will pre-configure this for you:</p>
 <p>Now that Symfony knows <em>how</em> you want to encode the passwords, you can use the
 <code class="docutils literal notranslate"><span class="pre">UserPasswordEncoderInterface</span></code> service to do this before saving your users to
 the database.</p>
-<p>For example, by using <a class="reference internal" href="testing/database.xhtml#doctrine-fixtures"><span class="std std-ref">DoctrineFixturesBundle</span></a>, you can
+<p id="user-data-fixture">For example, by using <a class="reference internal" href="testing/database.xhtml#doctrine-fixtures"><span class="std std-ref">DoctrineFixturesBundle</span></a>, you can
 create dummy database users:</p>
 <div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -380,6 +448,10 @@ class UserFixtures extends Fixture
 </div>
 <div class="section" id="a-authentication-firewalls">
 <span id="firewalls-authentication"></span><span id="security-firewalls"></span><span id="security-yaml-firewalls"></span><h2>3a) Authentication &amp; Firewalls</h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">lazy:</span> <span class="pre">true</span></code> option was introduced in Symfony 5.1. Prior to version 5.1,
+it was enabled using <code class="docutils literal notranslate"><span class="pre">anonymous:</span> <span class="pre">lazy</span></code></p>
+</div>
 <p>The security system is configured in <code class="docutils literal notranslate"><span class="pre">config/packages/security.yaml</span></code>. The <em>most</em>
 important section is <code class="docutils literal notranslate"><span class="pre">firewalls</span></code>:</p>
 <div class="configuration-block">
@@ -391,14 +463,16 @@ important section is <code class="docutils literal notranslate"><span class="pre
 5
 6
 7
-8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
 <span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">firewalls</span><span class="p p-Indicator">:</span>
         <span class="l l-Scalar l-Scalar-Plain">dev</span><span class="p p-Indicator">:</span>
             <span class="l l-Scalar l-Scalar-Plain">pattern</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">^/(_(profiler|wdt)|css|images|js)/</span>
             <span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
         <span class="l l-Scalar l-Scalar-Plain">main</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">lazy</span>
+            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+            <span class="l l-Scalar l-Scalar-Plain">lazy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </td></tr></table></div>
 </p></li>
@@ -419,21 +493,27 @@ important section is <code class="docutils literal notranslate"><span class="pre
 15
 16
 17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;dev&quot;</span>
             <span class="na">pattern=</span><span class="s">&quot;^/(_(profiler|wdt)|css|images|js)/&quot;</span>
             <span class="na">security=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
 
-        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;anonymous</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span>
+            <span class="na">anonymous=</span><span class="s">&quot;true&quot;</span>
+            <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
         <span class="nt">&lt;/firewall&gt;</span>
     <span class="nt">&lt;/config&gt;</span>
 <span class="nt">&lt;/srv:container&gt;</span>
@@ -451,7 +531,8 @@ important section is <code class="docutils literal notranslate"><span class="pre
  9
 10
 11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
 <span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;security&#39;</span><span class="p">,</span> <span class="p">[</span>
     <span class="s1">&#39;firewalls&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
         <span class="s1">&#39;dev&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
@@ -459,7 +540,8 @@ important section is <code class="docutils literal notranslate"><span class="pre
             <span class="s1">&#39;security&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
         <span class="p">],</span>
         <span class="s1">&#39;main&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-            <span class="s1">&#39;anonymous&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;lazy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;anonymous&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+            <span class="s1">&#39;lazy&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
         <span class="p">],</span>
     <span class="p">],</span>
 <span class="p">]);</span>
@@ -467,9 +549,6 @@ important section is <code class="docutils literal notranslate"><span class="pre
 </td></tr></table></div>
 </p></li>
 </ul>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">lazy</span></code> anonymous mode has been introduced in Symfony 4.4.</p>
 </div>
 <p>A “firewall” is your authentication system: the configuration below it defines
 <em>how</em> your users will be able to authenticate (e.g. login form, API token, etc).</p>
@@ -674,13 +753,17 @@ start with <code class="docutils literal notranslate"><span class="pre">/admin</
 26
 27
 28
-29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+29
+30
+31</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -795,13 +878,17 @@ the list and stops when it finds the first match:</p>
 12
 13
 14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -962,7 +1049,7 @@ role:</p>
 <p>You can use <code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_FULLY</span></code> anywhere roles are used: like
 <code class="docutils literal notranslate"><span class="pre">access_control</span></code> or in Twig.</p>
 <p><code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_FULLY</span></code> isn’t a role, but it kind of acts like one, and every
-user that has logged in will have this. Actually, there are 3 special attributes
+user that has logged in will have this. Actually, there are some special attributes
 like this:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_REMEMBERED</span></code>: <em>All</em> logged in users have this, even
@@ -975,7 +1062,18 @@ will have <code class="docutils literal notranslate"><span class="pre">IS_AUTHEN
 <li><p><code class="docutils literal notranslate"><span class="pre">IS_AUTHENTICATED_ANONYMOUSLY</span></code>: <em>All</em> users (even anonymous ones) have
 this - this is useful when <em>whitelisting</em> URLs to guarantee access - some
 details are in <a class="reference internal" href="security/access_control.xhtml"><span class="doc">How Does the Security access_control Work?</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IS_ANONYMOUS</span></code>: <em>Only</em> anonymous users are matched by this attribute.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IS_REMEMBERED</span></code>: <em>Only</em> users authenticated using the
+<a class="reference internal" href="security/remember_me.xhtml"><span class="doc">remember me functionality</span></a>, (i.e. a
+remember-me cookie).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IS_IMPERSONATOR</span></code>: When the current user is
+<a class="reference internal" href="security/impersonating_user.xhtml"><span class="doc">impersonating</span></a> another user in this
+session, this attribute will match.</p></li>
 </ul>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">IS_ANONYMOUS</span></code>, <code class="docutils literal notranslate"><span class="pre">IS_REMEMBERED</span></code> and <code class="docutils literal notranslate"><span class="pre">IS_IMPERSONATOR</span></code>
+attributes were introduced in Symfony 5.1.</p>
+</div>
 </div>
 </div>
 <div class="section" id="a-fetching-the-user-object">
@@ -1087,13 +1185,17 @@ thanks to the <a class="reference internal" href="templates.xhtml#twig-app-varia
 14
 15
 16
-17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -1224,11 +1326,133 @@ thanks to the <a class="reference internal" href="templates.xhtml#twig-app-varia
 </div>
 <p>And that’s it! By sending a user to the <code class="docutils literal notranslate"><span class="pre">app_logout</span></code> route (i.e. to <code class="docutils literal notranslate"><span class="pre">/logout</span></code>)
 Symfony will un-authenticate the current user and redirect them.</p>
+<div class="section" id="customizing-logout">
+<h3>Customizing Logout</h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">LogoutEvent</span></code> was introduced in Symfony 5.1. Prior to this
+version, you had to use a
+<a class="reference internal" href="reference/configuration/security.xhtml#reference-security-logout-success-handler"><span class="std std-ref">logout success handler</span></a>
+to customize the logout.</p>
+</div>
+<p>In some cases you need to execute extra logic upon logout (e.g. invalidate
+some tokens) or want to customize what happens after a logout. During
+logout, a <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Http/Event/LogoutEvent.php" title="Symfony\Component\Security\Http\Event\LogoutEvent"><span class="pre">LogoutEvent</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Http/Event/LogoutEvent.php]</span></span></code>
+is dispatched. Register an <a class="reference internal" href="event_dispatcher.xhtml"><span class="doc">event listener or subscriber</span></a>
+to execute custom logic. The following information is available in the
+event class:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">getToken()</span></code></dt>
+<dd><p>Returns the security token of the session that is about to be logged
+out.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">getRequest()</span></code></dt>
+<dd><p>Returns the current request.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">getResponse()</span></code></dt>
+<dd><p>Returns a response, if it is already set by a custom listener. Use
+<code class="docutils literal notranslate"><span class="pre">setResponse()</span></code> to configure a custom logout response.</p>
+</dd>
+</dl>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Need more control of what happens after logout? Add a <code class="docutils literal notranslate"><span class="pre">success_handler</span></code> key
-under <code class="docutils literal notranslate"><span class="pre">logout</span></code> and point it to a service id of a class that implements
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Http/Logout/LogoutSuccessHandlerInterface.php" title="Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface"><span class="pre">LogoutSuccessHandlerInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Http/Logout/LogoutSuccessHandlerInterface.php]</span></span></code>.</p>
+<p>Every Security firewall has its own event dispatcher
+(<code class="docutils literal notranslate"><span class="pre">security.event_dispatcher.FIREWALLNAME</span></code>). The logout event is
+dispatched on both the global and firewall dispatcher. You can register
+on the firewall dispatcher if you want your listener to only be
+executed for a specific firewall. For instance, if you have an <code class="docutils literal notranslate"><span class="pre">api</span></code>
+and <code class="docutils literal notranslate"><span class="pre">main</span></code> firewall, use this configuration to register only on the
+logout event in the <code class="docutils literal notranslate"><span class="pre">main</span></code> firewall:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/services.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">App\EventListener\CustomLogoutSubscriber</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">kernel.event_subscriber</span>
+              <span class="l l-Scalar l-Scalar-Plain">dispatcher</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">security.event_dispatcher.main</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/services.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;services&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+
+        <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;App\EventListener\CustomLogoutSubscriber&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;tag</span> <span class="na">name=</span><span class="s">&quot;kernel.event_subscriber&quot;</span>
+                 <span class="na">dispacher=</span><span class="s">&quot;security.event_dispatcher.main&quot;</span>
+             <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/service&gt;</span>
+    <span class="nt">&lt;/services&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\EventListener\CustomLogoutListener</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">App\EventListener\CustomLogoutSubscriber</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Security\Http\Event\LogoutEvent</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">CustomLogoutSubscriber</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">tag</span><span class="p">(</span><span class="s1">&#39;kernel.event_subscriber&#39;</span><span class="p">,</span> <span class="p">[</span>
+            <span class="s1">&#39;dispatcher&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;security.event_dispatcher.main&#39;</span><span class="p">,</span>
+        <span class="p">]);</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="hierarchical-roles">
@@ -1267,13 +1491,17 @@ rules by creating a role hierarchy:</p>
 12
 13
 14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -1378,6 +1606,7 @@ refresh, Symfony will purposely log out the user for security reasons.</p>
 <h3>Authentication (Identifying/Logging in the User)</h3>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="security/experimental_authenticators.xhtml">Using the new Authenticator-based Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security/form_login_setup.xhtml">How to Build a Login Form</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security/reset_password.xhtml">How to Add a Reset Password Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security/json_login_setup.xhtml">How to Build a JSON Authentication Endpoint</a></li>

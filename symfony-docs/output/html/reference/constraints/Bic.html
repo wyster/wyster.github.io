@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -153,11 +155,14 @@
 <li class="toctree-l3"><a class="reference internal" href="IsFalse.html">IsFalse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Type.html">Type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Email.html">Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ExpressionLanguageSyntax.html">ExpressionLanguageSyntax</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Length.html">Length</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Url.html">Url</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Regex.html">Regex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Hostname.html">Hostname</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Ip.html">Ip</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Uuid.html">UUID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Ulid.html">ULID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Json.html">Json</a></li>
 <li class="toctree-l3"><a class="reference internal" href="EqualTo.html">EqualTo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="NotEqualTo.html">NotEqualTo</a></li>
@@ -198,6 +203,10 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="Isbn.html">Isbn</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Issn.html">Issn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Isin.html">Isin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="AtLeastOneOf.html">AtLeastOneOf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Sequentially.html">Sequentially</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Compound.html">Compound</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Callback.html">Callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Expression.html">Expression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="All.html">All</a></li>
@@ -441,25 +450,16 @@ about <a class="reference internal" href="../../validation/groups.html"><span cl
 <div class="section" id="iban">
 <h3>iban<a class="headerlink" href="#iban" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">iban</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>An IBAN value to validate that its country code is the same as the BIC’s one.</p>
 </div>
 <div class="section" id="ibanmessage">
 <h3>ibanMessage<a class="headerlink" href="#ibanmessage" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">Business</span> <span class="pre">Identifier</span> <span class="pre">Code</span> <span class="pre">(BIC)</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">associated</span> <span class="pre">with</span> <span class="pre">IBAN</span> <span class="pre">{{</span> <span class="pre">iban</span> <span class="pre">}}.</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">ibanMessage</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>The default message supplied when the value does not pass the combined BIC/IBAN check.</p>
 </div>
 <div class="section" id="ibanpropertypath">
 <h3>ibanPropertyPath<a class="headerlink" href="#ibanpropertypath" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">ibanPropertyPath</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>It defines the object property whose value stores the IBAN used to check the BIC with.</p>
 <p>For example, if you want to compare the <code class="docutils literal notranslate"><span class="pre">$bic</span></code> property of some object
 with regard to the <code class="docutils literal notranslate"><span class="pre">$iban</span></code> property of the same object, use

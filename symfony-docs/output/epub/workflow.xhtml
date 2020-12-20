@@ -489,10 +489,6 @@ subject is not yet updated with the new places.</p>
 <p>The leaving and entering events are triggered even for transitions that stay
 in same place.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>Following events are also dispatched when the subject enters the workflow
-for the first time: <code class="docutils literal notranslate"><span class="pre">workflow.entered</span></code> and <code class="docutils literal notranslate"><span class="pre">workflow.[worflow</span> <span class="pre">name].entered</span></code>.</p>
-</div>
 <p>Here is an example of how to enable logging for every time a “blog_publishing”
 workflow leaves a place:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/App/EventSubscriber/WorkflowLoggerSubscriber.php</span>
@@ -561,8 +557,7 @@ missing a title:</p>
         <span class="nv">$title</span> <span class="o">=</span> <span class="nv">$post</span><span class="o">-&gt;</span><span class="na">title</span><span class="p">;</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$title</span><span class="p">))</span> <span class="p">{</span>
-            <span class="c1">// Block the transition &quot;to_review&quot; if the post has no title</span>
-            <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">setBlocked</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+            <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">setBlocked</span><span class="p">(</span><span class="k">true</span><span class="p">,</span> <span class="s1">&#39;This blog post cannot be marked as reviewed because it has no title.&#39;</span><span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
@@ -574,6 +569,163 @@ missing a title:</p>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The optional second argument of <code class="docutils literal notranslate"><span class="pre">setBlocked()</span></code> was introduced in Symfony 5.1.</p>
+</div>
+</div>
+<div class="section" id="choosing-which-events-to-dispatch">
+<h3>Choosing which Events to Dispatch</h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>Ability to choose which events to dispatch was introduced in Symfony 5.2.</p>
+</div>
+<p>If you prefer to control which events are fired when performing each transition,
+use the <code class="docutils literal notranslate"><span class="pre">events_to_dispatch</span></code> configuration option. This option does not apply
+to <a class="reference internal" href="#workflow-usage-guard-events"><span class="std std-ref">Guard events</span></a>, which are always fired:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><p><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/workflow.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">framework</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">workflows</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">blog_publishing</span><span class="p p-Indicator">:</span>
+            <span class="c1"># you can pass one or more event names</span>
+            <span class="l l-Scalar l-Scalar-Plain">events_to_dispatch</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;workflow.leave&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;workflow.completed&#39;</span><span class="p p-Indicator">]</span>
+
+            <span class="c1"># pass an empty array to not dispatch any event</span>
+            <span class="l l-Scalar l-Scalar-Plain">events_to_dispatch</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[]</span>
+
+            <span class="c1"># ...</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/workflow.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:framework=</span><span class="s">&quot;http://symfony.com/schema/dic/symfony&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/symfony https://symfony.com/schema/dic/symfony/symfony-1.0.xsd&quot;</span>
+<span class="nt">&gt;</span>
+    <span class="nt">&lt;framework:config&gt;</span>
+        <span class="nt">&lt;framework:workflow</span> <span class="na">name=</span><span class="s">&quot;blog_publishing&quot;</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!-- you can pass one or more event names --&gt;</span>
+            <span class="nt">&lt;framework:event-to-dispatch&gt;</span>workflow.leave<span class="nt">&lt;/framework:event-to-dispatch&gt;</span>
+            <span class="nt">&lt;framework:event-to-dispatch&gt;</span>workflow.completed<span class="nt">&lt;/framework:event-to-dispatch&gt;</span>
+
+            <span class="c">&lt;!-- pass an empty array to not dispatch any event --&gt;</span>
+            <span class="nt">&lt;framework:event-to-dispatch&gt;&lt;/framework:event-to-dispatch&gt;</span>
+
+            <span class="c">&lt;!-- ... --&gt;</span>
+        <span class="nt">&lt;/framework:workflow&gt;</span>
+    <span class="nt">&lt;/framework:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/workflow.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="c1">// ...</span>
+    <span class="s1">&#39;workflows&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;blog_publishing&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="c1">// you can pass one or more event names</span>
+            <span class="s1">&#39;events_to_dispatch&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="s1">&#39;workflow.leave&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;workflow.completed&#39;</span><span class="p">,</span>
+            <span class="p">],</span>
+
+            <span class="c1">// pass an empty array to not dispatch any event</span>
+            <span class="s1">&#39;events_to_dispatch&#39;</span> <span class="o">=&gt;</span> <span class="p">[],</span>
+
+            <span class="c1">// ...</span>
+        <span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</p></li>
+</ul>
+</div>
+<p>You can also disable a specific event from being fired when applying a transition:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Entity\BlogPost</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Workflow\Exception\LogicException</span><span class="p">;</span>
+
+<span class="nv">$post</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BlogPost</span><span class="p">();</span>
+
+<span class="nv">$workflow</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;workflow.blog_publishing&#39;</span><span class="p">);</span>
+
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nv">$workflow</span><span class="o">-&gt;</span><span class="na">apply</span><span class="p">(</span><span class="nv">$post</span><span class="p">,</span> <span class="s1">&#39;to_review&#39;</span><span class="p">,</span> <span class="p">[</span>
+        <span class="nx">Workflow</span><span class="o">::</span><span class="na">DISABLE_ANNOUNCE_EVENT</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+        <span class="nx">Workflow</span><span class="o">::</span><span class="na">DISABLE_LEAVE_EVENT</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+    <span class="p">]);</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">LogicException</span> <span class="nv">$exception</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Disabling an event for a specific transition will take precedence over any
+events specified in the workflow configuration. In the above example the
+<code class="docutils literal notranslate"><span class="pre">workflow.leave</span></code> event will not be fired, even if it has been specified as an
+event to be dispatched for all transitions in the workflow configuration.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">Workflow::DISABLE_ANNOUNCE_EVENT</span></code> constant was introduced in Symfony 5.1.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The constants for other events (as seen below) were introduced in Symfony 5.2.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Workflow::DISABLE_LEAVE_EVENT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Workflow::DISABLE_TRANSITION_EVENT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Workflow::DISABLE_ENTER_EVENT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Workflow::DISABLE_ENTERED_EVENT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Workflow::DISABLE_COMPLETED_EVENT</span></code></p></li>
+</ul>
 </div>
 </div>
 <div class="section" id="event-methods">
@@ -860,9 +1012,6 @@ place:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.1: </span>The transition blockers were introduced in Symfony 4.1.</p>
-</div>
 </div>
 <div class="section" id="usage-in-twig">
 <h2>Usage in Twig</h2>
@@ -954,9 +1103,6 @@ of domain logic in your templates:</p>
 </div>
 <div class="section" id="storing-metadata">
 <h2>Storing Metadata</h2>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.1: </span>The feature to store metadata in workflows was introduced in Symfony 4.1.</p>
-</div>
 <p>In case you need it, you can store arbitrary metadata in workflows, their
 places, and their transitions using the <code class="docutils literal notranslate"><span class="pre">metadata</span></code> option. This metadata can
 be only the title of the workflow or very complex objects:</p>

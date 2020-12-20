@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Semaphore Component</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-semaphore-component">
+<span id="index-0"></span><h1>The Semaphore Component</h1>
+<blockquote>
+<div><p>The Semaphore Component manages <a class="reference external" href="https://en.wikipedia.org/wiki/Semaphore_(programming)">semaphores</a><span class="link-target"> [https://en.wikipedia.org/wiki/Semaphore_(programming)]</span>, a mechanism to provide
+exclusive access to a shared resource.</p>
+</div></blockquote>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The Semaphore Component was introduced in Symfony 5.2.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation</h2>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/semaphore
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you install this component outside of a Symfony application, you must
+require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
+autoloading mechanism provided by Composer. Read
+<a class="reference internal" href="using_components.xhtml"><span class="doc">this article</span></a> for more details.</p>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage</h2>
+<p>In computer science, a semaphore is a variable or abstract data type used to
+control access to a common resource by multiple processes in a concurrent
+system such as a multitasking operating system. The main difference
+with <a class="reference internal" href="../lock.xhtml"><span class="doc">locks</span></a> is that semaphores allow more than one process to
+access a resource, whereas locks only allow one process.</p>
+<p>Create semaphores with the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Semaphore/SemaphoreFactory.php" title="Symfony\Component\Semaphore\SemaphoreFactory"><span class="pre">SemaphoreFactory</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Semaphore/SemaphoreFactory.php]</span></span></code>
+class, which in turn requires another class to manage the storage:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Semaphore\SemaphoreFactory</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Semaphore\Store\RedisStore</span><span class="p">;</span>
+
+<span class="nv">$redis</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Redis</span><span class="p">();</span>
+<span class="nv">$redis</span><span class="o">-&gt;</span><span class="na">connect</span><span class="p">(</span><span class="s1">&#39;172.17.0.2&#39;</span><span class="p">);</span>
+
+<span class="nv">$store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RedisStore</span><span class="p">(</span><span class="nv">$redis</span><span class="p">);</span>
+<span class="nv">$factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SemaphoreFactory</span><span class="p">(</span><span class="nv">$store</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The semaphore is created by calling the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Semaphore/SemaphoreFactory.php" title="Symfony\Component\Semaphore\SemaphoreFactory::createSemaphore()"><span class="pre">createSemaphore()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Semaphore/SemaphoreFactory.php]</span></span></code>
+method. Its first argument is an arbitrary string that represents the locked
+resource. Its second argument is the maximum number of process allowed. Then, a
+call to the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Semaphore/SemaphoreInterface.php" title="Symfony\Component\Semaphore\SemaphoreInterface::acquire()"><span class="pre">acquire()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Semaphore/SemaphoreInterface.php]</span></span></code>
+method will try to acquire the semaphore:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+<span class="nv">$semaphore</span> <span class="o">=</span> <span class="nv">$factory</span><span class="o">-&gt;</span><span class="na">createSemaphore</span><span class="p">(</span><span class="s1">&#39;pdf-invoice-generation&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nv">$semaphore</span><span class="o">-&gt;</span><span class="na">acquire</span><span class="p">())</span> <span class="p">{</span>
+    <span class="c1">// The resource &quot;pdf-invoice-generation&quot; is locked.</span>
+    <span class="c1">// You can compute and generate invoice safely here.</span>
+
+    <span class="nv">$semaphore</span><span class="o">-&gt;</span><span class="na">release</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the semaphore can not be acquired, the method returns <code class="docutils literal notranslate"><span class="pre">false</span></code>. The
+<code class="docutils literal notranslate"><span class="pre">acquire()</span></code> method can be safely called repeatedly, even if the semaphore is
+already acquired.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unlike other implementations, the Semaphore component distinguishes
+semaphores instances even when they are created for the same resource. If a
+semaphore has to be used by several services, they should share the same
+<code class="docutils literal notranslate"><span class="pre">Semaphore</span></code> instance returned by the <code class="docutils literal notranslate"><span class="pre">SemaphoreFactory::createSemaphore</span></code>
+method.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you don’t release the semaphore explicitly, it will be released
+automatically on instance destruction. In some cases, it can be useful to
+lock a resource across several requests. To disable the automatic release
+behavior, set the fifth argument of the <code class="docutils literal notranslate"><span class="pre">createSemaphore()</span></code> method to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

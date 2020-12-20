@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -141,8 +141,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -256,12 +258,11 @@ via Composer:</p>
 <p>Next, create an <code class="docutils literal notranslate"><span class="pre">index.php</span></code> file that defines the kernel class and runs it:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// index.php</span>
 <span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Config\Loader\LoaderInterface</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\ContainerBuilder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\JsonResponse</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Request</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpKernel\Kernel</span> <span class="k">as</span> <span class="nx">BaseKernel</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Routing\RouteCollectionBuilder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator</span><span class="p">;</span>
 
 <span class="k">require</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/vendor/autoload.php&#39;</span><span class="p">;</span>
 
@@ -269,29 +270,27 @@ via Composer:</p>
 <span class="p">{</span>
     <span class="k">use</span> <span class="nx">MicroKernelTrait</span><span class="p">;</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">registerBundles</span><span class="p">()</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">registerBundles</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="k">new</span> <span class="nx">Symfony\Bundle\FrameworkBundle\FrameworkBundle</span><span class="p">()</span>
+            <span class="k">new</span> <span class="nx">Symfony\Bundle\FrameworkBundle\FrameworkBundle</span><span class="p">(),</span>
         <span class="p">];</span>
     <span class="p">}</span>
 
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configureContainer</span><span class="p">(</span><span class="nx">ContainerBuilder</span> <span class="nv">$c</span><span class="p">,</span> <span class="nx">LoaderInterface</span> <span class="nv">$loader</span><span class="p">)</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configureContainer</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$c</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
         <span class="c1">// PHP equivalent of config/packages/framework.yaml</span>
-        <span class="nv">$c</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="p">[</span>
+        <span class="nv">$c</span><span class="o">-&gt;</span><span class="na">extension</span><span class="p">(</span><span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="p">[</span>
             <span class="s1">&#39;secret&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;S0ME_SECRET&#39;</span>
         <span class="p">]);</span>
     <span class="p">}</span>
 
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configureRoutes</span><span class="p">(</span><span class="nx">RouteCollectionBuilder</span> <span class="nv">$routes</span><span class="p">)</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configureRoutes</span><span class="p">(</span><span class="nx">RoutingConfigurator</span> <span class="nv">$routes</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
-        <span class="c1">// kernel is a service that points to this class</span>
-        <span class="c1">// optional 3rd argument is the route name</span>
-        <span class="nv">$routes</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;/random/{limit}&#39;</span><span class="p">,</span> <span class="s1">&#39;kernel::randomNumber&#39;</span><span class="p">);</span>
+        <span class="nv">$routes</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">,</span> <span class="s1">&#39;/random/{limit}&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">controller</span><span class="p">([</span><span class="nv">$this</span><span class="p">,</span> <span class="s1">&#39;randomNumber&#39;</span><span class="p">]);</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">randomNumber</span><span class="p">(</span><span class="nv">$limit</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">randomNumber</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$limit</span><span class="p">)</span><span class="o">:</span> <span class="nx">JsonResponse</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="nx">JsonResponse</span><span class="p">([</span>
             <span class="s1">&#39;number&#39;</span> <span class="o">=&gt;</span> <span class="nx">random_int</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nv">$limit</span><span class="p">),</span>
@@ -319,14 +318,14 @@ that define your bundles, your services and your routes:</p>
 <dl class="docutils">
 <dt><strong>registerBundles()</strong></dt>
 <dd>This is the same <code class="docutils literal notranslate"><span class="pre">registerBundles()</span></code> that you see in a normal kernel.</dd>
-<dt><strong>configureContainer(ContainerBuilder $c, LoaderInterface $loader)</strong></dt>
+<dt><strong>configureContainer(ContainerConfigurator $c)</strong></dt>
 <dd>This method builds and configures the container. In practice, you will use
-<code class="docutils literal notranslate"><span class="pre">loadFromExtension</span></code> to configure different bundles (this is the equivalent
+<code class="docutils literal notranslate"><span class="pre">extension()</span></code> to configure different bundles (this is the equivalent
 of what you see in a normal <code class="docutils literal notranslate"><span class="pre">config/packages/*</span></code> file). You can also register
 services directly in PHP or load external configuration files (shown below).</dd>
-<dt><strong>configureRoutes(RouteCollectionBuilder $routes)</strong></dt>
+<dt><strong>configureRoutes(RoutingConfigurator $routes)</strong></dt>
 <dd>Your job in this method is to add routes to the application. The
-<code class="docutils literal notranslate"><span class="pre">RouteCollectionBuilder</span></code> has methods that make adding routes in PHP more
+<code class="docutils literal notranslate"><span class="pre">RoutingConfigurator</span></code> has methods that make adding routes in PHP more
 fun. You can also load external routing files (shown below).</dd>
 </dl>
 </div>
@@ -365,16 +364,15 @@ hold the kernel. Now it looks like this:</p>
 <span class="k">namespace</span> <span class="nx">App</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Config\Loader\LoaderInterface</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\ContainerBuilder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\HttpKernel\Kernel</span> <span class="k">as</span> <span class="nx">BaseKernel</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Routing\RouteCollectionBuilder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">Kernel</span> <span class="k">extends</span> <span class="nx">BaseKernel</span>
 <span class="p">{</span>
     <span class="k">use</span> <span class="nx">MicroKernelTrait</span><span class="p">;</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">registerBundles</span><span class="p">()</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">registerBundles</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
     <span class="p">{</span>
         <span class="nv">$bundles</span> <span class="o">=</span> <span class="p">[</span>
             <span class="k">new</span> <span class="nx">\Symfony\Bundle\FrameworkBundle\FrameworkBundle</span><span class="p">(),</span>
@@ -382,45 +380,52 @@ hold the kernel. Now it looks like this:</p>
         <span class="p">];</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getEnvironment</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;dev&#39;</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nv">$bundles</span><span class="p">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Symfony\Bundle\WebProfilerBundle\WebProfilerBundle</span><span class="p">();</span>
+            <span class="nv">$bundles</span><span class="p">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Symfony\Bundle\WebProfilerBundle\WebProfilerBundle</span><span class="p">();</span>
         <span class="p">}</span>
 
         <span class="k">return</span> <span class="nv">$bundles</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configureContainer</span><span class="p">(</span><span class="nx">ContainerBuilder</span> <span class="nv">$c</span><span class="p">,</span> <span class="nx">LoaderInterface</span> <span class="nv">$loader</span><span class="p">)</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configureContainer</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$c</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
-        <span class="nv">$loader</span><span class="o">-&gt;</span><span class="na">load</span><span class="p">(</span><span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../config/framework.yaml&#39;</span><span class="p">);</span>
+        <span class="nv">$c</span><span class="o">-&gt;</span><span class="na">import</span><span class="p">(</span><span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../config/framework.yaml&#39;</span><span class="p">);</span>
+
+        <span class="c1">// register all classes in /src/ as service</span>
+        <span class="nv">$c</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">load</span><span class="p">(</span><span class="s1">&#39;App\\&#39;</span><span class="p">,</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/*&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">autowire</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="na">autoconfigure</span><span class="p">()</span>
+        <span class="p">;</span>
 
         <span class="c1">// configure WebProfilerBundle only if the bundle is enabled</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bundles</span><span class="p">[</span><span class="s1">&#39;WebProfilerBundle&#39;</span><span class="p">]))</span> <span class="p">{</span>
-            <span class="nv">$c</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;web_profiler&#39;</span><span class="p">,</span> <span class="p">[</span>
+            <span class="nv">$c</span><span class="o">-&gt;</span><span class="na">extension</span><span class="p">(</span><span class="s1">&#39;web_profiler&#39;</span><span class="p">,</span> <span class="p">[</span>
                 <span class="s1">&#39;toolbar&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
                 <span class="s1">&#39;intercept_redirects&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
             <span class="p">]);</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configureRoutes</span><span class="p">(</span><span class="nx">RouteCollectionBuilder</span> <span class="nv">$routes</span><span class="p">)</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configureRoutes</span><span class="p">(</span><span class="nx">RoutingConfigurator</span> <span class="nv">$routes</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
         <span class="c1">// import the WebProfilerRoutes, only if the bundle is enabled</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bundles</span><span class="p">[</span><span class="s1">&#39;WebProfilerBundle&#39;</span><span class="p">]))</span> <span class="p">{</span>
-            <span class="nv">$routes</span><span class="o">-&gt;</span><span class="na">import</span><span class="p">(</span><span class="s1">&#39;@WebProfilerBundle/Resources/config/routing/wdt.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;/_wdt&#39;</span><span class="p">);</span>
-            <span class="nv">$routes</span><span class="o">-&gt;</span><span class="na">import</span><span class="p">(</span><span class="s1">&#39;@WebProfilerBundle/Resources/config/routing/profiler.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;/_profiler&#39;</span><span class="p">);</span>
+            <span class="nv">$routes</span><span class="o">-&gt;</span><span class="na">import</span><span class="p">(</span><span class="s1">&#39;@WebProfilerBundle/Resources/config/routing/wdt.xml&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">prefix</span><span class="p">(</span><span class="s1">&#39;/_wdt&#39;</span><span class="p">);</span>
+            <span class="nv">$routes</span><span class="o">-&gt;</span><span class="na">import</span><span class="p">(</span><span class="s1">&#39;@WebProfilerBundle/Resources/config/routing/profiler.xml&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">prefix</span><span class="p">(</span><span class="s1">&#39;/_profiler&#39;</span><span class="p">);</span>
         <span class="p">}</span>
 
         <span class="c1">// load the annotation routes</span>
-        <span class="nv">$routes</span><span class="o">-&gt;</span><span class="na">import</span><span class="p">(</span><span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../src/Controller/&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;annotation&#39;</span><span class="p">);</span>
+        <span class="nv">$routes</span><span class="o">-&gt;</span><span class="na">import</span><span class="p">(</span><span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/Controller/&#39;</span><span class="p">,</span> <span class="s1">&#39;annotation&#39;</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="c1">// optional, to use the standard Symfony cache directory</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">getCacheDir</span><span class="p">()</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getCacheDir</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../var/cache/&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getEnvironment</span><span class="p">();</span>
     <span class="p">}</span>
 
     <span class="c1">// optional, to use the standard Symfony logs directory</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">getLogDir</span><span class="p">()</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getLogDir</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../var/log&#39;</span><span class="p">;</span>
     <span class="p">}</span>
@@ -495,6 +500,7 @@ has one file in it:</p>
 <span class="k">namespace</span> <span class="nx">App\Controller</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\Controller\AbstractController</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpFoundation\Response</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Routing\Annotation\Route</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">MicroController</span> <span class="k">extends</span> <span class="nx">AbstractController</span>
@@ -502,7 +508,7 @@ has one file in it:</p>
     <span class="sd">/**</span>
 <span class="sd">     * @Route(&quot;/random/{limit}&quot;)</span>
 <span class="sd">     */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">randomNumber</span><span class="p">(</span><span class="nv">$limit</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">randomNumber</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$limit</span><span class="p">)</span><span class="o">:</span> <span class="nx">Response</span>
     <span class="p">{</span>
         <span class="nv">$number</span> <span class="o">=</span> <span class="nx">random_int</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nv">$limit</span><span class="p">);</span>
 
@@ -597,9 +603,7 @@ this:</p>
 </pre></div>
 </td></tr></table></div>
 <p>As before you can use the <a class="reference internal" href="../setup/symfony_server.html"><span class="doc">Symfony Local Web Server</span></a>:</p>
-<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="go">cd public/</span>
-<span class="gp">$</span> symfony server:start
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> symfony server:start
 </pre></div>
 </td></tr></table></div>
 <p>Then visit the page in your browser: <a class="reference external" href="http://localhost:8000/random/10">http://localhost:8000/random/10</a></p>

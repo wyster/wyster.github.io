@@ -41,8 +41,14 @@ updated for <a class="reference external" href="https://getbootstrap.com/docs/4.
 <code class="docutils literal notranslate"><span class="pre">bootstrap_3_horizontal_layout.html.twig</span></code> but updated for Bootstrap 4 styles.</p></li>
 <li><p><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Resources/views/Form/foundation_5_layout.html.twig">foundation_5_layout.html.twig</a><span class="link-target"> [https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Resources/views/Form/foundation_5_layout.html.twig]</span>, wraps each form field inside a <code class="docutils literal notranslate"><span class="pre">&lt;div&gt;</span></code>
 element with the appropriate CSS classes to apply the default styles of the
-<a class="reference external" href="https://get.foundation/">Foundation CSS framework</a><span class="link-target"> [https://get.foundation/]</span>.</p></li>
+version 5 of <a class="reference external" href="https://get.foundation/">Foundation CSS framework</a><span class="link-target"> [https://get.foundation/]</span>.</p></li>
+<li><p><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Resources/views/Form/foundation_6_layout.html.twig">foundation_6_layout.html.twig</a><span class="link-target"> [https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Resources/views/Form/foundation_6_layout.html.twig]</span>, wraps each form field inside a <code class="docutils literal notranslate"><span class="pre">&lt;div&gt;</span></code>
+element with the appropriate CSS classes to apply the default styles of the
+version 6 of <a class="reference external" href="https://get.foundation/">Foundation CSS framework</a><span class="link-target"> [https://get.foundation/]</span>.</p></li>
 </ul>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">foundation_6_layout.html.twig</span></code> was introduced in Symfony 5.1.</p>
+</div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Read the article about the <a class="reference internal" href="bootstrap4.xhtml"><span class="doc">Bootstrap 4 Symfony form theme</span></a>
@@ -301,18 +307,44 @@ field without having to <a class="reference internal" href="create_custom_field_
 <span class="p">}</span>
 </pre></div>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">block_prefix</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>Now you can use <code class="docutils literal notranslate"><span class="pre">wrapped_text_row</span></code>, <code class="docutils literal notranslate"><span class="pre">wrapped_text_widget</span></code>, etc. as the block
 names.</p>
 </div>
 <div class="section" id="fragment-naming-for-collections">
 <span id="form-custom-prototype"></span><h4>Fragment Naming for Collections</h4>
-<p>When using a <a class="reference internal" href="form_collections.xhtml"><span class="doc">collection of forms</span></a>, the fragment
-of each collection item follows a predefined pattern. For example, consider the
-following complex example where a <code class="docutils literal notranslate"><span class="pre">TaskManagerType</span></code> has a collection of
-<code class="docutils literal notranslate"><span class="pre">TaskListType</span></code> which in turn has a collection of <code class="docutils literal notranslate"><span class="pre">TaskType</span></code>:</p>
+<p>When using a <a class="reference internal" href="form_collections.xhtml"><span class="doc">collection of forms</span></a>, you have
+several ways of customizing the collection and each of its entries. First,
+use the following blocks to customize each part of all form collections:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_row</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_label</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_widget</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_help</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_errors</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<p>You can also customize each entry of all collections with the following blocks:</p>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_entry_row</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_entry_label</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_entry_widget</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_entry_help</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">collection_entry_errors</span> <span class="cp">%}</span><span class="x"> ... </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">collection_entry_*</span></code> blocks were introduced in Symfony 5.1.</p>
+</div>
+<p>Finally, you can customize specific form collections instead of all of them.
+For example, consider the following complex example where a <code class="docutils literal notranslate"><span class="pre">TaskManagerType</span></code>
+has a collection of <code class="docutils literal notranslate"><span class="pre">TaskListType</span></code> which in turn has a collection of
+<code class="docutils literal notranslate"><span class="pre">TaskType</span></code>:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TaskManagerType</span> <span class="k">extends</span> <span class="nx">AbstractType</span>
 <span class="p">{</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">buildForm</span><span class="p">(</span><span class="nx">FormBuilderInterface</span> <span class="nv">$builder</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[])</span><span class="o">:</span> <span class="nx">void</span>

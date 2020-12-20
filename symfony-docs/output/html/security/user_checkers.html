@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../security.html">Security</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../security.html#installation">1) Installation</a></li>
@@ -133,6 +135,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../security.html#frequently-asked-questions">Frequently Asked Questions</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../security.html#learn-more">Learn More</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../security.html#authentication-identifying-logging-in-the-user">Authentication (Identifying/Logging in the User)</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="experimental_authenticators.html">Using the new Authenticator-based Security</a></li>
 <li class="toctree-l4"><a class="reference internal" href="form_login_setup.html">How to Build a Login Form</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reset_password.html">How to Add a Reset Password Feature</a></li>
 <li class="toctree-l4"><a class="reference internal" href="json_login_setup.html">How to Build a JSON Authentication Endpoint</a></li>
@@ -255,14 +258,17 @@ can define per firewall which checker should be used.</p>
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/User/UserCheckerInterface.php" title="Symfony\Component\Security\Core\User\UserCheckerInterface"><span class="pre">UserCheckerInterface</span></a></code>. This interface
 defines two methods called <code class="docutils literal notranslate"><span class="pre">checkPreAuth()</span></code> and <code class="docutils literal notranslate"><span class="pre">checkPostAuth()</span></code> to
 perform checks before and after user authentication. If one or more conditions
-are not met, an exception should be thrown which extends the
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Exception/AccountStatusException.php" title="Symfony\Component\Security\Core\Exception\AccountStatusException"><span class="pre">AccountStatusException</span></a></code>
-or <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Exception/AuthenticationException.php" title="Symfony\Component\Security\Core\Exception\AuthenticationException"><span class="pre">AuthenticationException</span></a></code>:</p>
+are not met, throw an exception which extends the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Exception/AccountStatusException.php" title="Symfony\Component\Security\Core\Exception\AccountStatusException"><span class="pre">AccountStatusException</span></a></code> class.
+Consider using <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/Exception/CustomUserMessageAccountStatusException.php" title="Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException"><span class="pre">CustomUserMessageAccountStatusException</span></a></code>,
+which extends <code class="docutils literal notranslate"><span class="pre">AccountStatusException</span></code> and allows to customize the error message
+displayed to the user:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="nx">App\Security</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\Entity\User</span> <span class="k">as</span> <span class="nx">AppUser</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">App\Exception\AccountDeletedException</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Exception\AccountExpiredException</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\User\UserCheckerInterface</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Security\Core\User\UserInterface</span><span class="p">;</span>
 
@@ -274,9 +280,9 @@ or <code class="docutils literal notranslate"><a class="reference external" href
             <span class="k">return</span><span class="p">;</span>
         <span class="p">}</span>
 
-        <span class="c1">// user is deleted, show a generic Account Not Found message.</span>
         <span class="k">if</span> <span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">isDeleted</span><span class="p">())</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nx">AccountDeletedException</span><span class="p">();</span>
+            <span class="c1">// the message passed to this exception is meant to be displayed to the user</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nx">CustomUserMessageAccountStatusException</span><span class="p">(</span><span class="s1">&#39;Your user account no longer exists.&#39;</span><span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
@@ -293,6 +299,9 @@ or <code class="docutils literal notranslate"><a class="reference external" href
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">CustomUserMessageAccountStatusException</span></code> class was introduced in Symfony 5.1.</p>
 </div>
 </div>
 <div class="section" id="enabling-the-custom-user-checker">
@@ -340,13 +349,17 @@ is the service id of your user checker:</p>
 14
 15
 16
-17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>

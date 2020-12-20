@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="UUID" href="Uuid.html" />
-    <link rel="prev" title="Regex" href="Regex.html" /> 
+    <link rel="prev" title="Hostname" href="Hostname.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -153,15 +155,18 @@
 <li class="toctree-l3"><a class="reference internal" href="IsFalse.html">IsFalse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Type.html">Type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Email.html">Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ExpressionLanguageSyntax.html">ExpressionLanguageSyntax</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Length.html">Length</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Url.html">Url</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Regex.html">Regex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Hostname.html">Hostname</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Ip</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#options">Options</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="Uuid.html">UUID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Ulid.html">ULID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Json.html">Json</a></li>
 <li class="toctree-l3"><a class="reference internal" href="EqualTo.html">EqualTo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="NotEqualTo.html">NotEqualTo</a></li>
@@ -198,6 +203,10 @@
 <li class="toctree-l3"><a class="reference internal" href="Bic.html">Bic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Isbn.html">Isbn</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Issn.html">Issn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Isin.html">Isin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="AtLeastOneOf.html">AtLeastOneOf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Sequentially.html">Sequentially</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Compound.html">Compound</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Callback.html">Callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Expression.html">Expression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="All.html">All</a></li>
@@ -453,8 +462,14 @@ about <a class="reference internal" href="../../validation/groups.html"><span cl
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></td>
 <td>The current (invalid) value</td>
 </tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code></td>
+<td>Corresponding form field label</td>
+</tr>
 </tbody>
 </table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code> parameter was introduced in Symfony 5.2.</p>
+</div>
 </div>
 <div class="section" id="normalizer">
 <h3>normalizer<a class="headerlink" href="#normalizer" title="Permalink to this headline">¶</a></h3>

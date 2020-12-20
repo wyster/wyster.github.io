@@ -24,7 +24,7 @@ screencast series.</p>
 <span id="symfony-tech-requirements"></span><h2>Technical Requirements</h2>
 <p>Before creating your first Symfony application you must:</p>
 <ul class="simple">
-<li><p>Install PHP 7.1 or higher and these PHP extensions (which are installed and
+<li><p>Install PHP 7.2.5 or higher and these PHP extensions (which are installed and
 enabled by default in most PHP 7 installations): <a class="reference external" href="https://www.php.net/book.ctype">Ctype</a><span class="link-target"> [https://www.php.net/book.ctype]</span>, <a class="reference external" href="https://www.php.net/book.iconv">iconv</a><span class="link-target"> [https://www.php.net/book.iconv]</span>, <a class="reference external" href="https://www.php.net/book.json">JSON</a><span class="link-target"> [https://www.php.net/book.json]</span>,
 <a class="reference external" href="https://www.php.net/book.pcre">PCRE</a><span class="link-target"> [https://www.php.net/book.pcre]</span>, <a class="reference external" href="https://www.php.net/book.session">Session</a><span class="link-target"> [https://www.php.net/book.session]</span>, <a class="reference external" href="https://www.php.net/book.simplexml">SimpleXML</a><span class="link-target"> [https://www.php.net/book.simplexml]</span>, and <a class="reference external" href="https://www.php.net/book.tokenizer">Tokenizer</a><span class="link-target"> [https://www.php.net/book.tokenizer]</span>;</p></li>
 <li><p><a class="reference external" href="https://getcomposer.org/download/">Install Composer</a><span class="link-target"> [https://getcomposer.org/download/]</span>, which is used to install PHP packages.</p></li>
@@ -53,10 +53,10 @@ application:</p>
 3
 4
 5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># run this if you are building a traditional web application</span>
-<span class="gp">$</span> symfony new my_project_name --version<span class="o">=</span><span class="m">4</span>.4 --full
+<span class="gp">$</span> symfony new my_project_name --full
 
 <span class="c1"># run this if you are building a microservice, console application or API</span>
-<span class="gp">$</span> symfony new my_project_name --version<span class="o">=</span><span class="m">4</span>.4
+<span class="gp">$</span> symfony new my_project_name
 </pre></div>
 </td></tr></table></div>
 <p>The only difference between these two commands is the number of packages
@@ -69,10 +69,10 @@ Symfony application using Composer:</p>
 3
 4
 5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># run this if you are building a traditional web application</span>
-<span class="gp">$</span> composer create-project symfony/website-skeleton:<span class="s2">&quot;^4.4&quot;</span> my_project_name
+<span class="gp">$</span> composer create-project symfony/website-skeleton my_project_name
 
 <span class="c1"># run this if you are building a microservice, console application or API</span>
-<span class="gp">$</span> composer create-project symfony/skeleton:<span class="s2">&quot;^4.4&quot;</span> my_project_name
+<span class="gp">$</span> composer create-project symfony/skeleton my_project_name
 </pre></div>
 </td></tr></table></div>
 <p>No matter which command you run to create the Symfony application. All of them
@@ -274,7 +274,6 @@ Symfony newcomers and its code contains tons of comments and helpful notes.</p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="setup/homestead.xhtml">Using Symfony with Homestead/Vagrant</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup/web_server_configuration.xhtml">Configuring a Web Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="setup/built_in_web_server.xhtml">How to Use PHP’s built-in Web Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup/bundles.xhtml">Upgrading a Third-Party Bundle for a Major Symfony Version</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup/file_permissions.xhtml">Setting up or Fixing File Permissions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup/flex.xhtml">Upgrading Existing Applications to Symfony Flex</a></li>
@@ -282,7 +281,7 @@ Symfony newcomers and its code contains tons of comments and helpful notes.</p>
 <li class="toctree-l1"><a class="reference internal" href="setup/unstable_versions.xhtml">How to Install or Upgrade to the Latest, Unreleased Symfony Version</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup/upgrade_major.xhtml">Upgrading a Major Version (e.g. 4.4.0 to 5.0.0)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup/upgrade_minor.xhtml">Upgrading a Minor Version (e.g. 4.0.0 to 4.1.0)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="setup/upgrade_patch.xhtml">Upgrading a Patch Version (e.g. 4.1.0 to 4.1.1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup/upgrade_patch.xhtml">Upgrading a Patch Version (e.g. 5.0.0 to 5.0.1)</a></li>
 </ul>
 </div>
 </div>

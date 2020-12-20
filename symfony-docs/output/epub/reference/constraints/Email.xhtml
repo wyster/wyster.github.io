@@ -28,8 +28,6 @@ cast to a string before being validated.</p>
 </tr>
 <tr class="row-even"><td><p>Options</p></td>
 <td><ul class="simple">
-<li><p><a class="reference internal" href="#checkhost">checkHost</a></p></li>
-<li><p><a class="reference internal" href="#checkmx">checkMX</a></p></li>
 <li><p><a class="reference internal" href="#groups">groups</a></p></li>
 <li><p><a class="reference internal" href="#message">message</a></p></li>
 <li><p><a class="reference internal" href="#mode">mode</a></p></li>
@@ -63,8 +61,7 @@ cast to a string before being validated.</p>
 11
 12
 13
-14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
 <span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
@@ -73,8 +70,7 @@ cast to a string before being validated.</p>
 <span class="p">{</span>
     <span class="sd">/**</span>
 <span class="sd">     * @Assert\Email(</span>
-<span class="sd">     *     message = &quot;The email &#39;{{ value }}&#39; is not a valid email.&quot;,</span>
-<span class="sd">     *     checkMX = true</span>
+<span class="sd">     *     message = &quot;The email &#39;{{ value }}&#39; is not a valid email.&quot;</span>
 <span class="sd">     * )</span>
 <span class="sd">     */</span>
     <span class="k">protected</span> <span class="nv">$email</span><span class="p">;</span>
@@ -87,14 +83,12 @@ cast to a string before being validated.</p>
 3
 4
 5
-6
-7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/validator/validation.yaml</span>
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/validator/validation.yaml</span>
 <span class="l l-Scalar l-Scalar-Plain">App\Entity\Author</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">properties</span><span class="p p-Indicator">:</span>
         <span class="l l-Scalar l-Scalar-Plain">email</span><span class="p p-Indicator">:</span>
             <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Email</span><span class="p p-Indicator">:</span>
                 <span class="l l-Scalar l-Scalar-Plain">message</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">The email &quot;{{ value }}&quot; is not a valid email.</span>
-                <span class="l l-Scalar l-Scalar-Plain">checkMX</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </td></tr></table></div>
 </p></li>
@@ -111,8 +105,7 @@ cast to a string before being validated.</p>
 11
 12
 13
-14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/validator/validation.xml --&gt;</span>
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/validator/validation.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;constraint-mapping</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
@@ -122,7 +115,6 @@ cast to a string before being validated.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;email&quot;</span><span class="nt">&gt;</span>
             <span class="nt">&lt;constraint</span> <span class="na">name=</span><span class="s">&quot;Email&quot;</span><span class="nt">&gt;</span>
                 <span class="nt">&lt;option</span> <span class="na">name=</span><span class="s">&quot;message&quot;</span><span class="nt">&gt;</span>The email &quot;{{ value }}&quot; is not a valid email.<span class="nt">&lt;/option&gt;</span>
-                <span class="nt">&lt;option</span> <span class="na">name=</span><span class="s">&quot;checkMX&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/option&gt;</span>
             <span class="nt">&lt;/constraint&gt;</span>
         <span class="nt">&lt;/property&gt;</span>
     <span class="nt">&lt;/class&gt;</span>
@@ -144,8 +136,7 @@ cast to a string before being validated.</p>
 12
 13
 14
-15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
 <span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
@@ -157,7 +148,6 @@ cast to a string before being validated.</p>
     <span class="p">{</span>
         <span class="nv">$metadata</span><span class="o">-&gt;</span><span class="na">addPropertyConstraint</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert\Email</span><span class="p">([</span>
             <span class="s1">&#39;message&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;The email &quot;{{ value }}&quot; is not a valid email.&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;checkMX&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
         <span class="p">]));</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -176,30 +166,6 @@ with <a class="reference internal" href="NotBlank.xhtml"><span class="doc">NotBl
 </div>
 <div class="section" id="options">
 <h2>Options</h2>
-<div class="section" id="checkhost">
-<h3>checkHost</h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>This option was deprecated in Symfony 4.2.</p>
-</div>
-<p>If true, then the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.checkdnsrr.php" title="checkdnsrr"><span class="pre">checkdnsrr</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.checkdnsrr.php]</span></span></code> PHP function will be used to
-check the validity of the MX <em>or</em> the A <em>or</em> the AAAA record of the host
-of the given email.</p>
-</div>
-<div class="section" id="checkmx">
-<h3>checkMX</h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>This option was deprecated in Symfony 4.2.</p>
-</div>
-<p>If true, then the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.checkdnsrr.php" title="checkdnsrr"><span class="pre">checkdnsrr</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.checkdnsrr.php]</span></span></code> PHP function will be used to
-check the validity of the MX record of the host of the given email.</p>
-<div class="admonition caution">
-<p class="admonition-title">Caution</p>
-<p>This option is not reliable because it depends on the network conditions
-and some valid servers refuse to respond to those requests.</p>
-</div>
-</div>
 <div class="section" id="groups">
 <h3><code class="docutils literal notranslate"><span class="pre">groups</span></code></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> | <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
@@ -225,8 +191,14 @@ about <a class="reference internal" href="../../validation/groups.xhtml"><span c
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></p></td>
 <td><p>The current (invalid) value</p></td>
 </tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code></p></td>
+<td><p>Corresponding form field label</p></td>
+</tr>
 </tbody>
 </table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code> parameter was introduced in Symfony 5.2.</p>
+</div>
 </div>
 <div class="section" id="mode">
 <h3>mode</h3>

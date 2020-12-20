@@ -209,9 +209,6 @@ internally, which allows you to use CSS selectors to filter any HTML element in
 the page and check for its existence, attributes, text, etc.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">assertSelectorTextContains</span></code> method is not a native PHPUnit assertion and is
 available thanks to the <code class="docutils literal notranslate"><span class="pre">WebTestCase</span></code> class.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">WebTestCase</span></code> assertions were introduced in Symfony 4.3</p>
-</div>
 <p>The crawler can also be used to interact with the page. Click on a link by first
 selecting it with the crawler using either an XPath expression or a CSS selector,
 then use the client to click on it:</p>
@@ -253,7 +250,7 @@ on the DOM:</p>
 <p>Or test against the response content directly if you just want to assert that
 the content contains some text or in case that the response is not an XML/HTML
 document:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertContains</span><span class="p">(</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertStringContainsString</span><span class="p">(</span>
     <span class="s1">&#39;Hello World&#39;</span><span class="p">,</span>
     <span class="nv">$client</span><span class="o">-&gt;</span><span class="na">getResponse</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getContent</span><span class="p">()</span>
 <span class="p">);</span>
@@ -292,7 +289,7 @@ useful test assertions:</p>
 <span class="p">));</span>
 
 <span class="c1">// asserts that the response content contains a string</span>
-<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertContains</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nv">$client</span><span class="o">-&gt;</span><span class="na">getResponse</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getContent</span><span class="p">());</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertStringContainsString</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nv">$client</span><span class="o">-&gt;</span><span class="na">getResponse</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getContent</span><span class="p">());</span>
 <span class="c1">// ...or matches a regex</span>
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertRegExp</span><span class="p">(</span><span class="s1">&#39;/foo(bar)?/&#39;</span><span class="p">,</span> <span class="nv">$client</span><span class="o">-&gt;</span><span class="na">getResponse</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getContent</span><span class="p">());</span>
 
@@ -319,11 +316,6 @@ useful test assertions:</p>
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertResponseRedirects</span><span class="p">();</span>
 </pre></div>
 </div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">assertResponseHeaderSame()</span></code>, <code class="docutils literal notranslate"><span class="pre">assertResponseIsSuccessful()</span></code>,
-<code class="docutils literal notranslate"><span class="pre">assertResponseStatusCodeSame()</span></code>, <code class="docutils literal notranslate"><span class="pre">assertResponseRedirects()</span></code> and other
-related methods were introduced in Symfony 4.3.</p>
 </div>
 </div>
 </div>
@@ -378,13 +370,13 @@ made to the application URLs which may impact the end users.</p>
 <p class="sidebar-title">More about the <code class="docutils literal notranslate"><span class="pre">request()</span></code> Method:</p>
 <p>The full signature of the <code class="docutils literal notranslate"><span class="pre">request()</span></code> method is:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nx">request</span><span class="p">(</span>
-    <span class="nv">$method</span><span class="p">,</span>
-    <span class="nv">$uri</span><span class="p">,</span>
+    <span class="nx">string</span> <span class="nv">$method</span><span class="p">,</span>
+    <span class="nx">string</span> <span class="nv">$uri</span><span class="p">,</span>
     <span class="k">array</span> <span class="nv">$parameters</span> <span class="o">=</span> <span class="p">[],</span>
     <span class="k">array</span> <span class="nv">$files</span> <span class="o">=</span> <span class="p">[],</span>
     <span class="k">array</span> <span class="nv">$server</span> <span class="o">=</span> <span class="p">[],</span>
-    <span class="nv">$content</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span>
-    <span class="nv">$changeHistory</span> <span class="o">=</span> <span class="k">true</span>
+    <span class="nx">string</span> <span class="nv">$content</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span>
+    <span class="nx">bool</span> <span class="nv">$changeHistory</span> <span class="o">=</span> <span class="k">true</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -569,6 +561,58 @@ container is a service that can be get via the normal container:</p>
 it instead.</p>
 </div>
 </div>
+<div class="section" id="logging-in-users-authentication">
+<span id="testing-logging-in-users"></span><h3>Logging in Users (Authentication)</h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">loginUser()</span></code> method was introduced in Symfony 5.1.</p>
+</div>
+<p>When you want to add functional tests for protected pages, you have to
+first “login” as a user. Reproducing the actual steps - such as
+submitting a login form - make a test very slow. For this reason, Symfony
+provides a <code class="docutils literal notranslate"><span class="pre">loginUser()</span></code> method to simulate logging in in your functional
+tests.</p>
+<p>Instead of login in with real users, it’s recommended to create a user only for
+tests. You can do that with Doctrine <a class="reference internal" href="security.xhtml#user-data-fixture"><span class="std std-ref">data fixtures</span></a>,
+to load the testing users only in the test database.</p>
+<p>After loading users in your database, use your user repository to fetch
+this user and use
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/KernelBrowser.php" title="Symfony\Bundle\FrameworkBundle\KernelBrowser::loginUser()"><span class="pre">$client-&gt;loginUser()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/KernelBrowser.php]</span></span></code>
+to simulate a login request:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// tests/Controller/ProfileControllerTest.php</span>
+<span class="k">namespace</span> <span class="nx">App\Tests\Controller</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">App\Repository\UserRepository</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Bundle\FrameworkBundle\Test\WebTestCase</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ProfileControllerTest</span> <span class="k">extends</span> <span class="nx">WebTestCase</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testVisitingWhileLoggedIn</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$client</span> <span class="o">=</span> <span class="k">static</span><span class="o">::</span><span class="na">createClient</span><span class="p">();</span>
+        <span class="nv">$userRepository</span> <span class="o">=</span> <span class="k">static</span><span class="o">::</span><span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="nx">UserRepository</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+        <span class="c1">// retrieve the test user</span>
+        <span class="nv">$testUser</span> <span class="o">=</span> <span class="nv">$userRepository</span><span class="o">-&gt;</span><span class="na">findOneByEmail</span><span class="p">(</span><span class="s1">&#39;john.doe@example.com&#39;</span><span class="p">);</span>
+
+        <span class="c1">// simulate $testUser being logged in</span>
+        <span class="nv">$client</span><span class="o">-&gt;</span><span class="na">loginUser</span><span class="p">(</span><span class="nv">$testUser</span><span class="p">);</span>
+
+        <span class="c1">// test e.g. the profile page</span>
+        <span class="nv">$client</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;/profile&#39;</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertResponseIsSuccessful</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSelectorTextContains</span><span class="p">(</span><span class="s1">&#39;h1&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello John!&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You can pass any
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/User/UserInterface.php" title="Symfony\Component\Security\Core\User\UserInterface"><span class="pre">UserInterface</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Security/Core/User/UserInterface.php]</span></span></code> instance to
+<code class="docutils literal notranslate"><span class="pre">loginUser()</span></code>. This method creates a special
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/Test/TestBrowserToken.php" title="Symfony\Bundle\FrameworkBundle\Test\TestBrowserToken"><span class="pre">TestBrowserToken</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/Test/TestBrowserToken.php]</span></span></code> object and
+stores in the session of the test client.</p>
+</div>
 <div class="section" id="accessing-the-profiler-data">
 <h3>Accessing the Profiler Data</h3>
 <p>On each request, you can enable the Symfony profiler to collect data about the
@@ -692,7 +736,9 @@ narrow down your node selection by chaining the method calls:</p>
 <div class="section" id="extracting-information">
 <h3>Extracting Information</h3>
 <p>The Crawler can extract information from the nodes:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// returns the attribute value for the first node</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\DomCrawler\Crawler</span><span class="p">;</span>
+
+<span class="c1">// returns the attribute value for the first node</span>
 <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">attr</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">);</span>
 
 <span class="c1">// returns the node value for the first node</span>
@@ -712,13 +758,10 @@ narrow down your node selection by chaining the method calls:</p>
 <span class="nv">$info</span> <span class="o">=</span> <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">extract</span><span class="p">([</span><span class="s1">&#39;_text&#39;</span><span class="p">,</span> <span class="s1">&#39;href&#39;</span><span class="p">]);</span>
 
 <span class="c1">// executes a lambda for each node and return an array of results</span>
-<span class="nv">$data</span> <span class="o">=</span> <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">each</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$node</span><span class="p">,</span> <span class="nv">$i</span><span class="p">)</span> <span class="p">{</span>
+<span class="nv">$data</span> <span class="o">=</span> <span class="nv">$crawler</span><span class="o">-&gt;</span><span class="na">each</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nx">Crawler</span> <span class="nv">$node</span><span class="p">,</span> <span class="nv">$i</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nv">$node</span><span class="o">-&gt;</span><span class="na">attr</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">);</span>
 <span class="p">});</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The option to trim white spaces in <code class="docutils literal notranslate"><span class="pre">text()</span></code> was introduced in Symfony 4.4.</p>
 </div>
 </div>
 <div class="section" id="links">
@@ -823,9 +866,6 @@ their type:</p>
 <code class="docutils literal notranslate"><span class="pre">my_form[...]</span></code> in previous examples), you can use the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/Form.php" title="Symfony\Component\DomCrawler\Form::getName()"><span class="pre">getName()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DomCrawler/Form.php]</span></span></code> method to get the
 form name.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">getName()</span></code> method was introduced in Symfony 4.4.</p>
-</div>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>

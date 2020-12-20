@@ -37,7 +37,7 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Json" href="Json.html" />
+    <link rel="next" title="ULID" href="Ulid.html" />
     <link rel="prev" title="Ip" href="Ip.html" /> 
 </head>
 
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -153,15 +155,18 @@
 <li class="toctree-l3"><a class="reference internal" href="IsFalse.html">IsFalse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Type.html">Type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Email.html">Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ExpressionLanguageSyntax.html">ExpressionLanguageSyntax</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Length.html">Length</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Url.html">Url</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Regex.html">Regex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Hostname.html">Hostname</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Ip.html">Ip</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">UUID</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#options">Options</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="Ulid.html">ULID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Json.html">Json</a></li>
 <li class="toctree-l3"><a class="reference internal" href="EqualTo.html">EqualTo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="NotEqualTo.html">NotEqualTo</a></li>
@@ -198,6 +203,10 @@
 <li class="toctree-l3"><a class="reference internal" href="Bic.html">Bic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Isbn.html">Isbn</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Issn.html">Issn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Isin.html">Isin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="AtLeastOneOf.html">AtLeastOneOf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Sequentially.html">Sequentially</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Compound.html">Compound</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Callback.html">Callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Expression.html">Expression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="All.html">All</a></li>
@@ -455,8 +464,14 @@ about <a class="reference internal" href="../../validation/groups.html"><span cl
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></td>
 <td>The current (invalid) value</td>
 </tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code></td>
+<td>Corresponding form field label</td>
+</tr>
 </tbody>
 </table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code> parameter was introduced in Symfony 5.2.</p>
+</div>
 </div>
 <div class="section" id="normalizer">
 <h3>normalizer<a class="headerlink" href="#normalizer" title="Permalink to this headline">¶</a></h3>
@@ -492,8 +507,8 @@ will allow alternate input formats like:</p>
 </div>
 <div class="section" id="versions">
 <h3><code class="docutils literal notranslate"><span class="pre">versions</span></code><a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int[]</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[1,2,3,4,5]</span></code></p>
-<p>This option can be used to only allow specific <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Versions">UUID versions</a>.  Valid versions are 1 - 5.
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int[]</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[1,2,3,4,5,6]</span></code></p>
+<p>This option can be used to only allow specific <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Versions">UUID versions</a>.  Valid versions are 1 - 6.
 The following PHP constants can also be used:</p>
 <ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">Uuid::V1_MAC</span></code></li>
@@ -501,8 +516,12 @@ The following PHP constants can also be used:</p>
 <li><code class="docutils literal notranslate"><span class="pre">Uuid::V3_MD5</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">Uuid::V4_RANDOM</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">Uuid::V5_SHA1</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">Uuid::V6_SORTABLE</span></code></li>
 </ul>
-<p>All five versions are allowed by default.</p>
+<p>All six versions are allowed by default.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The UUID 6 version support was introduced in Symfony 5.2.</p>
+</div>
 </div>
 </div>
 </div>

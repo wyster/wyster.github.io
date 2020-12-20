@@ -73,11 +73,6 @@ the <code class="docutils literal notranslate"><span class="pre">kernel.exceptio
 Check out the <a class="reference internal" href="reference/events.xhtml"><span class="doc">Symfony events reference</span></a> to see
 what type of object each event provides.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ExceptionEvent.php" title="Symfony\Component\HttpKernel\Event\ExceptionEvent"><span class="pre">ExceptionEvent</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpKernel/Event/ExceptionEvent.php]</span></span></code> class was
-introduced in Symfony 4.3. In previous versions it was called
-<code class="docutils literal notranslate"><span class="pre">Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent</span></code>.</p>
-</div>
 <p>Now that the class is created, you need to register it as a service and
 notify Symfony that it is a “listener” on the <code class="docutils literal notranslate"><span class="pre">kernel.exception</span></code> event by
 using a special “tag”:</p>
@@ -123,17 +118,29 @@ using a special “tag”:</p>
 </pre></div>
 </td></tr></table></div>
 </p></li>
-<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<li><p><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+<span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
+
 <span class="k">use</span> <span class="nx">App\EventListener\ExceptionListener</span><span class="p">;</span>
 
-<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">register</span><span class="p">(</span><span class="nx">ExceptionListener</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">tag</span><span class="p">(</span><span class="s1">&#39;kernel.event_listener&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;event&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;kernel.exception&#39;</span><span class="p">])</span>
-<span class="p">;</span>
+<span class="k">return</span> <span class="k">function</span><span class="p">(</span><span class="nx">ContainerConfigurator</span> <span class="nv">$configurator</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
+
+    <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">ExceptionListener</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">tag</span><span class="p">(</span><span class="s1">&#39;kernel.event_listener&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;event&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;kernel.exception&#39;</span><span class="p">])</span>
+    <span class="p">;</span>
+<span class="p">};</span>
 </pre></div>
 </td></tr></table></div>
 </p></li>
@@ -292,10 +299,6 @@ name (FQCN) of the corresponding event class:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>Referring Symfony’s core events via the FQCN of the event class is possible
-since Symfony 4.3.</p>
-</div>
 <p>Internally, the event FQCN are treated as aliases for the original event names.
 Since the mapping already happens when compiling the service container, event
 listeners and subscribers using FQCN instead of event names will appear under
@@ -324,9 +327,6 @@ compiler pass <code class="docutils literal notranslate"><span class="pre">AddEv
 <p>The compiler pass will always extend the existing list of aliases. Because of
 that, it is safe to register multiple instances of the pass with different
 configurations.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">AddEventAliasesPass</span></code> class was introduced in Symfony 4.4.</p>
-</div>
 </div>
 <div class="section" id="debugging-event-listeners">
 <h2>Debugging Event Listeners</h2>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -153,11 +155,14 @@
 <li class="toctree-l3"><a class="reference internal" href="IsFalse.html">IsFalse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Type.html">Type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Email.html">Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ExpressionLanguageSyntax.html">ExpressionLanguageSyntax</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Length.html">Length</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Url.html">Url</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Regex.html">Regex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Hostname.html">Hostname</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Ip.html">Ip</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Uuid.html">UUID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Ulid.html">ULID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Json.html">Json</a></li>
 <li class="toctree-l3"><a class="reference internal" href="EqualTo.html">EqualTo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="NotEqualTo.html">NotEqualTo</a></li>
@@ -198,6 +203,10 @@
 <li class="toctree-l3"><a class="reference internal" href="Bic.html">Bic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Isbn.html">Isbn</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Issn.html">Issn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Isin.html">Isin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="AtLeastOneOf.html">AtLeastOneOf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Sequentially.html">Sequentially</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Compound.html">Compound</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Callback.html">Callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Expression.html">Expression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="All.html">All</a></li>
@@ -664,12 +673,9 @@ of given mime types (if an array).</p>
 <p>When using this constraint on a <a class="reference internal" href="../forms/types/file.html"><span class="doc">FileType field</span></a>,
 the value of the <code class="docutils literal notranslate"><span class="pre">mimeTypes</span></code> option is also used in the <code class="docutils literal notranslate"><span class="pre">accept</span></code>
 attribute of the related <code class="docutils literal notranslate"><span class="pre">&lt;input</span> <span class="pre">type=&quot;file&quot;/&gt;</span></code> HTML element.</p>
-<p>This behavior is applied only when using <a class="reference internal" href="../../forms.html#form-type-guessing"><span class="std std-ref">form type guessing</span></a>
+<p class="last">This behavior is applied only when using <a class="reference internal" href="../../forms.html#form-type-guessing"><span class="std std-ref">form type guessing</span></a>
 (i.e. the form type is not defined explicitly in the <code class="docutils literal notranslate"><span class="pre">-&gt;add()</span></code> method of
 the form builder) and when the field doesn’t define its own <code class="docutils literal notranslate"><span class="pre">accept</span></code> value.</p>
-<div class="last versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>This feature was introduced in Symfony 4.4.</p>
-</div>
 </div>
 </div>
 <div class="section" id="mimetypesmessage">

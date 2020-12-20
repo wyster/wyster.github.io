@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -452,25 +454,42 @@ services.</p>
 </div>
 <div class="section" id="deprecating-service-aliases">
 <h3>Deprecating Service Aliases<a class="headerlink" href="#deprecating-service-aliases" title="Permalink to this headline">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">package</span></code> and <code class="docutils literal notranslate"><span class="pre">version</span></code> options were introduced in Symfony 5.1.
+Prior to 5.1, you had to use <code class="docutils literal notranslate"><span class="pre">deprecated:</span> <span class="pre">true</span></code> or
+<code class="docutils literal notranslate"><span class="pre">deprecated:</span> <span class="pre">'Custom</span> <span class="pre">message'</span></code>.</p>
+</div>
 <p>If you decide to deprecate the use of a service alias (because it is outdated
 or you decided not to maintain it anymore), you can deprecate its definition:</p>
 <div class="configuration-block">
 <ul class="simple">
-<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">app.mailer</span><span class="p p-Indicator">:</span>
+<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">app.mailer</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">alias</span><span class="p p-Indicator">:</span> <span class="s">&#39;@App\Mail\PhpMailer&#39;</span>
 
-    <span class="c1"># this will display a generic deprecation message...</span>
-    <span class="l l-Scalar l-Scalar-Plain">deprecated</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="c1"># this outputs the following generic deprecation message:</span>
+    <span class="c1"># Since acme/package 1.2: The &quot;app.mailer&quot; service alias is deprecated. You should stop using it, as it will be removed in the future</span>
+    <span class="l l-Scalar l-Scalar-Plain">deprecated</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">package</span><span class="p p-Indicator">:</span> <span class="s">&#39;acme/package&#39;</span>
+        <span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="s">&#39;1.2&#39;</span>
 
-    <span class="c1"># ...but you can also define a custom deprecation message</span>
-    <span class="l l-Scalar l-Scalar-Plain">deprecated</span><span class="p p-Indicator">:</span> <span class="s">&#39;The</span><span class="nv"> </span><span class="s">&quot;%alias_id%&quot;</span><span class="nv"> </span><span class="s">alias</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">deprecated.</span><span class="nv"> </span><span class="s">Do</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">anymore.&#39;</span>
+    <span class="c1"># you can also define a custom deprecation message (%alias_id% placeholder is available)</span>
+    <span class="l l-Scalar l-Scalar-Plain">deprecated</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">package</span><span class="p p-Indicator">:</span> <span class="s">&#39;acme/package&#39;</span>
+        <span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="s">&#39;1.2&#39;</span>
+        <span class="l l-Scalar l-Scalar-Plain">message</span><span class="p p-Indicator">:</span> <span class="s">&#39;The</span><span class="nv"> </span><span class="s">&quot;%alias_id%&quot;</span><span class="nv"> </span><span class="s">alias</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">deprecated.</span><span class="nv"> </span><span class="s">Do</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">anymore.&#39;</span>
 </pre></div>
 </td></tr></table></div>
 </li>
@@ -488,18 +507,24 @@ or you decided not to maintain it anymore), you can deprecate its definition:</p
 12
 13
 14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-Instance&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;services&gt;</span>
         <span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">&quot;app.mailer&quot;</span> <span class="na">alias=</span><span class="s">&quot;App\Mail\PhpMailer&quot;</span><span class="nt">&gt;</span>
-            <span class="c">&lt;!-- this will display a generic deprecation message... --&gt;</span>
-            <span class="nt">&lt;deprecated/&gt;</span>
+            <span class="c">&lt;!-- this outputs the following generic deprecation message:</span>
+<span class="c">                 Since acme/package 1.2: The &quot;app.mailer&quot; service alias is deprecated. You should stop using it, as it will be removed in the future --&gt;</span>
+            <span class="nt">&lt;deprecated</span> <span class="na">package=</span><span class="s">&quot;acme/package&quot;</span> <span class="na">version=</span><span class="s">&quot;1.2&quot;</span><span class="nt">/&gt;</span>
 
-            <span class="c">&lt;!-- ...but you can also define a custom deprecation message --&gt;</span>
-            <span class="nt">&lt;deprecated&gt;</span>The &quot;%alias_id%&quot; service alias is deprecated. Don&#39;t use it anymore.<span class="nt">&lt;/deprecated&gt;</span>
+            <span class="c">&lt;!-- you can also define a custom deprecation message (%alias_id% placeholder is available) --&gt;</span>
+            <span class="nt">&lt;deprecated</span> <span class="na">package=</span><span class="s">&quot;acme/package&quot;</span> <span class="na">version=</span><span class="s">&quot;1.2&quot;</span><span class="nt">&gt;</span>
+                The &quot;%alias_id%&quot; service alias is deprecated. Don&#39;t use it anymore.
+            <span class="nt">&lt;/deprecated&gt;</span>
         <span class="nt">&lt;/service&gt;</span>
     <span class="nt">&lt;/services&gt;</span>
 <span class="nt">&lt;/container&gt;</span>
@@ -517,15 +542,19 @@ or you decided not to maintain it anymore), you can deprecate its definition:</p
  9
 10
 11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nv">$container</span>
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nv">$container</span>
     <span class="o">-&gt;</span><span class="na">setAlias</span><span class="p">(</span><span class="s1">&#39;app.mailer&#39;</span><span class="p">,</span> <span class="s1">&#39;App\Mail\PhpMailer&#39;</span><span class="p">)</span>
 
-    <span class="c1">// this will display a generic deprecation message...</span>
-    <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span><span class="k">true</span><span class="p">)</span>
+    <span class="c1">// this outputs the following generic deprecation message:</span>
+    <span class="c1">// Since acme/package 1.2: The &quot;app.mailer&quot; service alias is deprecated. You should stop using it, as it will be removed in the future</span>
+    <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span><span class="s1">&#39;acme/package&#39;</span><span class="p">,</span> <span class="s1">&#39;1.2&#39;</span><span class="p">)</span>
 
-    <span class="c1">// ...but you can also define a custom deprecation message</span>
+    <span class="c1">// you can also define a custom deprecation message (%alias_id% placeholder is available)</span>
     <span class="o">-&gt;</span><span class="na">setDeprecated</span><span class="p">(</span>
-        <span class="k">true</span><span class="p">,</span>
+        <span class="s1">&#39;acme/package&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;1.2&#39;</span><span class="p">,</span>
         <span class="s1">&#39;The &quot;%alias_id%&quot; service alias is deprecated. Don\&#39;t use it anymore.&#39;</span>
     <span class="p">)</span>
 <span class="p">;</span>
@@ -539,9 +568,6 @@ advising you to stop or to change your uses of that alias.</p>
 <p>The message is actually a message template, which replaces occurrences of the
 <code class="docutils literal notranslate"><span class="pre">%alias_id%</span></code> placeholder by the service alias id. You <strong>must</strong> have at least
 one occurrence of the <code class="docutils literal notranslate"><span class="pre">%alias_id%</span></code> placeholder in your template.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">deprecated</span></code> option for service aliases was introduced in Symfony 4.3.</p>
-</div>
 </div>
 </div>
 <div class="section" id="anonymous-services">
@@ -610,7 +636,8 @@ created where they are used.</p>
  9
 10
 11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
 <span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">App\AnonymousBar</span><span class="p">;</span>
@@ -620,7 +647,8 @@ created where they are used.</p>
     <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
 
     <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Foo</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">inline</span><span class="p">(</span><span class="nx">AnonymousBar</span><span class="o">::</span><span class="na">class</span><span class="p">)])</span>
+        <span class="c1">// In versions earlier to Symfony 5.1 the inline_service() function was called inline()</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">inline_service</span><span class="p">(</span><span class="nx">AnonymousBar</span><span class="o">::</span><span class="na">class</span><span class="p">)])</span>
 <span class="p">};</span>
 </pre></div>
 </td></tr></table></div>
@@ -632,7 +660,7 @@ created where they are used.</p>
 <p class="last">Anonymous services do <em>NOT</em> inherit the definitions provided from the
 defaults defined in the configuration. So you’ll need to explicitly mark
 service as autowired or autoconfigured when doing an anonymous service
-e.g.: <code class="docutils literal notranslate"><span class="pre">inline(Foo::class)-&gt;autowire()-&gt;autoconfigure()</span></code>.</p>
+e.g.: <code class="docutils literal notranslate"><span class="pre">inline_service(Foo::class)-&gt;autowire()-&gt;autoconfigure()</span></code>.</p>
 </div>
 <p>Using an anonymous service as a factory looks like this:</p>
 <div class="configuration-block">
@@ -700,7 +728,7 @@ e.g.: <code class="docutils literal notranslate"><span class="pre">inline(Foo::c
     <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
 
     <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">Foo</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="na">factory</span><span class="p">([</span><span class="nx">inline</span><span class="p">(</span><span class="nx">AnonymousBar</span><span class="o">::</span><span class="na">class</span><span class="p">),</span> <span class="s1">&#39;constructFoo&#39;</span><span class="p">])</span>
+        <span class="o">-&gt;</span><span class="na">factory</span><span class="p">([</span><span class="nx">inline_service</span><span class="p">(</span><span class="nx">AnonymousBar</span><span class="o">::</span><span class="na">class</span><span class="p">),</span> <span class="s1">&#39;constructFoo&#39;</span><span class="p">])</span>
 <span class="p">};</span>
 </pre></div>
 </td></tr></table></div>

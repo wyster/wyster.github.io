@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -306,7 +308,7 @@ set of predefined services while instantiating them only when actually needed
 through a <strong>Service Locator</strong>, a separate lazy-loaded container.</p>
 <div class="section" id="defining-a-service-subscriber">
 <h2>Defining a Service Subscriber<a class="headerlink" href="#defining-a-service-subscriber" title="Permalink to this headline">¶</a></h2>
-<p>First, turn <code class="docutils literal notranslate"><span class="pre">CommandBus</span></code> into an implementation of <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/DependencyInjection/ServiceSubscriberInterface.php" title="Symfony\Component\DependencyInjection\ServiceSubscriberInterface"><span class="pre">ServiceSubscriberInterface</span></a></code>.
+<p>First, turn <code class="docutils literal notranslate"><span class="pre">CommandBus</span></code> into an implementation of <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Contracts/Service/ServiceSubscriberInterface.php" title="Symfony\Contracts\Service\ServiceSubscriberInterface"><span class="pre">ServiceSubscriberInterface</span></a></code>.
 Use its <code class="docutils literal notranslate"><span class="pre">getSubscribedServices()</span></code> method to include as many services as needed
 in the service subscriber and change the type hint of the container to
 a PSR-11 <code class="docutils literal notranslate"><span class="pre">ContainerInterface</span></code>:</p>
@@ -632,7 +634,8 @@ service definition to pass a collection of services to the service locator:</p>
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/services.php</span>
 <span class="k">namespace</span> <span class="nx">Symfony\Component\DependencyInjection\Loader\Configurator</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\ServiceLocator</span><span class="p">;</span>
@@ -641,9 +644,10 @@ service definition to pass a collection of services to the service locator:</p>
     <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
 
     <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;app.command_handler_locator&#39;</span><span class="p">,</span> <span class="nx">ServiceLocator</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="c1">// In versions earlier to Symfony 5.1 the service() function was called ref()</span>
         <span class="o">-&gt;</span><span class="na">args</span><span class="p">([[</span>
-            <span class="s1">&#39;App\FooCommand&#39;</span> <span class="o">=&gt;</span> <span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;app.command_handler.foo&#39;</span><span class="p">),</span>
-            <span class="s1">&#39;App\BarCommand&#39;</span> <span class="o">=&gt;</span> <span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;app.command_handler.bar&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;App\FooCommand&#39;</span> <span class="o">=&gt;</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;app.command_handler.foo&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;App\BarCommand&#39;</span> <span class="o">=&gt;</span> <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;app.command_handler.bar&#39;</span><span class="p">),</span>
         <span class="p">]])</span>
         <span class="c1">// if you are not using the default service autoconfiguration,</span>
         <span class="c1">// add the following tag to the service definition:</span>
@@ -653,7 +657,7 @@ service definition to pass a collection of services to the service locator:</p>
     <span class="c1">// if the element has no key, the ID of the original service is used</span>
     <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;app.another_command_handler_locator&#39;</span><span class="p">,</span> <span class="nx">ServiceLocator</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
         <span class="o">-&gt;</span><span class="na">args</span><span class="p">([[</span>
-            <span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;app.command_handler.baz&#39;</span><span class="p">),</span>
+            <span class="nx">service</span><span class="p">(</span><span class="s1">&#39;app.command_handler.baz&#39;</span><span class="p">),</span>
         <span class="p">]])</span>
     <span class="p">;</span>
 <span class="p">};</span>
@@ -661,15 +665,6 @@ service definition to pass a collection of services to the service locator:</p>
 </td></tr></table></div>
 </li>
 </ul>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.1: </span>The service locator autoconfiguration was introduced in Symfony 4.1. In
-previous Symfony versions you always needed to add the
-<code class="docutils literal notranslate"><span class="pre">container.service_locator</span></code> tag explicitly.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.2: </span>The ability to add services without specifying their id was introduced in
-Symfony 4.2.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -738,7 +733,7 @@ which later become their unique identifiers inside the locator.</p>
     <span class="nv">$services</span> <span class="o">=</span> <span class="nv">$configurator</span><span class="o">-&gt;</span><span class="na">services</span><span class="p">();</span>
 
     <span class="nv">$services</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="nx">CommandBus</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;app.command_handler_locator&#39;</span><span class="p">)]);</span>
+        <span class="o">-&gt;</span><span class="na">args</span><span class="p">([</span><span class="nx">service</span><span class="p">(</span><span class="s1">&#39;app.command_handler_locator&#39;</span><span class="p">)]);</span>
 <span class="p">};</span>
 </pre></div>
 </td></tr></table></div>

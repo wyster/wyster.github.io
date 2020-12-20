@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -150,7 +152,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#date">date</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#debug">debug</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#default-path">default_path</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#exception-controller">exception_controller</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#form-themes">form_themes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#globals">globals</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#number-format">number_format</a></li>
@@ -285,7 +286,6 @@ namespace and the related XSD schema is available at:
 </li>
 <li><a class="reference internal" href="#debug">debug</a></li>
 <li><a class="reference internal" href="#default-path">default_path</a></li>
-<li><a class="reference internal" href="#exception-controller">exception_controller</a></li>
 <li><a class="reference internal" href="#form-themes">form_themes</a></li>
 <li><a class="reference internal" href="#globals">globals</a></li>
 <li><a class="reference internal" href="#number-format">number_format</a><ul>
@@ -406,24 +406,6 @@ be used to display their nodes.</p>
 <p>The path to the directory where Symfony will look for the application Twig
 templates by default. If you store the templates in more than one directory, use
 the <a class="reference internal" href="#config-twig-paths"><span class="std std-ref">paths</span></a>  option too.</p>
-</div>
-<div class="section" id="exception-controller">
-<span id="config-twig-exception-controller"></span><h3>exception_controller<a class="headerlink" href="#exception-controller" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">twig.controller.exception:showAction</span></code></p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">exception_controller</span></code> configuration option was deprecated in Symfony 4.4.
-Set it to <code class="docutils literal notranslate"><span class="pre">null</span></code> and use the new <code class="docutils literal notranslate"><span class="pre">error_controller</span></code> option under <code class="docutils literal notranslate"><span class="pre">framework</span></code>
-configuration instead.</p>
-</div>
-<p>This is the controller that is activated after an exception is thrown anywhere
-in your application. The default controller
-(<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/TwigBundle/Controller/ExceptionController.php" title="Symfony\Bundle\TwigBundle\Controller\ExceptionController"><span class="pre">ExceptionController</span></a></code>)
-is what’s responsible for rendering specific templates under different error
-conditions (see <a class="reference internal" href="../../controller/error_pages.html"><span class="doc">How to Customize Error Pages</span></a>). Modifying this
-option is advanced. If you need to customize an error page you should use
-the previous link. If you need to perform some behavior on an exception,
-you should add an <a class="reference internal" href="../../event_dispatcher.html"><span class="doc">event listener</span></a> to the
-<a class="reference internal" href="../events.html#kernel-kernel-exception"><span class="std std-ref">kernel.exception event</span></a>.</p>
 </div>
 <div class="section" id="form-themes">
 <span id="config-twig-form-themes"></span><h3>form_themes<a class="headerlink" href="#form-themes" title="Permalink to this headline">¶</a></h3>
@@ -620,7 +602,7 @@ the directory defined in the <a class="reference internal" href="#config-twig-de
 </div>
 <div class="section" id="strict-variables">
 <span id="config-twig-strict-variables"></span><h3>strict_variables<a class="headerlink" href="#strict-variables" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">%kernel.debug%</span></code></p>
 <p>If set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, Symfony shows an exception whenever a Twig variable,
 attribute or method doesn’t exist. If set to <code class="docutils literal notranslate"><span class="pre">false</span></code> these errors are ignored
 and the non-existing values are replaced by <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p>

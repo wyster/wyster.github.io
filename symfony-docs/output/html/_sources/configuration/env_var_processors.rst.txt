@@ -164,7 +164,9 @@ Symfony provides the following env var processors:
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:security="http://symfony.com/schema/dic/security"
                 xsi:schemaLocation="http://symfony.com/schema/dic/services
-                    https://symfony.com/schema/dic/services/services-1.0.xsd">
+                    https://symfony.com/schema/dic/services/services-1.0.xsd
+                    http://symfony.com/schema/dic/security
+                    https://symfony.com/schema/dic/security/security-1.0.xsd">
 
                 <parameters>
                     <parameter key="env(HEALTH_CHECK_METHOD)">Symfony\Component\HttpFoundation\Request::METHOD_HEAD</parameter>
@@ -367,10 +369,6 @@ Symfony provides the following env var processors:
                 'auth' => '%env(require:AUTH_FILE)%',
             ]);
 
-    .. versionadded:: 4.3
-
-        The ``require`` processor was introduced in Symfony 4.3.
-
 ``env(trim:FOO)``
     Trims the content of ``FOO`` env var, removing whitespaces from the beginning
     and end of the string. This is especially useful in combination with the
@@ -412,10 +410,6 @@ Symfony provides the following env var processors:
             $container->loadFromExtension('google', [
                 'auth' => '%env(trim:file:AUTH_FILE)%',
             ]);
-
-    .. versionadded:: 4.3
-
-        The ``trim`` processor was introduced in Symfony 4.3.
 
 ``env(key:FOO:BAR)``
     Retrieves the value associated with the key ``FOO`` from the array whose
@@ -498,10 +492,6 @@ Symfony provides the following env var processors:
     When the fallback parameter is omitted (e.g. ``env(default::API_KEY)``), the
     value returned is ``null``.
 
-    .. versionadded:: 4.3
-
-        The ``default`` processor was introduced in Symfony 4.3.
-
 ``env(url:FOO)``
     Parses an absolute URL and returns its components as an associative array.
 
@@ -571,10 +561,6 @@ Symfony provides the following env var processors:
         In order to ease extraction of the resource from the URL, the leading
         ``/`` is trimmed from the ``path`` component.
 
-    .. versionadded:: 4.3
-
-        The ``url`` processor was introduced in Symfony 4.3.
-
 ``env(query_string:FOO)``
     Parses the query string part of the given URL and returns its components as
     an associative array.
@@ -621,10 +607,6 @@ Symfony provides the following env var processors:
                 ],
             ]);
 
-    .. versionadded:: 4.3
-
-        The ``query_string`` processor was introduced in Symfony 4.3.
-
 It is also possible to combine any number of processors:
 
 .. code-block:: yaml
@@ -649,7 +631,7 @@ create a class that implements
 
     class LowercasingEnvVarProcessor implements EnvVarProcessorInterface
     {
-        public function getEnv($prefix, $name, \Closure $getEnv)
+        public function getEnv(string $prefix, string $name, \Closure $getEnv)
         {
             $env = $getEnv($name);
 

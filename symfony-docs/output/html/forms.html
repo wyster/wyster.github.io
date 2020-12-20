@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -118,7 +118,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#rendering-forms">Rendering Forms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#processing-forms">Processing Forms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#validating-forms">Validating Forms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validating-forms">Validating Forms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#form-validation-messages">Form Validation Messages</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#other-common-form-features">Other Common Form Features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#passing-options-to-forms">Passing Options to Forms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#form-type-options">Form Type Options</a><ul>
@@ -176,8 +179,10 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -615,7 +620,7 @@ can set this option to generate forms compatible with the Bootstrap 4 CSS framew
 </ul>
 </div>
 <p>The <a class="reference internal" href="form/form_themes.html#symfony-builtin-forms"><span class="std std-ref">built-in Symfony form themes</span></a> include
-Bootstrap 3 and 4 and Foundation 5. You can also
+Bootstrap 3 and 4 as well as Foundation 5 and 6. You can also
 <a class="reference internal" href="form/form_themes.html#create-your-own-form-theme"><span class="std std-ref">create your own Symfony form theme</span></a>.</p>
 <p>In addition to form themes, Symfony allows you to
 <a class="reference internal" href="form/form_customization.html"><span class="doc">customize the way fields are rendered</span></a> with
@@ -868,6 +873,73 @@ corresponding errors printed out with the form.</p>
 <p>To see the second approach - adding constraints to the form - and to
 learn more about the validation constraints, please refer to the
 <a class="reference internal" href="validation.html"><span class="doc">Symfony validation documentation</span></a>.</p>
+<div class="section" id="form-validation-messages">
+<h3>Form Validation Messages<a class="headerlink" href="#form-validation-messages" title="Permalink to this headline">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">legacy_error_messages</span></code> option was introduced in Symfony 5.2</p>
+</div>
+<p>The form types have default error messages that are more clear and
+user-friendly than the ones provided by the validation constraints. To enable
+these new messages set the <code class="docutils literal notranslate"><span class="pre">legacy_error_messages</span></code> option to <code class="docutils literal notranslate"><span class="pre">false</span></code>:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/framework.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">framework</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">form</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">legacy_error_messages</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/framework.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:framework=</span><span class="s">&quot;http://symfony.com/schema/dic/symfony&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/symfony</span>
+<span class="s">        https://symfony.com/schema/dic/symfony/symfony-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;framework:config&gt;</span>
+        <span class="nt">&lt;framework:form</span> <span class="na">legacy-error-messages=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/framework:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/framework.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;form&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;legacy_error_messages&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+</ul>
+</div>
+</div>
 </div>
 <div class="section" id="other-common-form-features">
 <h2>Other Common Form Features<a class="headerlink" href="#other-common-form-features" title="Permalink to this headline">¶</a></h2>
@@ -981,7 +1053,7 @@ property name (<code class="docutils literal notranslate"><span class="pre">user
 Set the <code class="docutils literal notranslate"><span class="pre">label</span></code> option on fields to define their labels explicitly:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;dueDate&#39;</span><span class="p">,</span> <span class="nx">DateType</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
     <span class="c1">// set it to FALSE to not display the label for this field</span>
-    <span class="s1">&#39;label&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;To Be Completed Before&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;label&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;To Be Completed Before&#39;</span><span class="p">,</span>
 <span class="p">])</span>
 </pre></div>
 </div>
@@ -1184,9 +1256,11 @@ option in the options field array:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">&#39;task&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;attr&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;maxlength&#39;</span> <span class="o">=&gt;</span> <span class="mi">4</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>Starting from Symfony 4.3, <a class="reference internal" href="doctrine.html"><span class="doc">Doctrine</span></a> metadata is introspected
-to add <a class="reference internal" href="doctrine.html#automatic-object-validation"><span class="std std-ref">automatic validation constraints</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Besides guessing the form type, Symfony also guesses <a class="reference internal" href="#validating-forms"><span class="std std-ref">validation constraints</span></a>
+if you’re using a Doctrine entity. Read <a class="reference internal" href="doctrine.html#automatic-object-validation"><span class="std std-ref">Validating Objects</span></a>
+guide for more information.</p>
 </div>
 </div>
 </div>

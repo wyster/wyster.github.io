@@ -80,7 +80,7 @@ short example containing most features described below:</p>
 <span class="sd">     */</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">someDeprecatedMethod</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="o">@</span><span class="nb">trigger_error</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;The %s() method is deprecated since vendor-name/package-name 2.8 and will be removed in 3.0. Use Acme\Baz::someMethod() instead.&#39;</span><span class="p">,</span> <span class="no">__METHOD__</span><span class="p">),</span> <span class="nx">E_USER_DEPRECATED</span><span class="p">);</span>
+        <span class="nx">trigger_deprecation</span><span class="p">(</span><span class="s1">&#39;symfony/package-name&#39;</span><span class="p">,</span> <span class="s1">&#39;5.1&#39;</span><span class="p">,</span> <span class="s1">&#39;The %s() method is deprecated, use Acme\Baz::someMethod() instead.&#39;</span><span class="p">,</span> <span class="no">__METHOD__</span><span class="p">);</span>
 
         <span class="k">return</span> <span class="nx">Baz</span><span class="o">::</span><span class="na">someMethod</span><span class="p">();</span>
     <span class="p">}</span>
@@ -180,9 +180,6 @@ matter how many arguments there are;</p></li>
 <li><p>Use parentheses when instantiating classes regardless of the number of
 arguments the constructor has;</p></li>
 <li><p>Exception and error message strings must be concatenated using <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.sprintf.php" title="sprintf"><span class="pre">sprintf</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.sprintf.php]</span></span></code>;</p></li>
-<li><p>Calls to <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.trigger-error.php" title="trigger_error"><span class="pre">trigger_error</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.trigger-error.php]</span></span></code> with type <code class="docutils literal notranslate"><span class="pre">E_USER_DEPRECATED</span></code> must be
-switched to opt-in via <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> operator.
-Read more at <a class="reference internal" href="conventions.xhtml#contributing-code-conventions-deprecations"><span class="std std-ref">Deprecating Code</span></a>;</p></li>
 <li><p>Do not use <code class="docutils literal notranslate"><span class="pre">else</span></code>, <code class="docutils literal notranslate"><span class="pre">elseif</span></code>, <code class="docutils literal notranslate"><span class="pre">break</span></code> after <code class="docutils literal notranslate"><span class="pre">if</span></code> and <code class="docutils literal notranslate"><span class="pre">case</span></code> conditions
 which return or throw something;</p></li>
 <li><p>Do not use spaces around <code class="docutils literal notranslate"><span class="pre">[</span></code> offset accessor and before <code class="docutils literal notranslate"><span class="pre">]</span></code> offset accessor;</p></li>

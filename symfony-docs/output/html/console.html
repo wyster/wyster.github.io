@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -144,8 +144,10 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -275,16 +277,22 @@ want a command to create a user:</p>
         <span class="c1">// ... put here the code to create the user</span>
 
         <span class="c1">// this method must return an integer number with the &quot;exit status code&quot;</span>
-        <span class="c1">// of the command.</span>
+        <span class="c1">// of the command. You can also use these constants to make code more readable</span>
 
         <span class="c1">// return this if there was no problem running the command</span>
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="c1">// (it&#39;s equivalent to returning int(0))</span>
+        <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
 
         <span class="c1">// or return this if some error happened during the execution</span>
-        <span class="c1">// return 1;</span>
+        <span class="c1">// (it&#39;s equivalent to returning int(1))</span>
+        <span class="c1">// return Command::FAILURE;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">Command::SUCCESS</span></code> and <code class="docutils literal notranslate"><span class="pre">Command::FAILURE</span></code> constants were introduced
+in Symfony 5.1.</p>
 </div>
 </div>
 <div class="section" id="configuring-the-command">
@@ -379,7 +387,7 @@ the console:</p>
     <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">write</span><span class="p">(</span><span class="s1">&#39;You are about to &#39;</span><span class="p">);</span>
     <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">write</span><span class="p">(</span><span class="s1">&#39;create a user.&#39;</span><span class="p">);</span>
 
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -437,7 +445,7 @@ method, which returns an instance of
         <span class="nv">$section1</span><span class="o">-&gt;</span><span class="na">clear</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
         <span class="c1">// Output is now completely empty!</span>
 
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -479,7 +487,7 @@ that have already been rendered.</p>
     <span class="c1">// retrieve the argument value using getArgument()</span>
     <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;Username: &#39;</span><span class="o">.</span><span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">));</span>
 
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -532,7 +540,7 @@ as a service, you can use normal dependency injection. Imagine you have a
 
         <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;User successfully generated!&#39;</span><span class="p">);</span>
 
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -554,14 +562,9 @@ and interactively ask the user for those values. This is the last place
 where you can ask for missing options/arguments. After this command,
 missing options/arguments will result in an error.</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Command/Command.php" title="Symfony\Component\Console\Command\Command::execute()"><span class="pre">execute()</span></a></code> <em>(required)</em></dt>
-<dd><p class="first">This method is executed after <code class="docutils literal notranslate"><span class="pre">interact()</span></code> and <code class="docutils literal notranslate"><span class="pre">initialize()</span></code>.
-It contains the logic you want the command to execute and it should
-return an integer which will be used as the command <a class="reference external" href="https://en.wikipedia.org/wiki/Exit_status">exit status</a>.</p>
-<div class="last deprecated">
-<p><span class="versionmodified">Deprecated since version 4.4: </span>Not returning an integer with the exit status as the result of
-<code class="docutils literal notranslate"><span class="pre">execute()</span></code> is deprecated since Symfony 4.4.</p>
-</div>
-</dd>
+<dd>This method is executed after <code class="docutils literal notranslate"><span class="pre">interact()</span></code> and <code class="docutils literal notranslate"><span class="pre">initialize()</span></code>.
+It contains the logic you want the command to execute and it must
+return an integer which will be used as the command <a class="reference external" href="https://en.wikipedia.org/wiki/Exit_status">exit status</a>.</dd>
 </dl>
 </div>
 <div class="section" id="testing-commands">
@@ -596,12 +599,18 @@ console:</p>
 
         <span class="c1">// the output of the command in the console</span>
         <span class="nv">$output</span> <span class="o">=</span> <span class="nv">$commandTester</span><span class="o">-&gt;</span><span class="na">getDisplay</span><span class="p">();</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertContains</span><span class="p">(</span><span class="s1">&#39;Username: Wouter&#39;</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertStringContainsString</span><span class="p">(</span><span class="s1">&#39;Username: Wouter&#39;</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
 
         <span class="c1">// ...</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<p>If you are using a <a class="reference internal" href="components/console/single_command_tool.html"><span class="doc">single-command application</span></a>,
+call <code class="docutils literal notranslate"><span class="pre">setAutoExit(false)</span></code> on it to get the command result in <code class="docutils literal notranslate"><span class="pre">CommandTester</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">setAutoExit()</span></code> method for single-command applications was introduced
+in Symfony 5.2.</p>
 </div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>

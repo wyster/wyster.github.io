@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -186,7 +188,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../security.html">The Security Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../serializer.html">The Serializer Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../string.html">The String Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../var_exporter.html">The VarExporter Component</a></li>
@@ -275,33 +280,34 @@
   <div class="section" id="building-a-single-command-application">
 <span id="index-0"></span><h1>Building a single Command Application<a class="headerlink" href="#building-a-single-command-application" title="Permalink to this headline">¶</a></h1>
 <p>When building a command line tool, you may not need to provide several commands.
-In such case, having to pass the command name each time is tedious. Fortunately,
-it is possible to remove this need by declaring a single command application:</p>
+In such case, having to pass the command name each time is tedious.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/SingleCommandApplication.php" title="Symfony\Component\Console\SingleCommandApplication"><span class="pre">SingleCommandApplication</span></a></code> class was
+introduced in Symfony 5.1.</p>
+</div>
+<p>Fortunately, it is possible to remove this need by declaring a single command
+application:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">#!/usr/bin/env php</span>
 <span class="o">&lt;?</span><span class="nx">php</span>
 <span class="k">require</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/vendor/autoload.php&#39;</span><span class="p">;</span>
 
-<span class="k">use</span> <span class="nx">Symfony\Component\Console\Application</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputArgument</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputOption</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\SingleCommandApplication</span><span class="p">;</span>
 
-<span class="p">(</span><span class="k">new</span> <span class="nx">Application</span><span class="p">(</span><span class="s1">&#39;echo&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0.0&#39;</span><span class="p">))</span>
-    <span class="o">-&gt;</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;echo&#39;</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="na">addArgument</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">InputArgument</span><span class="o">::</span><span class="na">OPTIONAL</span><span class="p">,</span> <span class="s1">&#39;The directory&#39;</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="na">setCode</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span> <span class="p">{</span>
-            <span class="c1">// output arguments and options</span>
-        <span class="p">})</span>
-    <span class="o">-&gt;</span><span class="na">getApplication</span><span class="p">()</span>
-    <span class="o">-&gt;</span><span class="na">setDefaultCommand</span><span class="p">(</span><span class="s1">&#39;echo&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">)</span> <span class="c1">// Single command application</span>
+<span class="p">(</span><span class="k">new</span> <span class="nx">SingleCommandApplication</span><span class="p">())</span>
+    <span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">&#39;My Super Command&#39;</span><span class="p">)</span> <span class="c1">// Optional</span>
+    <span class="o">-&gt;</span><span class="na">setVersion</span><span class="p">(</span><span class="s1">&#39;1.0.0&#39;</span><span class="p">)</span> <span class="c1">// Optional</span>
+    <span class="o">-&gt;</span><span class="na">addArgument</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">InputArgument</span><span class="o">::</span><span class="na">OPTIONAL</span><span class="p">,</span> <span class="s1">&#39;The directory&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">setCode</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// output arguments and options</span>
+    <span class="p">})</span>
     <span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Application.php" title="Symfony\Component\Console\Application::setDefaultCommand()"><span class="pre">setDefaultCommand()</span></a></code> method
-accepts a boolean as second parameter. If true, the command <code class="docutils literal notranslate"><span class="pre">echo</span></code> will then
-always be used, without having to pass its name.</p>
 <p>You can still register a command as usual:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">#!/usr/bin/env php</span>
 <span class="o">&lt;?</span><span class="nx">php</span>
@@ -319,6 +325,9 @@ always be used, without having to pass its name.</p>
 <span class="nv">$application</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
 </pre></div>
 </div>
+<p>The <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Application.php" title="Symfony\Component\Console\Application::setDefaultCommand()"><span class="pre">setDefaultCommand()</span></a></code> method
+accepts a boolean as second parameter. If true, the command <code class="docutils literal notranslate"><span class="pre">echo</span></code> will then
+always be used, without having to pass its name.</p>
 </div>
 
 

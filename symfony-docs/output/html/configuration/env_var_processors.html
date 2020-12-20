@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -141,8 +141,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -474,13 +476,17 @@ and all numbers except <code class="docutils literal notranslate"><span class="p
 13
 14
 15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
 <span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:security=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;parameters&gt;</span>
         <span class="nt">&lt;parameter</span> <span class="na">key=</span><span class="s">&quot;env(HEALTH_CHECK_METHOD)&quot;</span><span class="nt">&gt;</span>Symfony\Component\HttpFoundation\Request::METHOD_HEAD<span class="nt">&lt;/parameter&gt;</span>
@@ -738,7 +744,7 @@ either an array or <code class="docutils literal notranslate"><span class="pre">
 <dt><code class="docutils literal notranslate"><span class="pre">env(require:FOO)</span></code></dt>
 <dd><p class="first"><code class="docutils literal notranslate"><span class="pre">require()</span></code> the PHP file whose path is the value of the <code class="docutils literal notranslate"><span class="pre">FOO</span></code>
 env var and return the value returned from it.</p>
-<div class="configuration-block">
+<div class="last configuration-block">
 <ul class="simple">
 <li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -800,15 +806,12 @@ env var and return the value returned from it.</p>
 </li>
 </ul>
 </div>
-<div class="last versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">require</span></code> processor was introduced in Symfony 4.3.</p>
-</div>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">env(trim:FOO)</span></code></dt>
 <dd><p class="first">Trims the content of <code class="docutils literal notranslate"><span class="pre">FOO</span></code> env var, removing whitespaces from the beginning
 and end of the string. This is especially useful in combination with the
 <code class="docutils literal notranslate"><span class="pre">file</span></code> processor, as it’ll remove newlines at the end of a file.</p>
-<div class="configuration-block">
+<div class="last configuration-block">
 <ul class="simple">
 <li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -869,9 +872,6 @@ and end of the string. This is especially useful in combination with the
 </td></tr></table></div>
 </li>
 </ul>
-</div>
-<div class="last versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">trim</span></code> processor was introduced in Symfony 4.3.</p>
 </div>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">env(key:FOO:BAR)</span></code></dt>
@@ -997,11 +997,8 @@ var is not available:</p>
 </li>
 </ul>
 </div>
-<p>When the fallback parameter is omitted (e.g. <code class="docutils literal notranslate"><span class="pre">env(default::API_KEY)</span></code>), the
+<p class="last">When the fallback parameter is omitted (e.g. <code class="docutils literal notranslate"><span class="pre">env(default::API_KEY)</span></code>), the
 value returned is <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p>
-<div class="last versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">default</span></code> processor was introduced in Symfony 4.3.</p>
-</div>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">env(url:FOO)</span></code></dt>
 <dd><p class="first">Parses an absolute URL and returns its components as an associative array.</p>
@@ -1110,13 +1107,10 @@ value returned is <code class="docutils literal notranslate"><span class="pre">n
 </li>
 </ul>
 </div>
-<div class="admonition caution">
+<div class="last admonition caution">
 <p class="first admonition-title">Caution</p>
 <p class="last">In order to ease extraction of the resource from the URL, the leading
 <code class="docutils literal notranslate"><span class="pre">/</span></code> is trimmed from the <code class="docutils literal notranslate"><span class="pre">path</span></code> component.</p>
-</div>
-<div class="last versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">url</span></code> processor was introduced in Symfony 4.3.</p>
 </div>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">env(query_string:FOO)</span></code></dt>
@@ -1127,7 +1121,7 @@ an associative array.</p>
 <span class="nv">MONGODB_URL</span><span class="o">=</span><span class="s2">&quot;mongodb://db_user:db_password@127.0.0.1:27017/db_name?timeout=3000&quot;</span>
 </pre></div>
 </td></tr></table></div>
-<div class="configuration-block">
+<div class="last configuration-block">
 <ul class="simple">
 <li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -1189,9 +1183,6 @@ an associative array.</p>
 </li>
 </ul>
 </div>
-<div class="last versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">query_string</span></code> processor was introduced in Symfony 4.3.</p>
-</div>
 </dd>
 </dl>
 <p>It is also possible to combine any number of processors:</p>
@@ -1222,7 +1213,7 @@ create a class that implements
 
 <span class="k">class</span> <span class="nc">LowercasingEnvVarProcessor</span> <span class="k">implements</span> <span class="nx">EnvVarProcessorInterface</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">getEnv</span><span class="p">(</span><span class="nv">$prefix</span><span class="p">,</span> <span class="nv">$name</span><span class="p">,</span> <span class="nx">\Closure</span> <span class="nv">$getEnv</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getEnv</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$prefix</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$name</span><span class="p">,</span> <span class="nx">\Closure</span> <span class="nv">$getEnv</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$env</span> <span class="o">=</span> <span class="nv">$getEnv</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
 

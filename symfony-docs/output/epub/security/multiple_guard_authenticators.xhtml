@@ -39,12 +39,14 @@ you want to use.</p>
  8
  9
 10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
 <span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
     <span class="c1"># ...</span>
     <span class="l l-Scalar l-Scalar-Plain">firewalls</span><span class="p p-Indicator">:</span>
         <span class="l l-Scalar l-Scalar-Plain">default</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">lazy</span>
+            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+            <span class="l l-Scalar l-Scalar-Plain">lazy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
             <span class="l l-Scalar l-Scalar-Plain">guard</span><span class="p p-Indicator">:</span>
                 <span class="l l-Scalar l-Scalar-Plain">authenticators</span><span class="p p-Indicator">:</span>
                     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">App\Security\LoginFormAuthenticator</span>
@@ -71,18 +73,20 @@ you want to use.</p>
 16
 17
 18
-19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
-        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;anonymous</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span> <span class="na">anonymous=</span><span class="s">&quot;true&quot;</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
             <span class="nt">&lt;guard</span> <span class="na">entry-point=</span><span class="s">&quot;App\Security\LoginFormAuthenticator&quot;</span><span class="nt">&gt;</span>
                 <span class="nt">&lt;authenticator&gt;</span>App\Security\LoginFormAuthenticator<span class="nt">&lt;/authenticator&gt;</span>
                 <span class="nt">&lt;authenticator&gt;</span>App\Security\FacebookConnectAuthenticator<span class="nt">&lt;/authenticator&gt;</span>
@@ -111,7 +115,8 @@ you want to use.</p>
 16
 17
 18
-19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
 <span class="k">use</span> <span class="nx">App\Security\FacebookConnectAuthenticator</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">App\Security\LoginFormAuthenticator</span><span class="p">;</span>
 
@@ -119,7 +124,8 @@ you want to use.</p>
     <span class="c1">// ...</span>
     <span class="s1">&#39;firewalls&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
         <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-            <span class="s1">&#39;anonymous&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;lazy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;anonymous&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+            <span class="s1">&#39;lazy&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
             <span class="s1">&#39;guard&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
                 <span class="s1">&#39;entry_point&#39;</span> <span class="o">=&gt;</span> <span class="nx">LoginFormAuthenticator</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
                 <span class="s1">&#39;authenticators&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
@@ -163,7 +169,8 @@ the solution is to split the configuration into two separate firewalls:</p>
 15
 16
 17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
 <span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
     <span class="c1"># ...</span>
     <span class="l l-Scalar l-Scalar-Plain">firewalls</span><span class="p p-Indicator">:</span>
@@ -173,7 +180,8 @@ the solution is to split the configuration into two separate firewalls:</p>
                 <span class="l l-Scalar l-Scalar-Plain">authenticators</span><span class="p p-Indicator">:</span>
                     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">App\Security\ApiTokenAuthenticator</span>
         <span class="l l-Scalar l-Scalar-Plain">default</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">lazy</span>
+            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+            <span class="l l-Scalar l-Scalar-Plain">lazy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
             <span class="l l-Scalar l-Scalar-Plain">guard</span><span class="p p-Indicator">:</span>
                 <span class="l l-Scalar l-Scalar-Plain">authenticators</span><span class="p p-Indicator">:</span>
                     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">App\Security\LoginFormAuthenticator</span>
@@ -209,13 +217,16 @@ the solution is to split the configuration into two separate firewalls:</p>
 23
 24
 25
-26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+26
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
@@ -224,8 +235,7 @@ the solution is to split the configuration into two separate firewalls:</p>
                 <span class="nt">&lt;authenticator&gt;</span>App\Security\ApiTokenAuthenticator<span class="nt">&lt;/authenticator&gt;</span>
             <span class="nt">&lt;/guard&gt;</span>
         <span class="nt">&lt;/firewall&gt;</span>
-        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;anonymous</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;default&quot;</span> <span class="na">anonymous=</span><span class="s">&quot;true&quot;</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
             <span class="nt">&lt;guard&gt;</span>
                 <span class="nt">&lt;authenticator&gt;</span>App\Security\LoginFormAuthenticator<span class="nt">&lt;/authenticator&gt;</span>
             <span class="nt">&lt;/guard&gt;</span>
@@ -267,7 +277,8 @@ the solution is to split the configuration into two separate firewalls:</p>
 27
 28
 29
-30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+30
+31</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
 <span class="k">use</span> <span class="nx">App\Security\ApiTokenAuthenticator</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">App\Security\LoginFormAuthenticator</span><span class="p">;</span>
 
@@ -283,7 +294,8 @@ the solution is to split the configuration into two separate firewalls:</p>
             <span class="p">],</span>
         <span class="p">],</span>
         <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-            <span class="s1">&#39;anonymous&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;lazy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;anonymous&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+            <span class="s1">&#39;lazy&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
             <span class="s1">&#39;guard&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
                 <span class="s1">&#39;authenticators&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
                     <span class="nx">LoginFormAuthenticator</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>

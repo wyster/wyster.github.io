@@ -28,6 +28,7 @@
 <tr class="row-even"><td><p>Options</p></td>
 <td><ul class="simple">
 <li><p><a class="reference internal" href="#groups">groups</a></p></li>
+<li><p><a class="reference internal" href="#invaliddatetimemessage">invalidDateTimeMessage</a></p></li>
 <li><p><a class="reference internal" href="#invalidmessage">invalidMessage</a></p></li>
 <li><p><a class="reference internal" href="#max">max</a></p></li>
 <li><p><a class="reference internal" href="#maxmessage">maxMessage</a></p></li>
@@ -552,11 +553,14 @@ can check that a delivery date starts within the next five hours like this:</p>
 <p>It defines the validation group or groups this constraint belongs to. Read more
 about <a class="reference internal" href="../../validation/groups.xhtml"><span class="doc">validation groups</span></a>.</p>
 </div>
-<div class="section" id="invalidmessage">
-<h3>invalidMessage</h3>
+<div class="section" id="invaliddatetimemessage">
+<h3>invalidDateTimeMessage</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">number.</span></code></p>
-<p>The message that will be shown if the underlying value is not a number (per
-the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.is-numeric.php" title="is_numeric"><span class="pre">is_numeric</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.is-numeric.php]</span></span></code> PHP function).</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">invalidDateTimeMessage</span></code> option was introduced in Symfony 5.2.</p>
+</div>
+<p>The message displayed when the <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> values are PHP datetimes but
+the given value is not.</p>
 <p>You can use the following parameters in this message:</p>
 <table class="docutils">
 <colgroup>
@@ -574,6 +578,35 @@ the <code class="docutils literal notranslate"><a class="reference external" hre
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="invalidmessage">
+<h3>invalidMessage</h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">number.</span></code></p>
+<p>The message displayed when the <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> values are numeric (per
+the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.is-numeric.php" title="is_numeric"><span class="pre">is_numeric</span></a><span class="link-target"> <span class="pre">[https://www.php.net/manual/en/function.is-numeric.php]</span></span></code> PHP function) but the given value is not.</p>
+<p>You can use the following parameters in this message:</p>
+<table class="docutils">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 81%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></p></td>
+<td><p>The current (invalid) value</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code></p></td>
+<td><p>Corresponding form field label</p></td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code> parameter was introduced in Symfony 5.2.</p>
+</div>
 </div>
 <div class="section" id="max">
 <h3>max</h3>
@@ -611,10 +644,7 @@ value is <strong>greater</strong> than this max value.</p>
 <div class="section" id="maxpropertypath">
 <h3>maxPropertyPath</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">maxPropertyPath</span></code> option was introduced in Symfony 4.4.</p>
-</div>
-<p>It defines the object property whose value is used as <a class="reference internal" href="#max">max</a> option.</p>
+<p>It defines the object property whose value is used as <code class="docutils literal notranslate"><span class="pre">max</span></code> option.</p>
 <p>For example, if you want to compare the <code class="docutils literal notranslate"><span class="pre">$submittedDate</span></code> property of some object
 with regard to the <code class="docutils literal notranslate"><span class="pre">$deadline</span></code> property of the same object, use
 <code class="docutils literal notranslate"><span class="pre">maxPropertyPath=&quot;deadline&quot;</span></code> in the range constraint of <code class="docutils literal notranslate"><span class="pre">$submittedDate</span></code>.</p>
@@ -662,10 +692,7 @@ value is <strong>less</strong> than this min value.</p>
 <div class="section" id="minpropertypath">
 <h3>minPropertyPath</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">minPropertyPath</span></code> option was introduced in Symfony 4.4.</p>
-</div>
-<p>It defines the object property whose value is used as <a class="reference internal" href="#min">min</a> option.</p>
+<p>It defines the object property whose value is used as <code class="docutils literal notranslate"><span class="pre">min</span></code> option.</p>
 <p>For example, if you want to compare the <code class="docutils literal notranslate"><span class="pre">$endDate</span></code> property of some object
 with regard to the <code class="docutils literal notranslate"><span class="pre">$startDate</span></code> property of the same object, use
 <code class="docutils literal notranslate"><span class="pre">minPropertyPath=&quot;startDate&quot;</span></code> in the range constraint of <code class="docutils literal notranslate"><span class="pre">$endDate</span></code>.</p>
@@ -680,9 +707,6 @@ using APIs for doing any mapping logic on client-side.</p>
 <div class="section" id="notinrangemessage">
 <h3>notInRangeMessage</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">between</span> <span class="pre">{{</span> <span class="pre">min</span> <span class="pre">}}</span> <span class="pre">and</span> <span class="pre">{{</span> <span class="pre">max</span> <span class="pre">}}.</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">notInRangeMessage</span></code> option was introduced in Symfony 4.4.</p>
-</div>
 <p>The message that will be shown if the underlying value is less than the
 <a class="reference internal" href="#min">min</a> option or greater than the <a class="reference internal" href="#max">max</a> option.</p>
 <p>You can use the following parameters in this message:</p>

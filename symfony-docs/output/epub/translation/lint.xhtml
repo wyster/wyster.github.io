@@ -49,6 +49,17 @@ translation file using the <code class="docutils literal notranslate"><span clas
 <span class="gp">$</span> php bin/console lint:xliff translations/ --format<span class="o">=</span>json
 </pre></div>
 </td></tr></table></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The Yaml component provides a stand-alone <code class="docutils literal notranslate"><span class="pre">yaml-lint</span></code> binary allowing
+you to lint YAML files without having to create a console application:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php vendor/bin/yaml-lint translations/
+</pre></div>
+</td></tr></table></div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">yaml-lint</span></code> binary was introduced in Symfony 5.1.</p>
+</div>
+</div>
 </div>
 
 

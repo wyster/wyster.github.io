@@ -24,6 +24,11 @@
 </ul>
 <p>and many more. In this example, we’ll build an API token authentication
 system, so we can learn more about Guard in detail.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>A <a class="reference internal" href="experimental_authenticators.xhtml"><span class="doc">new experimental authenticator-based system</span></a>
+was introduced in Symfony 5.1, which will eventually replace Guards in Symfony 6.0.</p>
+</div>
 <div class="section" id="step-1-prepare-your-user-class">
 <h2>Step 1) Prepare your User Class</h2>
 <p>Suppose you want to build an API where your clients will send an <code class="docutils literal notranslate"><span class="pre">X-AUTH-TOKEN</span></code> header
@@ -309,7 +314,8 @@ that happens automatically.</p>
 16
 17
 18
-19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/security.yaml</span>
 <span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span>
     <span class="c1"># ...</span>
 
@@ -317,7 +323,8 @@ that happens automatically.</p>
         <span class="c1"># ...</span>
 
         <span class="l l-Scalar l-Scalar-Plain">main</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">lazy</span>
+            <span class="l l-Scalar l-Scalar-Plain">anonymous</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+            <span class="l l-Scalar l-Scalar-Plain">lazy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
             <span class="l l-Scalar l-Scalar-Plain">logout</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~</span>
 
             <span class="l l-Scalar l-Scalar-Plain">guard</span><span class="p p-Indicator">:</span>
@@ -354,20 +361,22 @@ that happens automatically.</p>
 21
 22
 23
-24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/security.xml --&gt;</span>
 <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;srv:container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/security&quot;</span>
     <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
     <span class="na">xmlns:srv=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
-<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/security</span>
+<span class="s">        https://symfony.com/schema/dic/security/security-1.0.xsd&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;config&gt;</span>
         <span class="c">&lt;!-- ... --&gt;</span>
 
         <span class="c">&lt;!-- if you want, disable storing the user in the session</span>
 <span class="c">            add &#39;stateless=&quot;true&quot;&#39; to the firewall --&gt;</span>
-        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span> <span class="na">pattern=</span><span class="s">&quot;^/&quot;</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;anonymous</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;firewall</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span> <span class="na">pattern=</span><span class="s">&quot;^/&quot;</span> <span class="na">anonymous=</span><span class="s">&quot;true&quot;</span> <span class="na">lazy=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
             <span class="nt">&lt;logout/&gt;</span>
 
             <span class="nt">&lt;guard&gt;</span>
@@ -402,7 +411,8 @@ that happens automatically.</p>
 19
 20
 21
-22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
+22
+23</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/security.php</span>
 
 <span class="c1">// ...</span>
 <span class="k">use</span> <span class="nx">App\Security\TokenAuthenticator</span><span class="p">;</span>
@@ -411,7 +421,8 @@ that happens automatically.</p>
     <span class="s1">&#39;firewalls&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
         <span class="s1">&#39;main&#39;</span>       <span class="o">=&gt;</span> <span class="p">[</span>
             <span class="s1">&#39;pattern&#39;</span>        <span class="o">=&gt;</span> <span class="s1">&#39;^/&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;anonymous&#39;</span>      <span class="o">=&gt;</span> <span class="s1">&#39;lazy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;anonymous&#39;</span>      <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+            <span class="s1">&#39;lazy&#39;</span>           <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
             <span class="s1">&#39;logout&#39;</span>         <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
             <span class="s1">&#39;guard&#39;</span>          <span class="o">=&gt;</span> <span class="p">[</span>
                 <span class="s1">&#39;authenticators&#39;</span>  <span class="o">=&gt;</span> <span class="p">[</span>
@@ -484,7 +495,7 @@ check that the password is correct for the user. To pass authentication, return
 (or throw an <a class="reference internal" href="#guard-customize-error"><span class="std std-ref">AuthenticationException</span></a>),
 authentication will fail.</p>
 </dd>
-<dt><strong>onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)</strong></dt>
+<dt><strong>onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)</strong></dt>
 <dd><p>This is called after successful authentication and your job is to either
 return a <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Response.php" title="Symfony\Component\HttpFoundation\Response"><span class="pre">Response</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/HttpFoundation/Response.php]</span></span></code> object
 that will be sent to the client or <code class="docutils literal notranslate"><span class="pre">null</span></code> to continue the request

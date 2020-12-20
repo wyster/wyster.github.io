@@ -78,9 +78,9 @@ service container configuration:
             $services = $configurator->services();
 
             $services->set(NewsletterManager::class)
-                ->args(ref('mailer'));
+                // In versions earlier to Symfony 5.1 the service() function was called ref()
+                ->args(service('mailer'));
         };
-
 
 .. tip::
 
@@ -108,10 +108,6 @@ then extending it and overriding the constructor becomes problematic.
 
 Immutable-setter Injection
 --------------------------
-
-.. versionadded:: 4.3
-
-    The ``immutable-setter`` injection was introduced in Symfony 4.3.
 
 Another possible injection is to use a method which returns a separate instance
 by cloning the original service, this approach allows you to make a service immutable::
@@ -285,7 +281,7 @@ that accepts the dependency::
             $services = $configurator->services();
 
             $services->set(NewsletterManager::class)
-                ->call('setMailer', [ref('mailer')]);
+                ->call('setMailer', [service('mailer')]);
         };
 
 This time the advantages are:
@@ -309,6 +305,8 @@ The disadvantages of setter injection are:
 
 * You cannot be sure the setter will be called and so you need to add checks
   that any required dependencies are injected.
+
+.. _property-injection:
 
 Property Injection
 ------------------
@@ -365,7 +363,7 @@ Another possibility is setting public fields of the class directly::
             $services = $configurator->services();
 
             $services->set('app.newsletter_manager', NewsletterManager::class)
-                ->property('mailer', ref('mailer'));
+                ->property('mailer', service('mailer'));
         };
 
 There are mainly only disadvantages to using property injection, it is similar

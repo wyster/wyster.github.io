@@ -137,10 +137,33 @@ Configuration
     * `proxy`_
     * `query`_
     * `resolve`_
+
+    * :ref:`retry_failed <reference-http-client-retry-failed>`
+
+      * `retry_strategy`_
+      * :ref:`enabled <reference-http-client-retry-enabled>`
+      * `delay`_
+      * `http_codes`_
+      * `max_delay`_
+      * `max_retries`_
+      * `multiplier`_
+      * `jitter`_
+
     * `timeout`_
     * `max_duration`_
     * `verify_host`_
     * `verify_peer`_
+
+  * :ref:`retry_failed <reference-http-client-retry-failed>`
+
+    * `retry_strategy`_
+    * :ref:`enabled <reference-http-client-retry-enabled>`
+    * `delay`_
+    * `http_codes`_
+    * `max_delay`_
+    * `max_retries`_
+    * `multiplier`_
+    * `jitter`_
 
 * `http_method_override`_
 * `ide`_
@@ -155,10 +178,13 @@ Configuration
 
   * :ref:`dsn <mailer-dsn>`
   * `transports`_
+  * `message_bus`_
   * `envelope`_
 
     * `sender`_
     * `recipients`_
+
+  * :ref:`headers <mailer-headers>`
 
 * `php_errors`_
 
@@ -176,6 +202,8 @@ Configuration
 * `property_access`_
 
   * `magic_call`_
+  * `magic_get`_
+  * `magic_set`_
   * `throw_exception_on_invalid_index`_
   * `throw_exception_on_invalid_property_path`_
 
@@ -189,6 +217,7 @@ Configuration
 
 * `router`_
 
+  * `default_uri`_
   * `http_port`_
   * `https_port`_
   * `resource`_
@@ -230,22 +259,13 @@ Configuration
   * `storage_id`_
   * `use_cookies`_
 
-* `templating`_
-
-  * :ref:`cache <reference-templating-cache>`
-  * `engines`_
-  * :ref:`form <reference-templating-form>`
-
-    * :ref:`resources <reference-templating-form-resources>`
-
-  * `loaders`_
-
 * `test`_
 * `translator`_
 
   * `cache_dir`_
   * :ref:`default_path <reference-translator-default_path>`
   * :ref:`enabled <reference-translator-enabled>`
+  * :ref:`enabled_locales <reference-translator-enabled-locales>`
   * `fallbacks`_
   * `formatter`_
   * `logging`_
@@ -269,7 +289,6 @@ Configuration
     * `endpoint`_
 
   * `static_method`_
-  * `strict_email`_
   * `translation_domain`_
 
 * `workflows`_
@@ -473,10 +492,6 @@ disallow_search_engine_index
 
 **type**: ``boolean`` **default**: ``true`` when the debug mode is enabled, ``false`` otherwise.
 
-.. versionadded:: 4.3
-
-    The ``disallow_search_engine_index`` option was introduced in Symfony 4.3.
-
 If ``true``, Symfony adds a ``X-Robots-Tag: noindex`` HTTP tag to all responses
 (unless your own app adds that header, in which case it's not modified). This
 `X-Robots-Tag HTTP header`_ tells search engines to not index your web site.
@@ -613,10 +628,6 @@ error_controller
 
 **type**: ``string`` **default**: ``error_controller``
 
-.. versionadded:: 4.4
-
-    The ``error_controller`` option was introduced in Symfony 4.4.
-
 This is the controller that is called when an exception is thrown anywhere in
 your application. The default controller
 (:class:`Symfony\\Component\\HttpKernel\\Controller\\ErrorController`)
@@ -698,12 +709,6 @@ hinclude_default_template
 
 **type**: ``string`` **default**: ``null``
 
-.. versionadded:: 4.3
-
-    The ``framework.fragments.hinclude_default_template`` option was introduced
-    in Symfony 4.3. In previous Symfony versions it was defined under
-    ``framework.templating.hinclude_default_template``.
-
 Sets the content shown during the loading of the fragment or when JavaScript
 is disabled. This can be either a template name or the content itself.
 
@@ -773,6 +778,40 @@ If you use for example
 as the type and name of an argument, autowiring will inject the ``my_api.client``
 service into your autowired classes.
 
+.. _reference-http-client-retry-failed:
+
+By enabling the optional ``retry_failed`` configuration, the HTTP client service
+will automatically retry failed HTTP requests.
+
+.. code-block:: yaml
+
+    # config/packages/framework.yaml
+    framework:
+        # ...
+        http_client:
+            # ...
+            retry_failed:
+                # retry_strategy: app.custom_strategy
+                http_codes:
+                    0: ['GET', 'HEAD']   # retry network errors if request method is GET or HEAD
+                    429: true            # retry all responses with 429 status code
+                    500: ['GET', 'HEAD']
+                max_retries: 2
+                delay: 1000
+                multiplier: 3
+                max_delay: 5000
+                jitter: 0.3
+
+            scoped_clients:
+                my_api.client:
+                    # ...
+                    retry_failed:
+                        max_retries: 4
+
+.. versionadded:: 5.2
+
+    The ``retry_failed`` option was introduced in Symfony 5.2.
+
 auth_basic
 ..........
 
@@ -794,10 +833,6 @@ auth_ntlm
 .........
 
 **type**: ``string``
-
-.. versionadded:: 4.4
-
-    The ``auth_ntlm`` option was introduced in Symfony 4.4.
 
 The username and password used to create the ``Authorization`` HTTP header used
 in the `Microsoft NTLM authentication protocol`_. The value of this option must
@@ -849,10 +884,6 @@ If this option is a boolean value, the response is buffered when the value is
 returned value is ``true`` (the closure receives as argument an array with the
 response headers).
 
-.. versionadded:: 4.4
-
-    The support of ``Closure`` in the ``buffer`` option was introduced in Symfony 4.4.
-
 cafile
 ......
 
@@ -876,6 +907,27 @@ ciphers
 A list of the names of the ciphers allowed for the SSL/TLS connections. They
 can be separated by colons, commas or spaces (e.g. ``'RC4-SHA:TLS13-AES-128-GCM-SHA256'``).
 
+delay
+.....
+
+**type**: ``integer`` **default**: ``1000``
+
+.. versionadded:: 5.2
+
+    The ``delay`` option was introduced in Symfony 5.2.
+
+The initial delay in milliseconds used to compute the waiting time between retries.
+
+.. _reference-http-client-retry-enabled:
+
+enabled
+.......
+
+**type**: ``boolean`` **default**: ``false``
+
+Whether to enable the support for retry failed HTTP request or not.
+This setting is automatically set to true when one of the child settings is configured.
+
 .. _http-headers:
 
 headers
@@ -886,6 +938,17 @@ headers
 An associative array of the HTTP headers added before making the request. This
 value must use the format ``['header-name' => 'value0, value1, ...']``.
 
+http_codes
+..........
+
+**type**: ``array`` **default**: :method:`Symfony\\Component\\HttpClient\\Retry\\GenericRetryStrategy::DEFAULT_RETRY_STATUS_CODES`
+
+.. versionadded:: 5.2
+
+    The ``http_codes`` option was introduced in Symfony 5.2.
+
+The list of HTTP status codes that triggers a retry of the request.
+
 http_version
 ............
 
@@ -893,6 +956,20 @@ http_version
 
 The HTTP version to use, typically ``'1.1'``  or ``'2.0'``. Leave it to ``null``
 to let Symfony select the best version automatically.
+
+jitter
+......
+
+**type**: ``float`` **default**: ``0.1`` (must be between 0.0 and 1.0)
+
+.. versionadded:: 5.2
+
+    The ``jitter`` option was introduced in Symfony 5.2.
+
+This option adds some randomness to the delay. It's useful to avoid sending
+multiple requests to the server at the exact same time. The randomness is
+calculated as ``delay * jitter``. For example: if delay is ``1000ms`` and jitter
+is ``0.2``, the actual delay will be a number between ``800`` and ``1200`` (1000 +/- 20%).
 
 local_cert
 ..........
@@ -911,6 +988,18 @@ local_pk
 The path of a file that contains the `PEM formatted`_ private key of the
 certificate defined in the ``local_cert`` option.
 
+max_delay
+.........
+
+**type**: ``integer`` **default**: ``0``
+
+.. versionadded:: 5.2
+
+    The ``max_delay`` option was introduced in Symfony 5.2.
+
+The maximum amount of milliseconds initial to wait between retries.
+Use ``0`` to not limit the duration.
+
 max_duration
 ............
 
@@ -918,10 +1007,6 @@ max_duration
 
 The maximum execution time, in seconds, that the request and the response are
 allowed to take. A value lower than or equal to 0 means it is unlimited.
-
-.. versionadded:: 4.4
-
-    The ``max_duration`` option was introduced in Symfony 4.4.
 
 max_host_connections
 ....................
@@ -940,6 +1025,30 @@ max_redirects
 
 The maximum number of redirects to follow. Use ``0`` to not follow any
 redirection.
+
+max_retries
+...........
+
+**type**: ``integer`` **default**: ``3``
+
+.. versionadded:: 5.2
+
+    The ``max_retries`` option was introduced in Symfony 5.2.
+
+The maximum number of retries for failing requests. When the maximum is reached,
+the client returns the last received response.
+
+multiplier
+..........
+
+**type**: ``float`` **default**: ``2``
+
+.. versionadded:: 5.2
+
+    The ``multiplier`` option was introduced in Symfony 5.2.
+
+This value is multiplied to the delay each time a retry occurs, to distribute
+retries in time instead of making all of them sequentially.
 
 no_proxy
 ........
@@ -999,6 +1108,22 @@ client and to make your tests easier.
 
 The value of this option is an associative array of ``domain => IP address``
 (e.g ``['symfony.com' => '46.137.106.254', ...]``).
+
+retry_strategy
+...............
+
+**type**: ``string``
+
+.. versionadded:: 5.2
+
+    The ``retry_strategy`` option was introduced in Symfony 5.2.
+
+The service is used to decide if a request should be retried and to compute the
+time to wait between retries. By default, it uses an instance of
+:class:`Symfony\\Component\\HttpClient\\Retry\\GenericRetryStrategy` configured
+with ``http_codes``, ``delay``, ``max_delay``, ``multiplier`` and ``jitter``
+options. This class has to implement
+:class:`Symfony\\Component\\HttpClient\\Retry\\RetryStrategyInterface`.
 
 scope
 .....
@@ -1180,6 +1305,18 @@ The type of the resource to hint the loaders about the format. This isn't
 needed when you use the default routers with the expected file extensions
 (``.xml``, ``.yaml``, ``.php``).
 
+default_uri
+...........
+
+**type**: ``string``
+
+.. versionadded:: 5.1
+
+    The ``default_uri`` option was introduced in Symfony 5.1.
+
+The default URI used to generate URLs in a non-HTTP context (see
+:ref:`Generating URLs in Commands <router-generate-urls-commands>`).
+
 http_port
 .........
 
@@ -1221,6 +1358,11 @@ utf8
 ....
 
 **type**: ``boolean`` **default**: ``false``
+
+.. deprecated:: 5.1
+
+    Not setting this option is deprecated since Symfony 5.1. Moreover, the
+    default value of this option will change to ``true`` in Symfony 6.0.
 
 When this option is set to ``true``, the regular expressions used in the
 :ref:`requirements of route parameters <routing-requirements>` will be run
@@ -1343,7 +1485,7 @@ to the cookie specification.
 cookie_samesite
 ...............
 
-**type**: ``string`` or ``null`` **default**: ``null``
+**type**: ``string`` or ``null`` **default**: ``'lax'``
 
 It controls the way cookies are sent when the HTTP request was not originated
 from the same domain the cookies are associated to. Setting this option is
@@ -1378,10 +1520,10 @@ The possible values for this option are:
 cookie_secure
 .............
 
-**type**: ``boolean`` or ``string`` **default**: ``false``
+**type**: ``boolean`` or ``null`` **default**: ``null``
 
 This determines whether cookies should only be sent over secure connections. In
-addition to ``true`` and ``false``, there's a special ``'auto'`` value that
+addition to ``true`` and ``false``, there's a special ``null`` value that
 means ``true`` for HTTPS requests and ``false`` for HTTP requests.
 
 cookie_httponly
@@ -1926,10 +2068,11 @@ json_manifest_path
 
 **type**: ``string`` **default**: ``null``
 
-The file path to a ``manifest.json`` file containing an associative array of asset
-names and their respective compiled names. A common cache-busting technique using
-a "manifest" file works by writing out assets with a "hash" appended to their
-file names (e.g. ``main.ae433f1cb.css``) during a front-end compilation routine.
+The file path or absolute URL to a ``manifest.json`` file containing an
+associative array of asset names and their respective compiled names. A common
+cache-busting technique using a "manifest" file works by writing out assets with
+a "hash" appended to their file names (e.g. ``main.ae433f1cb.css``) during a
+front-end compilation routine.
 
 .. tip::
 
@@ -1950,6 +2093,8 @@ package:
             assets:
                 # this manifest is applied to every asset (including packages)
                 json_manifest_path: "%kernel.project_dir%/public/build/manifest.json"
+                # you can use absolute URLs too and Symfony will download them automatically
+                # json_manifest_path: 'https://cdn.example.com/manifest.json'
                 packages:
                     foo_package:
                         # this package uses its own manifest (the default file is ignored)
@@ -1971,6 +2116,8 @@ package:
             <framework:config>
                 <!-- this manifest is applied to every asset (including packages) -->
                 <framework:assets json-manifest-path="%kernel.project_dir%/public/build/manifest.json">
+                <!-- you can use absolute URLs too and Symfony will download them automatically -->
+                <!-- <framework:assets json-manifest-path="https://cdn.example.com/manifest.json"> -->
                     <!-- this package uses its own manifest (the default file is ignored) -->
                     <framework:package
                         name="foo_package"
@@ -1990,6 +2137,8 @@ package:
             'assets' => [
                 // this manifest is applied to every asset (including packages)
                 'json_manifest_path' => '%kernel.project_dir%/public/build/manifest.json',
+                // you can use absolute URLs too and Symfony will download them automatically
+                // 'json_manifest_path' => 'https://cdn.example.com/manifest.json',
                 'packages' => [
                     'foo_package' => [
                         // this package uses its own manifest (the default file is ignored)
@@ -2003,6 +2152,11 @@ package:
             ],
         ]);
 
+.. versionadded:: 5.1
+
+    The option to use an absolute URL in  ``json_manifest_path`` was introduced
+    in Symfony 5.1.
+
 .. note::
 
     This parameter cannot be set at the same time as ``version`` or ``version_strategy``.
@@ -2014,126 +2168,9 @@ package:
     If you request an asset that is *not found* in the ``manifest.json`` file, the original -
     *unmodified* - asset path will be returned.
 
-templating
-~~~~~~~~~~
-
-.. deprecated:: 4.3
-
-    The integration of the Templating component in FrameworkBundle has been
-    deprecated since version 4.3 and will be removed in 5.0. That's why all the
-    configuration options defined under ``framework.templating`` are deprecated too.
-
-.. _reference-templating-form:
-
-form
-....
-
-.. _reference-templating-form-resources:
-
-resources
-"""""""""
-
-**type**: ``string[]`` **default**: ``['FrameworkBundle:Form']``
-
-.. deprecated:: 4.3
-
-    The integration of the Templating component in FrameworkBundle has been
-    deprecated since version 4.3 and will be removed in 5.0. Form theming with
-    PHP templates will no longer be supported and you'll need to use Twig instead.
-
-A list of all resources for form theming in PHP. This setting is not required
-if you're :ref:`using the Twig format for your themes <forms-theming-twig>`.
-
-Assume you have custom global form themes in ``templates/form_themes/``, you can
-configure this like:
-
-.. configuration-block::
-
-    .. code-block:: yaml
-
-        # config/packages/framework.yaml
-        framework:
-            templating:
-                form:
-                    resources:
-                        - 'form_themes'
-
-    .. code-block:: xml
-
-        <!-- config/packages/framework.xml -->
-        <?xml version="1.0" encoding="UTF-8" ?>
-        <container xmlns="http://symfony.com/schema/dic/services"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xmlns:framework="http://symfony.com/schema/dic/symfony"
-            xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd
-                http://symfony.com/schema/dic/symfony https://symfony.com/schema/dic/symfony/symfony-1.0.xsd">
-
-            <framework:config>
-                <framework:templating>
-                    <framework:form>
-                        <framework:resource>form_themes</framework:resource>
-                    </framework:form>
-                </framework:templating>
-            </framework:config>
-        </container>
-
-    .. code-block:: php
-
-        // config/packages/framework.php
-        $container->loadFromExtension('framework', [
-            'templating' => [
-                'form' => [
-                    'resources' => [
-                        'form_themes',
-                    ],
-                ],
-            ],
-        ]);
-
 .. note::
 
-    The default form templates from ``FrameworkBundle:Form`` will always
-    be included in the form resources.
-
-.. seealso::
-
-    See :ref:`forms-theming-global` for more information.
-
-.. _reference-templating-cache:
-
-cache
-.....
-
-**type**: ``string``
-
-The path to the cache directory for templates. When this is not set, caching
-is disabled.
-
-.. note::
-
-    When using Twig templating, the caching is already handled by the
-    TwigBundle and doesn't need to be enabled for the FrameworkBundle.
-
-engines
-.......
-
-**type**: ``string[]`` / ``string`` **required**
-
-The Templating Engine to use. This can either be a string (when only one
-engine is configured) or an array of engines.
-
-At least one engine is required.
-
-loaders
-.......
-
-**type**: ``string[]``
-
-An array (or a string when configuring just one loader) of service ids for
-templating loaders. Templating loaders are used to find and load templates
-from a resource (e.g. a filesystem or database). Templating loaders must
-implement :class:`Symfony\\Component\\Templating\\Loader\\LoaderInterface`.
+    If an URL is set, the JSON manifest is downloaded on each request using the `http_client`_.
 
 translator
 ~~~~~~~~~~
@@ -2142,10 +2179,6 @@ cache_dir
 .........
 
 **type**: ``string`` | ``null`` **default**: ``%kernel.cache_dir%/translations/``
-
-.. versionadded:: 4.4
-
-    The ``cache_dir`` option was introduced in Symfony 4.4.
 
 Defines the directory where the translation cache is stored. Use ``null`` to
 disable this cache.
@@ -2159,12 +2192,69 @@ enabled
 
 Whether or not to enable the ``translator`` service in the service container.
 
+.. _reference-translator-enabled-locales:
+
+enabled_locales
+...............
+
+**type**: ``array`` **default**: ``[]`` (empty array = enable all locales)
+
+.. versionadded:: 5.1
+
+    The ``enabled_locales`` option was introduced in Symfony 5.1.
+
+Symfony applications generate by default the translation files for validation
+and security messages in all locales. If your application only uses some
+locales, use this option to restrict the files generated by Symfony and improve
+performance a bit:
+
+.. configuration-block::
+
+    .. code-block:: yaml
+
+        # config/packages/translation.yaml
+        framework:
+            translator:
+                enabled_locales: ['en', 'es']
+
+    .. code-block:: xml
+
+        <!-- config/packages/translation.xml -->
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <container xmlns="http://symfony.com/schema/dic/services"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:framework="http://symfony.com/schema/dic/symfony"
+            xsi:schemaLocation="http://symfony.com/schema/dic/services
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/symfony https://symfony.com/schema/dic/symfony/symfony-1.0.xsd">
+
+            <framework:config>
+                <framework:translator>
+                    <enabled-locale>en</enabled-locale>
+                    <enabled-locale>es</enabled-locale>
+                </framework:translator>
+            </framework:config>
+        </container>
+
+    .. code-block:: php
+
+        // config/packages/translation.php
+        $container->loadFromExtension('framework', [
+            'translator' => [
+                'enabled_locales' => ['en', 'es'],
+            ],
+        ]);
+
+If some user makes requests with a locale not included in this option, the
+application won't display any error because Symfony will display contents using
+the fallback locale.
+
 .. _fallback:
 
 fallbacks
 .........
 
-**type**: ``string|array`` **default**: ``['en']``
+**type**: ``string|array`` **default**: value of `default_locale`_
 
 This option is used when the translation key for the current locale wasn't
 found.
@@ -2230,6 +2320,32 @@ When enabled, the ``property_accessor`` service uses PHP's
 :ref:`magic __call() method <components-property-access-magic-call>` when
 its ``getValue()`` method is called.
 
+magic_get
+.........
+
+**type**: ``boolean`` **default**: ``true``
+
+When enabled, the ``property_accessor`` service uses PHP's
+:ref:`magic __get() method <components-property-access-magic-get>` when
+its ``getValue()`` method is called.
+
+.. versionadded:: 5.2
+
+    The ``magic_get`` option was introduced in Symfony 5.2.
+
+magic_set
+.........
+
+**type**: ``boolean`` **default**: ``true``
+
+When enabled, the ``property_accessor`` service uses PHP's
+:ref:`magic __set() method <components-property-access-writing-to-objects>` when
+its ``setValue()`` method is called.
+
+.. versionadded:: 5.2
+
+    The ``magic_set`` option was introduced in Symfony 5.2.
+
 throw_exception_on_invalid_index
 ................................
 
@@ -2242,10 +2358,6 @@ throw_exception_on_invalid_property_path
 ........................................
 
 **type**: ``boolean`` **default**: ``true``
-
-.. versionadded:: 4.3
-
-    The ``throw_exception_on_invalid_property_path`` option was introduced in Symfony 4.3.
 
 When enabled, the ``property_accessor`` service throws an exception when you
 try to access an invalid property path of an object.
@@ -2321,10 +2433,6 @@ enabled
 
 **type**: ``boolean`` **default**: ``true``
 
-.. versionadded:: 4.3
-
-    The ``enabled`` option was introduced in Symfony 4.3.
-
 If you set this option to ``false``, no HTTP requests will be made and the given
 password will be considered valid. This is useful when you don't want or can't
 make HTTP requests, such as in ``dev`` and ``test`` environments or in
@@ -2334,10 +2442,6 @@ endpoint
 """"""""
 
 **type**: ``string`` **default**: ``null``
-
-.. versionadded:: 4.3
-
-    The ``endpoint`` option was introduced in Symfony 4.3.
 
 By default, the :doc:`NotCompromisedPassword </reference/constraints/NotCompromisedPassword>`
 constraint uses the public API provided by `haveibeenpwned.com`_. This option
@@ -2354,20 +2458,6 @@ Defines the name of the static method which is called to load the validation
 metadata of the class. You can define an array of strings with the names of
 several methods. In that case, all of them will be called in that order to load
 the metadata.
-
-strict_email
-............
-
-**type**: ``Boolean`` **default**: ``false``
-
-.. deprecated:: 4.1
-
-    The ``strict_email`` option was deprecated in Symfony 4.1. Use the new
-    ``email_validation_mode`` option instead.
-
-If this option is enabled, the `egulias/email-validator`_ library will be
-used by the :doc:`/reference/constraints/Email` constraint validator. Otherwise,
-the validator uses a simple regular expression to validate email addresses.
 
 email_validation_mode
 .....................
@@ -2772,9 +2862,14 @@ Can also be the service id of another cache pool where tags will be stored.
 default_lifetime
 """"""""""""""""
 
-**type**: ``integer``
+**type**: ``integer`` | ``string``
 
-Default lifetime of your cache items in seconds.
+Default lifetime of your cache items. Give an integer value to set the default
+lifetime in seconds. A string value could be ISO 8601 time interval, like ``"PT5M"``
+or a PHP date expression that is accepted by ``strtotime()``, like ``"5 minutes"``.
+
+If no value is provided, the cache adapter will fallback to the default value on
+the actual cache storage.
 
 provider
 """"""""
@@ -2813,6 +2908,12 @@ same cache backend.
 It's also useful when using `blue/green deployment`_ strategies and more
 generally, when you need to abstract out the actual deployment directory (for
 example, when warming caches offline).
+
+.. versionadded:: 5.2
+
+    Starting from Symfony 5.2, the ``%kernel.container_class%`` parameter is no
+    longer appended automatically to the value of this option. This allows
+    sharing caches between applications or different environments.
 
 .. _reference-lock:
 
@@ -2899,14 +3000,10 @@ Name of the lock you want to create.
         lock.invoice.retry_till_save.store:
             class: Symfony\Component\Lock\Store\RetryTillSaveStore
             decorates: lock.invoice.store
-            arguments: ['@lock.invoice.retry_till_save.store.inner', 100, 50]
+            arguments: ['@.inner', 100, 50]
 
 mailer
 ~~~~~~
-
-.. versionadded:: 4.3
-
-    The ``mailer`` settings were introduced in Symfony 4.3.
 
 .. _mailer-dsn:
 
@@ -2925,6 +3022,18 @@ transports
 
 A :ref:`list of DSN <multiple-email-transports>` that can be used by the
 mailer. A transport name is the key and the dsn is the value.
+
+message_bus
+...........
+
+.. versionadded:: 5.1
+
+    The ``message_bus`` option was introduced in Symfony 5.1.
+
+**type**: ``string`` **default**: ``null`` or default bus if Messenger component is installed
+
+Service identifier of the message bus to use when using the
+:doc:`Messenger component </messenger>` (e.g. ``messenger.default_bus``).
 
 envelope
 ........
@@ -2980,6 +3089,7 @@ recipients set in the code.
 
         // config/packages/mailer.php
         namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+
         return static function (ContainerConfigurator $containerConfigurator): void {
             $containerConfigurator->extension('framework', [
                 'mailer' => [
@@ -2993,6 +3103,20 @@ recipients set in the code.
                 ]
             ]);
         };
+
+.. _mailer-headers:
+
+headers
+.......
+
+.. versionadded:: 5.2
+
+    The ``headers`` mailer option was introduced in Symfony 5.2.
+
+**type**: ``array``
+
+Headers to add to emails. The key (``name`` attribute in xml format) is the
+header name and value the header value.
 
 workflows
 ~~~~~~~~~

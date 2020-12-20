@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -136,8 +136,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -230,10 +232,9 @@
             
   <div class="section" id="how-to-configure-monolog-to-email-errors">
 <span id="index-0"></span><h1>How to Configure Monolog to Email Errors<a class="headerlink" href="#how-to-configure-monolog-to-email-errors" title="Permalink to this headline">¶</a></h1>
-<div class="admonition caution">
-<p class="first admonition-title">Caution</p>
-<p class="last">This feature is compatible with the new <a class="reference internal" href="../mailer.html"><span class="doc">Symfony mailer</span></a>
-starting from Symfony 5.1. All previous versions require using SwiftMailer.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.6: </span>Support for emailing errors using <a class="reference internal" href="../mailer.html"><span class="doc">Symfony mailer</span></a> was added
+in MonologBundle 3.6.</p>
 </div>
 <p><a class="reference external" href="https://github.com/Seldaek/monolog">Monolog</a> can be configured to send an email when an error occurs within an
 application. The configuration for this requires a few nested handlers
@@ -280,9 +281,9 @@ it is broken down.</p>
             <span class="l l-Scalar l-Scalar-Plain">handler</span><span class="p p-Indicator">:</span>      <span class="l l-Scalar l-Scalar-Plain">deduplicated</span>
         <span class="l l-Scalar l-Scalar-Plain">deduplicated</span><span class="p p-Indicator">:</span>
             <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span>    <span class="l l-Scalar l-Scalar-Plain">deduplication</span>
-            <span class="l l-Scalar l-Scalar-Plain">handler</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">swift</span>
-        <span class="l l-Scalar l-Scalar-Plain">swift</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span>       <span class="l l-Scalar l-Scalar-Plain">swift_mailer</span>
+            <span class="l l-Scalar l-Scalar-Plain">handler</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">symfony_mailer</span>
+        <span class="l l-Scalar l-Scalar-Plain">symfony_mailer</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span>       <span class="l l-Scalar l-Scalar-Plain">symfony_mailer</span>
             <span class="l l-Scalar l-Scalar-Plain">from_email</span><span class="p p-Indicator">:</span> <span class="s">&#39;error@example.com&#39;</span>
             <span class="l l-Scalar l-Scalar-Plain">to_email</span><span class="p p-Indicator">:</span>   <span class="s">&#39;error@example.com&#39;</span>
             <span class="c1"># or list of recipients</span>
@@ -367,11 +368,11 @@ it is broken down.</p>
         <span class="nt">&lt;monolog:handler</span>
             <span class="na">name=</span><span class="s">&quot;deduplicated&quot;</span>
             <span class="na">type=</span><span class="s">&quot;deduplication&quot;</span>
-            <span class="na">handler=</span><span class="s">&quot;swift&quot;</span>
+            <span class="na">handler=</span><span class="s">&quot;symfony_mailer&quot;</span>
         <span class="nt">/&gt;</span>
         <span class="nt">&lt;monolog:handler</span>
-            <span class="na">name=</span><span class="s">&quot;swift&quot;</span>
-            <span class="na">type=</span><span class="s">&quot;swift_mailer&quot;</span>
+            <span class="na">name=</span><span class="s">&quot;symfony_mailer&quot;</span>
+            <span class="na">type=</span><span class="s">&quot;symfony_mailer&quot;</span>
             <span class="na">from-email=</span><span class="s">&quot;error@example.com&quot;</span>
             <span class="na">subject=</span><span class="s">&quot;An Error Occurred! %%message%%&quot;</span>
             <span class="na">level=</span><span class="s">&quot;debug&quot;</span>
@@ -438,10 +439,10 @@ it is broken down.</p>
         <span class="p">],</span>
         <span class="s1">&#39;deduplicated&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
             <span class="s1">&#39;type&#39;</span>    <span class="o">=&gt;</span> <span class="s1">&#39;deduplication&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;handler&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;swift&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;handler&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;symfony_mailer&#39;</span><span class="p">,</span>
         <span class="p">],</span>
-        <span class="s1">&#39;swift&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-            <span class="s1">&#39;type&#39;</span>         <span class="o">=&gt;</span> <span class="s1">&#39;swift_mailer&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;symfony_mailer&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">&#39;type&#39;</span>         <span class="o">=&gt;</span> <span class="s1">&#39;symfony_mailer&#39;</span><span class="p">,</span>
             <span class="s1">&#39;from_email&#39;</span>   <span class="o">=&gt;</span> <span class="s1">&#39;error@example.com&#39;</span><span class="p">,</span>
             <span class="s1">&#39;to_email&#39;</span>     <span class="o">=&gt;</span> <span class="s1">&#39;error@example.com&#39;</span><span class="p">,</span>
             <span class="c1">// or a list of recipients</span>
@@ -494,7 +495,7 @@ You can adjust the time period using the <code class="docutils literal notransla
             <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">deduplication</span>
             <span class="c1"># the time in seconds during which duplicate entries are discarded (default: 60)</span>
             <span class="l l-Scalar l-Scalar-Plain">time</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-            <span class="l l-Scalar l-Scalar-Plain">handler</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">swift</span>
+            <span class="l l-Scalar l-Scalar-Plain">handler</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">symfony_mailer</span>
 </pre></div>
 </td></tr></table></div>
 </li>
@@ -510,7 +511,7 @@ You can adjust the time period using the <code class="docutils literal notransla
 <span class="nt">&lt;monolog:handler</span> <span class="na">name=</span><span class="s">&quot;deduplicated&quot;</span>
     <span class="na">type=</span><span class="s">&quot;deduplication&quot;</span>
     <span class="na">time=</span><span class="s">&quot;10&quot;</span>
-    <span class="na">handler=</span><span class="s">&quot;swift&quot;</span><span class="nt">/&gt;</span>
+    <span class="na">handler=</span><span class="s">&quot;symfony_mailer&quot;</span><span class="nt">/&gt;</span>
 </pre></div>
 </td></tr></table></div>
 </li>
@@ -533,7 +534,7 @@ You can adjust the time period using the <code class="docutils literal notransla
             <span class="s1">&#39;type&#39;</span>    <span class="o">=&gt;</span> <span class="s1">&#39;deduplication&#39;</span><span class="p">,</span>
             <span class="c1">// the time in seconds during which duplicate entries are discarded (default: 60)</span>
             <span class="s1">&#39;time&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span>
-            <span class="s1">&#39;handler&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;swift&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;handler&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;symfony_mailer&#39;</span><span class="p">,</span>
         <span class="p">],</span>
     <span class="p">],</span>
 <span class="p">]);</span>
@@ -542,7 +543,7 @@ You can adjust the time period using the <code class="docutils literal notransla
 </li>
 </ul>
 </div>
-<p>The messages are then passed to the <code class="docutils literal notranslate"><span class="pre">swift</span></code> handler. This is the handler that
+<p>The messages are then passed to the <code class="docutils literal notranslate"><span class="pre">symfony_mailer</span></code> handler. This is the handler that
 actually deals with emailing you the error. The settings for this are
 straightforward, the to and from addresses, the formatter, the content type
 and the subject.</p>
@@ -590,9 +591,9 @@ get logged on the server as well as the emails being sent:</p>
             <span class="l l-Scalar l-Scalar-Plain">level</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">debug</span>
         <span class="l l-Scalar l-Scalar-Plain">deduplicated</span><span class="p p-Indicator">:</span>
             <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span>    <span class="l l-Scalar l-Scalar-Plain">deduplication</span>
-            <span class="l l-Scalar l-Scalar-Plain">handler</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">swift</span>
-        <span class="l l-Scalar l-Scalar-Plain">swift</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span>         <span class="l l-Scalar l-Scalar-Plain">swift_mailer</span>
+            <span class="l l-Scalar l-Scalar-Plain">handler</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">symfony_mailer</span>
+        <span class="l l-Scalar l-Scalar-Plain">symfony_mailer</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span>         <span class="l l-Scalar l-Scalar-Plain">symfony_mailer</span>
             <span class="l l-Scalar l-Scalar-Plain">from_email</span><span class="p p-Indicator">:</span>   <span class="s">&#39;error@example.com&#39;</span>
             <span class="l l-Scalar l-Scalar-Plain">to_email</span><span class="p p-Indicator">:</span>     <span class="s">&#39;error@example.com&#39;</span>
             <span class="l l-Scalar l-Scalar-Plain">subject</span><span class="p p-Indicator">:</span>      <span class="s">&#39;An</span><span class="nv"> </span><span class="s">Error</span><span class="nv"> </span><span class="s">Occurred!</span><span class="nv"> </span><span class="s">%%message%%&#39;</span>
@@ -683,11 +684,11 @@ get logged on the server as well as the emails being sent:</p>
         <span class="nt">&lt;monolog:handler</span>
             <span class="na">name=</span><span class="s">&quot;deduplicated&quot;</span>
             <span class="na">type=</span><span class="s">&quot;deduplication&quot;</span>
-            <span class="na">handler=</span><span class="s">&quot;swift&quot;</span>
+            <span class="na">handler=</span><span class="s">&quot;symfony_mailer&quot;</span>
         <span class="nt">/&gt;</span>
         <span class="nt">&lt;monolog:handler</span>
-            <span class="na">name=</span><span class="s">&quot;swift&quot;</span>
-            <span class="na">type=</span><span class="s">&quot;swift_mailer&quot;</span>
+            <span class="na">name=</span><span class="s">&quot;symfony_mailer&quot;</span>
+            <span class="na">type=</span><span class="s">&quot;symfony_mailer&quot;</span>
             <span class="na">from-email=</span><span class="s">&quot;error@example.com&quot;</span>
             <span class="na">subject=</span><span class="s">&quot;An Error Occurred! %%message%%&quot;</span>
             <span class="na">level=</span><span class="s">&quot;debug&quot;</span>
@@ -760,10 +761,10 @@ get logged on the server as well as the emails being sent:</p>
         <span class="p">],</span>
         <span class="s1">&#39;deduplicated&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
             <span class="s1">&#39;type&#39;</span>     <span class="o">=&gt;</span> <span class="s1">&#39;deduplication&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;handler&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;swift&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;handler&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;symfony_mailer&#39;</span><span class="p">,</span>
         <span class="p">],</span>
-        <span class="s1">&#39;swift&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-            <span class="s1">&#39;type&#39;</span>         <span class="o">=&gt;</span> <span class="s1">&#39;swift_mailer&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;symfony_mailer&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">&#39;type&#39;</span>         <span class="o">=&gt;</span> <span class="s1">&#39;symfony_mailer&#39;</span><span class="p">,</span>
             <span class="s1">&#39;from_email&#39;</span>   <span class="o">=&gt;</span> <span class="s1">&#39;error@example.com&#39;</span><span class="p">,</span>
             <span class="s1">&#39;to_email&#39;</span>     <span class="o">=&gt;</span> <span class="s1">&#39;error@example.com&#39;</span><span class="p">,</span>
             <span class="c1">// or a list of recipients</span>

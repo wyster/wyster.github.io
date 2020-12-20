@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -166,6 +168,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#disabling-the-verbose-output">Disabling the Verbose Output</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#disabling-the-deprecation-helper">Disabling the Deprecation Helper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deprecation-notices-at-autoloading-time">Deprecation Notices at Autoloading Time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compile-time-deprecations">Compile-time Deprecations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#id1">Write Assertions about Deprecations</a></li>
@@ -202,7 +205,10 @@
 <li class="toctree-l2"><a class="reference internal" href="property_info.html">The PropertyInfo Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="psr7.html">The PSR-7 Bridge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="security.html">The Security Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semaphore.html">The Semaphore Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="serializer.html">The Serializer Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="string.html">The String Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uid.html">The UID Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validator.html">The Validator Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_dumper.html">The VarDumper Component</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_exporter.html">The VarExporter Component</a></li>
@@ -463,17 +469,15 @@ each test suite’s results in their own section.</p>
 </div>
 <div class="section" id="trigger-deprecation-notices">
 <h2>Trigger Deprecation Notices<a class="headerlink" href="#trigger-deprecation-notices" title="Permalink to this headline">¶</a></h2>
-<p>Deprecation notices can be triggered by using:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="nb">trigger_error</span><span class="p">(</span><span class="s1">&#39;Your deprecation message&#39;</span><span class="p">,</span> <span class="nx">E_USER_DEPRECATED</span><span class="p">);</span>
+<p>Deprecation notices can be triggered by using <code class="docutils literal notranslate"><span class="pre">trigger_deprecation</span></code> from
+the <code class="docutils literal notranslate"><span class="pre">symfony/deprecation-contracts</span></code> package:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// indicates something is deprecated since version 1.3 of vendor-name/packagename</span>
+<span class="nx">trigger_deprecation</span><span class="p">(</span><span class="s1">&#39;vendor-name/package-name&#39;</span><span class="p">,</span> <span class="s1">&#39;1.3&#39;</span><span class="p">,</span> <span class="s1">&#39;Your deprecation message&#39;</span><span class="p">);</span>
+
+<span class="c1">// you can also use printf format (all arguments after the message will be used)</span>
+<span class="nx">trigger_deprecation</span><span class="p">(</span><span class="s1">&#39;...&#39;</span><span class="p">,</span> <span class="s1">&#39;1.3&#39;</span><span class="p">,</span> <span class="s1">&#39;Value &quot;%s&quot; is deprecated, use ...  instead.&#39;</span><span class="p">,</span> <span class="nv">$value</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>You can also require the <code class="docutils literal notranslate"><span class="pre">symfony/deprecation-contracts</span></code> package that provides
-a global <code class="docutils literal notranslate"><span class="pre">trigger_deprecation()</span></code> function for this usage.</p>
-<p>Without the <a class="reference external" href="https://www.php.net/manual/en/language.operators.errorcontrol.php">&#64;-silencing operator</a>, users would need to opt-out from deprecation
-notices. Silencing by default swaps this behavior and allows users to opt-in
-when they are ready to cope with them (by adding a custom error handler like the
-one provided by this bridge). When not silenced, deprecation notices will appear
-in the <strong>Unsilenced</strong> section of the deprecation report.</p>
 </div>
 <div class="section" id="mark-tests-as-legacy">
 <h2>Mark Tests as Legacy<a class="headerlink" href="#mark-tests-as-legacy" title="Permalink to this headline">¶</a></h2>
@@ -608,6 +612,12 @@ cannot afford to use one of the modes above.</td>
 <p>By default, the bridge will display a detailed output with the number of
 deprecations and where they arise. If this is too much for you, you can use
 <code class="docutils literal notranslate"><span class="pre">SYMFONY_DEPRECATIONS_HELPER=verbose=0</span></code> to turn the verbose output off.</p>
+<p>It’s also possible to change verbosity per deprecation type. For example, using
+<code class="docutils literal notranslate"><span class="pre">quiet[]=indirect&amp;quiet[]=other</span></code> will hide details for deprecations of types
+“indirect” and “other”.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">quiet</span></code> option was introduced in Symfony 5.1.</p>
+</div>
 </div>
 <div class="section" id="disabling-the-deprecation-helper">
 <h3>Disabling the Deprecation Helper<a class="headerlink" href="#disabling-the-deprecation-helper" title="Permalink to this headline">¶</a></h3>
@@ -646,8 +656,16 @@ time. This can be disabled with the <code class="docutils literal notranslate"><
 <span class="nt">&lt;/listeners&gt;</span>
 </pre></div>
 </td></tr></table></div>
+</div>
+<div class="section" id="compile-time-deprecations">
+<h3>Compile-time Deprecations<a class="headerlink" href="#compile-time-deprecations" title="Permalink to this headline">¶</a></h3>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">debug:container</span></code> command to list the deprecations generated during
+the compiling and warming up of the container:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> php bin/console debug:container --deprecations
+</pre></div>
+</td></tr></table></div>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">DebugClassLoader</span></code> integration was introduced in Symfony 4.2.</p>
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">--deprecations</span></code> option was introduced in Symfony 5.1.</p>
 </div>
 </div>
 </div>
@@ -655,22 +673,39 @@ time. This can be disabled with the <code class="docutils literal notranslate"><
 <h2>Write Assertions about Deprecations<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>When adding deprecations to your code, you might like writing tests that verify
 that they are triggered as required. To do so, the bridge provides the
-<code class="docutils literal notranslate"><span class="pre">&#64;expectedDeprecation</span></code> annotation that you can use on your test methods.
+<code class="docutils literal notranslate"><span class="pre">expectDeprecation()</span></code> method that you can use on your test methods.
 It requires you to pass the expected message, given in the same format as for
 the <a class="reference external" href="https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertStringMatchesFormat">PHPUnit’s assertStringMatchesFormat()</a> method. If you expect more than one
-deprecation message for a given test method, you can use the annotation several
+deprecation message for a given test method, you can use the method several
 times (order matters):</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="sd">/**</span>
-<span class="sd"> * @group legacy</span>
-<span class="sd"> * @expectedDeprecation This &quot;%s&quot; method is deprecated.</span>
-<span class="sd"> * @expectedDeprecation The second argument of the &quot;%s&quot; method is deprecated.</span>
-<span class="sd"> */</span>
-<span class="k">public</span> <span class="k">function</span> <span class="nf">testDeprecatedCode</span><span class="p">()</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Bridge\PhpUnit\ExpectDeprecationTrait</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">MyTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
 <span class="p">{</span>
-    <span class="o">@</span><span class="nb">trigger_error</span><span class="p">(</span><span class="s1">&#39;This &quot;Foo&quot; method is deprecated.&#39;</span><span class="p">,</span> <span class="nx">E_USER_DEPRECATED</span><span class="p">);</span>
-    <span class="o">@</span><span class="nb">trigger_error</span><span class="p">(</span><span class="s1">&#39;The second argument of the &quot;Bar&quot; method is deprecated.&#39;</span><span class="p">,</span> <span class="nx">E_USER_DEPRECATED</span><span class="p">);</span>
+    <span class="k">use</span> <span class="nx">ExpectDeprecationTrait</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @group legacy</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testDeprecatedCode</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// test some code that triggers the following deprecation:</span>
+        <span class="c1">// trigger_deprecation(&#39;vendor-name/package-name&#39;, &#39;5.1&#39;, &#39;This &quot;Foo&quot; method is deprecated.&#39;);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectDeprecation</span><span class="p">(</span><span class="s1">&#39;Since vendor-name/package-name 5.1: This &quot;%s&quot; method is deprecated&#39;</span><span class="p">);</span>
+
+        <span class="c1">// ...</span>
+
+        <span class="c1">// test some code that triggers the following deprecation:</span>
+        <span class="c1">// trigger_deprecation(&#39;vendor-name/package-name&#39;, &#39;4.4&#39;, &#39;The second argument of the &quot;Bar&quot; method is deprecated.&#39;);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">expectDeprecation</span><span class="p">(</span><span class="s1">&#39;Since vendor-name/package-name 4.4: The second argument of the &quot;%s&quot; method is deprecated.&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 5.1: </span>Symfony versions previous to 5.1 also included a <code class="docutils literal notranslate"><span class="pre">&#64;expectedDeprecation</span></code>
+annotation to test deprecations, but it was deprecated in favor of the method.</p>
 </div>
 </div>
 <div class="section" id="display-the-full-stack-trace">
@@ -703,9 +738,6 @@ work with and without namespaces.</li>
 </ul>
 <div class="section" id="polyfills-for-the-unavailable-methods">
 <h3>Polyfills for the Unavailable Methods<a class="headerlink" href="#polyfills-for-the-unavailable-methods" title="Permalink to this headline">¶</a></h3>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>This feature was introduced in Symfony 4.4.</p>
-</div>
 <p>When using the <code class="docutils literal notranslate"><span class="pre">simple-phpunit</span></code> script, PHPUnit Bridge injects polyfills for
 most methods of the <code class="docutils literal notranslate"><span class="pre">TestCase</span></code> and <code class="docutils literal notranslate"><span class="pre">Assert</span></code> classes (e.g. <code class="docutils literal notranslate"><span class="pre">expectException()</span></code>,
 <code class="docutils literal notranslate"><span class="pre">expectExceptionMessage()</span></code>, <code class="docutils literal notranslate"><span class="pre">assertContainsEquals()</span></code>, etc.). This allows writing
@@ -714,9 +746,6 @@ older PHPUnit versions.</p>
 </div>
 <div class="section" id="removing-the-void-return-type">
 <h3>Removing the Void Return Type<a class="headerlink" href="#removing-the-void-return-type" title="Permalink to this headline">¶</a></h3>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>This feature was introduced in Symfony 4.4.</p>
-</div>
 <p>When running the <code class="docutils literal notranslate"><span class="pre">simple-phpunit</span></code> script with the <code class="docutils literal notranslate"><span class="pre">SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT</span></code>
 environment variable set to <code class="docutils literal notranslate"><span class="pre">1</span></code>, the PHPUnit bridge will alter the code of
 PHPUnit to remove the return type (introduced in PHPUnit 8) from <code class="docutils literal notranslate"><span class="pre">setUp()</span></code>,
@@ -751,9 +780,6 @@ call to the <code class="docutils literal notranslate"><span class="pre">doSetUp
 </div>
 <div class="section" id="using-namespaced-phpunit-classes">
 <h3>Using Namespaced PHPUnit Classes<a class="headerlink" href="#using-namespaced-phpunit-classes" title="Permalink to this headline">¶</a></h3>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>This feature was introduced in Symfony 4.4.</p>
-</div>
 <p>The PHPUnit bridge adds namespaced class aliases for most of the PHPUnit classes
 declared without namespaces (e.g. <code class="docutils literal notranslate"><span class="pre">PHPUnit_Framework_Assert</span></code>), allowing you to
 always use the namespaced class declaration even when the test is executed with
@@ -919,19 +945,18 @@ functions:</p>
 </ul>
 <div class="section" id="id2">
 <h3>Use Case<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<p>Consider the following example that uses the <code class="docutils literal notranslate"><span class="pre">checkMX</span></code> option of the <code class="docutils literal notranslate"><span class="pre">Email</span></code>
-constraint to test the validity of the email domain:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints\Email</span><span class="p">;</span>
+<p>Consider the following example that tests a custom class called <code class="docutils literal notranslate"><span class="pre">DomainValidator</span></code>
+which defines a <code class="docutils literal notranslate"><span class="pre">checkDnsRecord</span></code> option to also validate that a domain is
+associated to a valid host:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Validator\DomainValidator</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">MyTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
 <span class="p">{</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">testEmail</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="nv">$validator</span> <span class="o">=</span> <span class="o">...</span>
-        <span class="nv">$constraint</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Email</span><span class="p">([</span><span class="s1">&#39;checkMX&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">]);</span>
-
-        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">(</span><span class="s1">&#39;foo@example.com&#39;</span><span class="p">,</span> <span class="nv">$constraint</span><span class="p">);</span>
+        <span class="nv">$validator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DomainValidator</span><span class="p">([</span><span class="s1">&#39;checkDnsRecord&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">]);</span>
+        <span class="nv">$isValid</span> <span class="o">=</span> <span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">(</span><span class="s1">&#39;example.com&#39;</span><span class="p">);</span>
 
         <span class="c1">// ...</span>
     <span class="p">}</span>
@@ -941,22 +966,23 @@ constraint to test the validity of the email domain:</p>
 <p>In order to avoid making a real network connection, add the <code class="docutils literal notranslate"><span class="pre">&#64;dns-sensitive</span></code>
 annotation to the class and use the <code class="docutils literal notranslate"><span class="pre">DnsMock::withMockedHosts()</span></code> to configure
 the data you expect to get for the given hosts:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints\Email</span><span class="p">;</span>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">App\Validator\DomainValidator</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Bridge\PhpUnit\DnsMock</span><span class="p">;</span>
 
 <span class="sd">/**</span>
 <span class="sd"> * @group dns-sensitive</span>
 <span class="sd"> */</span>
-<span class="k">class</span> <span class="nc">MyTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="k">class</span> <span class="nc">DomainValidatorTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
 <span class="p">{</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">testEmails</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="nx">DnsMock</span><span class="o">::</span><span class="na">withMockedHosts</span><span class="p">([</span><span class="s1">&#39;example.com&#39;</span> <span class="o">=&gt;</span> <span class="p">[[</span><span class="s1">&#39;type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;MX&#39;</span><span class="p">]]]);</span>
+        <span class="nx">DnsMock</span><span class="o">::</span><span class="na">withMockedHosts</span><span class="p">([</span>
+            <span class="s1">&#39;example.com&#39;</span> <span class="o">=&gt;</span> <span class="p">[[</span><span class="s1">&#39;type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;ip&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;1.2.3.4&#39;</span><span class="p">]],</span>
+        <span class="p">]);</span>
 
-        <span class="nv">$validator</span> <span class="o">=</span> <span class="o">...</span>
-        <span class="nv">$constraint</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Email</span><span class="p">([</span><span class="s1">&#39;checkMX&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">]);</span>
-
-        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">(</span><span class="s1">&#39;foo@example.com&#39;</span><span class="p">,</span> <span class="nv">$constraint</span><span class="p">);</span>
+        <span class="nv">$validator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DomainValidator</span><span class="p">([</span><span class="s1">&#39;checkDnsRecord&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">]);</span>
+        <span class="nv">$isValid</span> <span class="o">=</span> <span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">(</span><span class="s1">&#39;example.com&#39;</span><span class="p">);</span>
 
         <span class="c1">// ...</span>
     <span class="p">}</span>
@@ -1188,8 +1214,15 @@ env var in the <code class="docutils literal notranslate"><span class="pre">phpu
 <code class="docutils literal notranslate"><span class="pre">SYMFONY_PHPUNIT_VERSION</span></code> env var in the <code class="docutils literal notranslate"><span class="pre">phpunit.xml.dist</span></code> file (e.g.
 <code class="docutils literal notranslate"><span class="pre">&lt;server</span> <span class="pre">name=&quot;SYMFONY_PHPUNIT_VERSION&quot;</span> <span class="pre">value=&quot;5.5&quot;/&gt;</span></code>). This is the
 preferred method as it can be committed to your version control repository.</p>
-<p class="last">It’s also possible to set <code class="docutils literal notranslate"><span class="pre">SYMFONY_PHPUNIT_VERSION</span></code> as a real env var
+<p>It’s also possible to set <code class="docutils literal notranslate"><span class="pre">SYMFONY_PHPUNIT_VERSION</span></code> as a real env var
 (not defined in a <a class="reference internal" href="../configuration.html#config-dot-env"><span class="std std-ref">dotenv file</span></a>).</p>
+<p class="last">In the same way, <code class="docutils literal notranslate"><span class="pre">SYMFONY_MAX_PHPUNIT_VERSION</span></code> will set the maximum version
+of PHPUnit to be considered. This is useful when testing a framework that does
+not support the latest version(s) of PHPUnit.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">SYMFONY_MAX_PHPUNIT_VERSION</span></code> env variable was introduced in
+Symfony 5.2.</p>
 </div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>

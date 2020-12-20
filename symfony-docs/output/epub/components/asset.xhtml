@@ -178,6 +178,21 @@ corresponding output file:</p>
 <span class="c1">// result: build/css/app.b916426ea1d10021f3f17ce8031f93c2.css</span>
 </pre></div>
 </div>
+<p>If your JSON file is not on your local filesystem but is accessible over HTTP,
+use the <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Asset/VersionStrategy/RemoteJsonManifestVersionStrategy.php" title="Symfony\Component\Asset\VersionStrategy\RemoteJsonManifestVersionStrategy"><span class="pre">RemoteJsonManifestVersionStrategy</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Asset/VersionStrategy/RemoteJsonManifestVersionStrategy.php]</span></span></code>
+with the <a class="reference internal" href="../http_client.xhtml"><span class="doc">HttpClient component</span></a>:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Asset\Package</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Asset\VersionStrategy\RemoteJsonManifestVersionStrategy</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\HttpClient\HttpClient</span><span class="p">;</span>
+
+<span class="nv">$httpClient</span> <span class="o">=</span> <span class="nx">HttpClient</span><span class="o">::</span><span class="na">create</span><span class="p">();</span>
+<span class="nv">$manifestUrl</span> <span class="o">=</span> <span class="s1">&#39;https://cdn.example.com/rev-manifest.json&#39;</span><span class="p">;</span>
+<span class="nv">$package</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Package</span><span class="p">(</span><span class="k">new</span> <span class="nx">RemoteJsonManifestVersionStrategy</span><span class="p">(</span><span class="nv">$manifestUrl</span><span class="p">,</span> <span class="nv">$httpClient</span><span class="p">));</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">RemoteJsonManifestVersionStrategy</span></code> was introduced in Symfony 5.1.</p>
+</div>
 </div>
 <div class="section" id="custom-version-strategies">
 <h4>Custom Version Strategies</h4>
@@ -196,12 +211,12 @@ every day:</p>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">version</span> <span class="o">=</span> <span class="nb">date</span><span class="p">(</span><span class="s1">&#39;Ymd&#39;</span><span class="p">);</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">getVersion</span><span class="p">(</span><span class="nv">$path</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getVersion</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$path</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">version</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">applyVersion</span><span class="p">(</span><span class="nv">$path</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">applyVersion</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$path</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;%s?v=%s&#39;</span><span class="p">,</span> <span class="nv">$path</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getVersion</span><span class="p">(</span><span class="nv">$path</span><span class="p">));</span>
     <span class="p">}</span>

@@ -83,17 +83,19 @@ can be accessed via several public properties:
 Each property is a :class:`Symfony\\Component\\HttpFoundation\\ParameterBag`
 instance (or a sub-class of), which is a data holder class:
 
-* ``request``: :class:`Symfony\\Component\\HttpFoundation\\ParameterBag`;
+* ``request``: :class:`Symfony\\Component\\HttpFoundation\\ParameterBag` or
+  :class:`Symfony\\Component\\HttpFoundation\\InputBag` if the data is
+  coming from ``$_POST`` parameters;
 
-* ``query``:   :class:`Symfony\\Component\\HttpFoundation\\ParameterBag`;
+* ``query``: :class:`Symfony\\Component\\HttpFoundation\\InputBag`;
 
-* ``cookies``: :class:`Symfony\\Component\\HttpFoundation\\ParameterBag`;
+* ``cookies``: :class:`Symfony\\Component\\HttpFoundation\\InputBag`;
 
 * ``attributes``: :class:`Symfony\\Component\\HttpFoundation\\ParameterBag`;
 
-* ``files``:   :class:`Symfony\\Component\\HttpFoundation\\FileBag`;
+* ``files``: :class:`Symfony\\Component\\HttpFoundation\\FileBag`;
 
-* ``server``:  :class:`Symfony\\Component\\HttpFoundation\\ServerBag`;
+* ``server``: :class:`Symfony\\Component\\HttpFoundation\\ServerBag`;
 
 * ``headers``: :class:`Symfony\\Component\\HttpFoundation\\HeaderBag`.
 
@@ -188,8 +190,17 @@ Finally, the raw data sent with the request body can be accessed using
 
     $content = $request->getContent();
 
-For instance, this may be useful to process a JSON string sent to the
+For instance, this may be useful to process a XML string sent to the
 application by a remote service using the HTTP POST method.
+
+If the request body is a JSON string, it can be accessed using
+:method:`Symfony\\Component\\HttpFoundation\\Request::toArray`::
+
+    $data = $request->toArray();
+
+.. versionadded:: 5.2
+
+    The ``toArray()`` method was introduced in Symfony 5.2.
 
 Identifying a Request
 ~~~~~~~~~~~~~~~~~~~~~
@@ -272,6 +283,14 @@ this complexity and defines some methods for the most common tasks::
     HeaderUtils::unquote('"foo \"bar\""');
     // => 'foo "bar"'
 
+    // Parses a query string but maintains dots (PHP parse_str() replaces '.' by '_')
+    HeaderUtils::parseQuery('foo[bar.baz]=qux');
+    // => ['foo' => ['bar.baz' => 'qux']]
+
+.. versionadded:: 5.2
+
+    The ``parseQuery()`` method was introduced in Symfony 5.2.
+
 Accessing ``Accept-*`` Headers Data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -318,10 +337,6 @@ are also supported::
 
 Anonymizing IP Addresses
 ~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionadded:: 4.4
-
-    The ``anonymize()`` method was introduced in Symfony 4.4.
 
 An increasingly common need for applications to comply with user protection
 regulations is to anonymize IP addresses before logging and storing them for
@@ -447,9 +462,21 @@ method takes an instance of
 You can clear a cookie via the
 :method:`Symfony\\Component\\HttpFoundation\\ResponseHeaderBag::clearCookie` method.
 
-Note you can create a
-:class:`Symfony\\Component\\HttpFoundation\\Cookie` object from a raw header
-value using :method:`Symfony\\Component\\HttpFoundation\\Cookie::fromString`.
+In addition to the ``Cookie::create()`` method, you can create a ``Cookie``
+object from a raw header value using :method:`Symfony\\Component\\HttpFoundation\\Cookie::fromString`
+method. You can also use the ``with*()`` methods to change some Cookie property (or
+to build the entire Cookie using a fluent interface). Each ``with*()`` method returns
+a new object with the modified property::
+
+    $cookie = Cookie::create('foo')
+        ->withValue('bar')
+        ->withExpires(strtotime('Fri, 20-May-2011 15:25:52 GMT'))
+        ->withDomain('.example.com')
+        ->withSecure(true);
+
+.. versionadded:: 5.1
+
+    The ``with*()`` methods were introduced in Symfony 5.1.
 
 Managing the HTTP Cache
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -481,14 +508,24 @@ can be used to set the most commonly used cache information in one method
 call::
 
     $response->setCache([
-        'etag'          => 'abcdef',
-        'last_modified' => new \DateTime(),
-        'max_age'       => 600,
-        's_maxage'      => 600,
-        'private'       => false,
-        'public'        => true,
-        'immutable'     => true,
+        'must_revalidate'  => false,
+        'no_cache'         => false,
+        'no_store'         => false,
+        'no_transform'     => false,
+        'public'           => true,
+        'private'          => false,
+        'proxy_revalidate' => false,
+        'max_age'          => 600,
+        's_maxage'         => 600,
+        'immutable'        => true,
+        'last_modified'    => new \DateTime(),
+        'etag'             => 'abcdef'
     ]);
+
+.. versionadded:: 5.1
+
+    The ``must_revalidate``, ``no_cache``, ``no_store``, ``no_transform`` and
+    ``proxy_revalidate`` directives were introduced in Symfony 5.1.
 
 To check if the Response validators (``ETag``, ``Last-Modified``) match a
 conditional value specified in the client Request, use the
@@ -710,6 +747,37 @@ Session
 
 The session information is in its own document: :doc:`/components/http_foundation/sessions`.
 
+Safe Content Preference
+-----------------------
+
+Some web sites have a "safe" mode to assist those who don't want to be exposed
+to content to which they might object. The  `RFC 8674`_ specification defines a
+way for user agents to ask for safe content to a server.
+
+The specification does not define what content might be considered objectionable,
+so the concept of "safe" is not precisely defined. Rather, the term is interpreted
+by the server and within the scope of each web site that chooses to act upon this information.
+
+Symfony offers two methods to interact with this preference:
+
+* :method:`Symfony\\Component\\HttpFoundation\\Request::preferSafeContent`;
+* :method:`Symfony\\Component\\HttpFoundation\\Response::setContentSafe`;
+
+.. versionadded:: 5.1
+
+    The ``preferSafeContent()`` and ``setContentSafe()`` methods were introduced
+    in Symfony 5.1.
+
+The following example shows how to detect if the user agent prefers "safe" content::
+
+    if ($request->preferSafeContent()) {
+        $response = new Response($alternativeContent);
+        // this informs the user we respected their preferences
+        $response->setContentSafe();
+
+        return $response;
+    }
+
 Learn More
 ----------
 
@@ -727,3 +795,4 @@ Learn More
 .. _Apache: https://tn123.org/mod_xsendfile/
 .. _`JSON Hijacking`: https://haacked.com/archive/2009/06/25/json-hijacking.aspx/
 .. _OWASP guidelines: https://cheatsheetseries.owasp.org/cheatsheets/AJAX_Security_Cheat_Sheet.html#always-return-json-with-an-object-on-the-outside
+.. _RFC 8674: https://tools.ietf.org/html/rfc8674

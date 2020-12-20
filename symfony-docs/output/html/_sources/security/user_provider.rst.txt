@@ -135,7 +135,7 @@ interface only requires one method: ``loadUserByUsername($username)``::
     {
         // ...
 
-        public function loadUserByUsername($usernameOrEmail)
+        public function loadUserByUsername(string $usernameOrEmail)
         {
             $entityManager = $this->getEntityManager();
             
@@ -174,7 +174,9 @@ To finish this, remove the ``property`` key from the user provider in
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd">
 
             <config>
                 <!-- ... -->
@@ -239,7 +241,9 @@ users will encode their passwords:
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd"
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd"
         >
             <config>
                 <!-- ... -->
@@ -373,7 +377,7 @@ command will generate a nice skeleton to get you started::
          *
          * @throws UsernameNotFoundException if the user is not found
          */
-        public function loadUserByUsername($username)
+        public function loadUserByUsername(string $username)
         {
             // Load a User object from your data source or throw UsernameNotFoundException.
             // The $username argument may not actually be a username:
@@ -409,7 +413,7 @@ command will generate a nice skeleton to get you started::
         /**
          * Tells Symfony to use this provider for this User class.
          */
-        public function supportsClass($class)
+        public function supportsClass(string $class)
         {
             return User::class === $class || is_subclass_of($class, User::class);
         }

@@ -25,16 +25,6 @@ roles.</p>
 </div></blockquote>
 <div class="section" id="installation">
 <h2>Installation</h2>
-<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/security
-</pre></div>
-</td></tr></table></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you install this component outside of a Symfony application, you must
-require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
-autoloading mechanism provided by Composer. Read
-<a class="reference internal" href="using_components.xhtml"><span class="doc">this article</span></a> for more details.</p>
-</div>
 <p>The Security component is divided into several smaller sub-components which can
 be used separately:</p>
 <dl class="simple">
@@ -54,6 +44,23 @@ requests and responses.</p>
 of complex authentication systems.</p>
 </dd>
 </dl>
+<p>You can install each of them separately in your project:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/security-core
+<span class="gp">$</span> composer require symfony/security-http
+<span class="gp">$</span> composer require symfony/security-csrf
+<span class="gp">$</span> composer require symfony/security-guard
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you install this component outside of a Symfony application, you must
+require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
+autoloading mechanism provided by Composer. Read
+<a class="reference internal" href="using_components.xhtml"><span class="doc">this article</span></a> for more details.</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>This article explains how to use the Security features as an independent
@@ -76,6 +83,7 @@ about how to use it in Symfony applications.</p>
 <li class="toctree-l1"><a class="reference internal" href="../security/auth_providers.xhtml">Built-in Authentication Providers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/csrf.xhtml">How to Implement CSRF Protection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/custom_authentication_provider.xhtml">How to Create a custom Authentication Provider</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../security/experimental_authenticators.xhtml">Using the new Authenticator-based Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/expressions.xhtml">Security: Complex Access Controls with Expressions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/firewall_restriction.xhtml">How to Restrict Firewalls to a Request</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/force_https.xhtml">How to Force HTTPS or HTTP for different URLs</a></li>
@@ -85,6 +93,7 @@ about how to use it in Symfony applications.</p>
 <li class="toctree-l1"><a class="reference internal" href="../security/impersonating_user.xhtml">How to Impersonate a User</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/json_login_setup.xhtml">How to Build a JSON Authentication Endpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/ldap.xhtml">Authenticating against an LDAP server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../security/login_link.xhtml">How to use Passwordless Login Link Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/multiple_guard_authenticators.xhtml">How to Use Multiple Guard Authenticators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/named_encoders.xhtml">How to Use A Different Password Encoder Algorithm Per User</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security/password_migration.xhtml">How to Migrate a Password Hash</a></li>

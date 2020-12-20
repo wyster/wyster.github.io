@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -153,11 +155,14 @@
 <li class="toctree-l3"><a class="reference internal" href="IsFalse.html">IsFalse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Type.html">Type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Email.html">Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ExpressionLanguageSyntax.html">ExpressionLanguageSyntax</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Length.html">Length</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Url.html">Url</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Regex.html">Regex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Hostname.html">Hostname</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Ip.html">Ip</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Uuid.html">UUID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Ulid.html">ULID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Json.html">Json</a></li>
 <li class="toctree-l3"><a class="reference internal" href="EqualTo.html">EqualTo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="NotEqualTo.html">NotEqualTo</a></li>
@@ -198,6 +203,10 @@
 <li class="toctree-l3"><a class="reference internal" href="Bic.html">Bic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Isbn.html">Isbn</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Issn.html">Issn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Isin.html">Isin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="AtLeastOneOf.html">AtLeastOneOf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Sequentially.html">Sequentially</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Compound.html">Compound</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Callback.html">Callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Expression.html">Expression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="All.html">All</a></li>
@@ -303,6 +312,8 @@ Countable) element count is <em>between</em> some minimum and maximum value.</p>
 </tr>
 <tr class="row-even"><td>Options</td>
 <td><ul class="first last simple">
+<li><a class="reference internal" href="#divisibleby">divisibleBy</a></li>
+<li><a class="reference internal" href="#divisiblebymessage">divisibleByMessage</a></li>
 <li><a class="reference internal" href="#exactmessage">exactMessage</a></li>
 <li><a class="reference internal" href="#groups">groups</a></li>
 <li><a class="reference internal" href="#max">max</a></li>
@@ -462,6 +473,47 @@ you might add the following:</p>
 </div>
 <div class="section" id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="divisibleby">
+<h3>divisibleBy<a class="headerlink" href="#divisibleby" title="Permalink to this headline">¶</a></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code> <strong>default</strong>: null</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">divisibleBy</span></code> option was introduced in Symfony 5.1.</p>
+</div>
+<p>Validates that the number of elements of the given collection is divisible by
+a certain number.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">If you need to validate that other types of data different from collections
+are divisible by a certain number, use the
+<a class="reference internal" href="DivisibleBy.html"><span class="doc">DivisibleBy</span></a> constraint.</p>
+</div>
+</div>
+<div class="section" id="divisiblebymessage">
+<h3>divisibleByMessage<a class="headerlink" href="#divisiblebymessage" title="Permalink to this headline">¶</a></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">elements</span> <span class="pre">in</span> <span class="pre">this</span> <span class="pre">collection</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">multiple</span> <span class="pre">of</span> <span class="pre">{{</span> <span class="pre">compared_value</span> <span class="pre">}}.</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">divisibleByMessage</span></code> option was introduced in Symfony 5.1.</p>
+</div>
+<p>The message that will be shown if the number of elements of the given collection
+is not divisible by the number defined in the <code class="docutils literal notranslate"><span class="pre">divisibleBy</span></code> option.</p>
+<p>You can use the following parameters in this message:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">compared_value</span> <span class="pre">}}</span></code></td>
+<td>The number configured in the <code class="docutils literal notranslate"><span class="pre">divisibleBy</span></code> option</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="exactmessage">
 <h3>exactMessage<a class="headerlink" href="#exactmessage" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">collection</span> <span class="pre">should</span> <span class="pre">contain</span> <span class="pre">exactly</span> <span class="pre">{{</span> <span class="pre">limit</span> <span class="pre">}}</span> <span class="pre">elements.</span></code></p>

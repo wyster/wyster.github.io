@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -157,8 +157,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -686,12 +688,6 @@ libraries are used in your application:</p>
 <span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
 </pre></div>
 </td></tr></table></div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Symfony 4.2 deprecated calling <code class="docutils literal notranslate"><span class="pre">FormRenderer::searchAndRenderBlock</span></code> for
-fields that have already been rendered. That’s why the previous example
-includes the <code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">if</span> <span class="pre">not</span> <span class="pre">child.rendered</span></code> statement.</p>
-</div>
 <p>The first part of the Twig block name (e.g. <code class="docutils literal notranslate"><span class="pre">postal_address</span></code>) comes from the
 class name (<code class="docutils literal notranslate"><span class="pre">PostalAddressType</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">postal_address</span></code>). This can be controlled
 by overriding the <code class="docutils literal notranslate"><span class="pre">getBlockPrefix()</span></code> method in <code class="docutils literal notranslate"><span class="pre">PostalAddressType</span></code>. The

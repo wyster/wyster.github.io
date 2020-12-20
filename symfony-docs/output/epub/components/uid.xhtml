@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>The UID Component</title>
+    <link rel="stylesheet" href="../_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/rtd_custom.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-uid-component">
+<span id="index-0"></span><h1>The UID Component</h1>
+<blockquote>
+<div><p>The UID component provides utilities to work with <a class="reference external" href="https://en.wikipedia.org/wiki/UID">unique identifiers</a><span class="link-target"> [https://en.wikipedia.org/wiki/UID]</span> (UIDs)
+such as UUIDs and ULIDs.</p>
+</div></blockquote>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The UID component was introduced in Symfony 5.1 as an
+<a class="reference internal" href="../contributing/code/experimental.xhtml"><span class="doc">experimental feature</span></a>.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation</h2>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/uid
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you install this component outside of a Symfony application, you must
+require the <code class="docutils literal notranslate"><span class="pre">vendor/autoload.php</span></code> file in your code to enable the class
+autoloading mechanism provided by Composer. Read
+<a class="reference internal" href="using_components.xhtml"><span class="doc">this article</span></a> for more details.</p>
+</div>
+</div>
+<div class="section" id="uuids">
+<h2>UUIDs</h2>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUIDs</a><span class="link-target"> [https://en.wikipedia.org/wiki/Universally_unique_identifier]</span> (<em>universally unique identifiers</em>) are one of the most popular UIDs in
+the software industry. UUIDs are 128-bit numbers usually represented as five
+groups of hexadecimal characters: <code class="docutils literal notranslate"><span class="pre">xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx</span></code>
+(the <code class="docutils literal notranslate"><span class="pre">M</span></code> digit is the UUID version and the <code class="docutils literal notranslate"><span class="pre">N</span></code> digit is the UUID variant).</p>
+<div class="section" id="generating-uuids">
+<h3>Generating UUIDs</h3>
+<p>Use the named constructors of the <code class="docutils literal notranslate"><span class="pre">Uuid</span></code> class or any of the specific classes
+to create each type of UUID:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Uid\Uuid</span><span class="p">;</span>
+
+<span class="c1">// UUID type 1 generates the UUID using the MAC address of your device and a timestamp.</span>
+<span class="c1">// Both are obtained automatically, so you don&#39;t have to pass any constructor argument.</span>
+<span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v1</span><span class="p">();</span> <span class="c1">// $uuid is an instance of Symfony\Component\Uid\UuidV1</span>
+
+<span class="c1">// UUID type 4 generates a random UUID, so you don&#39;t have to pass any constructor argument.</span>
+<span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v4</span><span class="p">();</span> <span class="c1">// $uuid is an instance of Symfony\Component\Uid\UuidV4</span>
+
+<span class="c1">// UUID type 3 and 5 generate a UUID hashing the given namespace and name. Type 3 uses</span>
+<span class="c1">// MD5 hashes and Type 5 uses SHA-1. The namespace is another UUID (e.g. a Type 4 UUID)</span>
+<span class="c1">// and the name is an arbitrary string (e.g. a product name; if it&#39;s unique).</span>
+<span class="nv">$namespace</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v4</span><span class="p">();</span>
+<span class="nv">$name</span> <span class="o">=</span> <span class="nv">$product</span><span class="o">-&gt;</span><span class="na">getUniqueName</span><span class="p">();</span>
+
+<span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v3</span><span class="p">(</span><span class="nv">$namespace</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span> <span class="c1">// $uuid is an instance of Symfony\Component\Uid\UuidV3</span>
+<span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v5</span><span class="p">(</span><span class="nv">$namespace</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span> <span class="c1">// $uuid is an instance of Symfony\Component\Uid\UuidV5</span>
+
+<span class="c1">// UUID type 6 is not part of the UUID standard. It&#39;s lexicographically sortable</span>
+<span class="c1">// (like ULIDs) and contains a 60-bit timestamp and 63 extra unique bits.</span>
+<span class="c1">// It&#39;s defined in http://gh.peabody.io/uuidv6/</span>
+<span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v6</span><span class="p">();</span> <span class="c1">// $uuid is an instance of Symfony\Component\Uid\UuidV6</span>
+</pre></div>
+</div>
+<p>If your UUID is generated by another system, use the <code class="docutils literal notranslate"><span class="pre">fromString()</span></code> method to
+create an object and make use of the utilities available for Symfony UUIDs:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// this value is generated somewhere else (can also be in binary format)</span>
+<span class="nv">$uuidValue</span> <span class="o">=</span> <span class="s1">&#39;d9e7a184-5d5b-11ea-a62a-3499710062d0&#39;</span><span class="p">;</span>
+<span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">fromString</span><span class="p">(</span><span class="nv">$uuidValue</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="converting-uuids">
+<h3>Converting UUIDs</h3>
+<p>Use these methods to transform the UUID object into different bases:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">fromString</span><span class="p">(</span><span class="s1">&#39;d9e7a184-5d5b-11ea-a62a-3499710062d0&#39;</span><span class="p">);</span>
+
+<span class="nv">$uuid</span><span class="o">-&gt;</span><span class="na">toBinary</span><span class="p">();</span>  <span class="c1">// string(16) &quot;...&quot; (binary contents can&#39;t be printed)</span>
+<span class="nv">$uuid</span><span class="o">-&gt;</span><span class="na">toBase32</span><span class="p">();</span>  <span class="c1">// string(26) &quot;6SWYGR8QAV27NACAHMK5RG0RPG&quot;</span>
+<span class="nv">$uuid</span><span class="o">-&gt;</span><span class="na">toBase58</span><span class="p">();</span>  <span class="c1">// string(22) &quot;TuetYWNHhmuSQ3xPoVLv9M&quot;</span>
+<span class="nv">$uuid</span><span class="o">-&gt;</span><span class="na">toRfc4122</span><span class="p">();</span> <span class="c1">// string(36) &quot;d9e7a184-5d5b-11ea-a62a-3499710062d0&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-uuids">
+<h3>Working with UUIDs</h3>
+<p>UUID objects created with the <code class="docutils literal notranslate"><span class="pre">Uuid</span></code> class can use the following methods
+(which are equivalent to the <code class="docutils literal notranslate"><span class="pre">uuid_*()</span></code> method of the PHP extension):</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Uid\NilUuid</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Uid\Uuid</span><span class="p">;</span>
+
+<span class="c1">// checking if the UUID is null (note that the class is called</span>
+<span class="c1">// NilUuid instead of NullUuid to follow the UUID standard notation)</span>
+<span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v4</span><span class="p">();</span>
+<span class="nv">$uuid</span> <span class="nx">instanceof</span> <span class="nx">NilUuid</span><span class="p">;</span> <span class="c1">// false</span>
+
+<span class="c1">// checking the type of UUID</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Uid\UuidV4</span><span class="p">;</span>
+<span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v4</span><span class="p">();</span>
+<span class="nv">$uuid</span> <span class="nx">instanceof</span> <span class="nx">UuidV4</span><span class="p">;</span> <span class="c1">// true</span>
+
+<span class="c1">// getting the UUID time (it&#39;s only available in certain UUID types)</span>
+<span class="nv">$uuid</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v1</span><span class="p">();</span>
+<span class="nv">$uuid</span><span class="o">-&gt;</span><span class="na">getTime</span><span class="p">();</span>  <span class="c1">// e.g. float(1584111384.2613)</span>
+
+<span class="c1">// comparing UUIDs and checking for equality</span>
+<span class="nv">$uuid1</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v1</span><span class="p">();</span>
+<span class="nv">$uuid4</span> <span class="o">=</span> <span class="nx">Uuid</span><span class="o">::</span><span class="na">v4</span><span class="p">();</span>
+<span class="nv">$uuid1</span><span class="o">-&gt;</span><span class="na">equals</span><span class="p">(</span><span class="nv">$uuid4</span><span class="p">);</span> <span class="c1">// false</span>
+
+<span class="c1">// this method returns:</span>
+<span class="c1">//   * int(0) if $uuid1 and $uuid4 are equal</span>
+<span class="c1">//   * int &gt; 0 if $uuid1 is greater than $uuid4</span>
+<span class="c1">//   * int &lt; 0 if $uuid1 is less than $uuid4</span>
+<span class="nv">$uuid1</span><span class="o">-&gt;</span><span class="na">compare</span><span class="p">(</span><span class="nv">$uuid4</span><span class="p">);</span> <span class="c1">// e.g. int(4)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="storing-uuids-in-databases">
+<h3>Storing UUIDs in Databases</h3>
+<p>If you <a class="reference internal" href="../doctrine.xhtml"><span class="doc">use Doctrine</span></a>, consider using the <code class="docutils literal notranslate"><span class="pre">uuid</span></code> Doctrine
+type, which converts to/from UUID objects automatically:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Product.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Doctrine\ORM\Mapping</span> <span class="k">as</span> <span class="nx">ORM</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @ORM\Entity(repositoryClass=&quot;App\Repository\ProductRepository&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">Product</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @ORM\Column(type=&quot;uuid&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$someProperty</span><span class="p">;</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There’s also a Doctrine generator to help autogenerate UUID values for the
+entity primary keys:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// there are generators for UUID V1 and V6 too</span>
+<span class="k">use</span> <span class="nx">Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @ORM\Entity(repositoryClass=&quot;App\Repository\ProductRepository&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">Product</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @ORM\Id</span>
+<span class="sd">     * @ORM\Column(type=&quot;uuid&quot;, unique=true)</span>
+<span class="sd">     * @ORM\GeneratedValue(strategy=&quot;CUSTOM&quot;)</span>
+<span class="sd">     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$id</span><span class="p">;</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The UUID type and generators were introduced in Symfony 5.2.</p>
+</div>
+<p>When using built-in Doctrine repository methods (e.g. <code class="docutils literal notranslate"><span class="pre">findOneBy()</span></code>), Doctrine
+knows how to convert these UUID types to build the SQL query
+(e.g. <code class="docutils literal notranslate"><span class="pre">-&gt;findOneBy(['user'</span> <span class="pre">=&gt;</span> <span class="pre">$user-&gt;getUuid()])</span></code>). However, when using DQL
+queries or building the query yourself, you’ll need to set <code class="docutils literal notranslate"><span class="pre">uuid</span></code> as the type
+of the UUID parameters:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Repository/ProductRepository.php</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">ProductRepository</span> <span class="k">extends</span> <span class="nx">ServiceEntityRepository</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">findUserProducts</span><span class="p">(</span><span class="nx">User</span> <span class="nv">$user</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="nv">$qb</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createQueryBuilder</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+            <span class="c1">// ...</span>
+            <span class="c1">// add &#39;uuid&#39; as the third argument to tell Doctrine that this is an UUID</span>
+            <span class="o">-&gt;</span><span class="na">setParameter</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getUuid</span><span class="p">(),</span> <span class="s1">&#39;uuid&#39;</span><span class="p">)</span>
+
+            <span class="c1">// alternatively, you can convert it to a value compatible with</span>
+            <span class="c1">// the type inferred by Doctrine</span>
+            <span class="o">-&gt;</span><span class="na">setParameter</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getUuid</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">toBinary</span><span class="p">())</span>
+        <span class="p">;</span>
+
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="ulids">
+<h2>ULIDs</h2>
+<p><a class="reference external" href="https://github.com/ulid/spec">ULIDs</a><span class="link-target"> [https://github.com/ulid/spec]</span> (<em>Universally Unique Lexicographically Sortable Identifier</em>) are 128-bit
+numbers usually represented as a 26-character string: <code class="docutils literal notranslate"><span class="pre">TTTTTTTTTTRRRRRRRRRRRRRRRR</span></code>
+(where <code class="docutils literal notranslate"><span class="pre">T</span></code> represents a timestamp and <code class="docutils literal notranslate"><span class="pre">R</span></code> represents the random bits).</p>
+<p>ULIDs are an alternative to UUIDs when using those is impractical. They provide
+128-bit compatibility with UUID, they are lexicographically sortable and they
+are encoded as 26-character strings (vs 36-character UUIDs).</p>
+<div class="section" id="generating-ulids">
+<h3>Generating ULIDs</h3>
+<p>Instantiate the <code class="docutils literal notranslate"><span class="pre">Ulid</span></code> class to generate a random ULID value:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Uid\Ulid</span><span class="p">;</span>
+
+<span class="nv">$ulid</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ulid</span><span class="p">();</span>  <span class="c1">// e.g. 01AN4Z07BY79KA1307SR9X4MV3</span>
+</pre></div>
+</div>
+<p>If your ULID is generated by another system, use the <code class="docutils literal notranslate"><span class="pre">fromString()</span></code> method to
+create an object and make use of the utilities available for Symfony ULIDs:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// this value is generated somewhere else (can also be in binary format)</span>
+<span class="nv">$ulidValue</span> <span class="o">=</span> <span class="s1">&#39;01E439TP9XJZ9RPFH3T1PYBCR8&#39;</span><span class="p">;</span>
+<span class="nv">$ulid</span> <span class="o">=</span> <span class="nx">Ulid</span><span class="o">::</span><span class="na">fromString</span><span class="p">(</span><span class="nv">$ulidValue</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="converting-ulids">
+<h3>Converting ULIDs</h3>
+<p>Use these methods to transform the ULID object into different bases:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="nv">$ulid</span> <span class="o">=</span> <span class="nx">Ulid</span><span class="o">::</span><span class="na">fromString</span><span class="p">(</span><span class="s1">&#39;01E439TP9XJZ9RPFH3T1PYBCR8&#39;</span><span class="p">);</span>
+
+<span class="nv">$ulid</span><span class="o">-&gt;</span><span class="na">toBinary</span><span class="p">();</span>  <span class="c1">// string(16) &quot;...&quot; (binary contents can&#39;t be printed)</span>
+<span class="nv">$ulid</span><span class="o">-&gt;</span><span class="na">toBase32</span><span class="p">();</span>  <span class="c1">// string(26) &quot;01E439TP9XJZ9RPFH3T1PYBCR8&quot;</span>
+<span class="nv">$ulid</span><span class="o">-&gt;</span><span class="na">toBase58</span><span class="p">();</span>  <span class="c1">// string(22) &quot;1BKocMc5BnrVcuq2ti4Eqm&quot;</span>
+<span class="nv">$ulid</span><span class="o">-&gt;</span><span class="na">toRfc4122</span><span class="p">();</span> <span class="c1">// string(36) &quot;0171069d-593d-97d3-8b3e-23d06de5b308&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-ulids">
+<h3>Working with ULIDs</h3>
+<p>ULID objects created with the <code class="docutils literal notranslate"><span class="pre">Ulid</span></code> class can use the following methods:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Uid\Ulid</span><span class="p">;</span>
+
+<span class="nv">$ulid1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ulid</span><span class="p">();</span>
+<span class="nv">$ulid2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ulid</span><span class="p">();</span>
+
+<span class="c1">// checking if a given value is valid as ULID</span>
+<span class="nv">$isValid</span> <span class="o">=</span> <span class="nx">Ulid</span><span class="o">::</span><span class="na">isValid</span><span class="p">(</span><span class="nv">$ulidValue</span><span class="p">);</span> <span class="c1">// true or false</span>
+
+<span class="c1">// getting the ULID time</span>
+<span class="nv">$ulid1</span><span class="o">-&gt;</span><span class="na">getTime</span><span class="p">();</span> <span class="c1">// e.g. float(1584111384.2613)</span>
+
+<span class="c1">// comparing ULIDs and checking for equality</span>
+<span class="nv">$ulid1</span><span class="o">-&gt;</span><span class="na">equals</span><span class="p">(</span><span class="nv">$ulid2</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="c1">// this method returns $ulid1 &lt;=&gt; $ulid2</span>
+<span class="nv">$ulid1</span><span class="o">-&gt;</span><span class="na">compare</span><span class="p">(</span><span class="nv">$ulid2</span><span class="p">);</span> <span class="c1">// e.g. int(-1)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="storing-ulids-in-databases">
+<h3>Storing ULIDs in Databases</h3>
+<p>If you <a class="reference internal" href="../doctrine.xhtml"><span class="doc">use Doctrine</span></a>, consider using the <code class="docutils literal notranslate"><span class="pre">ulid</span></code> Doctrine
+type, which converts to/from ULID objects automatically:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Product.php</span>
+<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Doctrine\ORM\Mapping</span> <span class="k">as</span> <span class="nx">ORM</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @ORM\Entity(repositoryClass=&quot;App\Repository\ProductRepository&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">Product</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @ORM\Column(type=&quot;ulid&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$someProperty</span><span class="p">;</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There’s also a Doctrine generator to help autogenerate ULID values for the
+entity primary keys:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @ORM\Entity(repositoryClass=&quot;App\Repository\ProductRepository&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">Product</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @ORM\Id</span>
+<span class="sd">     * @ORM\Column(type=&quot;ulid&quot;, unique=true)</span>
+<span class="sd">     * @ORM\GeneratedValue(strategy=&quot;CUSTOM&quot;)</span>
+<span class="sd">     * @ORM\CustomIdGenerator(class=UlidGenerator::class)</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$id</span><span class="p">;</span>
+
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The ULID type and generator were introduced in Symfony 5.2.</p>
+</div>
+<p>When using built-in Doctrine repository methods (e.g. <code class="docutils literal notranslate"><span class="pre">findOneBy()</span></code>), Doctrine
+knows how to convert these ULID types to build the SQL query
+(e.g. <code class="docutils literal notranslate"><span class="pre">-&gt;findOneBy(['user'</span> <span class="pre">=&gt;</span> <span class="pre">$user-&gt;getUlid()])</span></code>). However, when using DQL
+queries or building the query yourself, you’ll need to set <code class="docutils literal notranslate"><span class="pre">ulid</span></code> as the type
+of the ULID parameters:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Repository/ProductRepository.php</span>
+
+<span class="c1">// ...</span>
+<span class="k">class</span> <span class="nc">ProductRepository</span> <span class="k">extends</span> <span class="nx">ServiceEntityRepository</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">findUserProducts</span><span class="p">(</span><span class="nx">User</span> <span class="nv">$user</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
+    <span class="p">{</span>
+        <span class="nv">$qb</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createQueryBuilder</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+            <span class="c1">// ...</span>
+            <span class="c1">// add &#39;ulid&#39; as the third argument to tell Doctrine that this is an ULID</span>
+            <span class="o">-&gt;</span><span class="na">setParameter</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getUlid</span><span class="p">(),</span> <span class="s1">&#39;ulid&#39;</span><span class="p">)</span>
+
+            <span class="c1">// alternatively, you can convert it to a value compatible with</span>
+            <span class="c1">// the type inferred by Doctrine</span>
+            <span class="o">-&gt;</span><span class="na">setParameter</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getUlid</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">toBinary</span><span class="p">())</span>
+        <span class="p">;</span>
+
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

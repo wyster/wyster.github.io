@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -133,6 +135,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#message-format">Message Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#translatable-objects">Translatable Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#translations-in-templates">Translations in Templates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#forcing-the-translator-locale">Forcing the Translator Locale</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#extracting-translation-contents-and-updating-catalogs-automatically">Extracting Translation Contents and Updating Catalogs Automatically</a></li>
@@ -566,10 +569,41 @@ There are 5 apples.
 <p>To manage these situations, Symfony follows the <a class="reference external" href="https://unicode-org.github.io/icu/userguide/format_parse/messages/">ICU MessageFormat</a> syntax by
 using PHP’s <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/class.messageformatter.php" title="MessageFormatter"><span class="pre">MessageFormatter</span></a></code> class. Read more about this in
 <a class="reference internal" href="translation/message_format.html"><span class="doc">How to Translate Messages using the ICU MessageFormat</span></a>.</p>
+</div>
+<div class="section" id="translatable-objects">
+<h2>Translatable Objects<a class="headerlink" href="#translatable-objects" title="Permalink to this headline">¶</a></h2>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 4.2: </span>Support for ICU MessageFormat was introduced in Symfony 4.2. Prior to this,
-pluralization was managed by the
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Translation/Translator.php" title="Symfony\Component\Translation\Translator::transChoice()"><span class="pre">transChoice()</span></a></code> method.</p>
+<p><span class="versionmodified">New in version 5.2: </span>Translatable objects were introduced in Symfony 5.2.</p>
+</div>
+<p>Sometimes translating contents in templates is cumbersome because you need the
+original message, the translation parameters and the translation domain for
+each content. Making the translation in the controller or services simplifies
+your templates, but requires injecting the translator service in different
+parts of your application and mocking it in your tests.</p>
+<p>Instead of translating a string at the time of creation, you can use a
+“translatable object”, which is an instance of the
+<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Translation/TranslatableMessage.php" title="Symfony\Component\Translation\TranslatableMessage"><span class="pre">TranslatableMessage</span></a></code> class. This object stores
+all the information needed to fully translate its contents when needed:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">use</span> <span class="nx">Symfony\Component\Translation\TranslatableMessage</span><span class="p">;</span>
+
+<span class="c1">// the first argument is required and it&#39;s the original message</span>
+<span class="nv">$message</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TranslatableMessage</span><span class="p">(</span><span class="s1">&#39;Symfony is great!&#39;</span><span class="p">);</span>
+<span class="c1">// the optional second argument defines the translation parameters and</span>
+<span class="c1">// the optional third argument is the translation domain</span>
+<span class="nv">$status</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TranslatableMessage</span><span class="p">(</span><span class="s1">&#39;order.status&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;%status%&#39;</span> <span class="o">=&gt;</span> <span class="nv">$order</span><span class="o">-&gt;</span><span class="na">getStatus</span><span class="p">()],</span> <span class="s1">&#39;store&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Templates are now much simpler because you can pass translatable objects to the
+<code class="docutils literal notranslate"><span class="pre">trans</span></code> filter:</p>
+<div class="highlight-html+twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span><span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span> <span class="cp">}}</span><span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="cp">{{</span> <span class="nv">status</span><span class="o">|</span><span class="nf">trans</span> <span class="cp">}}</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">There’s also a <a class="reference internal" href="reference/twig_reference.html#reference-twig-function-t"><span class="std std-ref">function called t()</span></a>,
+available both in Twig and PHP, as a shortcut to create translatable objects.</p>
 </div>
 </div>
 <div class="section" id="translations-in-templates">
@@ -627,26 +661,16 @@ defined in the <a class="reference internal" href="reference/configuration/twig.
 <li>Any PHP file/class that injects or <a class="reference internal" href="service_container/autowiring.html"><span class="doc">autowires</span></a>
 the <code class="docutils literal notranslate"><span class="pre">translator</span></code> service and makes calls to the <code class="docutils literal notranslate"><span class="pre">trans()</span></code> function.</li>
 </ul>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The extraction of missing translation strings from PHP files was introduced
-in Symfony 4.3.</p>
-</div>
 </div>
 <div class="section" id="translation-resource-file-names-and-locations">
 <span id="translation-resource-locations"></span><h2>Translation Resource/File Names and Locations<a class="headerlink" href="#translation-resource-file-names-and-locations" title="Permalink to this headline">¶</a></h2>
 <p>Symfony looks for message files (i.e. translations) in the following default locations:</p>
-<ol class="arabic simple">
+<ul class="simple">
 <li>the <code class="docutils literal notranslate"><span class="pre">translations/</span></code> directory (at the root of the project);</li>
-<li>the <code class="docutils literal notranslate"><span class="pre">src/Resources/&lt;bundle</span> <span class="pre">name&gt;/translations/</span></code> directory;</li>
 <li>the <code class="docutils literal notranslate"><span class="pre">Resources/translations/</span></code> directory inside of any bundle.</li>
-</ol>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>Using the <code class="docutils literal notranslate"><span class="pre">src/Resources/&lt;bundle</span> <span class="pre">name&gt;/translations/</span></code> directory to store
-translations was deprecated in Symfony 4.2. Use instead the directory
-defined in the <code class="docutils literal notranslate"><span class="pre">default_path</span></code> option (which is <code class="docutils literal notranslate"><span class="pre">translations/</span></code> by default).</p>
-</div>
+</ul>
 <p>The locations are listed here with the highest priority first. That is, you can
-override the translation messages of a bundle in any of the top two directories.</p>
+override the translation messages of a bundle in the first directory.</p>
 <p>The override mechanism works at a key level: only the overridden keys need
 to be listed in a higher priority message file. When a key is not found
 in a message file, the translator will automatically fall back to the lower
@@ -768,12 +792,6 @@ providing a custom class implementing the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Translation/Loader/LoaderInterface.php" title="Symfony\Component\Translation\Loader\LoaderInterface"><span class="pre">LoaderInterface</span></a></code> interface.
 See the <a class="reference internal" href="reference/dic_tags.html#dic-tags-translation-loader"><span class="std std-ref">translation.loader</span></a> tag for more information.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>Starting from Symfony 4.3, when you create a new translation file (or
-install a bundle that includes translation files), you don’t have to clear
-the cache with the command <code class="docutils literal notranslate"><span class="pre">php</span> <span class="pre">bin/console</span> <span class="pre">cache:clear</span></code> as you had to do
-in previous Symfony versions.</p>
-</div>
 </div>
 <div class="section" id="handling-the-user-s-locale">
 <h2>Handling the User’s Locale<a class="headerlink" href="#handling-the-user-s-locale" title="Permalink to this headline">¶</a></h2>
@@ -864,11 +882,6 @@ which can be configured as follows:</p>
 </div>
 </li>
 </ol>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.4: </span>In Symfony versions before 4.4, the <code class="docutils literal notranslate"><span class="pre">fallbacks</span></code> option was initialized to
-<code class="docutils literal notranslate"><span class="pre">en</span></code> (English) when not configured explicitly. Starting from Symfony 4.4,
-this option is initialized to the same value as the <code class="docutils literal notranslate"><span class="pre">default_locale</span></code> option.</p>
-</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">When Symfony can’t find a translation in the given locale, it will

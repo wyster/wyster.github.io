@@ -38,7 +38,7 @@ uses the authorization checker), or by
 
 Ultimately, Symfony takes the responses from all voters and makes the final
 decision (to allow or deny access to the resource) according to the strategy defined
-in the application, which can be: affirmative, consensus or unanimous.
+in the application, which can be: affirmative, consensus, unanimous or priority.
 
 For more information take a look at
 :ref:`the section about access decision managers <components-security-access-decision-manager>`.
@@ -56,8 +56,8 @@ which makes creating a voter even easier::
 
     abstract class Voter implements VoterInterface
     {
-        abstract protected function supports($attribute, $subject);
-        abstract protected function voteOnAttribute($attribute, $subject, TokenInterface $token);
+        abstract protected function supports(string $attribute, $subject);
+        abstract protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token);
     }
 
 .. _how-to-use-the-voter-in-a-controller:
@@ -130,7 +130,7 @@ would look like this::
         const VIEW = 'view';
         const EDIT = 'edit';
 
-        protected function supports($attribute, $subject)
+        protected function supports(string $attribute, $subject)
         {
             // if the attribute isn't one we support, return false
             if (!in_array($attribute, [self::VIEW, self::EDIT])) {
@@ -145,7 +145,7 @@ would look like this::
             return true;
         }
 
-        protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+        protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
         {
             $user = $token->getUser();
 
@@ -190,7 +190,7 @@ That's it! The voter is done! Next, :ref:`configure it <declaring-the-voter-as-a
 
 To recap, here's what's expected from the two abstract methods:
 
-``Voter::supports($attribute, $subject)``
+``Voter::supports(string $attribute, $subject)``
     When ``isGranted()`` (or ``denyAccessUnlessGranted()``) is called, the first
     argument is passed here as ``$attribute`` (e.g. ``ROLE_USER``, ``edit``) and
     the second argument (if any) is passed as ``$subject`` (e.g. ``null``, a ``Post``
@@ -200,7 +200,7 @@ To recap, here's what's expected from the two abstract methods:
     return ``true`` if the attribute is ``view`` or ``edit`` and if the object is
     a ``Post`` instance.
 
-``voteOnAttribute($attribute, $subject, TokenInterface $token)``
+``voteOnAttribute(string $attribute, $subject, TokenInterface $token)``
     If you return ``true`` from ``supports()``, then this method is called. Your
     job is to return ``true`` to allow access and ``false`` to deny access.
     The ``$token`` can be used to find the current user object (if any). In this
@@ -243,7 +243,7 @@ with ``ROLE_SUPER_ADMIN``::
             $this->security = $security;
         }
 
-        protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+        protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
         {
             // ...
 
@@ -283,7 +283,15 @@ There are three strategies available:
 ``unanimous``
     This only grants access if there is no voter denying access. If all voters
     abstained from voting, the decision is based on the ``allow_if_all_abstain``
-    config option (which defaults to ``false``).
+    config option (which defaults to ``false``);
+
+``priority``
+    This grants or denies access by the first voter that does not abstain,
+    based on their service priority;
+
+    .. versionadded:: 5.1
+
+        The ``priority`` version strategy was introduced in Symfony 5.1.
 
 In the above scenario, both voters should grant access in order to grant access
 to the user to read the post. In this case, the default strategy is no longer
@@ -308,7 +316,9 @@ security configuration:
             xmlns:srv="http://symfony.com/schema/dic/services"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd"
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd"
         >
 
             <config>

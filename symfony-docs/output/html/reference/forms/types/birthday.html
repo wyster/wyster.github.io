@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../session.html">Sessions</a></li>
@@ -279,8 +281,8 @@ type, but with a more appropriate default for the <a class="reference internal" 
 option defaults to 120 years ago to the current year.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="22%" />
-<col width="78%" />
+<col width="25%" />
+<col width="75%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>Underlying Data Type</td>
@@ -292,6 +294,7 @@ option defaults to 120 years ago to the current year.</p>
 </tr>
 <tr class="row-odd"><td>Overridden options</td>
 <td><ul class="first last simple">
+<li><a class="reference internal" href="#invalid-message">invalid_message</a></li>
 <li><a class="reference internal" href="#years">years</a></li>
 </ul>
 </td>
@@ -319,12 +322,17 @@ option defaults to 120 years ago to the current year.</p>
 <li><a class="reference internal" href="#help-attr">help_attr</a></li>
 <li><a class="reference internal" href="#help-html">help_html</a></li>
 <li><a class="reference internal" href="#inherit-data">inherit_data</a></li>
-<li><a class="reference internal" href="#invalid-message">invalid_message</a></li>
 <li><a class="reference internal" href="#invalid-message-parameters">invalid_message_parameters</a></li>
 <li><a class="reference internal" href="#mapped">mapped</a></li>
 <li><a class="reference internal" href="#row-attr">row_attr</a></li>
 </ul>
 </td>
+</tr>
+<tr class="row-odd"><td>Default invalid message</td>
+<td>Please enter a valid birthdate.</td>
+</tr>
+<tr class="row-even"><td>Legacy invalid message</td>
+<td>The value {{ value }} is not valid.</td>
 </tr>
 <tr class="row-odd"><td>Parent type</td>
 <td><a class="reference internal" href="date.html"><span class="doc">DateType</span></a></td>
@@ -346,6 +354,19 @@ available running this command in your app:</p>
 </div>
 <div class="section" id="overridden-options">
 <h2>Overridden Options<a class="headerlink" href="#overridden-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="invalid-message">
+<h3><code class="docutils literal notranslate"><span class="pre">invalid_message</span></code><a class="headerlink" href="#invalid-message" title="Permalink to this headline">¶</a></h3>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">valid</span></code></p>
+<p>This is the validation error message that’s used if the data entered into
+this field doesn’t make sense (i.e. fails validation).</p>
+<p>This might happen, for example, if the user enters a nonsense string into
+a <a class="reference internal" href="time.html"><span class="doc">TimeType</span></a> field that cannot be converted
+into a real time or if the user enters a string (e.g. <code class="docutils literal notranslate"><span class="pre">apple</span></code>) into a
+number field.</p>
+<p>Normal (business logic) validation (such as when setting a minimum length
+for a field) should be set using validation messages with your validation
+rules (<a class="reference internal" href="../../../validation.html#validation-constraint-configuration"><span class="std std-ref">reference</span></a>).</p>
+</div>
 <div class="section" id="years">
 <h3><code class="docutils literal notranslate"><span class="pre">years</span></code><a class="headerlink" href="#years" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: 120 years ago to the current year</p>
@@ -449,9 +470,6 @@ systems. This is due to a <a class="reference external" href="https://www.php.ne
 <div class="section" id="input-format">
 <h3>input_format<a class="headerlink" href="#input-format" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">Y-m-d</span></code></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">input_format</span></code> option was introduced in Symfony 4.3.</p>
-</div>
 <p>If the <code class="docutils literal notranslate"><span class="pre">input</span></code> option is set to <code class="docutils literal notranslate"><span class="pre">string</span></code>, this option specifies the format
 of the date. This must be a valid <a class="reference external" href="https://secure.php.net/manual/en/function.date.php">PHP date format</a>.</p>
 </div>
@@ -580,19 +598,6 @@ the parent form as is. This means that
 applied to that field.</p>
 </div>
 </div>
-<div class="section" id="invalid-message">
-<h3><code class="docutils literal notranslate"><span class="pre">invalid_message</span></code><a class="headerlink" href="#invalid-message" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">valid</span></code></p>
-<p>This is the validation error message that’s used if the data entered into
-this field doesn’t make sense (i.e. fails validation).</p>
-<p>This might happen, for example, if the user enters a nonsense string into
-a <a class="reference internal" href="time.html"><span class="doc">TimeType</span></a> field that cannot be converted
-into a real time or if the user enters a string (e.g. <code class="docutils literal notranslate"><span class="pre">apple</span></code>) into a
-number field.</p>
-<p>Normal (business logic) validation (such as when setting a minimum length
-for a field) should be set using validation messages with your validation
-rules (<a class="reference internal" href="../../../validation.html#validation-constraint-configuration"><span class="std std-ref">reference</span></a>).</p>
-</div>
 <div class="section" id="invalid-message-parameters">
 <h3><code class="docutils literal notranslate"><span class="pre">invalid_message_parameters</span></code><a class="headerlink" href="#invalid-message-parameters" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
@@ -627,9 +632,6 @@ to render the <a class="reference internal" href="../../../form/form_customizati
 <p class="first admonition-title">See also</p>
 <p class="last">Use the <code class="docutils literal notranslate"><span class="pre">attr</span></code> option if you want to add these attributes to the
 the <a class="reference internal" href="../../../form/form_customization.html#form-rendering-basics"><span class="std std-ref">form type widget</span></a> element.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">row_attr</span></code> option was introduced in Symfony 4.3.</p>
 </div>
 </div>
 </div>

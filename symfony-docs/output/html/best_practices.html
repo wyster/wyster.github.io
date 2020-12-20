@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -121,7 +121,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#controllers">Controllers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#make-your-controller-extend-the-abstractcontroller-base-controller">Make your Controller Extend the <code class="docutils literal notranslate"><span class="pre">AbstractController</span></code> Base Controller</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#use-annotations-to-configure-routing-caching-and-security">Use Annotations to Configure Routing, Caching and Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-attributes-or-annotations-to-configure-routing-caching-and-security">Use Attributes or Annotations to Configure Routing, Caching and Security</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#don-t-use-annotations-to-configure-the-controller-template">Don’t Use Annotations to Configure the Controller Template</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#use-dependency-injection-to-get-services">Use Dependency Injection to Get Services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#use-paramconverters-if-they-are-convenient">Use ParamConverters If They Are Convenient</a></li>
@@ -178,8 +178,10 @@
 <li class="toctree-l1"><a class="reference internal" href="mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="session.html">Sessions</a></li>
@@ -498,11 +500,12 @@ controllers shouldn’t contain any business logic. Controllers should contain
 nothing more than a few lines of <em>glue-code</em>, so you are not coupling the
 important parts of your application.</p>
 </div>
-<div class="section" id="use-annotations-to-configure-routing-caching-and-security">
-<span id="best-practice-controller-annotations"></span><h3>Use Annotations to Configure Routing, Caching and Security<a class="headerlink" href="#use-annotations-to-configure-routing-caching-and-security" title="Permalink to this headline">¶</a></h3>
-<p>Using annotations for routing, caching and security simplifies configuration.
-You don’t need to browse several files created with different formats (YAML, XML,
-PHP): all the configuration is just where you need it and it only uses one format.</p>
+<div class="section" id="use-attributes-or-annotations-to-configure-routing-caching-and-security">
+<span id="best-practice-controller-annotations"></span><h3>Use Attributes or Annotations to Configure Routing, Caching and Security<a class="headerlink" href="#use-attributes-or-annotations-to-configure-routing-caching-and-security" title="Permalink to this headline">¶</a></h3>
+<p>Using attributes or annotations for routing, caching and security simplifies
+configuration. You don’t need to browse several files created with different
+formats (YAML, XML, PHP): all the configuration is just where you need it and
+it only uses one format.</p>
 </div>
 <div class="section" id="don-t-use-annotations-to-configure-the-controller-template">
 <h3>Don’t Use Annotations to Configure the Controller Template<a class="headerlink" href="#don-t-use-annotations-to-configure-the-controller-template" title="Permalink to this headline">¶</a></h3>

@@ -58,19 +58,19 @@ option;</p>
 
 <span class="k">class</span> <span class="nc">PHPDocTypeGuesser</span> <span class="k">implements</span> <span class="nx">FormTypeGuesserInterface</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
     <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessRequired</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessRequired</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
     <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessMaxLength</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessMaxLength</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
     <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessPattern</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessPattern</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">ValueGuess</span>
     <span class="p">{</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -107,7 +107,7 @@ type with the highest confidence is used.</p></li>
 
 <span class="k">class</span> <span class="nc">PHPDocTypeGuesser</span> <span class="k">implements</span> <span class="nx">FormTypeGuesserInterface</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">guessType</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$class</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$property</span><span class="p">)</span><span class="o">:</span> <span class="o">?</span><span class="nx">TypeGuess</span>
     <span class="p">{</span>
         <span class="nv">$annotations</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">readPhpDocAnnotations</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$property</span><span class="p">);</span>
 

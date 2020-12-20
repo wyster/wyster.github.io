@@ -35,22 +35,22 @@ create your own encoder that uses the
 
 <span class="k">class</span> <span class="nc">YamlEncoder</span> <span class="k">implements</span> <span class="nx">EncoderInterface</span><span class="p">,</span> <span class="nx">DecoderInterface</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">encode</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$format</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">encode</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$format</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="nx">Yaml</span><span class="o">::</span><span class="na">dump</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsEncoding</span><span class="p">(</span><span class="nv">$format</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsEncoding</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$format</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="s1">&#39;yaml&#39;</span> <span class="o">===</span> <span class="nv">$format</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">decode</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$format</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">decode</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$data</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$format</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="nx">Yaml</span><span class="o">::</span><span class="na">parse</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsDecoding</span><span class="p">(</span><span class="nv">$format</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsDecoding</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$format</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="s1">&#39;yaml&#39;</span> <span class="o">===</span> <span class="nv">$format</span><span class="p">;</span>
     <span class="p">}</span>

@@ -27,6 +27,7 @@
 </tr>
 <tr class="row-even"><td><p>Options</p></td>
 <td><ul class="simple">
+<li><p><a class="reference internal" href="#alpha3">alpha3</a></p></li>
 <li><p><a class="reference internal" href="#groups">groups</a></p></li>
 <li><p><a class="reference internal" href="#message">message</a></p></li>
 <li><p><a class="reference internal" href="#payload">payload</a></p></li>
@@ -149,6 +150,16 @@ with <a class="reference internal" href="NotBlank.xhtml"><span class="doc">NotBl
 </div>
 <div class="section" id="options">
 <h2>Options</h2>
+<div class="section" id="alpha3">
+<h3>alpha3</h3>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.1: </span>The <code class="docutils literal notranslate"><span class="pre">alpha3</span></code> option was introduced in Symfony 5.1.</p>
+</div>
+<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<p>If this option is <code class="docutils literal notranslate"><span class="pre">true</span></code>, the constraint checks that the value is a
+<a class="reference external" href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3#Current_codes">ISO 3166-1 alpha-3</a><span class="link-target"> [https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3#Current_codes]</span> three-letter code (e.g. France = <code class="docutils literal notranslate"><span class="pre">FRA</span></code>) instead
+of the default <a class="reference external" href="https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes">ISO 3166-1 alpha-2</a><span class="link-target"> [https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes]</span> two-letter code (e.g. France = <code class="docutils literal notranslate"><span class="pre">FR</span></code>).</p>
+</div>
 <div class="section" id="groups">
 <h3><code class="docutils literal notranslate"><span class="pre">groups</span></code></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> | <code class="docutils literal notranslate"><span class="pre">string</span></code></p>

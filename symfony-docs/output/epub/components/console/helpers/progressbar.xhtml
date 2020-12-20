@@ -63,10 +63,6 @@ method to limit the number of redraws and the
 <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProgressBar.php" title="Symfony\Component\Console\Helper\ProgressBar::setRedrawFrequency()"><span class="pre">setRedrawFrequency()</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Console/Helper/ProgressBar.php]</span></span></code> method
 to redraw every N iterations. By default, redraw frequency is
 <strong>100ms</strong> or <strong>10%</strong> of your <code class="docutils literal notranslate"><span class="pre">max</span></code>.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">minSecondsBetweenRedraws()</span></code> and <code class="docutils literal notranslate"><span class="pre">maxSecondsBetweenRedraws()</span></code>
-methods were introduced in Symfony 4.4.</p>
-</div>
 </div>
 <p>If you don’t know the exact number of steps in advance, set it to a reasonable
 value and then call the <code class="docutils literal notranslate"><span class="pre">setMaxSteps()</span></code> method to update it as needed:</p>
@@ -142,9 +138,6 @@ which starts, advances and finishes the progress bar automatically:</p>
 2/2 [============================] 100%
 </pre></div>
 </td></tr></table></div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">iterate()</span></code> method was introduced in Symfony 4.3.</p>
-</div>
 <div class="section" id="customizing-the-progress-bar">
 <h2>Customizing the Progress Bar</h2>
 <div class="section" id="built-in-formats">
@@ -345,10 +338,6 @@ fast or to slow for your application, use the methods
     <span class="nv">$progressBar</span><span class="o">-&gt;</span><span class="na">advance</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The <code class="docutils literal notranslate"><span class="pre">minSecondsBetweenRedraws</span></code> and <code class="docutils literal notranslate"><span class="pre">maxSecondsBetweenRedraws()</span></code> methods
-were introduced in Symfony 4.4.</p>
 </div>
 </div>
 </div>

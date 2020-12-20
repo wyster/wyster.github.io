@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -153,6 +155,7 @@
 <li class="toctree-l3"><a class="reference internal" href="IsFalse.html">IsFalse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Type.html">Type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Email.html">Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ExpressionLanguageSyntax.html">ExpressionLanguageSyntax</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Length.html">Length</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Url</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
@@ -160,8 +163,10 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="Regex.html">Regex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Hostname.html">Hostname</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Ip.html">Ip</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Uuid.html">UUID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Ulid.html">ULID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Json.html">Json</a></li>
 <li class="toctree-l3"><a class="reference internal" href="EqualTo.html">EqualTo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="NotEqualTo.html">NotEqualTo</a></li>
@@ -198,6 +203,10 @@
 <li class="toctree-l3"><a class="reference internal" href="Bic.html">Bic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Isbn.html">Isbn</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Issn.html">Issn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Isin.html">Isin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="AtLeastOneOf.html">AtLeastOneOf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Sequentially.html">Sequentially</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Compound.html">Compound</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Callback.html">Callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Expression.html">Expression</a></li>
 <li class="toctree-l3"><a class="reference internal" href="All.html">All</a></li>
@@ -302,8 +311,6 @@
 </tr>
 <tr class="row-even"><td>Options</td>
 <td><ul class="first last simple">
-<li><a class="reference internal" href="#checkdns">checkDNS</a></li>
-<li><a class="reference internal" href="#dnsmessage">dnsMessage</a></li>
 <li><a class="reference internal" href="#groups">groups</a></li>
 <li><a class="reference internal" href="#message">message</a></li>
 <li><a class="reference internal" href="#normalizer">normalizer</a></li>
@@ -419,6 +426,9 @@
 </li>
 </ul>
 </div>
+<p>This constraint doesn’t check that the host of the given URL really exists,
+because the information of the DNS records is not reliable. Use the
+<code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.checkdnsrr.php" title="checkdnsrr"><span class="pre">checkdnsrr</span></a></code> PHP function if you still want to check that.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">As with most of the other constraints, <code class="docutils literal notranslate"><span class="pre">null</span></code> and empty strings are
@@ -429,250 +439,6 @@ with <a class="reference internal" href="NotBlank.html"><span class="doc">NotBla
 </div>
 <div class="section" id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="checkdns">
-<h3>checkDNS<a class="headerlink" href="#checkdns" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">boolean</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.1: </span>This option was deprecated in Symfony 4.1 and will be removed in Symfony 5.0,
-because checking the DNS records is not reliable enough to validate the
-existence of the host. Use the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.checkdnsrr.php" title="checkdnsrr"><span class="pre">checkdnsrr</span></a></code> PHP function if you
-still want to use this kind of validation.</p>
-</div>
-<p>By default, this constraint just validates the syntax of the given URL. If you
-also need to check whether the associated host exists, set the <code class="docutils literal notranslate"><span class="pre">checkDNS</span></code>
-option to the value of any of the <code class="docutils literal notranslate"><span class="pre">CHECK_DNS_TYPE_*</span></code> constants in the
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/Validator/Constraints/Url.php" title="Symfony\Component\Validator\Constraints\Url"><span class="pre">Url</span></a></code> class:</p>
-<div class="configuration-block">
-<ul class="simple">
-<li><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
-<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">Author</span>
-<span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * @Assert\Url(</span>
-<span class="sd">     *    checkDNS = &quot;ANY&quot;</span>
-<span class="sd">     * )</span>
-<span class="sd">     */</span>
-     <span class="k">protected</span> <span class="nv">$bioUrl</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/validator/validation.yaml</span>
-<span class="l l-Scalar l-Scalar-Plain">App\Entity\Author</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">properties</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">bioUrl</span><span class="p p-Indicator">:</span>
-            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Url</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">checkDNS</span><span class="p p-Indicator">:</span> <span class="s">&#39;ANY&#39;</span> <span class="p p-Indicator">}</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/validator/validation.xml --&gt;</span>
-<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
-<span class="nt">&lt;constraint-mapping</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping&quot;</span>
-    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd&quot;</span><span class="nt">&gt;</span>
-
-    <span class="nt">&lt;class</span> <span class="na">name=</span><span class="s">&quot;App\Entity\Author&quot;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;bioUrl&quot;</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;constraint</span> <span class="na">name=</span><span class="s">&quot;Url&quot;</span><span class="nt">&gt;</span>
-                <span class="nt">&lt;option</span> <span class="na">name=</span><span class="s">&quot;checkDNS&quot;</span><span class="nt">&gt;</span>ANY<span class="nt">&lt;/option&gt;</span>
-            <span class="nt">&lt;/constraint&gt;</span>
-        <span class="nt">&lt;/property&gt;</span>
-    <span class="nt">&lt;/class&gt;</span>
-<span class="nt">&lt;/constraint-mapping&gt;</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
-<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Mapping\ClassMetadata</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">Author</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">loadValidatorMetadata</span><span class="p">(</span><span class="nx">ClassMetadata</span> <span class="nv">$metadata</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$metadata</span><span class="o">-&gt;</span><span class="na">addPropertyConstraint</span><span class="p">(</span><span class="s1">&#39;bioUrl&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert\Url</span><span class="p">([</span>
-            <span class="s1">&#39;checkDNS&#39;</span>  <span class="o">=&gt;</span> <span class="nx">Assert\Url</span><span class="o">::</span><span class="na">CHECK_DNS_TYPE_ANY</span><span class="p">,</span>
-        <span class="p">]));</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-</ul>
-</div>
-<p>This option uses the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.checkdnsrr.php" title="checkdnsrr"><span class="pre">checkdnsrr</span></a></code> PHP function to check the validity
-of the DNS record corresponding to the host associated with the given URL.</p>
-</div>
-<div class="section" id="dnsmessage">
-<h3>dnsMessage<a class="headerlink" href="#dnsmessage" title="Permalink to this headline">¶</a></h3>
-<p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">host</span> <span class="pre">could</span> <span class="pre">not</span> <span class="pre">be</span> <span class="pre">resolved.</span></code></p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.1: </span>This option was deprecated in Symfony 4.1 and will be removed in Symfony 5.0,
-because checking the DNS records is not reliable enough to validate the
-existence of the host. Use the <code class="docutils literal notranslate"><a class="reference external" href="https://www.php.net/manual/en/function.checkdnsrr.php" title="checkdnsrr"><span class="pre">checkdnsrr</span></a></code> PHP function if you
-still want to use this kind of validation.</p>
-</div>
-<p>This message is shown when the <code class="docutils literal notranslate"><span class="pre">checkDNS</span></code> option is set to <code class="docutils literal notranslate"><span class="pre">true</span></code> and the
-DNS check failed.</p>
-<div class="configuration-block">
-<ul class="simple">
-<li><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
-<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">Author</span>
-<span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * @Assert\Url(</span>
-<span class="sd">     *    dnsMessage = &quot;The host &#39;{{ value }}&#39; could not be resolved.&quot;</span>
-<span class="sd">     * )</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="nv">$bioUrl</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/validator/validation.yaml</span>
-<span class="l l-Scalar l-Scalar-Plain">App\Entity\Author</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">properties</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">bioUrl</span><span class="p p-Indicator">:</span>
-            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Url</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">dnsMessage</span><span class="p p-Indicator">:</span> <span class="s">&#39;The</span><span class="nv"> </span><span class="s">host</span><span class="nv"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">value</span><span class="nv"> </span><span class="s">}}&quot;</span><span class="nv"> </span><span class="s">could</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">resolved.&#39;</span> <span class="p p-Indicator">}</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/validator/validation.xml --&gt;</span>
-<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
-<span class="nt">&lt;constraint-mapping</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping&quot;</span>
-    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/constraint-mapping https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd&quot;</span><span class="nt">&gt;</span>
-
-    <span class="nt">&lt;class</span> <span class="na">name=</span><span class="s">&quot;App\Entity\Author&quot;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;bioUrl&quot;</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;constraint</span> <span class="na">name=</span><span class="s">&quot;Url&quot;</span><span class="nt">&gt;</span>
-                <span class="nt">&lt;option</span> <span class="na">name=</span><span class="s">&quot;dnsMessage&quot;</span><span class="nt">&gt;</span>The host &quot;{{ value }}&quot; could not be resolved.<span class="nt">&lt;/option&gt;</span>
-            <span class="nt">&lt;/constraint&gt;</span>
-        <span class="nt">&lt;/property&gt;</span>
-    <span class="nt">&lt;/class&gt;</span>
-<span class="nt">&lt;/constraint-mapping&gt;</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// src/Entity/Author.php</span>
-<span class="k">namespace</span> <span class="nx">App\Entity</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Constraints</span> <span class="k">as</span> <span class="nx">Assert</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Validator\Mapping\ClassMetadata</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">Author</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">loadValidatorMetadata</span><span class="p">(</span><span class="nx">ClassMetadata</span> <span class="nv">$metadata</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$metadata</span><span class="o">-&gt;</span><span class="na">addPropertyConstraint</span><span class="p">(</span><span class="s1">&#39;bioUrl&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert\Url</span><span class="p">([</span>
-             <span class="s1">&#39;dnsMessage&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;The host &quot;{{ value }}&quot; could not be resolved.&#39;</span><span class="p">,</span>
-        <span class="p">]));</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-</li>
-</ul>
-</div>
-</div>
 <div class="section" id="groups">
 <h3><code class="docutils literal notranslate"><span class="pre">groups</span></code><a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> | <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
@@ -698,8 +464,14 @@ about <a class="reference internal" href="../../validation/groups.html"><span cl
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></td>
 <td>The current (invalid) value</td>
 </tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code></td>
+<td>Corresponding form field label</td>
+</tr>
 </tbody>
 </table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code> parameter was introduced in Symfony 5.2.</p>
+</div>
 <div class="configuration-block">
 <ul class="simple">
 <li><em>Annotations</em><div class="highlight-php-annotations notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1

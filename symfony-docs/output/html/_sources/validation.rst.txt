@@ -719,6 +719,46 @@ constraint that's applied to the class itself. When that class is validated,
 methods specified by that constraint are simply executed so that each can
 provide more custom validation.
 
+Debugging the Constraints
+-------------------------
+
+.. versionadded:: 5.2
+
+    The ``debug:validator`` command was introduced in Symfony 5.2.
+
+Use the ``debug:validator`` command to list the validation constraints of a
+given class:
+
+.. code-block:: terminal
+
+    $ php bin/console debug:validator 'App\Entity\SomeClass'
+
+        App\Entity\SomeClass
+        -----------------------------------------------------
+
+        +---------------+--------------------------------------------------+---------+------------------------------------------------------------+
+        | Property      | Name                                             | Groups  | Options                                                    |
+        +---------------+--------------------------------------------------+---------+------------------------------------------------------------+
+        | firstArgument | Symfony\Component\Validator\Constraints\NotBlank | Default | [                                                          |
+        |               |                                                  |         |   "message" => "This value should not be blank.",          |
+        |               |                                                  |         |   "allowNull" => false,                                    |
+        |               |                                                  |         |   "normalizer" => null,                                    |
+        |               |                                                  |         |   "payload" => null                                        |
+        |               |                                                  |         | ]                                                          |
+        | firstArgument | Symfony\Component\Validator\Constraints\Email    | Default | [                                                          |
+        |               |                                                  |         |   "message" => "This value is not a valid email address.", |
+        |               |                                                  |         |   "mode" => null,                                          |
+        |               |                                                  |         |   "normalizer" => null,                                    |
+        |               |                                                  |         |   "payload" => null                                        |
+        |               |                                                  |         | ]                                                          |
+        +---------------+--------------------------------------------------+---------+------------------------------------------------------------+
+
+You can also validate all the classes stored in a given directory:
+
+.. code-block:: terminal
+
+    $ php bin/console debug:validator src/Entity
+
 Final Thoughts
 --------------
 

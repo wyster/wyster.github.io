@@ -34,12 +34,6 @@ This means that the following scenarios will work:
 * Loading user information from an LDAP server, while using another
   authentication strategy (token-based pre-authentication, for example).
 
-.. deprecated:: 4.4
-
-    The class ``Symfony\Component\Security\Core\User\LdapUserProvider``
-    has been deprecated in Symfony 4.4. Use the class
-    ``Symfony\Component\Ldap\Security\LdapUserProvider`` instead.
-
 Installation
 ------------
 
@@ -165,7 +159,9 @@ use the ``ldap`` user provider.
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd">
 
             <config>
                 <provider name="my_ldap">
@@ -279,10 +275,6 @@ extra_fields
 
 **type**: ``array`` **default**: ``null``
 
-.. versionadded:: 4.4
-
-    The ``extra_fields`` option was introduced in Symfony 4.4.
-
 Defines the custom fields to pull from the LDAP server. If any field does not
 exist, an ``\InvalidArgumentException`` will be thrown.
 
@@ -389,7 +381,9 @@ Configuration example for form login
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd">
 
             <config>
                 <firewall name="main">
@@ -442,7 +436,9 @@ Configuration example for HTTP Basic
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd">
 
             <config>
                 <!-- ... -->
@@ -502,7 +498,9 @@ Configuration example for form login and query_string
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:srv="http://symfony.com/schema/dic/services"
             xsi:schemaLocation="http://symfony.com/schema/dic/services
-                https://symfony.com/schema/dic/services/services-1.0.xsd">
+                https://symfony.com/schema/dic/services/services-1.0.xsd
+                http://symfony.com/schema/dic/security
+                https://symfony.com/schema/dic/security/security-1.0.xsd">
 
             <config>
                 <firewall name="main">
@@ -535,11 +533,6 @@ Configuration example for form login and query_string
                 ],
             ]
         ]);
-
-.. deprecated:: 4.4
-
-    Using the ``query_string`` config option without defining ``search_dn`` and
-    ``search_password`` is deprecated since Symfony 4.4.
 
 .. _`LDAP PHP extension`: https://www.php.net/manual/en/intro.ldap.php
 .. _`RFC4515`: http://www.faqs.org/rfcs/rfc4515.html

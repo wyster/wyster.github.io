@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -152,8 +152,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session.html">Sessions</a></li>
@@ -264,10 +266,10 @@ into additional files, which will contain “shared” code.</p>
     // ...
 
     // multiple entry files, which probably import the same code
-    .addEntry(&#39;app&#39;, &#39;./assets/js/app.js&#39;)
-    .addEntry(&#39;homepage&#39;, &#39;./assets/js/homepage.js&#39;)
-    .addEntry(&#39;blog&#39;, &#39;./assets/js/blog.js&#39;)
-    .addEntry(&#39;store&#39;, &#39;./assets/js/store.js&#39;)
+    .addEntry(&#39;app&#39;, &#39;./assets/app.js&#39;)
+    .addEntry(&#39;homepage&#39;, &#39;./assets/homepage.js&#39;)
+    .addEntry(&#39;blog&#39;, &#39;./assets/blog.js&#39;)
+    .addEntry(&#39;store&#39;, &#39;./assets/store.js&#39;)
 
 <span class="gi">+     .splitEntryChunks()</span>
 </pre></div>

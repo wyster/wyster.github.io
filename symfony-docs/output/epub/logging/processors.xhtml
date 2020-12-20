@@ -250,7 +250,7 @@ information:</p>
 handler level or at the channel level instead of registering it globally
 (see the following sections).</p>
 <p>Symfony’s MonologBridge provides processors that can be registered inside your application.</p>
-<dl class="simple">
+<dl>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/DebugProcessor.php" title="Symfony\Bridge\Monolog\Processor\DebugProcessor"><span class="pre">DebugProcessor</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/DebugProcessor.php]</span></span></code></dt>
 <dd><p>Adds additional information useful for debugging like a timestamp or an
 error message to the record.</p>
@@ -258,6 +258,13 @@ error message to the record.</p>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/TokenProcessor.php" title="Symfony\Bridge\Monolog\Processor\TokenProcessor"><span class="pre">TokenProcessor</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/TokenProcessor.php]</span></span></code></dt>
 <dd><p>Adds information from the current user’s token to the record namely
 username, roles and whether the user is authenticated.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/SwitchUserTokenProcessor.php" title="Symfony\Bridge\Monolog\Processor\SwitchUserTokenProcessor"><span class="pre">SwitchUserTokenProcessor</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/SwitchUserTokenProcessor.php]</span></span></code></dt>
+<dd><p>Adds information about the user who is impersonating the logged in user,
+namely username, roles and whether the user is authenticated.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">SwitchUserTokenProcessor</span></code> was introduced in Symfony 5.2.</p>
+</div>
 </dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/WebProcessor.php" title="Symfony\Bridge\Monolog\Processor\WebProcessor"><span class="pre">WebProcessor</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/WebProcessor.php]</span></span></code></dt>
 <dd><p>Overrides data from the request using the data inside Symfony’s request
@@ -270,10 +277,6 @@ object.</p>
 <dd><p>Adds information about current console command.</p>
 </dd>
 </dl>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">RouteProcessor</span></code> and the <code class="docutils literal notranslate"><span class="pre">ConsoleCommandProcessor</span></code> were introduced
-in Symfony 4.3.</p>
-</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>Check out the <a class="reference external" href="https://github.com/Seldaek/monolog/tree/master/src/Monolog/Processor">built-in Monolog processors</a><span class="link-target"> [https://github.com/Seldaek/monolog/tree/master/src/Monolog/Processor]</span> to learn more about how to

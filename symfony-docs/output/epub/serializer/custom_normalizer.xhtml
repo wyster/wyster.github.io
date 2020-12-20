@@ -44,7 +44,7 @@ to customize the normalized data. To do that, leverage the <code class="docutils
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">normalizer</span> <span class="o">=</span> <span class="nv">$normalizer</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">normalize</span><span class="p">(</span><span class="nv">$topic</span><span class="p">,</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">normalize</span><span class="p">(</span><span class="nv">$topic</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
     <span class="p">{</span>
         <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">normalizer</span><span class="o">-&gt;</span><span class="na">normalize</span><span class="p">(</span><span class="nv">$topic</span><span class="p">,</span> <span class="nv">$format</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 
@@ -56,7 +56,7 @@ to customize the normalized data. To do that, leverage the <code class="docutils
         <span class="k">return</span> <span class="nv">$data</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsNormalization</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">supportsNormalization</span><span class="p">(</span><span class="nv">$data</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$format</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$context</span> <span class="o">=</span> <span class="p">[])</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="nv">$data</span> <span class="nx">instanceof</span> <span class="nx">Topic</span><span class="p">;</span>
     <span class="p">}</span>

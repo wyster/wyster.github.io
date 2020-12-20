@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4}
+                5.2}
               </div>
             
           
@@ -141,8 +141,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifier.html">Creating and Sending Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rate_limiter.html">Rate Limiter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
@@ -477,6 +479,13 @@ error message to the record.</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/TokenProcessor.php" title="Symfony\Bridge\Monolog\Processor\TokenProcessor"><span class="pre">TokenProcessor</span></a></code></dt>
 <dd>Adds information from the current user’s token to the record namely
 username, roles and whether the user is authenticated.</dd>
+<dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/SwitchUserTokenProcessor.php" title="Symfony\Bridge\Monolog\Processor\SwitchUserTokenProcessor"><span class="pre">SwitchUserTokenProcessor</span></a></code></dt>
+<dd><p class="first">Adds information about the user who is impersonating the logged in user,
+namely username, roles and whether the user is authenticated.</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">SwitchUserTokenProcessor</span></code> was introduced in Symfony 5.2.</p>
+</div>
+</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/WebProcessor.php" title="Symfony\Bridge\Monolog\Processor\WebProcessor"><span class="pre">WebProcessor</span></a></code></dt>
 <dd>Overrides data from the request using the data inside Symfony’s request
 object.</dd>
@@ -485,10 +494,6 @@ object.</dd>
 <dt><code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Monolog/Processor/ConsoleCommandProcessor.php" title="Symfony\Bridge\Monolog\Processor\ConsoleCommandProcessor"><span class="pre">ConsoleCommandProcessor</span></a></code></dt>
 <dd>Adds information about current console command.</dd>
 </dl>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.3: </span>The <code class="docutils literal notranslate"><span class="pre">RouteProcessor</span></code> and the <code class="docutils literal notranslate"><span class="pre">ConsoleCommandProcessor</span></code> were introduced
-in Symfony 4.3.</p>
-</div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">Check out the <a class="reference external" href="https://github.com/Seldaek/monolog/tree/master/src/Monolog/Processor">built-in Monolog processors</a> to learn more about how to

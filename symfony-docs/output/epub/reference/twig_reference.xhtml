@@ -146,7 +146,7 @@ in a regular HTML form not managed by the Symfony Form component.</p>
 </td></tr></table></div>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">role</span></code></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code>, <code class="docutils literal notranslate"><span class="pre">string[]</span></code></p>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">object</span></code> <em>(optional)</em></dt>
 <dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -155,12 +155,7 @@ in a regular HTML form not managed by the Symfony Form component.</p>
 <dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
 </dd>
 </dl>
-<p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the current user has the given role. If several roles are
-passed in an array, <code class="docutils literal notranslate"><span class="pre">true</span></code> is returned if the user has at least one of
-them.</p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.4: </span>The feature to pass an array of roles to <code class="docutils literal notranslate"><span class="pre">is_granted()</span></code> was deprecated in Symfony 4.4.</p>
-</div>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if the current user has the given role.</p>
 <p>Optionally, an object can be passed to be used by the voter. More information
 can be found in <a class="reference internal" href="../security.xhtml#security-template"><span class="std std-ref">Access Control in Templates</span></a>.</p>
 </div>
@@ -282,6 +277,62 @@ you’re on the following page in your app:
 <p>Creates an <code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/Expression.php" title="Symfony\Component\ExpressionLanguage\Expression"><span class="pre">Expression</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Component/ExpressionLanguage/Expression.php]</span></span></code> related
 to the <a class="reference internal" href="../components/expression_language.xhtml"><span class="doc">ExpressionLanguage component</span></a>.</p>
 </div>
+<div class="section" id="impersonation-exit-path">
+<h3>impersonation_exit_path</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">impersonation_exit_path</span><span class="o">(</span><span class="nv">exitTo</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">exitTo</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">impersonation_exit_path()</span></code> function was introduced in Symfony 5.2.</p>
+</div>
+<p>Generates a URL that you can visit to exit <a class="reference internal" href="../security/impersonating_user.xhtml"><span class="doc">user impersonation</span></a>.
+After exiting impersonation, the user is redirected to the current URI. If you
+prefer to redirect to a different URI, define its value in the <code class="docutils literal notranslate"><span class="pre">exitTo</span></code> argument.</p>
+<p>If no user is being impersonated, the function returns an empty string.</p>
+</div>
+<div class="section" id="impersonation-exit-url">
+<h3>impersonation_exit_url</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">impersonation_exit_url</span><span class="o">(</span><span class="nv">exitTo</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">exitTo</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">impersonation_exit_url()</span></code> function was introduced in Symfony 5.2.</p>
+</div>
+<p>It’s similar to the <a class="reference internal" href="#impersonation-exit-path">impersonation_exit_path</a> function, but it generates
+absolute URLs instead of relative URLs.</p>
+</div>
+<div class="section" id="t">
+<span id="reference-twig-function-t"></span><h3>t</h3>
+<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">t</span><span class="o">(</span><span class="nv">message</span><span class="o">,</span> <span class="nv">parameters</span> <span class="o">=</span> <span class="o">[],</span> <span class="nv">domain</span> <span class="o">=</span> <span class="s1">&#39;messages&#39;</span><span class="o">)|</span><span class="nf">trans</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">message</span></code></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">parameters</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">domain</span></code> <em>(optional)</em></dt>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">messages</span></code></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">t()</span></code> function was introduced in Symfony 5.2.</p>
+</div>
+<p>Creates a <code class="docutils literal notranslate"><span class="pre">Translatable</span></code> object that can be passed to the
+<a class="reference internal" href="#reference-twig-filter-trans"><span class="std std-ref">trans filter</span></a>.</p>
+</div>
 <div class="section" id="form-related-functions">
 <h3>Form Related Functions</h3>
 <p>The following functions related to Symfony Forms are also available. They are
@@ -316,13 +367,13 @@ or transforms camelCase text like <code class="docutils literal notranslate"><sp
 and then capitalizes the string).</p>
 </div>
 <div class="section" id="trans">
-<h3>trans</h3>
+<span id="reference-twig-filter-trans"></span><h3>trans</h3>
 <div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">trans</span><span class="o">(</span><span class="nv">arguments</span> <span class="o">=</span> <span class="o">[],</span> <span class="nv">domain</span> <span class="o">=</span> <span class="kp">null</span><span class="o">,</span> <span class="nv">locale</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 </pre></div>
 </td></tr></table></div>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">message</span></code></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> | <code class="docutils literal notranslate"><span class="pre">Translatable</span></code></p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">arguments</span></code> <em>(optional)</em></dt>
 <dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
@@ -334,37 +385,10 @@ and then capitalizes the string).</p>
 <dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
 </dd>
 </dl>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span><code class="docutils literal notranslate"><span class="pre">message</span></code> accepting <code class="docutils literal notranslate"><span class="pre">Translatable</span></code> as a valid type was introduced in Symfony 5.2.</p>
+</div>
 <p>Translates the text into the current language. More information in
-<a class="reference internal" href="../translation/templates.xhtml#translation-filters"><span class="std std-ref">Translation Filters</span></a>.</p>
-</div>
-<div class="section" id="transchoice">
-<h3>transchoice</h3>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> filter is deprecated since Symfony 4.2 and will be
-removed in 5.0. Use the <a class="reference internal" href="../translation/message_format.xhtml"><span class="doc">ICU MessageFormat</span></a> with
-the <code class="docutils literal notranslate"><span class="pre">trans</span></code> filter instead.</p>
-</div>
-<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{{</span> <span class="nv">message</span><span class="o">|</span><span class="nf">transchoice</span><span class="o">(</span><span class="nv">count</span><span class="o">,</span> <span class="nv">arguments</span> <span class="o">=</span> <span class="o">[],</span> <span class="nv">domain</span> <span class="o">=</span> <span class="kp">null</span><span class="o">,</span> <span class="nv">locale</span> <span class="o">=</span> <span class="kp">null</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
-</pre></div>
-</td></tr></table></div>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">message</span></code></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">count</span></code></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">arguments</span></code> <em>(optional)</em></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">domain</span></code> <em>(optional)</em></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">locale</span></code> <em>(optional)</em></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-</dd>
-</dl>
-<p>Translates the text with pluralization support. More information in
 <a class="reference internal" href="../translation/templates.xhtml#translation-filters"><span class="std std-ref">Translation Filters</span></a>.</p>
 </div>
 <div class="section" id="yaml-encode">
@@ -581,33 +605,6 @@ information in <a class="reference internal" href="../form/form_customization.xh
 </dd>
 </dl>
 <p>Renders the translation of the content. More information in <a class="reference internal" href="../translation/templates.xhtml#translation-tags"><span class="std std-ref">Using Twig Tags</span></a>.</p>
-</div>
-<div class="section" id="id3">
-<h3>transchoice</h3>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 4.2: </span>The <code class="docutils literal notranslate"><span class="pre">transchoice</span></code> tag is deprecated since Symfony 4.2 and will be
-removed in 5.0. Use the <a class="reference internal" href="../translation/message_format.xhtml"><span class="doc">ICU MessageFormat</span></a> with
-the <code class="docutils literal notranslate"><span class="pre">trans</span></code> tag instead.</p>
-</div>
-<div class="highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">transchoice</span> <span class="nv">count</span> <span class="nv">with</span> <span class="nv">vars</span> <span class="nv">from</span> <span class="nv">domain</span> <span class="nv">into</span> <span class="nv">locale</span> <span class="cp">%}{%</span> <span class="k">endtranschoice</span> <span class="cp">%}</span><span class="x"></span>
-</pre></div>
-</td></tr></table></div>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">count</span></code></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">vars</span></code> <em>(optional)</em></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">array</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">domain</span></code> <em>(optional)</em></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">locale</span></code> <em>(optional)</em></dt>
-<dd><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> <strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">null</span></code></p>
-</dd>
-</dl>
-<p>Renders the translation of the content with pluralization support, more
-information in <a class="reference internal" href="../translation/templates.xhtml#translation-tags"><span class="std std-ref">Using Twig Tags</span></a>.</p>
 </div>
 <div class="section" id="trans-default-domain">
 <h3>trans_default_domain</h3>

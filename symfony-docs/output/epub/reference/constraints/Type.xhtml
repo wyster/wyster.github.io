@@ -273,10 +273,6 @@ option to validate this.</p>
 </p></li>
 </ul>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The feature to define multiple types in the <code class="docutils literal notranslate"><span class="pre">type</span></code> option was introduced
-in Symfony 4.4.</p>
-</div>
 </div>
 <div class="section" id="options">
 <h2>Options</h2>
@@ -308,8 +304,14 @@ about <a class="reference internal" href="../../validation/groups.xhtml"><span c
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">value</span> <span class="pre">}}</span></code></p></td>
 <td><p>The current (invalid) value</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code></p></td>
+<td><p>Corresponding form field label</p></td>
+</tr>
 </tbody>
 </table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2: </span>The <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">label</span> <span class="pre">}}</span></code> parameter was introduced in Symfony 5.2.</p>
+</div>
 </div>
 <div class="section" id="payload">
 <h3><code class="docutils literal notranslate"><span class="pre">payload</span></code></h3>
@@ -325,10 +327,6 @@ error.</p>
 <div class="section" id="reference-constraint-type-type">
 <span id="id1"></span><h3>type</h3>
 <p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">string</span></code> or <code class="docutils literal notranslate"><span class="pre">array</span></code> [<a class="reference internal" href="../../validation.xhtml#validation-default-option"><span class="std std-ref">default option</span></a>]</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 4.4: </span>The feature to define multiple types in the <code class="docutils literal notranslate"><span class="pre">type</span></code> option was introduced
-in Symfony 4.4.</p>
-</div>
 <p>This required option defines the type or collection of types allowed for the
 given value. Each type is either the FQCN (fully qualified class name) of some
 PHP class/interface or a valid PHP datatype (checked by PHP’s <code class="docutils literal notranslate"><span class="pre">is_()</span></code> functions):</p>

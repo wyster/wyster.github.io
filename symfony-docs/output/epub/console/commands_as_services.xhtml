@@ -55,7 +55,7 @@ and <a class="reference internal" href="../service_container/tags.xhtml"><span c
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">info</span><span class="p">(</span><span class="s1">&#39;Waking up the sun&#39;</span><span class="p">);</span>
         <span class="c1">// ...</span>
 
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -71,13 +71,6 @@ command and start logging.</p>
 not <a class="reference internal" href="#console-command-service-lazy-loading"><span class="std std-ref">lazy</span></a>, try to avoid doing any
 work (e.g. making database queries), as that code will be run, even if you’re using
 the console to execute a different command.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In previous Symfony versions, you could make the command class extend from
-<code class="docutils literal notranslate"><a class="reference external" href="https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/Command/ContainerAwareCommand.php" title="Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand"><span class="pre">ContainerAwareCommand</span></a><span class="link-target"> <span class="pre">[https://github.com/symfony/symfony/blob/master/src/Symfony/Bundle/FrameworkBundle/Command/ContainerAwareCommand.php]</span></span></code> to
-get services via <code class="docutils literal notranslate"><span class="pre">$this-&gt;getContainer()-&gt;get('SERVICE_ID')</span></code>. This is
-deprecated in Symfony 4.2 and it won’t work in future Symfony versions.</p>
 </div>
 <div class="section" id="lazy-loading">
 <span id="console-command-service-lazy-loading"></span><h2>Lazy Loading</h2>

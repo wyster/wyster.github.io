@@ -28,7 +28,7 @@ accepts an <code class="docutils literal notranslate"><a class="reference extern
 <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">denyAccessUnlessGranted</span><span class="p">(</span><span class="k">new</span> <span class="nx">Expression</span><span class="p">(</span>
-        <span class="s1">&#39;&quot;ROLE_ADMIN&quot; in roles or (not is_anonymous() and user.isSuperAdmin())&#39;</span>
+        <span class="s1">&#39;&quot;ROLE_ADMIN&quot; in role_names or (not is_anonymous() and user.isSuperAdmin())&#39;</span>
     <span class="p">));</span>
 
     <span class="c1">// ...</span>
