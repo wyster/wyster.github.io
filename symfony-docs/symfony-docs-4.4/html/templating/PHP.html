@@ -1,0 +1,977 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>How to Use PHP instead of Twig for Templates &mdash; Symfony Framework Documentation  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/rtd_custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How to Inject Variables Automatically into all Templates" href="global_variables.html" />
+    <link rel="prev" title="Creating and Using Templates" href="../templates.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #f0f0f0" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/symfony-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                4.4}
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick_tour/index.html">The Quick Tour</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../getting_started/index.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Installing &amp; Setting up the Symfony Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../page_creation.html">Create your First Page in Symfony</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../routing.html">Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../controller.html">Controller</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../templates.html">Creating and Using Templates</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../templates.html#twig-templating-language">Twig Templating Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../templates.html#creating-templates">Creating Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../templates.html#rendering-templates">Rendering Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../templates.html#debugging-templates">Debugging Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../templates.html#reusing-template-contents">Reusing Template Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../templates.html#output-escaping">Output Escaping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../templates.html#template-namespaces">Template Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../templates.html#learn-more">Learn more</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">How to Use PHP instead of Twig for Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="global_variables.html">How to Inject Variables Automatically into all Templates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hinclude.html">How to Embed Asynchronous Content with hinclude.js</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twig_extension.html">How to Write a custom Twig Extension</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../configuration.html">Configuring Symfony</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../best_practices.html">The Symfony Framework Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bundles.html">The Bundle System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache.html">Cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../console.html">Console Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doctrine.html">Databases and the Doctrine ORM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment.html">How to Deploy a Symfony Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../email.html">Swift Mailer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../event_dispatcher.html">Events and Event Listeners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forms.html">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../frontend.html">Managing CSS and JavaScript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../http_cache.html">HTTP Cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../http_client.html">HTTP Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lock.html">Dealing with Concurrency with Locks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mailer.html">Sending Emails with Mailer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mercure.html">Pushing Data to Clients Using the Mercure Protocol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../messenger.html">Messenger: Sync &amp; Queued Message Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">Migrating an Existing Application to Symfony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../performance.html">Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../profiler.html">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../routing.html">Routing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../security.html">Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../session.html">Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../setup.html">Installing &amp; Setting up the Symfony Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../serializer.html">How to Use the Serializer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../service_container.html">Service Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../translation.html">Translations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validation.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../web_link.html">Asset Preloading and Resource Hints with HTTP/2 and WebLink</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../components/index.html">The Components</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference Documents</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../create_framework/index.html">Create your own PHP Framework</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Symfony Framework Documentation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../getting_started/index.html">Getting Started</a> &raquo;</li>
+        
+          <li><a href="../setup.html">Installing &amp; Setting up the Symfony Framework</a> &raquo;</li>
+        
+          <li><a href="../page_creation.html">Create your First Page in Symfony</a> &raquo;</li>
+        
+          <li><a href="../routing.html">Routing</a> &raquo;</li>
+        
+          <li><a href="../controller.html">Controller</a> &raquo;</li>
+        
+          <li><a href="../templates.html">Creating and Using Templates</a> &raquo;</li>
+        
+      <li>How to Use PHP instead of Twig for Templates</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/templating/PHP.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-to-use-php-instead-of-twig-for-templates">
+<span id="index-0"></span><h1>How to Use PHP instead of Twig for Templates<a class="headerlink" href="#how-to-use-php-instead-of-twig-for-templates" title="Permalink to this headline">¶</a></h1>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.3: </span>PHP templates have been deprecated in Symfony 4.3 and they will no longer be
+supported in Symfony 5.0. Use <a class="reference internal" href="../templates.html#twig-language"><span class="std std-ref">Twig templates</span></a> instead.</p>
+</div>
+<p>Symfony defaults to Twig for its template engine, but you can still use
+plain PHP code if you want. Both templating engines are supported equally in
+Symfony. Symfony adds some nice features on top of PHP to make writing
+templates with PHP more powerful.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you choose <em>not</em> use Twig and you disable it, you’ll need to implement
+your own exception handler via the <code class="docutils literal notranslate"><span class="pre">kernel.exception</span></code> event.</p>
+</div>
+<div class="section" id="rendering-php-templates">
+<h2>Rendering PHP Templates<a class="headerlink" href="#rendering-php-templates" title="Permalink to this headline">¶</a></h2>
+<p>If you want to use the PHP templating engine, first install the templating component:</p>
+<div class="highlight-terminal notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">$</span> composer require symfony/templating
+</pre></div>
+</td></tr></table></div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 4.3: </span>The integration of the Templating component in FrameworkBundle has been
+deprecated since version 4.3 and will be removed in 5.0.</p>
+</div>
+<p>Next, enable the PHP engine:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/framework.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">framework</span><span class="p p-Indicator">:</span>
+    <span class="c1"># ...</span>
+    <span class="l l-Scalar l-Scalar-Plain">templating</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">engines</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;twig&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;php&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/framework.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:framework=</span><span class="s">&quot;http://symfony.com/schema/dic/symfony&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/symfony</span>
+<span class="s">        https://symfony.com/schema/dic/symfony/symfony-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;framework:config&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+        <span class="nt">&lt;framework:templating&gt;</span>
+            <span class="nt">&lt;framework:engine</span> <span class="na">id=</span><span class="s">&quot;twig&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;framework:engine</span> <span class="na">id=</span><span class="s">&quot;php&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/framework:templating&gt;</span>
+    <span class="nt">&lt;/framework:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/framework.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="c1">// ...</span>
+    <span class="s1">&#39;templating&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;engines&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;twig&#39;</span><span class="p">,</span> <span class="s1">&#39;php&#39;</span><span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+</ul>
+</div>
+<p>You can now render a PHP template instead of a Twig one by using the <code class="docutils literal notranslate"><span class="pre">.php</span></code>
+extension in the template name instead of <code class="docutils literal notranslate"><span class="pre">.twig</span></code>. The controller below
+renders the <code class="docutils literal notranslate"><span class="pre">index.html.php</span></code> template:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/Controller/HelloController.php</span>
+
+<span class="c1">// ...</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// template is stored in src/Resources/views/hello/index.html.php</span>
+    <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="s1">&#39;hello/index.html.php&#39;</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="nv">$name</span>
+    <span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>Enabling the <code class="docutils literal notranslate"><span class="pre">php</span></code> and <code class="docutils literal notranslate"><span class="pre">twig</span></code> template engines simultaneously is
+allowed, but it will produce an undesirable side effect in your application:
+the <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> notation for Twig namespaces will no longer be supported for the
+<code class="docutils literal notranslate"><span class="pre">render()</span></code> method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="c1">// namespaced templates will no longer work in controllers</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="s1">&#39;@SomeNamespace/hello/index.html.twig&#39;</span><span class="p">);</span>
+
+    <span class="c1">// you must use the traditional template notation</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="s1">&#39;hello/index.html.twig&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="last highlight-twig notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">{# inside a Twig template, namespaced templates work as expected #}</span><span class="x"></span>
+<span class="cp">{{</span> <span class="nv">include</span><span class="o">(</span><span class="s1">&#39;@SomeNamespace/hello/index.html.twig&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+
+<span class="c">{# traditional template notation will also work #}</span><span class="x"></span>
+<span class="cp">{{</span> <span class="nv">include</span><span class="o">(</span><span class="s1">&#39;hello/index.html.twig&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="decorating-templates">
+<span id="index-1"></span><h2>Decorating Templates<a class="headerlink" href="#decorating-templates" title="Permalink to this headline">¶</a></h2>
+<p>More often than not, templates in a project share common elements, like the
+well-known header and footer. In Symfony, this problem is thought about
+differently: a template can be decorated by another one.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">index.html.php</span></code> template is decorated by <code class="docutils literal notranslate"><span class="pre">layout.html.php</span></code>, thanks to
+the <code class="docutils literal notranslate"><span class="pre">extend()</span></code> call:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/views/hello/index.html.php --&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">extend</span><span class="p">(</span><span class="s1">&#39;layout.html.php&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+
+Hello <span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$name</span> <span class="cp">?&gt;</span>!
+</pre></div>
+</td></tr></table></div>
+<p>Now, have a look at the <code class="docutils literal notranslate"><span class="pre">layout.html.php</span></code> file:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/views/layout.html.php --&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">extend</span><span class="p">(</span><span class="s1">&#39;base.html.php&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Hello Application<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+
+<span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;slots&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">(</span><span class="s1">&#39;_content&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>The layout is itself decorated by another one (<code class="docutils literal notranslate"><span class="pre">base.html.php</span></code>). Symfony
+supports multiple decoration levels: a layout can itself be decorated by
+another one:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/views/base.html.php --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">&quot;Content-Type&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;text/html; charset=utf-8&quot;</span><span class="p">/&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span><span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;slots&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello Application&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;slots&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">(</span><span class="s1">&#39;_content&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>For both layouts, the <code class="docutils literal notranslate"><span class="pre">$view['slots']-&gt;output('_content')</span></code> expression is
+replaced by the content of the child template, <code class="docutils literal notranslate"><span class="pre">index.html.php</span></code> and
+<code class="docutils literal notranslate"><span class="pre">layout.html.php</span></code> respectively (more on slots in the next section).</p>
+<p>As you can see, Symfony provides methods on a mysterious <code class="docutils literal notranslate"><span class="pre">$view</span></code> object. In
+a template, the <code class="docutils literal notranslate"><span class="pre">$view</span></code> variable is always available and refers to a special
+object that provides a bunch of methods that makes the template engine tick.</p>
+</div>
+<div class="section" id="working-with-slots">
+<span id="index-2"></span><h2>Working with Slots<a class="headerlink" href="#working-with-slots" title="Permalink to this headline">¶</a></h2>
+<p>A slot is a snippet of code, defined in a template, and reusable in any layout
+decorating the template. In the <code class="docutils literal notranslate"><span class="pre">index.html.php</span></code> template, define a
+<code class="docutils literal notranslate"><span class="pre">title</span></code> slot:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/views/hello/index.html.php --&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">extend</span><span class="p">(</span><span class="s1">&#39;layout.html.php&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+
+<span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;slots&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello World Application&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+
+Hello <span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$name</span> <span class="cp">?&gt;</span>!
+</pre></div>
+</td></tr></table></div>
+<p>The base layout already has the code to output the title in the header:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/views/base.html.php --&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">&quot;Content-Type&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;text/html; charset=utf-8&quot;</span><span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span><span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;slots&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello Application&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">output()</span></code> method inserts the content of a slot and optionally takes a
+default value if the slot is not defined. And <code class="docutils literal notranslate"><span class="pre">_content</span></code> is a special
+slot that contains the rendered child template.</p>
+<p>For large slots, there is also an extended syntax:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;slots&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">start</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+    Some large amount of HTML
+<span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;slots&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">stop</span><span class="p">()</span> <span class="cp">?&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="including-other-templates">
+<span id="index-3"></span><h2>Including other Templates<a class="headerlink" href="#including-other-templates" title="Permalink to this headline">¶</a></h2>
+<p>The best way to share a snippet of template code is to define a template that
+can then be included into other templates.</p>
+<p>Create a <code class="docutils literal notranslate"><span class="pre">hello.html.php</span></code> template:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/views/hello/hello.html.php --&gt;</span>
+Hello <span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$name</span> <span class="cp">?&gt;</span>!
+</pre></div>
+</td></tr></table></div>
+<p>And change the <code class="docutils literal notranslate"><span class="pre">index.html.php</span></code> template to include it:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/views/hello/index.html.php --&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">extend</span><span class="p">(</span><span class="s1">&#39;layout.html.php&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+
+<span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="s1">&#39;hello/hello.html.php&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">])</span> <span class="cp">?&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">render()</span></code> method evaluates and returns the content of another template
+(this is the exact same method as the one used in the controller).</p>
+</div>
+<div class="section" id="embedding-other-controllers">
+<span id="index-4"></span><h2>Embedding other Controllers<a class="headerlink" href="#embedding-other-controllers" title="Permalink to this headline">¶</a></h2>
+<p>And what if you want to embed the result of another controller in a template?
+That’s very useful when working with Ajax, or when the embedded template needs
+some variable not available in the main template.</p>
+<p>If you create a <code class="docutils literal notranslate"><span class="pre">fancy</span></code> action, and want to include it into the
+<code class="docutils literal notranslate"><span class="pre">index.html.php</span></code> template, use the following code:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/views/hello/index.html.php --&gt;</span>
+<span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;actions&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span>
+    <span class="k">new</span> <span class="nx">\Symfony\Component\HttpKernel\Controller\ControllerReference</span><span class="p">(</span>
+        <span class="s1">&#39;App\Controller\HelloController::fancy&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s1">&#39;name&#39;</span>  <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">,</span>
+            <span class="s1">&#39;color&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+<span class="p">)</span> <span class="cp">?&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>But where is the <code class="docutils literal notranslate"><span class="pre">$view['actions']</span></code> array element defined? Like
+<code class="docutils literal notranslate"><span class="pre">$view['slots']</span></code>, it’s called a template helper, and the next section tells
+you more about those.</p>
+</div>
+<div class="section" id="using-template-helpers">
+<span id="index-5"></span><h2>Using Template Helpers<a class="headerlink" href="#using-template-helpers" title="Permalink to this headline">¶</a></h2>
+<p>The Symfony templating system can be extended via helpers. Helpers are
+PHP objects that provide features useful in a template context. <code class="docutils literal notranslate"><span class="pre">actions</span></code> and
+<code class="docutils literal notranslate"><span class="pre">slots</span></code> are two of the built-in Symfony helpers.</p>
+<div class="section" id="creating-links-between-pages">
+<h3>Creating Links between Pages<a class="headerlink" href="#creating-links-between-pages" title="Permalink to this headline">¶</a></h3>
+<p>Speaking of web applications, creating links between pages is a must. Instead
+of hardcoding URLs in templates, the <code class="docutils literal notranslate"><span class="pre">router</span></code> helper knows how to generate
+URLs based on the routing configuration. That way, all your URLs can be
+updated by changing the configuration:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;router&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">path</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Thomas&#39;</span><span class="p">])</span> <span class="cp">?&gt;</span><span class="s">&quot;</span><span class="p">&gt;</span>
+    Greet Thomas!
+<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">path()</span></code> method takes the route name and an array of parameters as
+arguments. The route name is the main key under which routes are referenced
+and the parameters are the values of the placeholders defined in the route
+pattern:</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/routes.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">hello</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">path</span><span class="p p-Indicator">:</span>       <span class="l l-Scalar l-Scalar-Plain">/hello/{name}</span>
+    <span class="l l-Scalar l-Scalar-Plain">controller</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">App\Controller\HelloController::index</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="using-assets-images-javascripts-and-stylesheets">
+<h3>Using Assets: Images, JavaScripts and Stylesheets<a class="headerlink" href="#using-assets-images-javascripts-and-stylesheets" title="Permalink to this headline">¶</a></h3>
+<p>What would the Internet be without images, JavaScripts, and stylesheets?
+Symfony provides the <code class="docutils literal notranslate"><span class="pre">assets</span></code> tag to deal with them:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">link</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;assets&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">getUrl</span><span class="p">(</span><span class="s1">&#39;css/blog.css&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="s">&quot;</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/css&quot;</span><span class="p">/&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;assets&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">getUrl</span><span class="p">(</span><span class="s1">&#39;images/logo.png&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="s">&quot;</span><span class="p">/&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">assets</span></code> helper’s main purpose is to make your application more
+portable. Thanks to this helper, you can move the application root directory
+anywhere under your web root directory without changing anything in your
+template’s code.</p>
+</div>
+<div class="section" id="profiling-templates">
+<h3>Profiling Templates<a class="headerlink" href="#profiling-templates" title="Permalink to this headline">¶</a></h3>
+<p>By using the <code class="docutils literal notranslate"><span class="pre">stopwatch</span></code> helper, you are able to time parts of your template
+and display it on the timeline of the WebProfilerBundle:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;stopwatch&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">start</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">... things that get timed</span>
+<span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;stopwatch&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">stop</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you use the same name more than once in your template, the times are
+grouped on the same line in the timeline.</p>
+</div>
+</div>
+</div>
+<div class="section" id="output-escaping">
+<h2>Output Escaping<a class="headerlink" href="#output-escaping" title="Permalink to this headline">¶</a></h2>
+<p>When using PHP templates, escape variables whenever they are displayed to the
+user:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?=</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">escape</span><span class="p">(</span><span class="nv">$var</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+<p>By default, the <code class="docutils literal notranslate"><span class="pre">escape()</span></code> method assumes that the variable is outputted
+within an HTML context. The second argument lets you change the context. For
+instance, to output something in a JavaScript script, use the <code class="docutils literal notranslate"><span class="pre">js</span></code> context:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?=</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">escape</span><span class="p">(</span><span class="nv">$var</span><span class="p">,</span> <span class="s1">&#39;js&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="form-theming-in-php">
+<h2>Form Theming in PHP<a class="headerlink" href="#form-theming-in-php" title="Permalink to this headline">¶</a></h2>
+<p>When using PHP as a templating engine, the only method to customize a fragment
+is to create a new template file - this is similar to the second method used by
+Twig.</p>
+<p>The template file must be named after the fragment. You must create a <code class="docutils literal notranslate"><span class="pre">integer_widget.html.php</span></code>
+file in order to customize the <code class="docutils literal notranslate"><span class="pre">integer_widget</span></code> fragment.</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- src/Resources/integer_widget.html.php --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;integer_widget&quot;</span><span class="p">&gt;</span>
+    <span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">block</span><span class="p">(</span>
+        <span class="nv">$form</span><span class="p">,</span>
+        <span class="s1">&#39;form_widget_simple&#39;</span><span class="p">,</span>
+        <span class="p">[</span><span class="s1">&#39;type&#39;</span> <span class="o">=&gt;</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$type</span><span class="p">)</span> <span class="o">?</span> <span class="nv">$type</span> <span class="o">:</span> <span class="s2">&quot;number&quot;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="cp">?&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Now that you’ve created the customized form template, you need to tell Symfony
+to use it. Inside the template where you’re actually rendering your form,
+tell Symfony to use the theme via the <code class="docutils literal notranslate"><span class="pre">setTheme()</span></code> helper method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">setTheme</span><span class="p">(</span><span class="nv">$form</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;:form&#39;</span><span class="p">])</span> <span class="cp">?&gt;</span><span class="x"></span>
+
+<span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">widget</span><span class="p">(</span><span class="nv">$form</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">])</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+<p>When the <code class="docutils literal notranslate"><span class="pre">form.age</span></code> widget is rendered, Symfony will use the customized
+<code class="docutils literal notranslate"><span class="pre">integer_widget.html.php</span></code> template and the <code class="docutils literal notranslate"><span class="pre">input</span></code> tag will be wrapped in
+the <code class="docutils literal notranslate"><span class="pre">div</span></code> element.</p>
+<p>If you want to apply a theme to a specific child form, pass it to the <code class="docutils literal notranslate"><span class="pre">setTheme()</span></code>
+method:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">setTheme</span><span class="p">(</span><span class="nv">$form</span><span class="p">[</span><span class="s1">&#39;child&#39;</span><span class="p">],</span> <span class="s1">&#39;:form&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">:form</span></code> syntax is based on the functional names for templates:
+<code class="docutils literal notranslate"><span class="pre">Bundle:Directory</span></code>. As the form directory lives in the
+<code class="docutils literal notranslate"><span class="pre">templates/</span></code> directory, the <code class="docutils literal notranslate"><span class="pre">Bundle</span></code> part is empty, resulting
+in <code class="docutils literal notranslate"><span class="pre">:form</span></code>.</p>
+</div>
+<div class="section" id="making-application-wide-customizations">
+<h3>Making Application-wide Customizations<a class="headerlink" href="#making-application-wide-customizations" title="Permalink to this headline">¶</a></h3>
+<p>If you’d like a certain form customization to be global to your application,
+you can accomplish this by making the form customizations in an external
+template and then importing it inside your application configuration.</p>
+<p>By using the following configuration, any customized form fragments inside the
+<code class="docutils literal notranslate"><span class="pre">templates/form</span></code> folder will be used globally when a
+form is rendered.</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/framework.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">framework</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">templating</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">form</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">resources</span><span class="p p-Indicator">:</span>
+                <span class="p p-Indicator">-</span> <span class="s">&#39;App:Form&#39;</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/framework.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:framework=</span><span class="s">&quot;http://symfony.com/schema/dic/symfony&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/symfony</span>
+<span class="s">        https://symfony.com/schema/dic/symfony/symfony-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;framework:config&gt;</span>
+        <span class="nt">&lt;framework:templating&gt;</span>
+            <span class="nt">&lt;framework:form&gt;</span>
+                <span class="nt">&lt;framework:resource&gt;</span>App:Form<span class="nt">&lt;/framework:resource&gt;</span>
+            <span class="nt">&lt;/framework:form&gt;</span>
+        <span class="nt">&lt;/framework:templating&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+    <span class="nt">&lt;/framework:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/framework.php</span>
+<span class="c1">// PHP</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;templating&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;form&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">&#39;resources&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="s1">&#39;App:Form&#39;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">],</span>
+    <span class="p">],</span>
+
+    <span class="c1">// ...</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+</ul>
+</div>
+<p>By default, the PHP engine uses a <em>div</em> layout when rendering forms. Some people,
+however, may prefer to render forms in a <em>table</em> layout. Use the <code class="docutils literal notranslate"><span class="pre">FrameworkBundle:FormTable</span></code>
+resource to use such a layout:</p>
+<div class="configuration-block">
+<ul class="simple">
+<li><em>YAML</em><div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># config/packages/framework.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">framework</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">templating</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">form</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">resources</span><span class="p p-Indicator">:</span>
+                <span class="p p-Indicator">-</span> <span class="s">&#39;FrameworkBundle:FormTable&#39;</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>XML</em><div class="highlight-xml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- config/packages/framework.xml --&gt;</span>
+<span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="nt">&lt;container</span> <span class="na">xmlns=</span><span class="s">&quot;http://symfony.com/schema/dic/services&quot;</span>
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xmlns:framework=</span><span class="s">&quot;http://symfony.com/schema/dic/symfony&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://symfony.com/schema/dic/services</span>
+<span class="s">        https://symfony.com/schema/dic/services/services-1.0.xsd</span>
+<span class="s">        http://symfony.com/schema/dic/symfony</span>
+<span class="s">        https://symfony.com/schema/dic/symfony/symfony-1.0.xsd&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;framework:config&gt;</span>
+        <span class="nt">&lt;framework:templating&gt;</span>
+            <span class="nt">&lt;framework:form&gt;</span>
+                <span class="nt">&lt;resource&gt;</span>FrameworkBundle:FormTable<span class="nt">&lt;/resource&gt;</span>
+            <span class="nt">&lt;/framework:form&gt;</span>
+        <span class="nt">&lt;/framework:templating&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+    <span class="nt">&lt;/framework:config&gt;</span>
+<span class="nt">&lt;/container&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+<li><em>PHP</em><div class="highlight-php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// config/packages/framework.php</span>
+<span class="nv">$container</span><span class="o">-&gt;</span><span class="na">loadFromExtension</span><span class="p">(</span><span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;templating&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;form&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">&#39;resources&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="s1">&#39;FrameworkBundle:FormTable&#39;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">],</span>
+    <span class="p">],</span>
+
+    <span class="c1">// ...</span>
+<span class="p">]);</span>
+</pre></div>
+</td></tr></table></div>
+</li>
+</ul>
+</div>
+<p>If you only want to make the change in one template, add the following line to
+your template file rather than adding the template as a resource:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">setTheme</span><span class="p">(</span><span class="nv">$form</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;FrameworkBundle:FormTable&#39;</span><span class="p">])</span> <span class="cp">?&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">$form</span></code> variable in the above code is the form view variable
+that you passed to your template.</p>
+</div>
+<div class="section" id="adding-a-required-asterisk-to-field-labels">
+<h3>Adding a “Required” Asterisk to Field Labels<a class="headerlink" href="#adding-a-required-asterisk-to-field-labels" title="Permalink to this headline">¶</a></h3>
+<p>If you want to denote all of your required fields with a required asterisk
+(<code class="docutils literal notranslate"><span class="pre">*</span></code>), you can do this by customizing the <code class="docutils literal notranslate"><span class="pre">form_label</span></code> fragment.</p>
+<p>When using PHP as a templating engine you have to copy the content from the
+original template:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- form_label.html.php --&gt;</span>
+
+<span class="c">&lt;!-- original content --&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">if</span> <span class="p">(</span><span class="nv">$required</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$label_attr</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">trim</span><span class="p">((</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$label_attr</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">])</span> <span class="o">?</span> <span class="nv">$label_attr</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span> <span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="s1">&#39; required&#39;</span><span class="p">);</span> <span class="p">}</span> <span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$compound</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$label_attr</span><span class="p">[</span><span class="s1">&#39;for&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$id</span><span class="p">;</span> <span class="p">}</span> <span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$label</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$label</span> <span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">humanize</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span> <span class="p">}</span> <span class="cp">?&gt;</span>
+<span class="p">&lt;</span><span class="nt">label</span> <span class="cp">&lt;?php</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$label_attr</span> <span class="k">as</span> <span class="nv">$k</span> <span class="o">=&gt;</span> <span class="nv">$v</span><span class="p">)</span> <span class="p">{</span> <span class="nb">printf</span><span class="p">(</span><span class="s1">&#39;%s=&quot;%s&quot; &#39;</span><span class="p">,</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">escape</span><span class="p">(</span><span class="nv">$k</span><span class="p">),</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">escape</span><span class="p">(</span><span class="nv">$v</span><span class="p">));</span> <span class="p">}</span> <span class="cp">?&gt;</span><span class="p">&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">escape</span><span class="p">(</span><span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;translator&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">trans</span><span class="p">(</span><span class="nv">$label</span><span class="p">,</span> <span class="nv">$label_translation_parameters</span><span class="p">,</span> <span class="nv">$translation_domain</span><span class="p">))</span> <span class="cp">?&gt;</span><span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+
+<span class="c">&lt;!-- customization --&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">if</span> <span class="p">(</span><span class="nv">$required</span><span class="p">)</span> <span class="o">:</span> <span class="cp">?&gt;</span>
+    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;required&quot;</span> <span class="na">title</span><span class="o">=</span><span class="s">&quot;This field is required&quot;</span><span class="p">&gt;</span>*<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">endif</span> <span class="cp">?&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="adding-help-messages">
+<h3>Adding “help” Messages<a class="headerlink" href="#adding-help-messages" title="Permalink to this headline">¶</a></h3>
+<p>You can also customize your form widgets to have an optional “help” message.</p>
+<p>When using PHP as a templating engine you have to copy the content from the
+original template:</p>
+<div class="highlight-html+php notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- form_widget_simple.html.php --&gt;</span>
+
+<span class="c">&lt;!-- Original content --&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span>
+    <span class="na">type</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$type</span><span class="p">)</span> <span class="o">?</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">escape</span><span class="p">(</span><span class="nv">$type</span><span class="p">)</span> <span class="o">:</span> <span class="s1">&#39;text&#39;</span> <span class="cp">?&gt;</span><span class="s">&quot;</span>
+    <span class="cp">&lt;?php</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">empty</span><span class="p">(</span><span class="nv">$value</span><span class="p">))</span><span class="o">:</span> <span class="cp">?&gt;</span><span class="na">value</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">escape</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="s">&quot;</span><span class="cp">&lt;?php</span> <span class="k">endif</span> <span class="cp">?&gt;</span>
+    <span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">block</span><span class="p">(</span><span class="nv">$form</span><span class="p">,</span> <span class="s1">&#39;widget_attributes&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+<span class="p">/&gt;</span>
+
+<span class="c">&lt;!-- Customization --&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$help</span><span class="p">))</span> <span class="o">:</span> <span class="cp">?&gt;</span>
+    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;help&quot;</span><span class="p">&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$view</span><span class="o">-&gt;</span><span class="na">escape</span><span class="p">(</span><span class="nv">$help</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">endif</span> <span class="cp">?&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2004-2020 Fabien Potencier
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
